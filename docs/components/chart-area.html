@@ -1,0 +1,281 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li><a href="/docs/components/chart">Chart</a></li>
+                <li>Area Chart</li>
+            </ul>
+        </div>
+
+        <h1>Area Chart</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Area charts are similar to line charts but with the area below the line filled in,
+            making them ideal for showing volume or cumulative data.
+        </p>
+
+        <!-- Basic Usage -->
+        <h2 class="text-xl font-bold mb-4">Usage</h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <p class="mb-4">To visualize data with an area chart, use <code>type: 'area'</code>.
+                    Like line charts, area charts require both <code>--start</code> and <code>--size</code>:</p>
+                <div id="basic-area" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
+                    <table class="charts-css area show-labels show-primary-axis">
+                        <caption>Basic Area Chart</caption>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> Jan </th>
+                                <td style="--start: 0.2; --size: 0.4;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Feb </th>
+                                <td style="--start: 0.4; --size: 0.6;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Mar </th>
+                                <td style="--start: 0.6; --size: 0.5;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Apr </th>
+                                <td style="--start: 0.5; --size: 0.8;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> May </th>
+                                <td style="--start: 0.8; --size: 0.7;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'area', labels: true, primaryAxis: true },
+    Chart.Body({},
+        Chart.Row({},
+            Chart.Label({}, 'Jan'),
+            Chart.Data({ start: 0.2, value: 0.4 })
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Feb'),
+            Chart.Data({ start: 0.4, value: 0.6 })
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Mar'),
+            Chart.Data({ start: 0.6, value: 0.5 })
+        ),
+        // ... more rows
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multiple Datasets -->
+        <h2 class="text-xl font-bold mb-4">Multiple Datasets</h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <p class="mb-4">Create layered areas with multiple datasets:</p>
+                <div id="multiple-area" style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
+                    <table class="charts-css area multiple show-labels show-primary-axis"
+                        style="--color-1: rgba(76, 175, 80, 0.5); --color-2: rgba(33, 150, 243, 0.5); --color-3: rgba(255, 152, 0, 0.5);">
+                        <caption>Stacked Areas</caption>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> Q1 </th>
+                                <td style="--start: 0.1; --size: 0.3;"></td>
+                                <td style="--start: 0.2; --size: 0.4;"></td>
+                                <td style="--start: 0.15; --size: 0.35;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Q2 </th>
+                                <td style="--start: 0.3; --size: 0.5;"></td>
+                                <td style="--start: 0.4; --size: 0.6;"></td>
+                                <td style="--start: 0.35; --size: 0.5;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Q3 </th>
+                                <td style="--start: 0.5; --size: 0.4;"></td>
+                                <td style="--start: 0.6; --size: 0.5;"></td>
+                                <td style="--start: 0.5; --size: 0.6;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Q4 </th>
+                                <td style="--start: 0.4; --size: 0.7;"></td>
+                                <td style="--start: 0.5; --size: 0.8;"></td>
+                                <td style="--start: 0.6; --size: 0.75;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'area', multiple: true, labels: true, primaryAxis: true },
+    Chart.Body({},
+        Chart.Row({},
+            Chart.Label({}, 'Q1'),
+            Chart.Data({ start: 0.1, value: 0.3 }),
+            Chart.Data({ start: 0.2, value: 0.4 }),
+            Chart.Data({ start: 0.15, value: 0.35 })
+        ),
+        // ... more rows
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Axes and Grid -->
+        <h2 class="text-xl font-bold mb-4">Axes and Grid</h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <p class="mb-4">Add grid lines with <code>primaryAxis</code> and <code>secondaryAxis</code>:</p>
+                <div id="axes-area" style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
+                    <table class="charts-css area show-labels show-primary-axis show-4-secondary-axes">
+                        <caption>With Grid Lines</caption>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> 1 </th>
+                                <td style="--start: 0.0; --size: 0.25;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 2 </th>
+                                <td style="--start: 0.25; --size: 0.5;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 3 </th>
+                                <td style="--start: 0.5; --size: 0.75;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 4 </th>
+                                <td style="--start: 0.75; --size: 0.5;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 5 </th>
+                                <td style="--start: 0.5; --size: 1.0;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ 
+    type: 'area', 
+    labels: true, 
+    primaryAxis: true, 
+    secondaryAxis: 'show-4-secondary-axes'
+},
+    Chart.Body({}, /* rows */)
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Area Styling -->
+        <h2 class="text-xl font-bold mb-4">Area Styling</h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <p class="mb-4">Customize area appearance with CSS custom properties:</p>
+                <div id="styled-area" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
+                    <table class="charts-css area show-labels" style="--color: rgba(116, 128, 255, 0.6);">
+                        <caption>Custom Colored Area</caption>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> Mon </th>
+                                <td style="--start: 0.2; --size: 0.5;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Tue </th>
+                                <td style="--start: 0.5; --size: 0.7;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Wed </th>
+                                <td style="--start: 0.7; --size: 0.4;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Thu </th>
+                                <td style="--start: 0.4; --size: 0.8;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Fri </th>
+                                <td style="--start: 0.8; --size: 0.6;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ 
+    type: 'area', 
+    labels: true,
+    style: '--color: rgba(116, 128, 255, 0.6);'
+},
+    Chart.Body({},
+        // Data rows...
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reverse Orientation -->
+        <h2 class="text-xl font-bold mb-4">Orientation</h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <p class="mb-4">Reverse the chart with <code>reverse: true</code>:</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm font-bold mb-2">Normal</p>
+                        <div style="height: 180px;">
+                            <table class="charts-css area show-labels">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"> A </th>
+                                        <td style="--start: 0.2; --size: 0.5;"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"> B </th>
+                                        <td style="--start: 0.5; --size: 0.8;"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"> C </th>
+                                        <td style="--start: 0.8; --size: 0.6;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold mb-2">Reversed</p>
+                        <div style="height: 180px;">
+                            <table class="charts-css area show-labels reverse">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"> A </th>
+                                        <td style="--start: 0.2; --size: 0.5;"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"> B </th>
+                                        <td style="--start: 0.5; --size: 0.8;"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"> C </th>
+                                        <td style="--start: 0.8; --size: 0.6;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between mt-8">
+            <a href="/docs/components/chart-line" class="btn btn-outline">← Line Chart</a>
+            <a href="/docs/components/chart-pie" class="btn btn-primary">Pie Chart →</a>
+        </div>
+    </div>
+</div>

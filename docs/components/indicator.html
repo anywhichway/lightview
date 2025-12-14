@@ -1,0 +1,70 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Indicator</li>
+            </ul>
+        </div>
+        <h1>Indicator</h1>
+        <p class="text-lg opacity-70 mb-6">Indicator is used to place an element at the corner of another element.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="indicator mb-8">
+            <span class="indicator-item badge badge-primary">99+</span>
+            <div class="bg-base-300 p-6 rounded-box">Inbox</div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Positions</h2>
+        <div class="flex flex-wrap gap-8 mb-8">
+            <div class="indicator">
+                <span class="indicator-item indicator-top indicator-start badge badge-secondary">top-start</span>
+                <div class="bg-base-300 p-6 rounded-box">content</div>
+            </div>
+            <div class="indicator">
+                <span class="indicator-item indicator-top indicator-center badge badge-secondary">top-center</span>
+                <div class="bg-base-300 p-6 rounded-box">content</div>
+            </div>
+            <div class="indicator">
+                <span class="indicator-item indicator-top indicator-end badge badge-secondary">top-end</span>
+                <div class="bg-base-300 p-6 rounded-box">content</div>
+            </div>
+            <div class="indicator">
+                <span class="indicator-item indicator-bottom indicator-start badge badge-secondary">bottom-start</span>
+                <div class="bg-base-300 p-6 rounded-box">content</div>
+            </div>
+            <div class="indicator">
+                <span
+                    class="indicator-item indicator-bottom indicator-center badge badge-secondary">bottom-center</span>
+                <div class="bg-base-300 p-6 rounded-box">content</div>
+            </div>
+            <div class="indicator">
+                <span class="indicator-item indicator-bottom indicator-end badge badge-secondary">bottom-end</span>
+                <div class="bg-base-300 p-6 rounded-box">content</div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">On Button</h2>
+        <div class="indicator mb-8">
+            <span class="indicator-item badge badge-secondary">new</span>
+            <button class="btn">Inbox</button>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">On Avatar</h2>
+        <div class="indicator mb-8">
+            <span class="indicator-item badge badge-success"></span>
+            <div class="avatar">
+                <div class="w-16 rounded-full"><img src="https://i.pravatar.cc/100?img=20" alt="Avatar" /></div>
+            </div>
+        </div>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/indicator/" target="_blank"
+                    class="link link-primary">DaisyUI Indicator</a> for more options.</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,610 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    // If loaded directly (not in shell), redirect to shell with load parameter
+    LightviewRouter.base('../../index.html');
+</script>
+
+
+<div class="section">
+    <div class="section-content" style="max-width: 1200px;">
+        <h1>Getting Started</h1>
+        <p class="text-secondary" style="font-size: 1.125rem; max-width: 800px; margin-bottom: 2rem;">
+            Build a fully interactive <strong>Product Card</strong> in 5 simple steps.
+            From basic reactivity to professional components.
+        </p>
+
+        <!-- Step Navigation -->
+        <div class="tutorial-steps" style="display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
+            <button class="btn btn-primary step-btn active" onclick="loadStep(1)">1. Signals</button>
+            <button class="btn btn-secondary step-btn" onclick="loadStep(2)">2. State</button>
+            <button class="btn btn-secondary step-btn" onclick="loadStep(3)">3. Hypermedia</button>
+            <button class="btn btn-secondary step-btn" onclick="loadStep(4)">4. Styles</button>
+            <button class="btn btn-secondary step-btn" onclick="loadStep(5)">5. Components</button>
+        </div>
+
+        <!-- Tutorial Layout: Preview on top, Code & Concepts below -->
+        <div class="tutorial-wrapper"
+            style="border: 1px solid var(--site-border); border-radius: var(--site-radius-lg); overflow: hidden; background: var(--site-surface);">
+
+            <!-- Preview Area -->
+            <div id="tutorial-preview"
+                style="min-height: 350px; background: var(--site-bg); border-bottom: 1px solid var(--site-border);">
+                <!-- Iframe injected by examplify -->
+            </div>
+
+            <!-- Split: Code | Resizer | Concepts -->
+            <div id="tutorial-split" style="display: flex; min-height: 400px;">
+
+                <!-- Code Column -->
+                <div id="code-column" class="tutorial-column"
+                    style="flex: 1; min-width: 200px; display: flex; flex-direction: column; border-right: none;">
+                    <div
+                        style="padding: 0.5rem 1rem; background: var(--site-bg-alt); border-bottom: 1px solid var(--site-border);">
+                        <span
+                            style="font-weight: 600; color: var(--site-text-secondary); font-size: 0.875rem;">CODE</span>
+                    </div>
+                    <pre
+                        style="flex: 1; margin: 0; overflow: auto;"><code id="tutorial-code" contenteditable="true" style="display: block; padding: 1rem; min-height: 100%; outline: none;"></code></pre>
+                </div>
+
+                <!-- Resizer Handle -->
+                <div id="tutorial-resizer"
+                    style="width: 6px; background: var(--site-border); cursor: col-resize; flex-shrink: 0; transition: background 0.2s;">
+                </div>
+
+                <!-- Concepts Column -->
+                <div id="concepts-column" class="tutorial-column"
+                    style="flex: 1; min-width: 200px; display: flex; flex-direction: column;">
+                    <div
+                        style="padding: 0.5rem 1rem; background: var(--site-bg-alt); border-bottom: 1px solid var(--site-border);">
+                        <span
+                            style="font-weight: 600; color: var(--site-text-secondary); font-size: 0.875rem;">CONCEPTS</span>
+                    </div>
+                    <div id="tutorial-concepts" style="padding: 1.5rem; overflow-y: auto; flex: 1;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .step-btn.active {
+        background: var(--site-primary) !important;
+        color: white !important;
+        border-color: var(--site-primary) !important;
+    }
+
+    #tutorial-resizer:hover {
+        background: var(--site-primary);
+    }
+
+    #tutorial-resizer.dragging {
+        background: var(--site-primary);
+    }
+
+    @media (max-width: 900px) {
+        #tutorial-split {
+            flex-direction: column !important;
+        }
+
+        #tutorial-resizer {
+            display: none;
+        }
+
+        #code-column,
+        #concepts-column {
+            min-width: 100% !important;
+        }
+    }
+</style>
+
+<script>
+    (function () {
+        const codeEl = document.getElementById('tutorial-code');
+        const previewEl = document.getElementById('tutorial-preview');
+        const conceptsEl = document.getElementById('tutorial-concepts');
+        const stepBtns = document.querySelectorAll('.step-btn');
+
+        let currentStep = 1;
+
+        // Tutorial data for each step
+        const tutorialData = {
+            1: {
+                code: `// STEP 1: SIGNALS - The foundation of reactivity
+const { signal, computed, tags, $ } = Lightview;
+const { div, h3, p, button, img, span, style } = tags;
+
+// Create reactive signals for price and quantity
+const price = signal(99);
+const quantity = signal(1);
+
+// Computed value: automatically updates when dependencies change
+const total = computed(() => price.value * quantity.value);
+
+// Build the UI using Lightview's tag functions
+const App = div({ class: 'product-card' },
+    img({ 
+        src: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop',
+        class: 'product-image'
+    }),
+    h3({ class: 'product-title' }, 'Red Nike Sneakers'),
+    p({ class: 'product-subtitle' }, 'Limited Edition'),
+    
+    // Price display - reactive! Uses a function to track the signal
+    div({ class: 'product-footer' },
+        span({ class: 'product-price' }, 
+            () => '$' + total.value  // This updates automatically
+        ),
+        div({ class: 'quantity-controls' },
+            button({ onclick: () => quantity.value = Math.max(1, quantity.value - 1) }, '−'),
+            span({ class: 'quantity-display' }, () => quantity.value),
+            button({ onclick: () => quantity.value++ }, '+')
+        )
+    )
+);
+
+// The $ function selects a DOM element and returns a Lightview-enhanced wrapper
+// .insert() adds our reactive App as a child of #app
+$('#app').insert(App);
+
+// ---------------------------------------------------------------
+// STYLES: Normally loaded first, shown here to keep focus on Lightview code
+// ---------------------------------------------------------------
+$('#app').insert(style({},
+\`.product-card { width: 280px; font-family: system-ui, sans-serif; }
+.product-image { width: 100%; border-radius: 8px; margin-bottom: 1rem; }
+.product-title { margin: 0 0 0.25rem; font-size: 1.1rem; }
+.product-subtitle { color: #666; margin: 0 0 1rem; font-size: 0.875rem; }
+.product-footer { display: flex; justify-content: space-between; align-items: center; }
+.product-price { font-weight: bold; font-size: 1.25rem; }
+.quantity-controls { display: flex; gap: 0.5rem; align-items: center; }
+.quantity-controls button { padding: 4px 12px; cursor: pointer; }
+.quantity-display { min-width: 1.5rem; text-align: center; }\`));`,
+                concepts: `
+                <h3 style="margin-top: 0; color: var(--site-primary);">Step 1: Reactive Signals</h3>
+                <p>In this step, we use <strong>Signals</strong> to handle data that changes over time.</p>
+                
+                <h4>Key Concepts:</h4>
+                <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
+                    <li style="margin-bottom: 0.75rem;"><code>signal(value)</code> — Creates a reactive container. When you change <code>quantity.value</code>, the UI updates automatically.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>computed(() => ...)</code> — Creates a derived value. <code>total</code> recalculates whenever <code>price</code> or <code>quantity</code> changes.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>tags</code> — Build HTML elements with pure JavaScript. No JSX needed.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>$('#app')</code> — The <code>$</code> function queries the DOM and returns a Lightview-enhanced element. Use <code>.insert()</code> to add children. An optional second argument can say where, e.g. 'beforebegin', 'afterbegin', 'beforeend', 'afterend'.</li>
+                </ul>
+                <p><strong>Try it:</strong> Click the + and − buttons to see the total update!</p>
+            `
+            },
+            2: {
+                code: `// STEP 2: STATE - Using vDOM Syntax for complex data
+// vDOM syntax: { tag: 'element', attributes: {...}, children: [...] }
+const { element, $ } = Lightview;
+const { state } = LightviewX; // Deep reactivity from LightviewX
+
+// 'state' provides deep reactivity for objects and arrays
+const session = state({
+    cart: [],
+    items: [
+        { id: 1, name: 'Red Nike Sneakers', price: 99 },
+        { id: 2, name: 'Blue Adidas', price: 85 }
+    ]
+});
+
+const addToCart = (item) => {
+    session.cart.push(item); // Direct mutation works!
+};
+
+// Build UI using vDOM syntax - plain objects with tag, attributes, children
+const App = element('div', { class: 'shop-container' }, [
+    // Cart badge
+    { tag: 'div', attributes: { class: 'cart-badge' }, children: [
+        { tag: 'span', attributes: {}, children: [
+            () => '🛒 Cart: ' + session.cart.length + ' items'
+        ]}
+    ]},
+    
+    // Product list - vDOM children are arrays
+    { tag: 'div', attributes: { class: 'product-list' }, children: 
+        session.items.map(item => ({
+            tag: 'div', attributes: { class: 'product-row' }, children: [
+                { tag: 'span', attributes: {}, children: [item.name + ' ($' + item.price + ')'] },
+                { tag: 'button', attributes: { 
+                    class: 'add-btn',
+                    onclick: () => addToCart(item)
+                }, children: ['Add'] }
+            ]
+        }))
+    },
+
+    // Cart contents
+    { tag: 'h3', attributes: { class: 'cart-title' }, children: ['Cart:'] },
+    { tag: 'ul', attributes: { class: 'cart-list' }, children: [
+        () => session.cart.length === 0 
+            ? { tag: 'li', attributes: { class: 'empty' }, children: ['Empty'] }
+            : session.cart.map((item, i) => ({
+                tag: 'li', attributes: {}, children: [
+                    item.name + ' ',
+                    { tag: 'button', attributes: { 
+                        class: 'remove-btn',
+                        onclick: () => session.cart.splice(i, 1)
+                    }, children: ['×'] }
+                ]
+            }))
+    ]},
+
+    // Inline styles (also using vDOM syntax)
+    { tag: 'style', attributes: {}, children: [
+        \`.shop-container { width: 320px; font-family: system-ui, sans-serif; }
+.cart-badge { padding: 0.75rem; background: #f3f4f6; border-radius: 8px; margin-bottom: 1rem; }
+.product-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.product-row { display: flex; justify-content: space-between; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 6px; }
+.add-btn { background: #3b82f6; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; }
+.cart-title { font-size: 1rem; margin-top: 1.5rem; }
+.cart-list { padding-left: 1.25rem; margin: 0.5rem 0; }
+.cart-list li { margin-bottom: 0.25rem; }
+.cart-list .empty { color: #9ca3af; }
+.remove-btn { font-size: 0.875rem; color: #ef4444; border: none; background: none; cursor: pointer; margin-left: 0.5rem; }\`
+    ]}
+]);
+
+$('#app').insert(App);`,
+                concepts: `
+                <h3 style="margin-top: 0; color: var(--site-primary);">Step 2: vDOM Syntax + State</h3>
+                <p>This step uses <strong>vDOM syntax</strong> — an alternate way to define elements using plain objects.</p>
+                
+                <h4>Key Concepts:</h4>
+                <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
+                    <li style="margin-bottom: 0.75rem;"><strong>vDOM Syntax</strong> — Elements are objects with <code>tag</code>, <code>attributes</code>, and <code>children</code> properties. Great for JSON storage or programmatic generation.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Deep Reactivity</strong> — Use <code>LightviewX.state()</code> for objects and arrays. Mutate directly with <code>push</code>, <code>splice</code>, etc.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>element() function</strong> — Pass vDOM children directly to <code>element(tag, attrs, children)</code>.</li>
+                </ul>
+                <p><strong>Try it:</strong> Add items to the cart and remove them. Notice how the cart count updates!</p>
+            `
+            },
+            3: {
+                options: {
+                    allowSameOrigin: true
+                },
+                code: `// STEP 3: HYPERMEDIA + OBJECT DOM SYNTAX (requires lightview-x)
+// Choose a format to load: HTML, VDOM, or Object DOM
+
+// Enable Object DOM syntax (from lightview-x)
+LightviewX.useObjectDOMSyntax();
+
+const { signal, element, $ } = Lightview;
+
+// Track which format was loaded and the review count
+const currentFormat = signal('none', 'currentFormat');
+const reviewCount = signal(0, 'reviewCount');
+
+// Build UI using Object DOM syntax - compact JSON format
+const App = element('div', { class: 'reviews-container' }, [
+    { div: { class: 'reviews-card', children: [
+        { h3: { class: 'reviews-title', children: ['Customer Reviews'] } },
+        { p: { class: 'reviews-subtitle', children: [
+            'Choose a format to load reviews from external files:'
+        ]}},
+        
+        // Format selector buttons
+        { div: { class: 'format-buttons', children: [
+            { button: {
+                class: 'format-btn html',
+                href: './reviews.html',
+                target: '#reviews-box',
+                onclick: () => { currentFormat.value = 'HTML'; reviewCount.value = 3; },
+                children: ['📄 HTML']
+            }},
+            { button: {
+                class: 'format-btn vdom',
+                href: './reviews-vdom.json',
+                target: '#reviews-box',
+                onclick: () => { currentFormat.value = 'VDOM'; reviewCount.value = 3; },
+                children: ['🔷 VDOM']
+            }},
+            { button: {
+                class: 'format-btn odom',
+                href: './reviews-odom.json',
+                target: '#reviews-box',
+                onclick: () => { currentFormat.value = 'ODOM'; reviewCount.value = 3; },
+                children: ['🔶 Object DOM']
+            }}
+        ]}},
+        
+        // Status display
+        { p: { class: 'status', children: [
+            () => currentFormat.value === 'none' 
+                ? 'Click a button above to load reviews' 
+                : 'Loaded ' + reviewCount.value + ' reviews from ' + currentFormat.value
+        ]}}
+    ]}},
+    
+    // Target container for loaded content
+    { div: { id: 'reviews-box', src: '' } },
+
+    // Styles
+    { style: { children: [
+        \`.reviews-container { width: 380px; font-family: system-ui, sans-serif; }
+.reviews-card { padding: 1rem; border: 1px solid #e5e7eb; border-radius: 8px; }
+.reviews-title { margin: 0 0 0.5rem; }
+.reviews-subtitle { color: #6b7280; margin: 0 0 0.75rem; }
+.format-buttons { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.format-btn { flex: 1; padding: 0.5rem; cursor: pointer; border: none; border-radius: 6px; font-weight: 500; }
+.format-btn.html { background: #dbeafe; color: #1e40af; }
+.format-btn.vdom { background: #ede9fe; color: #6d28d9; }
+.format-btn.odom { background: #ffedd5; color: #c2410c; }
+.format-btn:hover { opacity: 0.85; }
+.status { color: #6366f1; font-weight: 500; margin: 0; }\`
+    ]}}
+]);
+
+$('#app').insert(App);`,
+                concepts: `
+                <h3 style="margin-top: 0; color: var(--site-primary);">Step 3: Hypermedia + Multiple Formats</h3>
+                <p>Lightview's <strong>hypermedia</strong> feature can load content from HTML, VDOM JSON, or Object DOM JSON files.</p>
+                
+                <h4>Key Concepts:</h4>
+                <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
+                    <li style="margin-bottom: 0.75rem;"><code>href</code> on non-links — Clicking sets <code>src</code> on target element.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>src</code> — Fetches URL and injects content as children.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>HTML</strong> — Standard HTML files loaded directly.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>VDOM</strong> — JSON with <code>{ tag, attributes, children }</code> structure.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Object DOM</strong> — Compact JSON: <code>{ div: { class: 'x', children: [...] } }</code>.</li>
+                </ul>
+                <p><strong>Try it:</strong> Click each button to load the same reviews in different formats!</p>
+                
+                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--site-border);">
+                
+                <h4>📄 reviews.html (HTML)</h4>
+                <pre style="background: #f8f9fa; color: #24292e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; overflow-x: auto; max-height: 180px; border: 1px solid #e1e4e8;"><code id="source-html">Loading...</code></pre>
+
+                <h4 style="margin-top: 1rem;">🔷 reviews-vdom.json (VDOM)</h4>
+                <pre style="background: #f8f9fa; color: #24292e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; overflow-x: auto; max-height: 180px; border: 1px solid #e1e4e8;"><code id="source-vdom">Loading...</code></pre>
+
+                <h4 style="margin-top: 1rem;">🔶 reviews-odom.json (Object DOM)</h4>
+                <pre style="background: #f8f9fa; color: #24292e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; overflow-x: auto; max-height: 180px; border: 1px solid #e1e4e8;"><code id="source-odom">Loading...</code></pre>
+            `,
+                onLoad: function () {
+                    // Fetch and display actual source files
+                    fetch('./reviews.html').then(r => r.text()).then(text => {
+                        const el = document.getElementById('source-html');
+                        if (el) el.textContent = text;
+                    });
+                    fetch('./reviews-vdom.json').then(r => r.text()).then(text => {
+                        const el = document.getElementById('source-vdom');
+                        if (el) el.textContent = text;
+                    });
+                    fetch('./reviews-odom.json').then(r => r.text()).then(text => {
+                        const el = document.getElementById('source-odom');
+                        if (el) el.textContent = text;
+                    });
+                }
+            },
+            4: {
+                code: `// STEP 4: STYLES - Using Lightview component CSS without JS
+// Component CSS files can be used standalone!
+const { tags, $ } = Lightview;
+const { div, h3, p, img, link, style } = tags;
+
+// Load the card component CSS (no JS component needed)
+const cardCSS = link({
+    rel: 'stylesheet',
+    href: '../../components/display/card.css'
+});
+document.head.appendChild(cardCSS.domEl);
+
+// Load base theme variables for --lv-* CSS custom properties
+const themeCSS = link({
+    rel: 'stylesheet',
+    href: '../../components/utils/variables.css'
+});
+document.head.appendChild(themeCSS.domEl);
+
+// Build a card using just CSS classes - no Card() component!
+const App = div({},
+    // Basic card structure using lv-card CSS classes
+    div({ class: 'lv-card lv-card--elevated lv-card--hoverable', style: 'width: 320px;' },
+        // Card media
+        div({ class: 'lv-card__media lv-card__media--top' },
+            img({ 
+                src: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop',
+                alt: 'Red Nike Sneakers'
+            })
+        ),
+        // Card body
+        div({ class: 'lv-card__body' },
+            h3({ class: 'lv-card__title' }, 'Red Nike Sneakers'),
+            p({ class: 'lv-card__subtitle' }, 'Premium comfort and style')
+        ),
+        // Card footer
+        div({ class: 'lv-card__footer lv-card__footer--between' },
+            p({ style: 'margin: 0; font-weight: 600; font-size: 1.25rem;' }, '$99'),
+            div({ style: 'display: flex; gap: 0.5rem;' },
+                div({ class: 'btn' }, 'Details'),
+                div({ class: 'btn btn-primary' }, 'Add to Cart')
+            )
+        )
+    ),
+
+    // Override theme variables locally
+    style({},
+        \`/* Override Lightview theme variables */
+        .lv-card {
+            --lv-color-primary: #8b5cf6;  /* Purple theme */
+            --lv-radius-lg: 1rem;          /* More rounded */
+            --lv-shadow-md: 0 8px 30px rgba(139, 92, 246, 0.2);
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+            background: white;
+        }
+        .btn-primary {
+            background: var(--lv-color-primary, #8b5cf6);
+            color: white;
+            border-color: transparent;
+        }\`
+    )
+);
+
+$('#app').insert(App);`,
+                concepts: `
+                <h3 style="margin-top: 0; color: var(--site-primary);">Step 4: Component Styles</h3>
+                <p>Use <strong>Lightview component CSS</strong> directly—no JavaScript components required!</p>
+                
+                <h4>Key Concepts:</h4>
+                <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
+                    <li style="margin-bottom: 0.75rem;"><strong>CSS-Only Components</strong> — Load <code>card.css</code>, <code>button.css</code>, etc. and apply classes like <code>lv-card</code>, <code>lv-card--elevated</code>.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Theme Variables</strong> — <code>variables.css</code> provides <code>--lv-*</code> CSS custom properties for colors, spacing, shadows, etc.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Easy Overrides</strong> — Override <code>--lv-color-primary</code> or any variable locally to customize components.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>BEM Classes</strong> — Components use predictable class names like <code>lv-card__header</code>, <code>lv-card__body</code>.</li>
+                </ul>
+                <p><strong>Try it:</strong> Notice the purple theme override applied to this card!</p>
+            `
+            },
+            5: {
+                code: `// STEP 5: COMPONENTS - Using the Lightview component library
+// Import the real components from the component library
+import Button from '../../components/core/button.js';
+import Badge from '../../components/display/badge.js';
+import Card from '../../components/display/card.js';
+
+const { tags, signal, $ } = Lightview;
+const { div, h3, p, img } = tags;
+
+// Reactive state for the add-to-cart button
+const isAdded = signal(false);
+
+const App = Card({ variant: 'elevated', hoverable: true, style: 'width: 320px;' },
+    Card.Media({ 
+        src: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop',
+        alt: 'Red Nike Sneakers'
+    }),
+    Card.Body({},
+        div({ style: 'display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;' },
+            h3({ style: 'margin: 0;' }, 'Red Nike Sneakers'),
+            Badge({ color: 'success', variant: 'light' }, 'In Stock')
+        ),
+        p({ style: 'color: #64748b; margin: 0.5rem 0 0;' }, 
+            'Premium comfort meeting modern style.'
+        )
+    ),
+    Card.Footer({ align: 'between' },
+        Button({ 
+            color: 'primary',
+            onclick: () => isAdded.value = true 
+        }, () => isAdded.value ? '✓ Added!' : 'Add to Cart'),
+        Button({ variant: 'outline', color: 'neutral' }, 'Details')
+    )
+);
+
+$('#app').insert(App);`,
+                concepts: `
+                <h3 style="margin-top: 0; color: var(--site-primary);">Step 5: Components</h3>
+                <p>Use the <strong>Lightview Component Library</strong> for polished, accessible UI elements.</p>
+                
+                <h4>Key Concepts:</h4>
+                <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
+                    <li style="margin-bottom: 0.75rem;"><strong>Real Components</strong> — <code>Button</code>, <code>Badge</code>, <code>Card</code> are pre-built with variants, colors, and accessibility.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Composition</strong> — Use <code>Card.Header</code>, <code>Card.Body</code>, <code>Card.Footer</code>, <code>Card.Media</code> for structured layouts.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Props</strong> — Components accept props like <code>variant</code>, <code>color</code>, <code>size</code> for customization.</li>
+                </ul>
+                <p><strong>Next:</strong> Explore the <a href="/docs/components">Components</a> library and <a href="/docs/playground">Playground</a>!</p>
+            `
+            }
+        };
+
+        let currentExamplify = null;
+
+        window.loadStep = function (step) {
+            currentStep = step;
+
+            // Update button styles
+            stepBtns.forEach((btn, i) => {
+                btn.classList.remove('active', 'btn-primary');
+                btn.classList.add('btn-secondary');
+            });
+            stepBtns[step - 1].classList.remove('btn-secondary');
+            stepBtns[step - 1].classList.add('active', 'btn-primary');
+
+            // Set code
+            const data = tutorialData[step];
+            codeEl.textContent = data.code;
+            conceptsEl.innerHTML = data.concepts;
+
+            // Call onLoad if defined (e.g., to fetch source files)
+            if (data.onLoad) data.onLoad();
+
+            // Clear and recreate preview
+            previewEl.innerHTML = '';
+
+            // Build scripts array - step 5 needs component imports via module
+            const isModuleStep = step === 5;
+
+            // Use examplify to render the code
+            currentExamplify = examplify(codeEl, {
+                scripts: ['../../../lightview.js', '../../../lightview-x.js'],
+                html: '<div id="app" style="padding: 1rem;"></div>',
+                location: 'afterEnd',
+                height: '350px',
+                type: isModuleStep ? 'module' : 'text/javascript',
+                ...data.options || {}
+            });
+
+            // Move iframe into preview container
+            if (currentExamplify && currentExamplify.iframe) {
+                previewEl.appendChild(currentExamplify.iframe);
+                currentExamplify.iframe.style.width = '100%';
+                currentExamplify.iframe.style.border = 'none';
+            }
+        };
+
+        // ---- Resizable columns ----
+        const resizer = document.getElementById('tutorial-resizer');
+        const codeColumn = document.getElementById('code-column');
+        const conceptsColumn = document.getElementById('concepts-column');
+        const splitContainer = document.getElementById('tutorial-split');
+
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            resizer.classList.add('dragging');
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+
+            const containerRect = splitContainer.getBoundingClientRect();
+            const containerWidth = containerRect.width - 6; // minus resizer width
+            const offsetX = e.clientX - containerRect.left;
+
+            // Calculate percentages with min/max constraints
+            let codePercent = (offsetX / containerRect.width) * 100;
+            codePercent = Math.max(20, Math.min(80, codePercent)); // 20-80% range
+
+            codeColumn.style.flex = 'none';
+            codeColumn.style.width = codePercent + '%';
+            conceptsColumn.style.flex = 'none';
+            conceptsColumn.style.width = (100 - codePercent - 1) + '%'; // -1 for resizer
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isResizing) {
+                isResizing = false;
+                resizer.classList.remove('dragging');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            }
+        });
+
+        // Initial load
+        loadStep(1);
+
+    })();
+</script>

@@ -1,0 +1,333 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Radio</li>
+            </ul>
+        </div>
+
+        <h1>Radio</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Radio buttons allow the user to select one option from a set.
+            Use RadioGroup for a complete set with validation support.
+        </p>
+
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic RadioGroup</h2>
+                <p class="text-sm opacity-70 mb-4">Radio group with label and options</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Radio components
+await LightviewX.initComponents();
+const { RadioGroup } = await import('/components/data-input/radio.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+// 1. Basic radio group
+const basic = RadioGroup({
+    label: 'Favorite Color',
+    name: 'color',
+    options: ['Red', 'Blue', 'Green', 'Yellow'],
+    color: 'primary'
+});
+
+// 2. With descriptions
+const withDesc = RadioGroup({
+    label: 'Subscription Plan',
+    name: 'plan',
+    options: [
+        { value: 'free', label: 'Free', description: 'Basic features, limited usage' },
+        { value: 'pro', label: 'Pro', description: '$9/month, all features' },
+        { value: 'enterprise', label: 'Enterprise', description: 'Custom pricing, priority support' }
+    ],
+    color: 'secondary'
+});
+
+// 3. Horizontal layout
+const horizontal = RadioGroup({
+    label: 'Size',
+    name: 'size',
+    options: ['S', 'M', 'L', 'XL'],
+    horizontal: true,
+    color: 'accent'
+});
+
+// Insert all examples
+$('#demo').insert(
+    div({ class: 'space-y-6 max-w-md' }, basic, withDesc, horizontal)
+);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Reactive Example</h2>
+                <p class="text-sm opacity-70 mb-4">Two-way binding with signals and validation</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">await LightviewX.initComponents();
+const { RadioGroup } = await import('/components/data-input/radio.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, p, span } = tags;
+
+// Signal for selected value
+const selectedPriority = signal('');
+
+// Priority descriptions
+const priorityInfo = {
+    low: { emoji: '🟢', text: 'Can wait, no rush' },
+    medium: { emoji: '🟡', text: 'Should be addressed soon' },
+    high: { emoji: '🟠', text: 'Needs attention today' },
+    critical: { emoji: '🔴', text: 'Drop everything and fix now!' }
+};
+
+// Reactive radio group
+const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
+    RadioGroup({
+        label: 'Issue Priority',
+        name: 'priority',
+        value: selectedPriority,
+        options: [
+            { value: 'low', label: 'Low' },
+            { value: 'medium', label: 'Medium' },
+            { value: 'high', label: 'High' },
+            { value: 'critical', label: 'Critical' }
+        ],
+        required: true,
+        color: 'primary'
+    }),
+    p({ class: 'text-lg' },
+        () => {
+            const priority = selectedPriority.value;
+            if (!priority) return span({ class: 'opacity-50' }, 'Select a priority level');
+            const info = priorityInfo[priority];
+            return span({}, info.emoji, ' ', info.text);
+        }
+    )
+);
+
+$('#demo').insert(reactiveDemo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table - RadioGroup -->
+        <h2 class="text-xl font-bold mb-4">RadioGroup Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>options</code></td>
+                        <td>array</td>
+                        <td>[]</td>
+                        <td>Array of strings or objects <code>{value, label, description, disabled}</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>value</code></td>
+                        <td>* | signal</td>
+                        <td>-</td>
+                        <td>Selected value (reactive with signals)</td>
+                    </tr>
+                    <tr>
+                        <td><code>defaultValue</code></td>
+                        <td>*</td>
+                        <td>null</td>
+                        <td>Default value for uncontrolled mode</td>
+                    </tr>
+                    <tr>
+                        <td><code>name</code></td>
+                        <td>string</td>
+                        <td>auto</td>
+                        <td>Radio group name for form submission</td>
+                    </tr>
+                    <tr>
+                        <td><code>label</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Group label displayed above options</td>
+                    </tr>
+                    <tr>
+                        <td><code>helper</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Helper text displayed below options</td>
+                    </tr>
+                    <tr>
+                        <td><code>error</code></td>
+                        <td>string | function</td>
+                        <td>-</td>
+                        <td>Error message or reactive error function</td>
+                    </tr>
+                    <tr>
+                        <td><code>validate</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Validation function: <code>(value) => errorMessage | null</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>'md'</td>
+                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                    </tr>
+                    <tr>
+                        <td><code>horizontal</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Arrange options horizontally</td>
+                    </tr>
+                    <tr>
+                        <td><code>disabled</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Disable all options</td>
+                    </tr>
+                    <tr>
+                        <td><code>required</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Mark as required field</td>
+                    </tr>
+                    <tr>
+                        <td><code>onChange</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when value changes: <code>(value) => void</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>useShadow</code></td>
+                        <td>boolean</td>
+                        <td>*</td>
+                        <td>Render in Shadow DOM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Colors Example -->
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="flex flex-wrap gap-4 mb-8">
+            <input type="radio" class="radio" checked name="color-demo" />
+            <input type="radio" class="radio radio-primary" checked name="color-demo2" />
+            <input type="radio" class="radio radio-secondary" checked name="color-demo3" />
+            <input type="radio" class="radio radio-accent" checked name="color-demo4" />
+            <input type="radio" class="radio radio-success" checked name="color-demo5" />
+            <input type="radio" class="radio radio-warning" checked name="color-demo6" />
+            <input type="radio" class="radio radio-info" checked name="color-demo7" />
+            <input type="radio" class="radio radio-error" checked name="color-demo8" />
+        </div>
+
+        <!-- Sizes Example -->
+        <h2 class="text-xl font-bold mb-4">Sizes</h2>
+        <div class="flex items-center gap-4 mb-8">
+            <input type="radio" class="radio radio-xs" checked name="size-demo" />
+            <input type="radio" class="radio radio-sm" checked name="size-demo2" />
+            <input type="radio" class="radio radio-md" checked name="size-demo3" />
+            <input type="radio" class="radio radio-lg" checked name="size-demo4" />
+        </div>
+
+        <!-- With Label -->
+        <h2 class="text-xl font-bold mb-4">With Label</h2>
+        <div class="form-control w-52 mb-8">
+            <label class="label cursor-pointer">
+                <span class="label-text">Option 1</span>
+                <input type="radio" name="label-demo" class="radio radio-primary" checked />
+            </label>
+            <label class="label cursor-pointer">
+                <span class="label-text">Option 2</span>
+                <input type="radio" name="label-demo" class="radio radio-primary" />
+            </label>
+        </div>
+
+        <!-- DaisyUI Reference -->
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples and styling options, see the
+                <a href="https://daisyui.com/components/radio/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Radio documentation</a>.
+            </span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '420px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '260px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

@@ -1,0 +1,73 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Breadcrumbs</li>
+            </ul>
+        </div>
+        <h1>Breadcrumbs</h1>
+        <p class="text-lg opacity-70 mb-6">Breadcrumbs shows hierarchy and navigational path to the current page.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="breadcrumbs text-sm mb-8">
+            <ul>
+                <li><a>Home</a></li>
+                <li><a>Documents</a></li>
+                <li>Add Document</li>
+            </ul>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Icons</h2>
+        <div class="breadcrumbs text-sm mb-8">
+            <ul>
+                <li>
+                    <a>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            class="h-4 w-4 stroke-current">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            class="h-4 w-4 stroke-current">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                        </svg>
+                        Documents
+                    </a>
+                </li>
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        class="h-4 w-4 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    Add Document
+                </li>
+            </ul>
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="breadcrumbs text-sm"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a&gt;Documents&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Add Document&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/breadcrumbs/" target="_blank"
+                    class="link link-primary">DaisyUI Breadcrumbs</a> for more options.</span>
+        </div>
+    </div>
+</div>

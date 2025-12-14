@@ -1,0 +1,194 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="./nav.html"></aside>
+
+    <main class="docs-content">
+        <h1>State (Store)</h1>
+        <p>
+            State provides deep reactivity for objects and arrays. Unlike signals which only track reassignment,
+            state tracks nested property changes automatically.
+        </p>
+
+        <h2>The Problem with Signals + Objects</h2>
+        <pre><code>// Signals only react to reassignment
+const user = signal({ name: 'Alice', age: 25 });
+
+user.value.age = 26;           // ❌ Won't trigger updates!
+user.value = { ...user.value, age: 26 };  // ✅ Works, but verbose
+
+// Arrays have the same issue
+const items = signal([1, 2, 3]);
+items.value.push(4);           // ❌ Won't trigger updates!
+items.value = [...items.value, 4];  // ✅ Works, but tedious</code></pre>
+
+        <h2>State to the Rescue</h2>
+        <pre><code>const { state } = Lightview;
+
+// Deep reactivity - mutations work!
+const user = state({ name: 'Alice', age: 25 });
+
+user.age = 26;                 // ✅ Triggers updates!
+user.name = 'Bob';             // ✅ Triggers updates!
+
+// Arrays just work
+const items = state([1, 2, 3]);
+items.push(4);                 // ✅ Triggers updates!
+items[0] = 10;                 // ✅ Triggers updates!
+items.sort();                  // ✅ Triggers updates!</code></pre>
+
+        <h2>Nested Objects</h2>
+        <p>State tracks changes at any depth:</p>
+        <pre><code>const app = state({
+    user: {
+        profile: {
+            name: 'Alice',
+            settings: {
+                theme: 'dark',
+                notifications: true
+            }
+        }
+    },
+    items: []
+});
+
+// All of these trigger updates:
+app.user.profile.name = 'Bob';
+app.user.profile.settings.theme = 'light';
+app.items.push({ id: 1, text: 'Hello' });</code></pre>
+
+        <h2>In the UI</h2>
+
+        <div class="code-example">
+            <div class="code-example-preview" id="state-demo"></div>
+            <div class="code-example-code">
+                <pre><code>const todos = state([
+    { text: 'Learn Lightview', done: true },
+    { text: 'Build app', done: false }
+]);
+
+div(
+    ul(() => todos.map((todo, i) => 
+        li(
+            input({ 
+                type: 'checkbox', 
+                checked: todo.done,
+                onchange: () => todos[i].done = !todos[i].done
+            }),
+            span(todo.text)
+        )
+    )),
+    button({ onclick: () => todos.push({ text: 'New', done: false }) }, 'Add')
+)</code></pre>
+            </div>
+        </div>
+
+        <h2>Array Methods</h2>
+        <p>All mutating array methods are reactive:</p>
+        <pre><code>const items = state([1, 2, 3]);
+
+items.push(4);         // Add to end
+items.pop();           // Remove from end
+items.shift();         // Remove from start
+items.unshift(0);      // Add to start
+items.splice(1, 1);    // Remove at index
+items.sort();          // Sort in place
+items.reverse();       // Reverse in place
+items.fill(0);         // Fill with value</code></pre>
+
+        <h2>Named State (lightview-x)</h2>
+        <p>Like signals, state can be named for global access:</p>
+        <pre><code>// Register named state
+const appState = state({ count: 0, user: null }, 'app');
+
+// Retrieve elsewhere
+const sameState = state.get('app');
+
+// Get or create with default
+const settings = state.get('settings', { theme: 'light' });</code></pre>
+
+        <h2>Signal vs State</h2>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Use Signal</th>
+                    <th>Use State</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Primitives (numbers, strings, bools)</td>
+                    <td>Objects with nested properties</td>
+                </tr>
+                <tr>
+                    <td>Simple objects (replace whole thing)</td>
+                    <td>Objects you'll mutate in place</td>
+                </tr>
+                <tr>
+                    <td>Arrays you'll replace</td>
+                    <td>Arrays you'll push/pop/splice</td>
+                </tr>
+                <tr>
+                    <td>Slightly better performance</td>
+                    <td>More convenient API</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Pro Tip</h2>
+        <p>
+            You can mix both! Use signals for simple values and state for complex structures:
+        </p>
+        <pre><code>const isLoading = signal(false);      // Simple boolean → signal
+const error = signal(null);           // Simple value → signal
+const items = state([]);              // Array to mutate → state
+const formData = state({              // Object to mutate → state
+    name: '',
+    email: '',
+    message: ''
+});</code></pre>
+    </main>
+</div>
+
+<script>
+    (function () {
+        const { state, tags } = Lightview;
+        const { div, ul, li, input, span, button } = tags;
+
+        const todos = state([
+            { text: 'Learn Lightview', done: true },
+            { text: 'Build something', done: false }
+        ]);
+
+        const demo = div({ style: 'padding: 0.5rem;' },
+            ul({ style: 'list-style: none; padding: 0; margin: 0 0 1rem;' },
+                () => todos.map((todo, i) =>
+                    li({ style: 'display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0;' },
+                        input({
+                            type: 'checkbox',
+                            checked: todo.done,
+                            onchange: () => todos[i].done = !todos[i].done,
+                            style: 'cursor: pointer;'
+                        }),
+                        span({
+                            style: () => `${todo.done ? 'text-decoration: line-through; opacity: 0.6;' : ''}`
+                        }, todo.text)
+                    )
+                )
+            ),
+            button({
+                onclick: () => todos.push({ text: `Task ${todos.length + 1}`, done: false }),
+                style: 'padding: 0.5rem 1rem; cursor: pointer; background: var(--site-primary); color: white; border: none; border-radius: 6px;'
+            }, '+ Add Task')
+        );
+
+        const container = document.getElementById('state-demo');
+        if (container) container.appendChild(demo.domEl);
+    })();
+</script>

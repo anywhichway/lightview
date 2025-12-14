@@ -1,0 +1,64 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Steps</li>
+            </ul>
+        </div>
+        <h1>Steps</h1>
+        <p class="text-lg opacity-70 mb-6">Steps show a sequence of steps and current progress.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <ul class="steps mb-8">
+            <li class="step step-primary">Register</li>
+            <li class="step step-primary">Choose plan</li>
+            <li class="step">Purchase</li>
+            <li class="step">Receive Product</li>
+        </ul>
+
+        <h2 class="text-xl font-bold mb-4">With Icons</h2>
+        <ul class="steps mb-8">
+            <li class="step step-info" data-content="?">Step 1</li>
+            <li class="step step-info" data-content="!">Step 2</li>
+            <li class="step step-info" data-content="✓">Step 3</li>
+            <li class="step step-info" data-content="✕">Step 4</li>
+            <li class="step step-info" data-content="★">Step 5</li>
+        </ul>
+
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <ul class="steps mb-8">
+            <li class="step step-primary">Primary</li>
+            <li class="step step-secondary">Secondary</li>
+            <li class="step step-accent">Accent</li>
+            <li class="step step-info">Info</li>
+            <li class="step step-success">Success</li>
+            <li class="step step-warning">Warning</li>
+            <li class="step step-error">Error</li>
+        </ul>
+
+        <h2 class="text-xl font-bold mb-4">Vertical</h2>
+        <ul class="steps steps-vertical mb-8">
+            <li class="step step-primary">Register</li>
+            <li class="step step-primary">Choose plan</li>
+            <li class="step">Purchase</li>
+            <li class="step">Receive Product</li>
+        </ul>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;ul class="steps"&gt;
+  &lt;li class="step step-primary"&gt;Register&lt;/li&gt;
+  &lt;li class="step step-primary"&gt;Choose plan&lt;/li&gt;
+  &lt;li class="step"&gt;Purchase&lt;/li&gt;
+  &lt;li class="step"&gt;Receive Product&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/steps/" target="_blank" class="link link-primary">DaisyUI
+                    Steps</a> for more options.</span>
+        </div>
+    </div>
+</div>

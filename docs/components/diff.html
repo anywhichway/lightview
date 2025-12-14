@@ -1,0 +1,34 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Diff</li>
+            </ul>
+        </div>
+        <h1>Diff</h1>
+        <p class="text-lg opacity-70 mb-6">Diff component shows a side-by-side or before/after comparison.</p>
+
+        <h2 class="text-xl font-bold mb-4">Image Comparison</h2>
+        <div class="diff aspect-16/9 mb-8" style="max-width: 600px;">
+            <div class="diff-item-1"><img src="https://picsum.photos/600/400?grayscale" alt="Before" /></div>
+            <div class="diff-item-2"><img src="https://picsum.photos/600/400" alt="After" /></div>
+            <div class="diff-resizer"></div>
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="diff aspect-16/9"&gt;
+  &lt;div class="diff-item-1"&gt;&lt;img src="before.jpg" /&gt;&lt;/div&gt;
+  &lt;div class="diff-item-2"&gt;&lt;img src="after.jpg" /&gt;&lt;/div&gt;
+  &lt;div class="diff-resizer"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/diff/" target="_blank" class="link link-primary">DaisyUI
+                    Diff</a> for more options.</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,184 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="./nav.html"></aside>
+
+    <main class="docs-content">
+        <h1>Computed</h1>
+        <p>
+            Computed values are derived from signals. They update automatically when their dependencies change.
+            Think of them as formulas that always stay in sync.
+        </p>
+
+        <h2>Basic Usage</h2>
+        <pre><code>const { signal, computed } = Lightview;
+
+const count = signal(10);
+const doubled = computed(() => count.value * 2);
+
+console.log(doubled.value);  // 20
+
+count.value = 5;
+console.log(doubled.value);  // 10 (automatically updated!)</code></pre>
+
+        <h2>Chaining Computed Values</h2>
+        <p>Computed values can depend on other computed values:</p>
+        <pre><code>const price = signal(100);
+const quantity = signal(2);
+const taxRate = signal(0.1);
+
+const subtotal = computed(() => price.value * quantity.value);
+const tax = computed(() => subtotal.value * taxRate.value);
+const total = computed(() => subtotal.value + tax.value);
+
+console.log(total.value);  // 220</code></pre>
+
+        <h2>Reading Computed Values</h2>
+        <pre><code>// Same as signals - two ways to read
+console.log(doubled.value);  // Property access
+console.log(doubled());      // Function call</code></pre>
+
+        <h2>In the UI</h2>
+        <p>
+            Computed values work seamlessly in your UI, just like signals:
+        </p>
+
+        <div class="code-example">
+            <div class="code-example-preview" id="computed-demo"></div>
+            <div class="code-example-code">
+                <pre><code>const price = signal(100);
+const quantity = signal(1);
+const total = computed(() => price.value * quantity.value);
+
+div(
+    p(() => `Price: $${price.value}`),
+    p(() => `Quantity: ${quantity.value}`),
+    p(() => `Total: $${total.value}`),
+    button({ onclick: () => quantity.value++ }, 'Add One')
+)</code></pre>
+            </div>
+        </div>
+
+        <h2>When to Use Computed</h2>
+        <ul>
+            <li><strong>Derived values</strong> — Calculations based on other state</li>
+            <li><strong>Formatting</strong> — Display formatting (dates, currency, etc.)</li>
+            <li><strong>Filtering/Sorting</strong> — Processed lists from raw data</li>
+            <li><strong>Validation</strong> — Form validity based on field values</li>
+        </ul>
+
+        <h3>Example: Filtered List</h3>
+        <pre><code>const todos = signal([
+    { text: 'Learn Lightview', done: true },
+    { text: 'Build something cool', done: false },
+    { text: 'Ship it', done: false }
+]);
+
+const filter = signal('all');  // 'all', 'active', 'done'
+
+const filteredTodos = computed(() => {
+    const list = todos.value;
+    switch (filter.value) {
+        case 'active': return list.filter(t => !t.done);
+        case 'done': return list.filter(t => t.done);
+        default: return list;
+    }
+});</code></pre>
+
+        <h3>Example: Form Validation</h3>
+        <pre><code>const email = signal('');
+const password = signal('');
+
+const isEmailValid = computed(() => 
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)
+);
+
+const isPasswordValid = computed(() => 
+    password.value.length >= 8
+);
+
+const canSubmit = computed(() => 
+    isEmailValid.value && isPasswordValid.value
+);
+
+button({ disabled: () => !canSubmit.value }, 'Submit')</code></pre>
+
+        <h2>Computed vs Effect</h2>
+        <p>
+            Both react to changes, but serve different purposes:
+        </p>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Computed</th>
+                    <th>Effect</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Returns a value</td>
+                    <td>Doesn't return anything useful</td>
+                </tr>
+                <tr>
+                    <td>Pure (no side effects)</td>
+                    <td>For side effects</td>
+                </tr>
+                <tr>
+                    <td>Lazy (computed when read)</td>
+                    <td>Eager (runs immediately)</td>
+                </tr>
+                <tr>
+                    <td>Use in UI for derived data</td>
+                    <td>Use for logging, storage, API calls</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+
+<script>
+    (function () {
+        const { signal, computed, tags } = Lightview;
+        const { div, p, button, span } = tags;
+
+        const price = signal(100);
+        const quantity = signal(1);
+        const total = computed(() => price.value * quantity.value);
+
+        const demo = div({ style: 'padding: 0.5rem;' },
+            div({ style: 'display: grid; gap: 0.5rem; margin-bottom: 1rem;' },
+                p({ style: 'margin: 0;' },
+                    span({ style: 'color: var(--site-text-secondary);' }, 'Price: '),
+                    span(() => `$${price.value}`)
+                ),
+                p({ style: 'margin: 0;' },
+                    span({ style: 'color: var(--site-text-secondary);' }, 'Quantity: '),
+                    span(() => quantity.value)
+                ),
+                p({ style: 'margin: 0; font-weight: 600; font-size: 1.125rem;' },
+                    span({ style: 'color: var(--site-text-secondary);' }, 'Total: '),
+                    span({ style: 'color: var(--site-primary);' }, () => `$${total.value}`)
+                )
+            ),
+            div({ style: 'display: flex; gap: 0.5rem;' },
+                button({
+                    onclick: () => quantity.value = Math.max(1, quantity.value - 1),
+                    style: 'padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--site-border); background: var(--site-surface); border-radius: 6px;'
+                }, '−'),
+                button({
+                    onclick: () => quantity.value++,
+                    style: 'padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--site-border); background: var(--site-surface); border-radius: 6px;'
+                }, '+')
+            )
+        );
+
+        const container = document.getElementById('computed-demo');
+        if (container) container.appendChild(demo.domEl);
+    })();
+</script>

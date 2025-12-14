@@ -1,0 +1,177 @@
+.lv-tabs {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--lv-font-family);
+}
+
+/* Tab List */
+.lv-tabs__list {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--lv-color-border);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.lv-tabs__list::-webkit-scrollbar {
+    height: 4px;
+}
+
+.lv-tabs__list::-webkit-scrollbar-thumb {
+    background-color: var(--lv-color-border);
+    border-radius: var(--lv-radius-full);
+}
+
+/* Variants */
+.lv-tabs[data-variant="underline"] .lv-tabs__list {
+    gap: var(--lv-spacing-md);
+}
+
+.lv-tabs[data-variant="pills"] .lv-tabs__list {
+    gap: var(--lv-spacing-xs);
+    border-bottom: none;
+    padding: var(--lv-spacing-xs);
+    background-color: var(--lv-color-neutral-light);
+    border-radius: var(--lv-radius-lg);
+}
+
+.lv-tabs[data-variant="enclosed"] .lv-tabs__list {
+    gap: 0;
+}
+
+/* Tab Button */
+.lv-tabs__tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--lv-spacing-xs);
+    padding: var(--lv-spacing-sm) var(--lv-spacing-md);
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: var(--lv-font-size-md);
+    font-weight: var(--lv-font-weight-medium);
+    color: var(--lv-color-text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all var(--lv-transition-fast);
+}
+
+.lv-tabs__tab:hover {
+    color: var(--lv-color-text);
+}
+
+.lv-tabs__tab:focus-visible {
+    outline: 2px solid var(--lv-color-primary);
+    outline-offset: -2px;
+    border-radius: var(--lv-radius-sm);
+}
+
+.lv-tabs__tab:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.lv-tabs__tab[aria-selected="true"] {
+    color: var(--lv-color-primary);
+}
+
+/* Underline variant styling */
+.lv-tabs[data-variant="underline"] .lv-tabs__tab {
+    padding-bottom: calc(var(--lv-spacing-sm) + 2px);
+    margin-bottom: -1px;
+}
+
+.lv-tabs[data-variant="underline"] .lv-tabs__tab[aria-selected="true"]::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--lv-color-primary);
+    border-radius: var(--lv-radius-full) var(--lv-radius-full) 0 0;
+}
+
+/* Pills variant styling */
+.lv-tabs[data-variant="pills"] .lv-tabs__tab {
+    border-radius: var(--lv-radius-md);
+}
+
+.lv-tabs[data-variant="pills"] .lv-tabs__tab[aria-selected="true"] {
+    background-color: var(--lv-color-surface);
+    color: var(--lv-color-text);
+    box-shadow: var(--lv-shadow-sm);
+}
+
+/* Enclosed variant styling */
+.lv-tabs[data-variant="enclosed"] .lv-tabs__tab {
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: var(--lv-radius-md) var(--lv-radius-md) 0 0;
+    margin-bottom: -1px;
+}
+
+.lv-tabs[data-variant="enclosed"] .lv-tabs__tab[aria-selected="true"] {
+    background-color: var(--lv-color-surface);
+    border-color: var(--lv-color-border);
+    color: var(--lv-color-text);
+}
+
+/* Tab Panel */
+.lv-tabs__panel {
+    padding: var(--lv-spacing-md) 0;
+}
+
+.lv-tabs__panel[hidden] {
+    display: none;
+}
+
+/* Sizes */
+.lv-tabs[data-size="sm"] .lv-tabs__tab {
+    padding: var(--lv-spacing-xs) var(--lv-spacing-sm);
+    font-size: var(--lv-font-size-sm);
+}
+
+.lv-tabs[data-size="lg"] .lv-tabs__tab {
+    padding: var(--lv-spacing-md) var(--lv-spacing-lg);
+    font-size: var(--lv-font-size-lg);
+}
+
+/* Full width tabs */
+.lv-tabs[data-width="full"] .lv-tabs__list {
+    width: 100%;
+}
+
+.lv-tabs[data-width="full"] .lv-tabs__tab {
+    flex: 1;
+}
+
+/* Icon in tab */
+.lv-tabs__tab .lv-icon {
+    flex-shrink: 0;
+}
+
+/* Badge/count in tab */
+.lv-tabs__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.375rem;
+    font-size: var(--lv-font-size-xs);
+    font-weight: var(--lv-font-weight-semibold);
+    background-color: var(--lv-color-neutral-light);
+    color: var(--lv-color-text-secondary);
+    border-radius: var(--lv-radius-full);
+}
+
+.lv-tabs__tab[aria-selected="true"] .lv-tabs__badge {
+    background-color: var(--lv-color-primary-light);
+    color: var(--lv-color-primary);
+}

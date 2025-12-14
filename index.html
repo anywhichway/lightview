@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightview - Why be heavy when you can be light?</title>
+    <meta name="description"
+        content="Lightview is a lightweight reactive UI library. All the power. None of the weight. Heavy, complex frameworks? Lighten up.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/docs/assets/images/logo.svg">
+
+    <!-- DaisyUI + Tailwind -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Site Styles -->
+    <link rel="stylesheet" href="/docs/assets/styles/site.css">
+</head>
+
+<body>
+    <!-- Main App Shell -->
+    <div id="app">
+        <!-- Navigation -->
+        <nav id="main-nav" class="site-nav">
+            <div class="nav-brand">
+                <a href="/docs/" class="logo-link">
+                    <img src="/docs/assets/images/logo.svg" alt="Lightview" class="logo">
+                    <span class="logo-text">Lightview</span>
+                </a>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleMobileNav()">
+                <span class="nav-toggle-icon"></span>
+            </button>
+            <div class="nav-links">
+                <a href="/docs/" class="nav-link">Home</a>
+                <a href="/docs/getting-started" class="nav-link">Get Started</a>
+                <a href="/docs/api" class="nav-link">API</a>
+                <a href="/docs/styles" class="nav-link">Styles</a>
+                <a href="/docs/components" class="nav-link">Components</a>
+                <a href="/docs/playground" class="nav-link">Playground</a>
+
+                <a href="/docs/about" class="nav-link">About</a>
+                <a href="https://github.com/pnmartinez/lightview" class="nav-link nav-link-external" target="_blank"
+                    rel="noopener">
+                    GitHub
+                    <svg class="external-icon" viewBox="0 0 24 24" width="14" height="14" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
+                    </svg>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <div id="theme-toggle-container"></div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main id="content" class="site-content">
+            <!-- Content loaded here via router -->
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Loading...</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="/docs/assets/images/logo.svg" alt="Lightview" class="footer-logo">
+                    <p class="footer-tagline">The view is beautiful from here.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Docs</h4>
+                        <a href="/docs/getting-started/">Getting Started</a>
+                        <a href="/docs/api">API Reference</a>
+                        <a href="/docs/components">Components</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="/docs/playground">Playground</a>
+
+                        <a href="https://github.com/pnmartinez/lightview" target="_blank" rel="noopener">GitHub</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>More</h4>
+                        <a href="/docs/about">About</a>
+                        <a href="https://github.com/pnmartinez/lightview/issues" target="_blank" rel="noopener">Report
+                            Issue</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Lightview. MIT License.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Lightview Core -->
+    <script src="/lightview.js"></script>
+    <script src="/lightview-x.js"></script>
+    <script src="/lightview-router.js"></script>
+    <script src="/docs/assets/js/examplify.js"></script>
+    <script>const { $ } = Lightview;</script>
+
+    <!-- Router -->
+    <script>
+        (async function () {
+            // Initialize components with shadow DOM enabled by default
+            await LightviewX.initComponents({ shadowDefault: true });
+
+            const contentEl = document.getElementById('content');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            // Helper: Update active nav link
+            function updateActiveNav(path) {
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    const linkPath = href.startsWith('#') ? href.slice(1) : href;
+
+                    if (path === '/') {
+                        if (linkPath === '/' || linkPath === './docs/') link.classList.add('active');
+                        else link.classList.remove('active');
+                    } else {
+                        if (linkPath === path || (path !== '/' && linkPath.startsWith(path))) {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
+                    }
+                });
+            }
+
+            // Middleware: Fetch page content
+            const fetchPage = async (ctx) => {
+                const path = typeof ctx === 'string' ? ctx : ctx.path;
+                try {
+                    const res = await fetch(path);
+                    if (res.ok) return res;
+                } catch (e) { }
+                return null;
+            };
+
+            // Initialize Router
+            const appRouter = LightviewRouter.router({
+                notFound: (path) => {
+                    contentEl.innerHTML = `
+                        <div class="error-page">
+                            <h1>404</h1>
+                            <p>Page not found</p>
+                            <a href="/" class="btn btn-primary">Go Home</a>
+                        </div>
+                    `;
+                },
+                // On Start (Loading UI)
+                onStart: (path) => {
+                    contentEl.innerHTML = `
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
+                    `;
+                    updateActiveNav(path);
+                },
+                // On Response (Render)
+                onResponse: async (response, path) => {
+                    const html = await response.text();
+                    contentEl.innerHTML = html;
+                    // Execute scripts
+                    const scripts = contentEl.querySelectorAll('script');
+                    scripts.forEach(script => {
+                        const newScript = document.createElement('script');
+                        if (script.type) newScript.type = script.type;
+                        if (script.src) {
+                            newScript.src = script.src;
+                        } else {
+                            newScript.textContent = script.textContent;
+                        }
+                        script.parentNode.replaceChild(newScript, script);
+                    });
+
+                    window.scrollTo(0, 0);
+                }
+            });
+
+            // Static Routes
+            appRouter.use('/', '/docs/index.html', fetchPage);
+            appRouter.use('/docs', '/docs/index.html', fetchPage);
+            appRouter.use('/docs/index.html', fetchPage);
+            appRouter.use('/docs/getting-started', '/docs/getting-started/index.html', fetchPage);
+            appRouter.use('/docs/about', '/docs/about.html', fetchPage);
+            appRouter.use('/docs/styles', '/docs/styles/index.html', fetchPage);
+            appRouter.use('/docs/playground', '/docs/playground.html', fetchPage);
+            appRouter.use('/docs/api', '/docs/api/index.html', fetchPage);
+            appRouter.use('/docs/components', '/docs/components/index.html', fetchPage);
+            appRouter.use('/docs/examples', '/docs/examples/index.html', fetchPage);
+
+            // Wildcard Routes (Standard)
+            appRouter.use('/docs/api/*', '/docs/api/*', fetchPage);
+            appRouter.use('/docs/components/*', '/docs/components/*', fetchPage);
+            appRouter.use('/docs/examples/*', '/docs/examples/*', fetchPage);
+
+            // Direct HTML files
+            appRouter.use('/docs/*.html', '/docs/*.html', fetchPage);
+
+            // Fallback Routes (Try appending .html)
+            appRouter.use('/docs/*', '/docs/*.html', fetchPage);
+
+            // Start Router
+            appRouter.start();
+        })();
+
+        // Mobile nav toggle
+        function toggleMobileNav() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('open');
+        }
+    </script>
+</body>
+
+</html>

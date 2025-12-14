@@ -1,0 +1,67 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Dropdown</li>
+            </ul>
+        </div>
+        <h1>Dropdown</h1>
+        <p class="text-lg opacity-70 mb-6">Dropdown can open a menu or any other element when clicking.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="dropdown mb-8">
+            <div tabindex="0" role="button" class="btn m-1">Click me</div>
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                <li><a>Item 1</a></li>
+                <li><a>Item 2</a></li>
+            </ul>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Positions</h2>
+        <div class="flex flex-wrap gap-2 mb-8">
+            <div class="dropdown dropdown-bottom">
+                <div tabindex="0" role="button" class="btn">Bottom</div>
+                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <li><a>Item</a></li>
+                </ul>
+            </div>
+            <div class="dropdown dropdown-top">
+                <div tabindex="0" role="button" class="btn">Top</div>
+                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <li><a>Item</a></li>
+                </ul>
+            </div>
+            <div class="dropdown dropdown-left">
+                <div tabindex="0" role="button" class="btn">Left</div>
+                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <li><a>Item</a></li>
+                </ul>
+            </div>
+            <div class="dropdown dropdown-right">
+                <div tabindex="0" role="button" class="btn">Right</div>
+                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <li><a>Item</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Hover</h2>
+        <div class="dropdown dropdown-hover mb-8">
+            <div tabindex="0" role="button" class="btn m-1">Hover me</div>
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                <li><a>Item 1</a></li>
+                <li><a>Item 2</a></li>
+            </ul>
+        </div>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/dropdown/" target="_blank"
+                    class="link link-primary">DaisyUI Dropdown</a> for more options.</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,248 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="./nav.html"></aside>
+
+    <main class="docs-content">
+        <h1>Hypermedia</h1>
+        <p>
+            HTMX vibes, built right in. Load HTML fragments, fetch JSON, clone templates—all with the <code>src</code>
+            attribute.
+            <em>Requires lightview-x.js</em>
+        </p>
+
+        <h2>Fetching HTML</h2>
+        <p>
+            Point <code>src</code> at an HTML file and Lightview loads it as children:
+        </p>
+        <pre><code>const { tags } = Lightview;
+const { div, header, main } = tags;
+
+// Load HTML partials
+const app = div(
+    header({ src: '/partials/nav.html' }),
+    main({ src: '/partials/content.html' })
+);
+
+// The HTML is fetched, parsed, and made reactive automatically!</code></pre>
+
+        <h2>Fetching JSON</h2>
+        <p>
+            JSON files are converted to vDOM elements:
+        </p>
+        <pre><code>// /api/cards.json
+[
+    { "tag": "div", "attributes": { "class": "card" }, "children": ["Card 1"] },
+    { "tag": "div", "attributes": { "class": "card" }, "children": ["Card 2"] }
+]
+
+// Load JSON as elements
+div({ src: '/api/cards.json' })</code></pre>
+
+        <h2>Cloning DOM Elements</h2>
+        <p>
+            Use CSS selectors to clone existing elements:
+        </p>
+        <pre><code>// Clone a template
+div({ src: '#my-template' })
+
+// Clone multiple elements
+div({ src: '.card-template' })</code></pre>
+        <pre><code>&lt;!-- Hidden template in HTML --&gt;
+&lt;template id="my-template"&gt;
+    &lt;div class="modal"&gt;
+        &lt;h2&gt;Modal Title&lt;/h2&gt;
+        &lt;p&gt;Modal content here&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/template&gt;</code></pre>
+
+        <h2>Interactive href & Navigation</h2>
+        <p>
+            Add <code>href</code> to any element to make it interactive. The behavior depends on the <code>target</code>
+            attribute:
+        </p>
+
+        <h3>1. Self-Loading (Default)</h3>
+        <p>If no target is specified, clicking sets the element's own <code>src</code> to the <code>href</code> value:
+        </p>
+        <pre><code>// Loads content into itself on click
+button({ href: '/partials/data.html' }, 'Load Data')</code></pre>
+
+        <h3>2. Browser Navigation</h3>
+        <p>Use standard underscore targets for window navigation:</p>
+        <pre><code>// Opens new tab
+button({ href: 'https://example.com', target: '_blank' }, 'Open External')
+
+// Navigates current page
+div({ href: '/home', target: '_self' }, 'Go Home')</code></pre>
+
+        <h3>3. Targeting Other Elements</h3>
+        <p>Use a CSS selector as the target to load content into other elements:</p>
+        <pre><code>// Loads content into element with id="main"
+button({ href: '/pages/about.html', target: '#main' }, 'Load About Page')
+
+div({ id: 'main' }) // Content appears here</code></pre>
+
+        <h3>4. Positioning Content</h3>
+        <p>Control where content is inserted using the <code>location</code> attribute or a target suffix.</p>
+        <p><strong>Supported locations:</strong> <code>innerhtml</code> (default), <code>outerhtml</code>,
+            <code>beforebegin</code>, <code>afterbegin</code>, <code>beforeend</code>, <code>afterend</code>,
+            <code>shadow</code>.
+        </p>
+
+        <pre><code>// Option A: Suffix syntax (Target Selector:Location)
+button({ 
+    href: '/partials/item.html', 
+    target: '#list:beforeend' // Append to list
+}, 'Add Item')
+
+// Option B: Explicit attribute on target
+div({ 
+    src: '/partials/banner.html', 
+    location: 'afterbegin' 
+})</code></pre>
+
+        <p><strong>Smart Replacement:</strong> Lightview tracks inserted content. Fetching the same content to the same
+            location is a no-op. Fetching different content replaces the previous content at that specific location.</p>
+
+        <h2>HTML Template Literals</h2>
+        <p>
+            External HTML can reference named signals or state with template syntax:
+        </p>
+        <pre><code>// main.js - Register named signals and state
+const count = signal(0, 'count');
+const userName = signal('Guest', 'userName');
+const userPrefs = state({ theme: 'dark', lang: 'en' }, 'userPrefs');
+
+// Load template that uses them
+div({ src: '/partials/dashboard.html' })</code></pre>
+        <pre><code>&lt;!-- /partials/dashboard.html --&gt;
+&lt;div class="dashboard"&gt;
+    &lt;h1&gt;Welcome, ${signal.get('userName').value}!&lt;/h1&gt;
+    &lt;p&gt;You have ${signal.get('count').value} notifications.&lt;/p&gt;
+    &lt;p&gt;Theme: ${state.get('userPrefs').theme}&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+        <h2>Shadow DOM</h2>
+        <p>
+            Load content into shadow DOM for style isolation using <code>location="shadow"</code> or the
+            <code>:shadow</code> suffix:
+        </p>
+        <pre><code>// Option A: location attribute
+div({ src: '/components/widget.html', location: 'shadow' })
+
+// Option B: target suffix
+button({ href: '/components/widget.html', target: '#container:shadow' }, 'Load Widget')</code></pre>
+
+        <h2>Building HTMX-style Apps</h2>
+        <p>
+            Combine <code>src</code> and <code>href</code> for hypermedia-driven UIs:
+        </p>
+        <pre><code>const { tags } = Lightview;
+const { div, nav, button, main } = tags;
+
+const app = div({ class: 'app' },
+    nav({ class: 'sidebar' },
+        button({ href: '/pages/dashboard.html' }, '📊 Dashboard'),
+        button({ href: '/pages/settings.html' }, '⚙️ Settings'),
+        button({ href: '/pages/profile.html' }, '👤 Profile')
+    ),
+    main({ 
+        id: 'content',
+        src: '/pages/dashboard.html'  // Initial content
+    })
+);
+
+// Clicking nav buttons updates the main content area!</code></pre>
+
+        <h2>The enhance() Function</h2>
+        <p>
+            Make existing DOM elements reactive:
+        </p>
+        <pre><code>// HTML
+&lt;button id="my-btn"&gt;Click me&lt;/button&gt;
+&lt;span id="output"&gt;&lt;/span&gt;
+
+// JS
+const count = signal(0);
+
+// Enhance existing elements
+LightviewX.enhance('#my-btn', {
+    onclick: () => count.value++
+});
+
+LightviewX.enhance('#output', {
+    innerText: () => `Clicked ${count.value} times`
+});</code></pre>
+
+        <div class="code-example">
+            <div class="code-example-preview" id="hypermedia-demo">
+                <div id="demo-content"
+                    style="padding: 1rem; border: 1px dashed var(--site-border); border-radius: 8px; min-height: 60px;">
+                    <p style="color: var(--site-text-muted); margin: 0;">Click a button to load content</p>
+                </div>
+                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;" id="demo-buttons"></div>
+            </div>
+            <div class="code-example-code">
+                <pre><code>// Simulated hypermedia navigation
+nav(
+    button({ onclick: () => loadContent('home') }, 'Home'),
+    button({ onclick: () => loadContent('about') }, 'About')
+)
+main({ id: 'content' })</code></pre>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    (function () {
+        const { signal, tags } = Lightview;
+        const { div, button, p, h3 } = tags;
+
+        const content = signal({ title: 'Welcome', body: 'Click a button to load content' });
+
+        const pages = {
+            home: { title: '🏠 Home', body: 'Welcome to the home page! This content was loaded dynamically.' },
+            about: { title: '📖 About', body: 'This is the about page. Hypermedia makes navigation smooth!' },
+            contact: { title: '✉️ Contact', body: 'Get in touch! Content swapping is easy with Lightview.' }
+        };
+
+        const loadContent = (page) => {
+            content.value = pages[page];
+        };
+
+        const contentArea = div({ style: 'padding: 1rem; border: 1px dashed var(--site-border); border-radius: 8px; min-height: 80px;' },
+            h3({ style: 'margin: 0 0 0.5rem;' }, () => content.value.title),
+            p({ style: 'margin: 0; color: var(--site-text-secondary);' }, () => content.value.body)
+        );
+
+        const buttons = div({ style: 'display: flex; gap: 0.5rem; margin-top: 1rem;' },
+            button({
+                onclick: () => loadContent('home'),
+                style: 'padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--site-border); background: var(--site-surface); border-radius: 6px;'
+            }, '🏠 Home'),
+            button({
+                onclick: () => loadContent('about'),
+                style: 'padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--site-border); background: var(--site-surface); border-radius: 6px;'
+            }, '📖 About'),
+            button({
+                onclick: () => loadContent('contact'),
+                style: 'padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--site-border); background: var(--site-surface); border-radius: 6px;'
+            }, '✉️ Contact')
+        );
+
+        const container = document.getElementById('hypermedia-demo');
+        if (container) {
+            container.innerHTML = '';
+            container.appendChild(contentArea.domEl);
+            container.appendChild(buttons.domEl);
+        }
+    })();
+</script>

@@ -1,0 +1,162 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="./nav.html"></aside>
+
+    <main class="docs-content">
+        <h1>API Reference</h1>
+        <p>
+            Lightview provides a small but powerful API. Everything you need, nothing you don't.
+            <em>Keep it light, remember?</em>
+        </p>
+
+        <h2>Lightview Overview</h2>
+
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>signal(value)</code></td>
+                    <td>Create reactive state that triggers updates when changed</td>
+                </tr>
+                <tr>
+                    <td><code>computed(fn)</code></td>
+                    <td>Derive values from signals automatically</td>
+                </tr>
+                <tr>
+                    <td><code>effect(fn)</code></td>
+                    <td>Run side effects when dependencies change</td>
+                </tr>
+                <tr>
+                    <td><code>element(tag, attrs, children)</code></td>
+                    <td>Create reactive DOM elements</td>
+                </tr>
+                <tr>
+                    <td><code>tags.*</code></td>
+                    <td>Shorthand element creators (div, span, button, etc.)</td>
+                </tr>
+                <tr>
+                    <td><code>$(selector)</code></td>
+                    <td>Query the DOM and get an element on which you can call 'insert' to place content before, at the
+                        start of, and the end of or after the element.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Lightview X Overview</h2>
+        <p>
+            Lightview X automatically enhances the core Lightview instance when loaded, adding hypermedia capabilities,
+            template literal support, and optional Object DOM syntax.
+        </p>
+
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Feature / Function</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>state(obj)</code></td>
+                    <td>Create deep reactive state for complex objects/arrays. Uses Proxy for automatic change tracking.
+                    </td>
+                </tr>
+                <tr>
+                    <td><code>src="..."</code></td>
+                    <td>Attribute to automatically fetch HTML or JSON content and inject it into the element.</td>
+                </tr>
+                <tr>
+                    <td><code>href="..."</code></td>
+                    <td>Attribute for SPA navigation on any element. Supports targeting other elements via CSS
+                        selectors.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code>${signal.get('count').value}</code><code>${state.get('user').name}</code>
+                    </td>
+                    <td>Syntax support for using signals and state directly inside string templates.</td>
+                </tr>
+                <tr>
+                    <td><code>enhance(el, opts)</code></td>
+                    <td>Manually enhance an existing DOM element with Lightview reactivity.</td>
+                </tr>
+
+                <tr>
+                    <td><code>registerComponent(name, fn)</code></td>
+                    <td>Register components for use within Object DOM structures.</td>
+                </tr>
+                <tr>
+                    <td><code>useObjectDOMSyntax(strict)</code></td>
+                    <td>Enable the Object DOM syntax processor for defining UI with JSON objects.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Using Lightview</h2>
+        <pre><code>&lt;!-- Core only --&gt;
+&lt;script src="lightview.js"&gt;&lt;/script&gt;
+
+&lt;!-- Full power --&gt;
+&lt;script src="lightview.js"&gt;&lt;/script&gt;
+&lt;script src="lightview-x.js"&gt;&lt;/script&gt;</code></pre>
+        <pre><code>// Destructure what you need from the global instances
+const { signal, computed, effect, element, tags, $ } = Lightview;
+const { state, enhance, registerComponent } = LightviewX; // Deep state + extras</code></pre>
+
+
+
+        <h2>Core Modules</h2>
+
+        <div class="feature-grid" style="margin-top: 1.5rem;">
+            <a href="./signals" class="feature-card" style="text-decoration: none; color: inherit;">
+                <h3 class="feature-title">Signals</h3>
+                <p class="feature-description">
+                    The foundation. Reactive primitives that make everything tick.
+                </p>
+            </a>
+            <a href="./computed" class="feature-card" style="text-decoration: none; color: inherit;">
+                <h3 class="feature-title">Computed</h3>
+                <p class="feature-description">
+                    Derived state. Values that update themselves.
+                </p>
+            </a>
+            <a href="./effects" class="feature-card" style="text-decoration: none; color: inherit;">
+                <h3 class="feature-title">Effects</h3>
+                <p class="feature-description">
+                    Side effects. Do things when state changes.
+                </p>
+            </a>
+            <a href="./elements" class="feature-card" style="text-decoration: none; color: inherit;">
+                <h3 class="feature-title">Elements</h3>
+                <p class="feature-description">
+                    Four ways to build UI. Pick your favorite.
+                </p>
+            </a>
+            <a href="./elements" class="feature-card" style="text-decoration: none; color: inherit;">
+                <h3 class="feature-title">Elements</h3>
+                <p class="feature-description">
+                    Four ways to build UI. Pick your favorite.
+                </p>
+            </a>
+            <a href="./hypermedia.html" class="feature-card" style="text-decoration: none; color: inherit;">
+                <h3 class="feature-title">Hypermedia</h3>
+                <p class="feature-description">
+                    Fetch content with src. HTMX vibes, built in.
+                </p>
+            </a>
+        </div>
+
+    </main>
+</div>

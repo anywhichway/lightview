@@ -1,0 +1,38 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My First Lightview App</title>
+    <script src="lightview.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    
+    <script>
+        // Get the tools we need
+        const { signal, tags } = Lightview;
+        const { div, h1, p, button } = tags;
+
+        // Create reactive state
+        const count = signal(0);
+
+        // Build the UI
+        const app = div(
+            h1('Hello Lightview! 👋'),
+            p(() => `You clicked ${count.value} times`),
+            button({ onclick: () => count.value++ }, 'Click me!')
+        );
+
+        // Mount to the DOM
+        document.getElementById('app').appendChild(app.domEl);
+    </script>
+</body>
+</html>
+

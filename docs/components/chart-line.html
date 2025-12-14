@@ -1,0 +1,286 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li><a href="/docs/components/chart">Chart</a></li>
+                <li>Line Chart</li>
+            </ul>
+        </div>
+
+        <h1>Line Chart</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Line charts display data as points connected by lines, ideal for showing trends over time.
+        </p>
+
+        <!-- Basic Usage -->
+        <h2 class="text-xl font-bold mb-4">Usage</h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <p class="mb-4">To visualize data with a line chart, use <code>type: 'line'</code>.
+                    Line charts require both <code>--start</code> and <code>--size</code> to draw the line between
+                    points:</p>
+                <div id="basic-line" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
+                    <table class="charts-css line show-labels show-primary-axis">
+                        <caption>Basic Line Chart</caption>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> Jan </th>
+                                <td style="--start: 0.2; --size: 0.4;"> <span class="data"> 40% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Feb </th>
+                                <td style="--start: 0.4; --size: 0.6;"> <span class="data"> 60% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Mar </th>
+                                <td style="--start: 0.6; --size: 0.5;"> <span class="data"> 50% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Apr </th>
+                                <td style="--start: 0.5; --size: 0.8;"> <span class="data"> 80% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> May </th>
+                                <td style="--start: 0.8; --size: 0.7;"> <span class="data"> 70% </span> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', labels: true, primaryAxis: true },
+    Chart.Body({},
+        Chart.Row({},
+            Chart.Label({}, 'Jan'),
+            Chart.Data({ start: 0.2, value: 0.4 }, $('span', { class: 'data' }, '40%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Feb'),
+            Chart.Data({ start: 0.4, value: 0.6 }, $('span', { class: 'data' }, '60%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Mar'),
+            Chart.Data({ start: 0.6, value: 0.5 }, $('span', { class: 'data' }, '50%'))
+        ),
+        // ... more rows
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multiple Datasets -->
+        <h2 class="text-xl font-bold mb-4">Multiple Datasets</h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <p class="mb-4">Add multiple lines by using multiple <code>Chart.Data</code> elements with
+                    <code>multiple: true</code>:</p>
+                <div id="multiple-line" style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
+                    <table class="charts-css line multiple show-labels show-primary-axis"
+                        style="--color-1: #4CAF50; --color-2: #2196F3; --color-3: #FF9800;">
+                        <caption>Multi-Line Chart</caption>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> Q1 </th>
+                                <td style="--start: 0.2; --size: 0.4;"></td>
+                                <td style="--start: 0.3; --size: 0.5;"></td>
+                                <td style="--start: 0.1; --size: 0.3;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Q2 </th>
+                                <td style="--start: 0.4; --size: 0.5;"></td>
+                                <td style="--start: 0.5; --size: 0.6;"></td>
+                                <td style="--start: 0.3; --size: 0.5;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Q3 </th>
+                                <td style="--start: 0.5; --size: 0.7;"></td>
+                                <td style="--start: 0.6; --size: 0.4;"></td>
+                                <td style="--start: 0.5; --size: 0.6;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Q4 </th>
+                                <td style="--start: 0.7; --size: 0.9;"></td>
+                                <td style="--start: 0.4; --size: 0.7;"></td>
+                                <td style="--start: 0.6; --size: 0.8;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', multiple: true, labels: true, primaryAxis: true },
+    Chart.Body({},
+        Chart.Row({},
+            Chart.Label({}, 'Q1'),
+            Chart.Data({ start: 0.2, value: 0.4 }),
+            Chart.Data({ start: 0.3, value: 0.5 }),
+            Chart.Data({ start: 0.1, value: 0.3 })
+        ),
+        // ... more rows
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Axes and Grid -->
+        <h2 class="text-xl font-bold mb-4">Axes and Grid</h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <p class="mb-4">Add grid lines with <code>secondaryAxis</code>:</p>
+                <div id="axes-line" style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
+                    <table class="charts-css line show-labels show-primary-axis show-10-secondary-axes">
+                        <caption>With 10 Grid Lines</caption>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> 1 </th>
+                                <td style="--start: 0.1; --size: 0.3;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 2 </th>
+                                <td style="--start: 0.3; --size: 0.5;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 3 </th>
+                                <td style="--start: 0.5; --size: 0.4;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 4 </th>
+                                <td style="--start: 0.4; --size: 0.7;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 5 </th>
+                                <td style="--start: 0.7; --size: 0.6;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 6 </th>
+                                <td style="--start: 0.6; --size: 0.9;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', labels: true, primaryAxis: true, secondaryAxis: true },
+    Chart.Body({},
+        // Data rows...
+    )
+)
+
+// Or with custom number of grid lines:
+Chart({ type: 'line', secondaryAxis: 'show-4-secondary-axes' }, ...)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Line Styling -->
+        <h2 class="text-xl font-bold mb-4">Line Styling</h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <p class="mb-4">Customize line appearance with CSS custom properties:</p>
+                <div id="styled-line" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
+                    <table class="charts-css line show-labels" style="--color: #7480ff; --line-size: 3px;">
+                        <caption>Styled Line (thicker, custom color)</caption>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> Jan </th>
+                                <td style="--start: 0.3; --size: 0.5;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Feb </th>
+                                <td style="--start: 0.5; --size: 0.7;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Mar </th>
+                                <td style="--start: 0.7; --size: 0.6;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Apr </th>
+                                <td style="--start: 0.6; --size: 0.9;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> May </th>
+                                <td style="--start: 0.9; --size: 0.8;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ 
+    type: 'line', 
+    labels: true,
+    style: '--color: #7480ff; --line-size: 3px;'
+},
+    Chart.Body({},
+        // Data rows...
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reverse Orientation -->
+        <h2 class="text-xl font-bold mb-4">Orientation</h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <p class="mb-4">Reverse the chart with <code>reverse: true</code>:</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm font-bold mb-2">Normal</p>
+                        <div style="height: 180px;">
+                            <table class="charts-css line show-labels">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"> A </th>
+                                        <td style="--start: 0.2; --size: 0.5;"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"> B </th>
+                                        <td style="--start: 0.5; --size: 0.8;"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"> C </th>
+                                        <td style="--start: 0.8; --size: 0.6;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold mb-2">Reversed</p>
+                        <div style="height: 180px;">
+                            <table class="charts-css line show-labels reverse">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"> A </th>
+                                        <td style="--start: 0.2; --size: 0.5;"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"> B </th>
+                                        <td style="--start: 0.5; --size: 0.8;"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"> C </th>
+                                        <td style="--start: 0.8; --size: 0.6;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between mt-8">
+            <a href="/docs/components/chart-column" class="btn btn-outline">← Column Chart</a>
+            <a href="/docs/components/chart-area" class="btn btn-primary">Area Chart →</a>
+        </div>
+    </div>
+</div>

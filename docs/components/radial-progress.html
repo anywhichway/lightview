@@ -1,0 +1,54 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Radial Progress</li>
+            </ul>
+        </div>
+        <h1>Radial Progress</h1>
+        <p class="text-lg opacity-70 mb-6">Radial progress shows a circular progress indicator.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="flex gap-4 mb-8">
+            <div class="radial-progress" style="--value:0;" role="progressbar">0%</div>
+            <div class="radial-progress" style="--value:25;" role="progressbar">25%</div>
+            <div class="radial-progress" style="--value:50;" role="progressbar">50%</div>
+            <div class="radial-progress" style="--value:75;" role="progressbar">75%</div>
+            <div class="radial-progress" style="--value:100;" role="progressbar">100%</div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="flex gap-4 mb-8">
+            <div class="radial-progress text-primary" style="--value:70;" role="progressbar">70%</div>
+            <div class="radial-progress text-secondary" style="--value:70;" role="progressbar">70%</div>
+            <div class="radial-progress text-accent" style="--value:70;" role="progressbar">70%</div>
+            <div class="radial-progress text-success" style="--value:70;" role="progressbar">70%</div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Custom Size & Thickness</h2>
+        <div class="flex gap-4 items-center mb-8">
+            <div class="radial-progress" style="--value:70; --size:8rem;" role="progressbar">70%</div>
+            <div class="radial-progress" style="--value:70; --size:8rem; --thickness:2px;" role="progressbar">70%</div>
+            <div class="radial-progress" style="--value:70; --size:8rem; --thickness:1rem;" role="progressbar">70%</div>
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="radial-progress" style="--value:70;" role="progressbar"&gt;
+  70%
+&lt;/div&gt;
+
+&lt;!-- Custom size and thickness --&gt;
+&lt;div class="radial-progress" style="--value:70; --size:8rem; --thickness:4px;"&gt;
+  70%
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/radial-progress/" target="_blank"
+                    class="link link-primary">DaisyUI Radial Progress</a> for more options.</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        window.location.replace('/docs/components/loading');
+    } else {
+        window.location.href = 'loading.html';
+    }
+</script>
+
+<div class="section">
+    <div class="section-content">
+        <p>Redirecting to <a href="/docs/components/loading">Loading</a>...</p>
+    </div>
+</div>

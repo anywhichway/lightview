@@ -1,0 +1,314 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Checkbox</li>
+            </ul>
+        </div>
+
+        <h1>Checkbox</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Checkbox allows the user to select one or multiple items from a set.
+            Supports labels, descriptions, validation, and reactive state binding.
+        </p>
+
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Examples</h2>
+                <p class="text-sm opacity-70 mb-4">Simple checkboxes with various configurations</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Checkbox component
+await LightviewX.initComponents();
+const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+// 1. Basic checkbox
+const basic = Checkbox({ 
+    label: 'Remember me' 
+});
+
+// 2. Checkbox with description
+const withDesc = Checkbox({ 
+    label: 'Subscribe to newsletter',
+    description: 'Get weekly updates on new features',
+    color: 'primary'
+});
+
+// 3. Required checkbox
+const required = Checkbox({ 
+    label: 'I agree to the terms and conditions',
+    required: true
+});
+
+// 4. Pre-checked disabled checkbox
+const disabled = Checkbox({ 
+    label: 'This option is locked',
+    defaultChecked: true,
+    disabled: true
+});
+
+// Insert all examples
+$('#demo').insert(
+    div({ class: 'space-y-4' }, basic, withDesc, required, disabled)
+);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Reactive Example</h2>
+                <p class="text-sm opacity-70 mb-4">Two-way binding with signals and live validation</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">await LightviewX.initComponents();
+const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, p, span, button } = tags;
+
+// Signals for checkboxes
+const notifications = signal(true);
+const marketing = signal(false);
+const termsAccepted = signal(false);
+
+// Reactive demo
+const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
+    Checkbox({ 
+        label: 'Email Notifications',
+        description: 'Receive important updates via email',
+        checked: notifications,
+        color: 'primary'
+    }),
+    Checkbox({ 
+        label: 'Marketing Emails',
+        description: 'Promotional content and offers',
+        checked: marketing,
+        color: 'secondary'
+    }),
+    Checkbox({ 
+        label: 'Accept Terms & Conditions',
+        checked: termsAccepted,
+        required: true,
+        color: 'accent',
+        validate: (checked) => !checked ? 'You must accept the terms' : null
+    }),
+    div({ class: 'pt-4 border-t border-base-300' },
+        p({ class: 'text-sm font-mono' }, 
+            () => `Notifications: ${notifications.value}, Marketing: ${marketing.value}`
+        ),
+        button({ 
+            class: () => `btn btn-primary mt-2 ${termsAccepted.value ? '' : 'btn-disabled'}`,
+            disabled: () => !termsAccepted.value
+        }, 'Submit')
+    )
+);
+
+$('#demo').insert(reactiveDemo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>checked</code></td>
+                        <td>boolean | signal</td>
+                        <td>-</td>
+                        <td>Checked state (reactive with signals)</td>
+                    </tr>
+                    <tr>
+                        <td><code>defaultChecked</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Default checked state for uncontrolled mode</td>
+                    </tr>
+                    <tr>
+                        <td><code>indeterminate</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Indeterminate (partial) state</td>
+                    </tr>
+                    <tr>
+                        <td><code>label</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Label text displayed next to checkbox</td>
+                    </tr>
+                    <tr>
+                        <td><code>description</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Description text below the label</td>
+                    </tr>
+                    <tr>
+                        <td><code>error</code></td>
+                        <td>string | function</td>
+                        <td>-</td>
+                        <td>Error message or reactive error function</td>
+                    </tr>
+                    <tr>
+                        <td><code>validate</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Validation function: <code>(checked) => errorMessage | null</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>'md'</td>
+                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                    </tr>
+                    <tr>
+                        <td><code>disabled</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Disable the checkbox</td>
+                    </tr>
+                    <tr>
+                        <td><code>required</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Mark as required field (shows asterisk)</td>
+                    </tr>
+                    <tr>
+                        <td><code>onChange</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when value changes: <code>(checked, event) => void</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>useShadow</code></td>
+                        <td>boolean</td>
+                        <td>*</td>
+                        <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Colors Example -->
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="flex flex-wrap gap-4 mb-8">
+            <input type="checkbox" class="checkbox" checked />
+            <input type="checkbox" class="checkbox checkbox-primary" checked />
+            <input type="checkbox" class="checkbox checkbox-secondary" checked />
+            <input type="checkbox" class="checkbox checkbox-accent" checked />
+            <input type="checkbox" class="checkbox checkbox-success" checked />
+            <input type="checkbox" class="checkbox checkbox-warning" checked />
+            <input type="checkbox" class="checkbox checkbox-info" checked />
+            <input type="checkbox" class="checkbox checkbox-error" checked />
+        </div>
+
+        <!-- Sizes Example -->
+        <h2 class="text-xl font-bold mb-4">Sizes</h2>
+        <div class="flex items-center gap-4 mb-8">
+            <input type="checkbox" class="checkbox checkbox-xs" checked />
+            <input type="checkbox" class="checkbox checkbox-sm" checked />
+            <input type="checkbox" class="checkbox checkbox-md" checked />
+            <input type="checkbox" class="checkbox checkbox-lg" checked />
+        </div>
+
+        <!-- With Label -->
+        <h2 class="text-xl font-bold mb-4">With Label</h2>
+        <div class="form-control w-52 mb-8">
+            <label class="label cursor-pointer">
+                <span class="label-text">Remember me</span>
+                <input type="checkbox" class="checkbox checkbox-primary" />
+            </label>
+        </div>
+
+        <!-- DaisyUI Reference -->
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples and styling options, see the
+                <a href="https://daisyui.com/components/checkbox/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Checkbox documentation</a>.
+            </span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '280px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '320px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

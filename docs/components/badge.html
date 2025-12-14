@@ -1,0 +1,195 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Badge</li>
+            </ul>
+        </div>
+
+        <h1>Badge</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Badges are used to inform the user of the status of specific data.
+        </p>
+
+        <!-- Quick Example -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Quick Example</h2>
+                <div class="flex gap-2 mb-4">
+                    <span class="badge">Badge</span>
+                    <span class="badge badge-primary">Primary</span>
+                    <span class="badge badge-secondary">Secondary</span>
+                </div>
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import Badge from './components/data-display/badge.js';
+
+// Using Lightview component
+Badge({ color: 'primary' }, 'Primary')
+
+// Or using DaisyUI classes directly
+&lt;span class="badge badge-primary"&gt;Primary&lt;/span&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'info' | 'error' | 'ghost' |
+                            'neutral'</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>'md'</td>
+                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                    </tr>
+                    <tr>
+                        <td><code>variant</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'outline' | 'soft' | 'dash'</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Colors -->
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="flex flex-wrap gap-2 mb-8">
+            <span class="badge">Default</span>
+            <span class="badge badge-neutral">Neutral</span>
+            <span class="badge badge-primary">Primary</span>
+            <span class="badge badge-secondary">Secondary</span>
+            <span class="badge badge-accent">Accent</span>
+            <span class="badge badge-ghost">Ghost</span>
+            <span class="badge badge-info">Info</span>
+            <span class="badge badge-success">Success</span>
+            <span class="badge badge-warning">Warning</span>
+            <span class="badge badge-error">Error</span>
+        </div>
+
+        <!-- Variants -->
+        <h2 class="text-xl font-bold mb-4">Variants</h2>
+        <div class="flex flex-wrap gap-2 mb-8">
+            <span class="badge badge-outline">Outline</span>
+            <span class="badge badge-soft badge-primary">Soft</span>
+            <span class="badge badge-dash badge-secondary">Dash</span>
+        </div>
+
+        <!-- Sizes -->
+        <h2 class="text-xl font-bold mb-4">Sizes</h2>
+        <div class="flex items-center gap-2 mb-8">
+            <span class="badge badge-xs">xs</span>
+            <span class="badge badge-sm">sm</span>
+            <span class="badge badge-md">md</span>
+            <span class="badge badge-lg">lg</span>
+        </div>
+
+        <!-- In Button -->
+        <h2 class="text-xl font-bold mb-4">In Button</h2>
+        <div class="flex gap-4 mb-8">
+            <button class="btn">
+                Inbox
+                <div class="badge">99+</div>
+            </button>
+            <button class="btn">
+                Notifications
+                <div class="badge badge-secondary">+99</div>
+            </button>
+        </div>
+
+        <!-- Reactive Example -->
+        <h2 class="text-xl font-bold mb-4">Reactive Example</h2>
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <div id="reactive-badge-demo"></div>
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mt-4"><code>const { signal, tags } = Lightview;
+const { div, button } = tags;
+const Badge = LightviewX.getComponent('Badge');
+
+const count = signal(0);
+
+const demo = div({ class: 'flex items-center gap-4' },
+    button({ class: 'btn btn-sm', onclick: () => count.value++ }, 'Increment'),
+    div({ class: 'relative inline-block' },
+        'Messages',
+        Badge({ 
+            class: 'badge-xs badge-primary absolute -top-2 -right-3',
+        }, () => count.value)
+    )
+);</code></pre>
+            </div>
+        </div>
+
+        <script type="module">
+            const { signal, tags, $ } = Lightview;
+            const { div, span, button } = tags;
+
+            // Simple demo definition
+            const Badge = (props, ...children) => {
+                const { color, size, variant, class: className = '', ...rest } = props || {};
+                const classes = [
+                    'badge',
+                    color ? `badge-${color}` : '',
+                    size ? `badge-${size}` : '',
+                    variant ? `badge-${variant}` : '',
+                    className
+                ].join(' ');
+
+                return span({ class: classes, ...rest }, ...children);
+            };
+
+            const count = signal(5);
+
+            const demo = div({ class: 'flex items-center gap-8' },
+                button({ class: 'btn btn-primary btn-sm', onclick: () => count.value++ }, 'Add Message'),
+                button({ class: 'btn', },
+                    'Inbox',
+                    Badge({
+                        color: 'secondary',
+                        class: 'ml-2'
+                    }, () => count.value > 99 ? '99+' : count.value)
+                )
+            );
+
+            $('#reactive-badge-demo').insert(demo);
+        </script>
+
+        <!-- DaisyUI Reference -->
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples and options, see the
+                <a href="https://daisyui.com/components/badge/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Badge documentation</a>.
+            </span>
+        </div>
+    </div>
+</div>

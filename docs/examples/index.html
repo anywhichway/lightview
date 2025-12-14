@@ -1,0 +1,87 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content">
+        <h1>Examples</h1>
+        <p class="text-secondary" style="font-size: 1.125rem;">
+            Learn by example. Click any card to open it in the playground.
+        </p>
+
+        <div class="example-grid" style="margin-top: 2rem;">
+            <a href="/docs/playground" class="example-card" onclick="localStorage.setItem('playground-example', 'counter')">
+                <div class="example-card-preview" style="background: linear-gradient(135deg, #e0e7ff, #c7d2fe);">
+                    <span style="font-size: 3rem;">🎯</span>
+                </div>
+                <div class="example-card-content">
+                    <h3 class="example-card-title">Counter</h3>
+                    <p class="example-card-description">The classic. Learn signals with increment/decrement buttons.</p>
+                </div>
+            </a>
+
+            <a href="/docs/playground" class="example-card" onclick="localStorage.setItem('playground-example', 'todo')">
+                <div class="example-card-preview" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
+                    <span style="font-size: 3rem;">✅</span>
+                </div>
+                <div class="example-card-content">
+                    <h3 class="example-card-title">Todo List</h3>
+                    <p class="example-card-description">State management with arrays. Add, toggle, and delete tasks.</p>
+                </div>
+            </a>
+
+            <a href="/docs/playground" class="example-card" onclick="localStorage.setItem('playground-example', 'form')">
+                <div class="example-card-preview" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                    <span style="font-size: 3rem;">📝</span>
+                </div>
+                <div class="example-card-content">
+                    <h3 class="example-card-title">Form Validation</h3>
+                    <p class="example-card-description">Computed values for real-time validation feedback.</p>
+                </div>
+            </a>
+
+            <a href="/docs/playground" class="example-card" onclick="localStorage.setItem('playground-example', 'fetch')">
+                <div class="example-card-preview" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">
+                    <span style="font-size: 3rem;">👥</span>
+                </div>
+                <div class="example-card-content">
+                    <h3 class="example-card-title">Fetch Data</h3>
+                    <p class="example-card-description">Async data loading with loading states and error handling.</p>
+                </div>
+            </a>
+
+            <a href="/docs/playground" class="example-card" onclick="localStorage.setItem('playground-example', 'tabs')">
+                <div class="example-card-preview" style="background: linear-gradient(135deg, #f3e8ff, #e9d5ff);">
+                    <span style="font-size: 3rem;">📑</span>
+                </div>
+                <div class="example-card-content">
+                    <h3 class="example-card-title">Tabs</h3>
+                    <p class="example-card-description">Tab navigation pattern with reactive content switching.</p>
+                </div>
+            </a>
+
+            <a href="/docs/playground" class="example-card" onclick="localStorage.setItem('playground-example', 'theme')">
+                <div class="example-card-preview" style="background: linear-gradient(135deg, #1e293b, #334155);">
+                    <span style="font-size: 3rem;">🌙</span>
+                </div>
+                <div class="example-card-content">
+                    <h3 class="example-card-title">Theme Toggle</h3>
+                    <p class="example-card-description">Dark/light mode with effects for side effects.</p>
+                </div>
+            </a>
+        </div>
+
+        <div
+            style="margin-top: 3rem; padding: 2rem; background: var(--site-bg-alt); border-radius: var(--site-radius-lg); text-align: center;">
+            <h3 style="margin: 0 0 0.5rem;">Want to experiment?</h3>
+            <p style="color: var(--site-text-secondary); margin: 0 0 1rem;">
+                Open the playground and write your own code.
+            </p>
+            <a href="/docs/playground" class="btn btn-primary">Open Playground</a>
+        </div>
+    </div>
+</div>

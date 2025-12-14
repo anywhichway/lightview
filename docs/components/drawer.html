@@ -1,0 +1,52 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Drawer</li>
+            </ul>
+        </div>
+        <h1>Drawer</h1>
+        <p class="text-lg opacity-70 mb-6">Drawer is a sidebar that can be opened from the left or right.</p>
+
+        <h2 class="text-xl font-bold mb-4">Example</h2>
+        <div class="drawer mb-8">
+            <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+            <div class="drawer-content">
+                <label for="my-drawer" class="btn btn-primary drawer-button">Open drawer</label>
+            </div>
+            <div class="drawer-side z-50">
+                <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+                <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+                    <li><a>Sidebar Item 1</a></li>
+                    <li><a>Sidebar Item 2</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="drawer"&gt;
+  &lt;input id="my-drawer" type="checkbox" class="drawer-toggle" /&gt;
+  &lt;div class="drawer-content"&gt;
+    &lt;label for="my-drawer" class="btn btn-primary drawer-button"&gt;
+      Open drawer
+    &lt;/label&gt;
+  &lt;/div&gt;
+  &lt;div class="drawer-side"&gt;
+    &lt;label for="my-drawer" class="drawer-overlay"&gt;&lt;/label&gt;
+    &lt;ul class="menu bg-base-200 min-h-full w-80 p-4"&gt;
+      &lt;li&gt;&lt;a&gt;Sidebar Item 1&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a&gt;Sidebar Item 2&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/drawer/" target="_blank" class="link link-primary">DaisyUI
+                    Drawer</a> for more options.</span>
+        </div>
+    </div>
+</div>

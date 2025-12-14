@@ -1,0 +1,144 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Modal</li>
+            </ul>
+        </div>
+
+        <h1>Modal</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Modal is used to show a dialog or a box when you click a button.
+            Uses the native HTML <code>&lt;dialog&gt;</code> element.
+        </p>
+
+        <!-- Quick Example -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Quick Example</h2>
+                <button class="btn btn-primary" onclick="document.getElementById('demo_modal').showModal()">
+                    Open Modal
+                </button>
+                <dialog id="demo_modal" class="modal">
+                    <div class="modal-box">
+                        <h3 class="text-lg font-bold">Hello!</h3>
+                        <p class="py-4">This is a simple modal dialog.</p>
+                        <div class="modal-action">
+                            <form method="dialog">
+                                <button class="btn">Close</button>
+                            </form>
+                        </div>
+                    </div>
+                    <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                    </form>
+                </dialog>
+            </div>
+        </div>
+
+        <!-- Code Example -->
+        <h2 class="text-xl font-bold mb-4">Usage</h2>
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>import Modal from './components/actions/modal.js';
+import Button from './components/actions/button.js';
+
+// Open modal programmatically
+Modal.open('my_modal');
+
+// Or with the component
+Modal({ id: 'my_modal' },
+    Modal.Box({},
+        tags.h3({ class: 'text-lg font-bold' }, 'Hello!'),
+        tags.p({ class: 'py-4' }, 'This is a modal dialog.'),
+        Modal.Action({},
+            Button({ onclick: () => Modal.close('my_modal') }, 'Close')
+        )
+    ),
+    Modal.Backdrop({})
+)</code></pre>
+
+        <!-- Positions -->
+        <h2 class="text-xl font-bold mb-4">Positions</h2>
+        <div class="flex flex-wrap gap-2 mb-8">
+            <button class="btn" onclick="document.getElementById('modal_top').showModal()">Top</button>
+            <button class="btn" onclick="document.getElementById('modal_middle').showModal()">Middle (default)</button>
+            <button class="btn" onclick="document.getElementById('modal_bottom').showModal()">Bottom</button>
+        </div>
+
+        <dialog id="modal_top" class="modal modal-top">
+            <div class="modal-box">
+                <h3 class="text-lg font-bold">Top Modal</h3>
+                <p class="py-4">This modal appears at the top.</p>
+                <div class="modal-action">
+                    <form method="dialog"><button class="btn">Close</button></form>
+                </div>
+            </div>
+            <form method="dialog" class="modal-backdrop"><button>close</button></form>
+        </dialog>
+
+        <dialog id="modal_middle" class="modal modal-middle">
+            <div class="modal-box">
+                <h3 class="text-lg font-bold">Middle Modal</h3>
+                <p class="py-4">This modal appears in the middle (default).</p>
+                <div class="modal-action">
+                    <form method="dialog"><button class="btn">Close</button></form>
+                </div>
+            </div>
+            <form method="dialog" class="modal-backdrop"><button>close</button></form>
+        </dialog>
+
+        <dialog id="modal_bottom" class="modal modal-bottom">
+            <div class="modal-box">
+                <h3 class="text-lg font-bold">Bottom Modal</h3>
+                <p class="py-4">This modal appears at the bottom.</p>
+                <div class="modal-action">
+                    <form method="dialog"><button class="btn">Close</button></form>
+                </div>
+            </div>
+            <form method="dialog" class="modal-backdrop"><button>close</button></form>
+        </dialog>
+
+        <!-- Responsive -->
+        <h2 class="text-xl font-bold mb-4">Responsive Modal</h2>
+        <p class="opacity-70 mb-4">Full-screen on mobile, centered on desktop.</p>
+        <button class="btn btn-primary" onclick="document.getElementById('modal_responsive').showModal()">
+            Open Responsive Modal
+        </button>
+
+        <dialog id="modal_responsive" class="modal modal-bottom sm:modal-middle">
+            <div class="modal-box">
+                <h3 class="text-lg font-bold">Responsive Modal</h3>
+                <p class="py-4">This modal is full-width at the bottom on mobile, and centered on larger screens.</p>
+                <div class="modal-action">
+                    <form method="dialog">
+                        <button class="btn">Close</button>
+                    </form>
+                </div>
+            </div>
+            <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+            </form>
+        </dialog>
+
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/modal/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Modal documentation</a>.
+            </span>
+        </div>
+    </div>
+</div>

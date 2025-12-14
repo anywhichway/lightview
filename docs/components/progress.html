@@ -1,0 +1,170 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Progress</li>
+            </ul>
+        </div>
+
+        <h1>Progress</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Progress bar shows the progression of a task.
+        </p>
+
+        <!-- Quick Example -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Quick Example</h2>
+                <div class="mb-4">
+                    <progress class="progress w-56" value="40" max="100"></progress>
+                </div>
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import Progress from './components/data-display/progress.js';
+
+// Using Lightview component
+Progress({ value: 40, max: 100 })
+
+// Or using DaisyUI classes directly
+&lt;progress class="progress w-56" value="40" max="100"&gt;&lt;/progress&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>value</code></td>
+                        <td>number | signal</td>
+                        <td>0</td>
+                        <td>Current value</td>
+                    </tr>
+                    <tr>
+                        <td><code>max</code></td>
+                        <td>number</td>
+                        <td>100</td>
+                        <td>Maximum value</td>
+                    </tr>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'info' | 'error'</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Colors -->
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="flex flex-col gap-4 mb-8">
+            <progress class="progress progress-primary w-56" value="40" max="100"></progress>
+            <progress class="progress progress-secondary w-56" value="50" max="100"></progress>
+            <progress class="progress progress-accent w-56" value="60" max="100"></progress>
+            <progress class="progress progress-info w-56" value="70" max="100"></progress>
+            <progress class="progress progress-success w-56" value="80" max="100"></progress>
+            <progress class="progress progress-warning w-56" value="90" max="100"></progress>
+            <progress class="progress progress-error w-56" value="100" max="100"></progress>
+        </div>
+
+        <!-- Indeterminate -->
+        <h2 class="text-xl font-bold mb-4">Indeterminate</h2>
+        <div class="mb-8">
+            <progress class="progress w-56"></progress>
+        </div>
+
+        <!-- Reactive Example -->
+        <h2 class="text-xl font-bold mb-4">Reactive Example</h2>
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <div id="reactive-progress-demo"></div>
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mt-4"><code>const { signal, tags } = Lightview;
+const { div, button } = tags;
+const Progress = LightviewX.getComponent('Progress');
+
+const progress = signal(0);
+setInterval(() => {
+    progress.value = (progress.value + 10) % 110;
+}, 500);
+
+const demo = div({ class: 'flex flex-col gap-4' },
+    Progress({ 
+        value: progress, 
+        max: 100, 
+        class: 'progress-primary w-full' 
+    }),
+    div(() => `Loading... ${progress.value}%`)
+);</code></pre>
+            </div>
+        </div>
+
+        <script type="module">
+            const { signal, tags, $ } = Lightview;
+            const { div, progress: progressTag } = tags;
+
+            // Simple demo definition
+            const Progress = (props) => {
+                const { value, max, class: className = '', ...rest } = props;
+                return progressTag({
+                    class: `progress ${className}`,
+                    value: value,
+                    max,
+                    ...rest
+                });
+            };
+
+            const progressVal = signal(10);
+
+            // Simulate download
+            const interval = setInterval(() => {
+                const next = progressVal.value + 5;
+                progressVal.value = next > 100 ? 0 : next;
+            }, 200);
+
+            // Cleanup on page navigation (not handled here but good practice)
+
+            const demo = div({ class: 'flex flex-col gap-4' },
+                Progress({
+                    value: progressVal,
+                    max: 100,
+                    class: 'progress-primary w-56'
+                }),
+                div({ class: 'font-mono text-sm' }, () => `Downloading: ${progressVal.value}%`)
+            );
+
+            $('#reactive-progress-demo').insert(demo);
+        </script>
+
+        <!-- DaisyUI Reference -->
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples and options, see the
+                <a href="https://daisyui.com/components/progress/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Progress documentation</a>.
+            </span>
+        </div>
+    </div>
+</div>

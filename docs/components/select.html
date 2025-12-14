@@ -1,0 +1,363 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Select</li>
+            </ul>
+        </div>
+
+        <h1>Select</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Select allows the user to pick a value from a list of options.
+            Supports labels, validation, helper text, and reactive state binding.
+        </p>
+
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Examples</h2>
+                <p class="text-sm opacity-70 mb-4">Simple selects with various configurations</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Select component
+await LightviewX.initComponents();
+const { default: Select } = await import('/components/data-input/select.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+// 1. Basic select with string options
+const basic = Select({ 
+    placeholder: 'Pick a movie franchise',
+    options: ['Star Wars', 'Harry Potter', 'Lord of the Rings', 'Marvel']
+});
+
+// 2. Select with label and helper
+const withLabel = Select({ 
+    label: 'Country',
+    placeholder: 'Select your country',
+    options: [
+        { value: 'us', label: 'United States' },
+        { value: 'uk', label: 'United Kingdom' },
+        { value: 'ca', label: 'Canada' },
+        { value: 'au', label: 'Australia' }
+    ],
+    helper: 'We use this for shipping calculations'
+});
+
+// 3. Required select with color
+const required = Select({ 
+    label: 'Priority',
+    placeholder: 'Select priority...',
+    options: ['Low', 'Medium', 'High', 'Critical'],
+    color: 'primary',
+    required: true
+});
+
+// Insert all examples
+$('#demo').insert(
+    div({ class: 'space-y-4 max-w-md' }, basic, withLabel, required)
+);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Reactive Example</h2>
+                <p class="text-sm opacity-70 mb-4">Two-way binding with signals and live validation</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">await LightviewX.initComponents();
+const { default: Select } = await import('/components/data-input/select.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, p, span } = tags;
+
+// Signal for two-way binding
+const selectedRole = signal('');
+
+// Validation function
+const validateRole = (val) => {
+    if (!val) return 'Please select a role';
+    return null;
+};
+
+// Role descriptions
+const roleDescriptions = {
+    admin: 'Full access to all features',
+    editor: 'Can edit and publish content',
+    viewer: 'Read-only access',
+    guest: 'Limited access to public content'
+};
+
+// Reactive select with validation
+const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
+    Select({ 
+        label: 'User Role',
+        placeholder: 'Assign a role...',
+        value: selectedRole,
+        options: [
+            { value: 'admin', label: 'Administrator' },
+            { value: 'editor', label: 'Editor' },
+            { value: 'viewer', label: 'Viewer' },
+            { value: 'guest', label: 'Guest' }
+        ],
+        validate: validateRole,
+        required: true
+    }),
+    p({ class: 'text-sm' }, 
+        () => {
+            const role = selectedRole.value;
+            if (!role) return span({ class: 'opacity-70' }, 'Select a role to see its description');
+            return span({ class: 'text-primary' }, roleDescriptions[role]);
+        }
+    )
+);
+
+$('#demo').insert(reactiveDemo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>options</code></td>
+                        <td>array</td>
+                        <td>[]</td>
+                        <td>Array of strings or objects <code>{value, label, disabled}</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>value</code></td>
+                        <td>* | signal</td>
+                        <td>-</td>
+                        <td>Selected value (reactive with signals)</td>
+                    </tr>
+                    <tr>
+                        <td><code>defaultValue</code></td>
+                        <td>*</td>
+                        <td>''</td>
+                        <td>Default value for uncontrolled mode</td>
+                    </tr>
+                    <tr>
+                        <td><code>placeholder</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Placeholder option (disabled first option)</td>
+                    </tr>
+                    <tr>
+                        <td><code>label</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Label text displayed above select</td>
+                    </tr>
+                    <tr>
+                        <td><code>helper</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Helper text displayed below the select</td>
+                    </tr>
+                    <tr>
+                        <td><code>error</code></td>
+                        <td>string | function</td>
+                        <td>-</td>
+                        <td>Error message or reactive error function</td>
+                    </tr>
+                    <tr>
+                        <td><code>validate</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Validation function: <code>(value) => errorMessage | null</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>'md'</td>
+                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                    </tr>
+                    <tr>
+                        <td><code>ghost</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Ghost style (no background)</td>
+                    </tr>
+                    <tr>
+                        <td><code>disabled</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Disable the select</td>
+                    </tr>
+                    <tr>
+                        <td><code>required</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Mark as required field (shows asterisk)</td>
+                    </tr>
+                    <tr>
+                        <td><code>onChange</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when value changes: <code>(value, event) => void</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>useShadow</code></td>
+                        <td>boolean</td>
+                        <td>*</td>
+                        <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sizes Example -->
+        <h2 class="text-xl font-bold mb-4">Sizes</h2>
+        <div class="flex flex-col gap-4 mb-8 max-w-xs">
+            <select class="select select-xs">
+                <option>Extra Small</option>
+            </select>
+            <select class="select select-sm">
+                <option>Small</option>
+            </select>
+            <select class="select">
+                <option>Medium</option>
+            </select>
+            <select class="select select-lg">
+                <option>Large</option>
+            </select>
+        </div>
+
+        <!-- Colors Example -->
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <select class="select select-primary">
+                <option>Primary</option>
+            </select>
+            <select class="select select-secondary">
+                <option>Secondary</option>
+            </select>
+            <select class="select select-accent">
+                <option>Accent</option>
+            </select>
+            <select class="select select-info">
+                <option>Info</option>
+            </select>
+            <select class="select select-success">
+                <option>Success</option>
+            </select>
+            <select class="select select-warning">
+                <option>Warning</option>
+            </select>
+            <select class="select select-error">
+                <option>Error</option>
+            </select>
+            <select class="select select-ghost">
+                <option>Ghost</option>
+            </select>
+        </div>
+
+        <!-- With Fieldset -->
+        <h2 class="text-xl font-bold mb-4">With Label (Fieldset Pattern)</h2>
+        <div class="max-w-md mb-8">
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">Country</legend>
+                <select class="select w-full">
+                    <option disabled selected>Select your country</option>
+                    <option>United States</option>
+                    <option>United Kingdom</option>
+                    <option>Canada</option>
+                </select>
+                <p class="label">Used for shipping calculations.</p>
+            </fieldset>
+        </div>
+
+        <!-- DaisyUI Reference -->
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples and styling options, see the
+                <a href="https://daisyui.com/components/select/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Select documentation</a>.
+            </span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '320px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '180px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

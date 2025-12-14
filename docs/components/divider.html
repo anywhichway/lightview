@@ -1,0 +1,52 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Divider</li>
+            </ul>
+        </div>
+        <h1>Divider</h1>
+        <p class="text-lg opacity-70 mb-6">Divider separates content with a horizontal or vertical line.</p>
+
+        <h2 class="text-xl font-bold mb-4">Horizontal</h2>
+        <div class="flex w-full flex-col mb-8">
+            <div class="card bg-base-300 rounded-box p-4">Content above</div>
+            <div class="divider">OR</div>
+            <div class="card bg-base-300 rounded-box p-4">Content below</div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Without Text</h2>
+        <div class="flex w-full flex-col mb-8">
+            <div class="card bg-base-300 rounded-box p-4">Content</div>
+            <div class="divider"></div>
+            <div class="card bg-base-300 rounded-box p-4">Content</div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Vertical</h2>
+        <div class="flex w-full mb-8">
+            <div class="card bg-base-300 rounded-box p-4 flex-grow">Left</div>
+            <div class="divider divider-horizontal">OR</div>
+            <div class="card bg-base-300 rounded-box p-4 flex-grow">Right</div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="flex w-full flex-col gap-2 mb-8">
+            <div class="divider divider-primary">Primary</div>
+            <div class="divider divider-secondary">Secondary</div>
+            <div class="divider divider-accent">Accent</div>
+            <div class="divider divider-success">Success</div>
+            <div class="divider divider-warning">Warning</div>
+            <div class="divider divider-error">Error</div>
+        </div>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/divider/" target="_blank"
+                    class="link link-primary">DaisyUI Divider</a> for more options.</span>
+        </div>
+    </div>
+</div>

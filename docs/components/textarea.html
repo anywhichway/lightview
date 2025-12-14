@@ -1,0 +1,339 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Textarea</li>
+            </ul>
+        </div>
+
+        <h1>Textarea</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Textarea allows users to enter multi-line text.
+            Supports labels, validation, character count, and reactive state binding.
+        </p>
+
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Examples</h2>
+                <p class="text-sm opacity-70 mb-4">Simple textareas with various configurations</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Textarea component
+await LightviewX.initComponents();
+const { default: Textarea } = await import('/components/data-input/textarea.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+// 1. Basic textarea
+const basic = Textarea({ 
+    placeholder: 'Enter your message...',
+    rows: 3
+});
+
+// 2. Textarea with label and helper
+const withLabel = Textarea({ 
+    label: 'Bio',
+    placeholder: 'Tell us about yourself...',
+    helper: 'Max 500 characters',
+    rows: 4
+});
+
+// 3. Textarea with character count
+const withCount = Textarea({ 
+    label: 'Description',
+    placeholder: 'Product description...',
+    maxLength: 200,
+    showCount: true,
+    rows: 3
+});
+
+// Insert all examples
+$('#demo').insert(
+    div({ class: 'space-y-4' }, basic, withLabel, withCount)
+);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Reactive Example</h2>
+                <p class="text-sm opacity-70 mb-4">Two-way binding with signals and live validation</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">await LightviewX.initComponents();
+const { default: Textarea } = await import('/components/data-input/textarea.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, p, span } = tags;
+
+// Signal for two-way binding
+const feedback = signal('');
+
+// Validation function
+const validateFeedback = (val) => {
+    if (!val || val.trim().length === 0) return 'Feedback is required';
+    if (val.length < 20) return 'Please provide more detail (at least 20 characters)';
+    if (val.length > 500) return 'Feedback is too long (max 500 characters)';
+    return null;
+};
+
+// Reactive textarea with validation
+const reactiveDemo = div({ class: 'space-y-4' },
+    Textarea({ 
+        label: 'Your Feedback',
+        placeholder: 'Share your thoughts with us...',
+        value: feedback,
+        validate: validateFeedback,
+        showCount: true,
+        maxLength: 500,
+        required: true,
+        rows: 4
+    }),
+    p({ class: 'text-sm' }, 
+        () => {
+            const error = validateFeedback(feedback.value);
+            return error 
+                ? span({ class: 'text-error' }, '✗ ' + error)
+                : span({ class: 'text-success' }, '✓ Feedback is valid!');
+        }
+    )
+);
+
+$('#demo').insert(reactiveDemo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>value</code></td>
+                        <td>string | signal</td>
+                        <td>-</td>
+                        <td>Textarea value (reactive with signals)</td>
+                    </tr>
+                    <tr>
+                        <td><code>defaultValue</code></td>
+                        <td>string</td>
+                        <td>''</td>
+                        <td>Default value for uncontrolled mode</td>
+                    </tr>
+                    <tr>
+                        <td><code>placeholder</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Placeholder text</td>
+                    </tr>
+                    <tr>
+                        <td><code>label</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Label text displayed above textarea</td>
+                    </tr>
+                    <tr>
+                        <td><code>helper</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Helper text displayed below the textarea</td>
+                    </tr>
+                    <tr>
+                        <td><code>error</code></td>
+                        <td>string | function</td>
+                        <td>-</td>
+                        <td>Error message or reactive error function</td>
+                    </tr>
+                    <tr>
+                        <td><code>validate</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Validation function: <code>(value) => errorMessage | null</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>rows</code></td>
+                        <td>number</td>
+                        <td>3</td>
+                        <td>Number of visible text lines</td>
+                    </tr>
+                    <tr>
+                        <td><code>maxLength</code></td>
+                        <td>number</td>
+                        <td>-</td>
+                        <td>Maximum character length</td>
+                    </tr>
+                    <tr>
+                        <td><code>showCount</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Show character count</td>
+                    </tr>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>'md'</td>
+                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                    </tr>
+                    <tr>
+                        <td><code>ghost</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Ghost style (no background)</td>
+                    </tr>
+                    <tr>
+                        <td><code>disabled</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Disable the textarea</td>
+                    </tr>
+                    <tr>
+                        <td><code>readOnly</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Make textarea read-only</td>
+                    </tr>
+                    <tr>
+                        <td><code>required</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Mark as required field (shows asterisk)</td>
+                    </tr>
+                    <tr>
+                        <td><code>onChange</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when value changes: <code>(value, event) => void</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>useShadow</code></td>
+                        <td>boolean</td>
+                        <td>*</td>
+                        <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sizes Example -->
+        <h2 class="text-xl font-bold mb-4">Sizes</h2>
+        <div class="flex flex-col gap-4 mb-8 max-w-md">
+            <textarea class="textarea textarea-xs" placeholder="Extra small"></textarea>
+            <textarea class="textarea textarea-sm" placeholder="Small"></textarea>
+            <textarea class="textarea" placeholder="Medium"></textarea>
+            <textarea class="textarea textarea-lg" placeholder="Large"></textarea>
+        </div>
+
+        <!-- Colors Example -->
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 max-w-2xl">
+            <textarea class="textarea textarea-primary" placeholder="Primary"></textarea>
+            <textarea class="textarea textarea-secondary" placeholder="Secondary"></textarea>
+            <textarea class="textarea textarea-accent" placeholder="Accent"></textarea>
+            <textarea class="textarea textarea-info" placeholder="Info"></textarea>
+            <textarea class="textarea textarea-success" placeholder="Success"></textarea>
+            <textarea class="textarea textarea-warning" placeholder="Warning"></textarea>
+            <textarea class="textarea textarea-error" placeholder="Error"></textarea>
+            <textarea class="textarea textarea-ghost" placeholder="Ghost"></textarea>
+        </div>
+
+        <!-- With Fieldset -->
+        <h2 class="text-xl font-bold mb-4">With Label (Fieldset Pattern)</h2>
+        <div class="max-w-md mb-8">
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">Bio</legend>
+                <textarea class="textarea w-full" rows="4" placeholder="Tell us about yourself..."></textarea>
+                <p class="label">Max 500 characters.</p>
+            </fieldset>
+        </div>
+
+        <!-- DaisyUI Reference -->
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples and styling options, see the
+                <a href="https://daisyui.com/components/textarea/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Textarea documentation</a>.
+            </span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '380px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '220px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

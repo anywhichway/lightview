@@ -1,0 +1,57 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Hero</li>
+            </ul>
+        </div>
+        <h1>Hero</h1>
+        <p class="text-lg opacity-70 mb-6">Hero is a large banner section with centered content.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="hero bg-base-200 min-h-64 rounded-box mb-8">
+            <div class="hero-content text-center">
+                <div class="max-w-md">
+                    <h1 class="text-5xl font-bold">Hello there</h1>
+                    <p class="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi
+                        exercitationem.</p>
+                    <button class="btn btn-primary">Get Started</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Figure</h2>
+        <div class="hero bg-base-200 min-h-64 rounded-box mb-8">
+            <div class="hero-content flex-col lg:flex-row">
+                <img src="https://picsum.photos/300/200" class="max-w-sm rounded-lg shadow-2xl" alt="Hero" />
+                <div>
+                    <h1 class="text-5xl font-bold">Box Office News!</h1>
+                    <p class="py-6">Provident cupiditate voluptatem et in.</p>
+                    <button class="btn btn-primary">Get Started</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Overlay</h2>
+        <div class="hero min-h-64 rounded-box mb-8" style="background-image: url(https://picsum.photos/800/400);">
+            <div class="hero-overlay bg-opacity-60 rounded-box"></div>
+            <div class="hero-content text-neutral-content text-center">
+                <div class="max-w-md">
+                    <h1 class="mb-5 text-5xl font-bold">Hello there</h1>
+                    <p class="mb-5">Provident cupiditate voluptatem et in.</p>
+                    <button class="btn btn-primary">Get Started</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/hero/" target="_blank" class="link link-primary">DaisyUI
+                    Hero</a> for more options.</span>
+        </div>
+    </div>
+</div>

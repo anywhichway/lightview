@@ -1,0 +1,173 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="./nav.html"></aside>
+    <main class="docs-content">
+        <h1>Effects</h1>
+        <p>
+            Effects let you run side effects when reactive state changes.
+            Logging, DOM manipulation, API calls—anything that needs to happen <em>because</em> something changed.
+        </p>
+
+        <h2>Basic Usage</h2>
+        <pre><code>const { signal, effect } = Lightview;
+
+const count = signal(0);
+
+// This runs immediately, then re-runs when count changes
+effect(() => {
+    console.log('Count is now:', count.value);
+});
+
+count.value = 1;  // Logs: "Count is now: 1"
+count.value = 2;  // Logs: "Count is now: 2"</code></pre>
+
+        <h2>Automatic Dependency Tracking</h2>
+        <p>
+            Effects automatically track which signals they read. No need to declare dependencies—Lightview figures it
+            out:
+        </p>
+        <pre><code>const firstName = signal('Alice');
+const lastName = signal('Smith');
+const showFull = signal(true);
+
+effect(() => {
+    if (showFull.value) {
+        // Tracks firstName, lastName, and showFull
+        console.log(`${firstName.value} ${lastName.value}`);
+    } else {
+        // Only tracks firstName and showFull
+        console.log(firstName.value);
+    }
+});</code></pre>
+
+        <h2>Stopping Effects</h2>
+        <p>
+            Effects return a stop function:
+        </p>
+        <pre><code>const count = signal(0);
+
+const stop = effect(() => {
+    console.log('Count:', count.value);
+});
+
+count.value = 1;  // Logs
+count.value = 2;  // Logs
+
+stop();  // Stop the effect
+
+count.value = 3;  // Nothing logged</code></pre>
+
+        <h2>Common Patterns</h2>
+
+        <h3>Syncing to External Systems</h3>
+        <pre><code>const theme = signal('light');
+
+effect(() => {
+    document.body.setAttribute('data-theme', theme.value);
+});</code></pre>
+
+        <h3>Local Storage Persistence</h3>
+        <pre><code>const settings = signal(
+    JSON.parse(localStorage.getItem('settings')) || {}
+);
+
+effect(() => {
+    localStorage.setItem('settings', JSON.stringify(settings.value));
+});</code></pre>
+
+        <h3>API Calls</h3>
+        <pre><code>const userId = signal(1);
+const userData = signal(null);
+
+effect(async () => {
+    const id = userId.value;
+    const response = await fetch(`/api/users/${id}`);
+    userData.value = await response.json();
+});</code></pre>
+
+        <h2>Effects vs Computed</h2>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Use Case</th>
+                    <th>Use This</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Derive a value from signals</td>
+                    <td><code>computed()</code></td>
+                </tr>
+                <tr>
+                    <td>Side effects (logging, API calls, DOM)</td>
+                    <td><code>effect()</code></td>
+                </tr>
+                <tr>
+                    <td>Value needed in UI</td>
+                    <td><code>computed()</code></td>
+                </tr>
+                <tr>
+                    <td>Just need to "do something"</td>
+                    <td><code>effect()</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="code-example">
+            <div class="code-example-preview" id="effect-demo"></div>
+            <div class="code-example-code">
+                <pre><code>const name = signal('World');
+const log = signal([]);
+
+effect(() => {
+    log.value = [...log.value, `Hello, ${name.value}!`].slice(-5);
+});
+
+// Change name to see the effect in action</code></pre>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    (function () {
+        const { signal, effect, tags } = Lightview;
+        const { div, p, input, ul, li, label } = tags;
+
+        const name = signal('World');
+        const log = signal([]);
+
+        effect(() => {
+            const entry = `${new Date().toLocaleTimeString()} - Hello, ${name.value}!`;
+            log.value = [...log.value, entry].slice(-5);
+        });
+
+        const demo = div({ style: 'padding: 0.5rem;' },
+            div({ style: 'margin-bottom: 1rem;' },
+                label({ style: 'display: block; margin-bottom: 0.25rem; font-size: 0.875rem; color: var(--site-text-secondary);' }, 'Change name to trigger effect:'),
+                input({
+                    type: 'text',
+                    value: name.value,
+                    oninput: (e) => name.value = e.target.value,
+                    style: 'padding: 0.5rem; border: 1px solid var(--site-border); border-radius: 4px; width: 200px;'
+                })
+            ),
+            div(
+                p({ style: 'font-size: 0.875rem; color: var(--site-text-secondary); margin: 0 0 0.5rem;' }, 'Effect log (last 5):'),
+                ul({ style: 'margin: 0; padding-left: 1.25rem; font-family: var(--site-font-mono); font-size: 0.8125rem;' },
+                    () => log.value.map(entry => li(entry))
+                )
+            )
+        );
+
+        const container = document.getElementById('effect-demo');
+        if (container) container.appendChild(demo.domEl);
+    })();
+</script>

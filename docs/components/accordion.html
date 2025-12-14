@@ -1,0 +1,53 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Accordion</li>
+            </ul>
+        </div>
+        <h1>Accordion</h1>
+        <p class="text-lg opacity-70 mb-6">Accordion is used for showing and hiding content in collapsible sections.</p>
+
+        <h2 class="text-xl font-bold mb-4">Examples</h2>
+        <div class="space-y-2 mb-8">
+            <div class="collapse collapse-arrow bg-base-100 border border-base-300">
+                <input type="radio" name="accordion-1" checked="checked" />
+                <div class="collapse-title font-semibold">Click to open this one and close others</div>
+                <div class="collapse-content text-sm">Content for section one.</div>
+            </div>
+            <div class="collapse collapse-arrow bg-base-100 border border-base-300">
+                <input type="radio" name="accordion-1" />
+                <div class="collapse-title font-semibold">Click to open this one</div>
+                <div class="collapse-content text-sm">Content for section two.</div>
+            </div>
+            <div class="collapse collapse-arrow bg-base-100 border border-base-300">
+                <input type="radio" name="accordion-1" />
+                <div class="collapse-title font-semibold">Click to open this one</div>
+                <div class="collapse-content text-sm">Content for section three.</div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Plus/Minus Icon</h2>
+        <div class="collapse collapse-plus bg-base-100 border border-base-300 mb-8">
+            <input type="checkbox" />
+            <div class="collapse-title font-semibold">Click me to show/hide</div>
+            <div class="collapse-content text-sm">Hidden content revealed!</div>
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="collapse collapse-arrow bg-base-100 border"&gt;
+  &lt;input type="radio" name="accordion" checked /&gt;
+  &lt;div class="collapse-title font-semibold"&gt;Title&lt;/div&gt;
+  &lt;div class="collapse-content"&gt;Content&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/accordion/" target="_blank"
+                    class="link link-primary">DaisyUI Accordion</a> for more options.</span>
+        </div>
+    </div>
+</div>

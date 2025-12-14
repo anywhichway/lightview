@@ -1,0 +1,140 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../lightview-router.js"></script>
+<script>
+    // If loaded directly (not in shell), redirect to shell with load parameter
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../index.html');
+    }
+</script>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <img src="./assets/images/logo.svg" alt="Lightview" class="hero-logo">
+        <h1>Lightview</h1>
+        <p class="hero-tagline">Why be heavy when you can be light?</p>
+        <p class="hero-description">
+            All the power. None of the weight.
+        </p>
+        <div class="hero-actions">
+            <a href="./getting-started" class="btn btn-primary btn-lg">Get Started</a>
+            <a href="./playground" class="btn btn-secondary btn-lg">Try Playground</a>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-value">Zero</div>
+                <div class="hero-stat-label">Dependencies</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">Zero</div>
+                <div class="hero-stat-label">Build Steps</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">4</div>
+                <div class="hero-stat-label">Ways to Build</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section">
+    <div class="section-content">
+        <div class="section-header">
+            <h2 class="section-title">Heavy? That's Not Our Thing.</h2>
+            <p class="section-subtitle">
+                Have fun, stay light.
+            </p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                </div>
+                <h3 class="feature-title">Signals & Reactivity</h3>
+                <p class="feature-description">
+                    Fine-grained reactivity with signals. Updates propagate automatically—no virtual DOM diffing needed.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <path d="M3 9h18M9 21V9" />
+                    </svg>
+                </div>
+                <h3 class="feature-title">Multiple Syntaxes</h3>
+                <p class="feature-description">
+                    Tagged API, element functions, vDOM, or Object DOM. Pick your style—they all work together.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.66 0 3-4 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4-3-9s1.34-9 3-9" />
+                    </svg>
+                </div>
+                <h3 class="feature-title">Hypermedia Ready</h3>
+                <p class="feature-description">
+                    Fetch HTML or JSON with the <code>src</code> attribute. HTMX-like patterns built right in.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
+                </div>
+                <h3 class="feature-title">Component Library</h3>
+                <p class="feature-description">
+                    Beautiful, accessible components ready to use. Buttons, modals, forms, and more.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+                    </svg>
+                </div>
+                <h3 class="feature-title">Zero Build Step</h3>
+                <p class="feature-description">
+                    No bundler required. Drop in a script tag and start building. Works everywhere.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <path
+                            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                    </svg>
+                </div>
+                <h3 class="feature-title">Dark Mode</h3>
+                <p class="feature-description">
+                    Theme switching built in. CSS variables make customization a breeze.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Call to Action -->
+<section class="section">
+    <div class="section-content">
+        <div class="section-header">
+            <h2 class="section-title">Heavy, Complex Frameworks? Lighten Up.</h2>
+            <p class="section-subtitle">
+                Get started in minutes. No npm install. No webpack config. Just code.
+            </p>
+        </div>
+        <div style="text-align: center;">
+            <a href="/docs/getting-started" class="btn btn-primary btn-lg">Enlighten Your UI</a>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,563 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Chart</li>
+            </ul>
+        </div>
+
+        <h1>Chart</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Data visualization components powered by <a href="https://chartscss.org/" target="_blank"
+                class="link link-primary">Charts.css</a>.
+            Use CSS classes to turn your data into beautiful charts.
+        </p>
+
+        <!-- Notes Section -->
+        <h2 class="text-xl font-bold mb-4">Notes</h2>
+        <div class="alert alert-warning mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+                <p class="mb-2">
+                    <strong>Chart.Head is for accessibility only.</strong> Charts.css visually hides the
+                    <code>&lt;thead&gt;</code> element
+                    by design—it's meant for screen readers, not visual rendering. Use <code>heading</code> prop for a
+                    visible chart title.
+                </p>
+                <p>
+                    <strong>Click on the info icon</strong> next to each chart type name to get more detail and
+                    advanced configuration options.
+                </p>
+            </div>
+        </div>
+
+        <!-- Bar Chart -->
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            Bar Chart
+            <a href="/docs/components/chart-bar" class="text-info opacity-70 hover:opacity-100 transition-opacity"
+                aria-label="View Bar Chart Details">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-5 h-5 stroke-current">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </a>
+        </h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <div id="bar-chart-container" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                    <table class="charts-css bar show-labels show-data-on-hover show-primary-axis data-spacing-5">
+                        <caption>Front-end Frameworks</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col"> Framework </th>
+                                <th scope="col"> Progress </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> React </th>
+                                <td style="--size: 0.8;"> <span class="data"> 80% </span> <span class="tooltip"> React:
+                                        80% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Vue </th>
+                                <td style="--size: 0.6;"> <span class="data"> 60% </span> <span class="tooltip"> Vue:
+                                        60% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Svelte </th>
+                                <td style="--size: 0.4;"> <span class="data"> 40% </span> <span class="tooltip"> Svelte:
+                                        40% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Lightview </th>
+                                <td style="--size: 1.0; --color: #7480ff;"> <span class="data"> 100% </span> <span
+                                        class="tooltip"> Lightview: 100% </span> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true, dataOnHover: true, primaryAxis: true, spacing: 5, heading: 'Front-end Frameworks' },
+    /* Head is for screen reader use and is not visible */
+    Chart.Head({},
+        Chart.Row({},
+            Chart.Label({ scope: 'col' }, 'Framework'),
+            Chart.Label({ scope: 'col' }, 'Progress')
+        )
+    ),
+    Chart.Body({},
+        Chart.Row({},
+            Chart.Label({}, 'React'),
+            Chart.Data({ value: 0.8, tooltip: 'React: 80%' }, $('span', { class: 'data' }, '80%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Vue'),
+            Chart.Data({ value: 0.6, tooltip: 'Vue: 60%' }, $('span', { class: 'data' }, '60%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Svelte'),
+            Chart.Data({ value: 0.4, tooltip: 'Svelte: 40%' }, $('span', { class: 'data' }, '40%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Lightview'),
+            Chart.Data({ value: 1.0, color: '#7480ff', tooltip: 'Lightview: 100%' }, $('span', { class: 'data' }, '100%'))
+        )
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column Chart -->
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            Column Chart
+            <a href="/docs/components/chart-column" class="text-info opacity-70 hover:opacity-100 transition-opacity"
+                aria-label="View Column Chart Details">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-5 h-5 stroke-current">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </a>
+        </h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <div id="column-chart-container" style="width: 100%; max-width: 600px; height: 300px; margin: 0 auto;">
+                    <table class="charts-css column show-labels show-primary-axis data-spacing-10 show-heading">
+                        <caption>Monthly Revenue</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col"> Month </th>
+                                <th scope="col"> Revenue </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> Jan </th>
+                                <td style="--size: 0.2;"> <span class="data"> $20K </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Feb </th>
+                                <td style="--size: 0.4;"> <span class="data"> $40K </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Mar </th>
+                                <td style="--size: 0.6;"> <span class="data"> $60K </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Apr </th>
+                                <td style="--size: 0.8;"> <span class="data"> $80K </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> May </th>
+                                <td style="--size: 0.5;"> <span class="data"> $50K </span> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'column', labels: true, primaryAxis: true, spacing: 10, heading: 'Monthly Revenue' },
+    /* Head is for screen reader use and is not visible */
+    Chart.Head({},
+        Chart.Row({},
+            Chart.Label({ scope: 'col' }, 'Month'),
+            Chart.Label({ scope: 'col' }, 'Revenue')
+        )
+    ),
+    Chart.Body({},
+        Chart.Row({},
+            Chart.Label({}, 'Jan'),
+            Chart.Data({ value: 0.2 }, $('span', { class: 'data' }, '$20K'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Feb'),
+            Chart.Data({ value: 0.4 }, $('span', { class: 'data' }, '$40K'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Mar'),
+            Chart.Data({ value: 0.6 }, $('span', { class: 'data' }, '$60K'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Apr'),
+            Chart.Data({ value: 0.8 }, $('span', { class: 'data' }, '$80K'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'May'),
+            Chart.Data({ value: 0.5 }, $('span', { class: 'data' }, '$50K'))
+        )
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Line Chart -->
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            Line Chart
+            <a href="/docs/components/chart-line" class="text-info opacity-70 hover:opacity-100 transition-opacity"
+                aria-label="View Line Chart Details">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-5 h-5 stroke-current">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </a>
+        </h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <div id="line-chart-container" style="width: 100%; max-width: 600px; height: 300px; margin: 0 auto;">
+                    <table class="charts-css line show-heading show-labels show-primary-axis show-10-secondary-axes">
+                        <caption>Growth Trajectory</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col"> Year </th>
+                                <th scope="col"> Value </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> 2018 </th>
+                                <td style="--start: 0.1; --size: 0.3;"> <span class="data"> 30% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 2019 </th>
+                                <td style="--start: 0.3; --size: 0.5;"> <span class="data"> 50% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 2020 </th>
+                                <td style="--start: 0.5; --size: 0.4;"> <span class="data"> 40% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 2021 </th>
+                                <td style="--start: 0.4; --size: 0.8;"> <span class="data"> 80% </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 2022 </th>
+                                <td style="--start: 0.8; --size: 0.9;"> <span class="data"> 90% </span> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', heading: 'Growth Trajectory', labels: true, primaryAxis: true, secondaryAxis: true },
+    /* Head is for screen reader use and is not visible */
+    Chart.Head({},
+        Chart.Row({},
+            Chart.Label({ scope: 'col' }, 'Year'),
+            Chart.Label({ scope: 'col' }, 'Value')
+        )
+    ),
+    Chart.Body({},
+        Chart.Row({},
+            Chart.Label({}, '2018'),
+            Chart.Data({ start: 0.1, value: 0.3 }, $('span', { class: 'data' }, '30%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, '2019'),
+            Chart.Data({ start: 0.3, value: 0.5 }, $('span', { class: 'data' }, '50%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, '2020'),
+            Chart.Data({ start: 0.5, value: 0.4 }, $('span', { class: 'data' }, '40%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, '2021'),
+            Chart.Data({ start: 0.4, value: 0.8 }, $('span', { class: 'data' }, '80%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, '2022'),
+            Chart.Data({ start: 0.8, value: 0.9 }, $('span', { class: 'data' }, '90%'))
+        )
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Area Chart -->
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            Area Chart
+            <a href="/docs/components/chart-area" class="text-info opacity-70 hover:opacity-100 transition-opacity"
+                aria-label="View Area Chart Details">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-5 h-5 stroke-current">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </a>
+        </h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <div id="area-chart-container" style="width: 100%; max-width: 600px; height: 300px; margin: 0 auto;">
+                    <table class="charts-css area show-labels show-primary-axis">
+                        <caption>Server Load</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col"> Time </th>
+                                <th scope="col"> Load </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> 00:00 </th>
+                                <td style="--start: 0.2; --size: 0.4;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 04:00 </th>
+                                <td style="--start: 0.4; --size: 0.8;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 08:00 </th>
+                                <td style="--start: 0.8; --size: 0.6;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 12:00 </th>
+                                <td style="--start: 0.6; --size: 0.9;"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> 16:00 </th>
+                                <td style="--start: 0.9; --size: 0.5;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'area', labels: true, primaryAxis: true, heading: 'Server Load' },
+    /* Head is for screen reader use and is not visible */
+    Chart.Head({},
+        Chart.Row({},
+            Chart.Label({ scope: 'col' }, 'Time'),
+            Chart.Label({ scope: 'col' }, 'Load')
+        )
+    ),
+    Chart.Body({},
+        Chart.Row({},
+            Chart.Label({}, '00:00'),
+            Chart.Data({ start: 0.2, value: 0.4 })
+        ),
+        Chart.Row({},
+            Chart.Label({}, '04:00'),
+            Chart.Data({ start: 0.4, value: 0.8 })
+        ),
+        Chart.Row({},
+            Chart.Label({}, '08:00'),
+            Chart.Data({ start: 0.8, value: 0.6 })
+        ),
+        Chart.Row({},
+            Chart.Label({}, '12:00'),
+            Chart.Data({ start: 0.6, value: 0.9 })
+        ),
+        Chart.Row({},
+            Chart.Label({}, '16:00'),
+            Chart.Data({ start: 0.9, value: 0.5 })
+        )
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie Chart -->
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            Pie Chart
+            <a href="/docs/components/chart-pie" class="text-info opacity-70 hover:opacity-100 transition-opacity"
+                aria-label="View Pie Chart Details">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-5 h-5 stroke-current">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </a>
+        </h2>
+        <div class="card bg-base-100 shadow-sm mb-8">
+            <div class="card-body">
+                <div id="pie-chart-container"
+                    style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1 / 1;">
+                    <table class="charts-css pie show-labels data-spacing-2">
+                        <caption>Browser Market Share</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col"> Browser </th>
+                                <th scope="col"> Share </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row"> Chrome </th>
+                                <td style="--start: 0.0; --end: 0.6; --color: #4CAF50;"> <span class="data"> 60%
+                                    </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Firefox </th>
+                                <td style="--start: 0.6; --end: 0.85; --color: #F44336;"> <span class="data"> 25%
+                                    </span> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"> Safari </th>
+                                <td style="--start: 0.85; --end: 1.0; --color: #2196F3;"> <span class="data"> 15%
+                                    </span> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-sm opacity-70 mt-4">
+                    <strong>Note:</strong> For Pie charts, use <code>--start</code> and <code>--end</code>
+                    (not <code>--size</code>).
+                    Each segment's <code>--start</code> should equal the previous segment's <code>--end</code>.
+                    The <code>--end</code> value is <code>--start</code> plus the segment's proportion (0.0 to 1.0).
+                </p>
+                <div class="mt-4">
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie', labels: true, spacing: 2, heading: 'Browser Market Share' },
+    Chart.Body({},
+        Chart.Row({},
+            Chart.Label({}, 'Chrome'),
+            Chart.Data({ start: 0.0, end: 0.6, color: '#4CAF50' }, $('span', { class: 'data' }, '60%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Firefox'),
+            Chart.Data({ start: 0.6, end: 0.85, color: '#F44336' }, $('span', { class: 'data' }, '25%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Safari'),
+            Chart.Data({ start: 0.85, end: 1.0, color: '#2196F3' }, $('span', { class: 'data' }, '15%'))
+        )
+    )
+)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>type</code></td>
+                        <td>string</td>
+                        <td>'bar'</td>
+                        <td>Type of chart: 'bar', 'column', 'line', 'area', 'pie'</td>
+                    </tr>
+                    <tr>
+                        <td><code>heading</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Caption for the chart table</td>
+                    </tr>
+                    <tr>
+                        <td><code>labels</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Show axis labels (.show-labels)</td>
+                    </tr>
+                    <tr>
+                        <td><code>dataOnHover</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Show data tooltip on hover (.show-data-on-hover)</td>
+                    </tr>
+                    <tr>
+                        <td><code>primaryAxis</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Show primary axis lines (.show-primary-axis)</td>
+                    </tr>
+                    <tr>
+                        <td><code>secondaryAxis</code></td>
+                        <td>boolean|string</td>
+                        <td>false</td>
+                        <td>Show secondary axes lines (.show-10-secondary-axes or custom class)</td>
+                    </tr>
+                    <tr>
+                        <td><code>spacing</code></td>
+                        <td>number</td>
+                        <td>-</td>
+                        <td>Gap between data points (1-20) (.data-spacing-N)</td>
+                    </tr>
+                    <tr>
+                        <td><code>reverse</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Reverse chart orientation (.reverse)</td>
+                    </tr>
+                    <tr>
+                        <td><code>multiple</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Enable multiple datasets mode (.multiple)</td>
+                    </tr>
+                    <tr>
+                        <td><code>stacked</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Enable stacked mode for bar/column charts (.stacked)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="text-lg font-bold mb-4">Chart.Data Props</h3>
+        <p class="mb-4 opacity-70">Properties available for the <code>Chart.Data</code> subcomponent.</p>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>value</code> (or <code>size</code>)</td>
+                        <td>number</td>
+                        <td>Value of the data point (0.0 - 1.0). Maps to <code>--size</code>. <strong>Use for bar,
+                                column, line, and area charts.</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>start</code></td>
+                        <td>number</td>
+                        <td>Start position (0.0 - 1.0). Used for stacked bars, line/area charts, and pie segments.
+                            Maps to
+                            <code>--start</code>.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>end</code></td>
+                        <td>number</td>
+                        <td>End position (0.0 - 1.0). Maps to <code>--end</code>. <strong>Required for pie
+                                charts instead of <code>value</code>.</strong></td>
+                    </tr>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>CSS color value for the data segment. Maps to <code>--color</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>tooltip</code></td>
+                        <td>string</td>
+                        <td>Text to display in the standard tooltip span.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

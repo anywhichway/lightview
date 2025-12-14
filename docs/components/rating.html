@@ -1,0 +1,77 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Rating</li>
+            </ul>
+        </div>
+        <h1>Rating</h1>
+        <p class="text-lg opacity-70 mb-6">Rating is used for star ratings.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="rating mb-8">
+            <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
+            <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
+            <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" checked />
+            <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
+            <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Sizes</h2>
+        <div class="flex flex-col gap-4 mb-8">
+            <div class="rating rating-xs">
+                <input type="radio" name="rating-xs" class="mask mask-star-2 bg-orange-400" /><input type="radio"
+                    name="rating-xs" class="mask mask-star-2 bg-orange-400" /><input type="radio" name="rating-xs"
+                    class="mask mask-star-2 bg-orange-400" checked /><input type="radio" name="rating-xs"
+                    class="mask mask-star-2 bg-orange-400" /><input type="radio" name="rating-xs"
+                    class="mask mask-star-2 bg-orange-400" />
+            </div>
+            <div class="rating rating-sm">
+                <input type="radio" name="rating-sm" class="mask mask-star-2 bg-orange-400" /><input type="radio"
+                    name="rating-sm" class="mask mask-star-2 bg-orange-400" /><input type="radio" name="rating-sm"
+                    class="mask mask-star-2 bg-orange-400" checked /><input type="radio" name="rating-sm"
+                    class="mask mask-star-2 bg-orange-400" /><input type="radio" name="rating-sm"
+                    class="mask mask-star-2 bg-orange-400" />
+            </div>
+            <div class="rating rating-md">
+                <input type="radio" name="rating-md" class="mask mask-star-2 bg-orange-400" /><input type="radio"
+                    name="rating-md" class="mask mask-star-2 bg-orange-400" /><input type="radio" name="rating-md"
+                    class="mask mask-star-2 bg-orange-400" checked /><input type="radio" name="rating-md"
+                    class="mask mask-star-2 bg-orange-400" /><input type="radio" name="rating-md"
+                    class="mask mask-star-2 bg-orange-400" />
+            </div>
+            <div class="rating rating-lg">
+                <input type="radio" name="rating-lg" class="mask mask-star-2 bg-orange-400" /><input type="radio"
+                    name="rating-lg" class="mask mask-star-2 bg-orange-400" /><input type="radio" name="rating-lg"
+                    class="mask mask-star-2 bg-orange-400" checked /><input type="radio" name="rating-lg"
+                    class="mask mask-star-2 bg-orange-400" /><input type="radio" name="rating-lg"
+                    class="mask mask-star-2 bg-orange-400" />
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Half Stars</h2>
+        <div class="rating rating-lg rating-half mb-8">
+            <input type="radio" name="rating-half" class="rating-hidden" />
+            <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-1 bg-green-500" />
+            <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-2 bg-green-500" />
+            <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-1 bg-green-500" checked />
+            <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-2 bg-green-500" />
+            <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-1 bg-green-500" />
+            <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-2 bg-green-500" />
+            <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-1 bg-green-500" />
+            <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-2 bg-green-500" />
+            <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-1 bg-green-500" />
+            <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-2 bg-green-500" />
+        </div>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/rating/" target="_blank" class="link link-primary">DaisyUI
+                    Rating</a> for more options.</span>
+        </div>
+    </div>
+</div>

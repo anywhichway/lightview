@@ -1,0 +1,123 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Alert</li>
+            </ul>
+        </div>
+
+        <h1>Alert</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Alert informs users about important events or status messages.
+        </p>
+
+        <!-- Colors -->
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="space-y-4 mb-8">
+            <div role="alert" class="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    class="stroke-info h-6 w-6 shrink-0">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Default alert — neutral information message.</span>
+            </div>
+            <div role="alert" class="alert alert-info">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    class="h-6 w-6 shrink-0 stroke-current">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Info alert — informational message.</span>
+            </div>
+            <div role="alert" class="alert alert-success">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Success alert — operation completed successfully.</span>
+            </div>
+            <div role="alert" class="alert alert-warning">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>Warning alert — caution is advised.</span>
+            </div>
+            <div role="alert" class="alert alert-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Error alert — something went wrong!</span>
+            </div>
+        </div>
+
+        <!-- Variants -->
+        <h2 class="text-xl font-bold mb-4">Variants</h2>
+        <div class="space-y-4 mb-8">
+            <div role="alert" class="alert alert-soft alert-info">
+                <span>Soft variant — lighter background.</span>
+            </div>
+            <div role="alert" class="alert alert-outline alert-success">
+                <span>Outline variant — bordered style.</span>
+            </div>
+            <div role="alert" class="alert alert-dash alert-warning">
+                <span>Dash variant — dashed border.</span>
+            </div>
+        </div>
+
+        <!-- With Actions -->
+        <h2 class="text-xl font-bold mb-4">With Actions</h2>
+        <div role="alert" class="alert mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>We have sent an email with a confirmation link.</span>
+            <div>
+                <button class="btn btn-sm">Dismiss</button>
+                <button class="btn btn-sm btn-primary">See</button>
+            </div>
+        </div>
+
+        <!-- Code -->
+        <h2 class="text-xl font-bold mb-4">Usage</h2>
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>import Alert from './components/data-display/alert.js';
+
+Alert({ color: 'success', icon: 'success' },
+    'Your order has been placed successfully!'
+)
+
+// Or with DaisyUI classes
+&lt;div role="alert" class="alert alert-success"&gt;
+    &lt;span&gt;Success message&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/alert/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Alert documentation</a>.
+            </span>
+        </div>
+    </div>
+</div>

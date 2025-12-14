@@ -1,0 +1,67 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Toast</li>
+            </ul>
+        </div>
+        <h1>Toast</h1>
+        <p class="text-lg opacity-70 mb-6">Toast is a wrapper to position alert components at the corner of the screen.
+        </p>
+
+        <h2 class="text-xl font-bold mb-4">Positions</h2>
+        <p class="opacity-70 mb-4">Click to see toast position (shown for 3 seconds):</p>
+        <div class="flex flex-wrap gap-2 mb-8">
+            <button class="btn btn-sm" onclick="showToast('top', 'start')">Top Start</button>
+            <button class="btn btn-sm" onclick="showToast('top', 'center')">Top Center</button>
+            <button class="btn btn-sm" onclick="showToast('top', 'end')">Top End</button>
+            <button class="btn btn-sm" onclick="showToast('middle', 'start')">Middle Start</button>
+            <button class="btn btn-sm" onclick="showToast('middle', 'center')">Middle Center</button>
+            <button class="btn btn-sm" onclick="showToast('middle', 'end')">Middle End</button>
+            <button class="btn btn-sm" onclick="showToast('bottom', 'start')">Bottom Start</button>
+            <button class="btn btn-sm" onclick="showToast('bottom', 'center')">Bottom Center</button>
+            <button class="btn btn-sm" onclick="showToast('bottom', 'end')">Bottom End</button>
+        </div>
+
+        <div id="toast-container"></div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="toast toast-top toast-end"&gt;
+  &lt;div class="alert alert-success"&gt;
+    &lt;span&gt;Message sent successfully.&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Positions: toast-start, toast-center, toast-end --&gt;
+&lt;!-- Vertical: toast-top, toast-middle, toast-bottom --&gt;</code></pre>
+
+        <h2 class="text-xl font-bold mb-4">Multiple Toasts</h2>
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="toast toast-end"&gt;
+  &lt;div class="alert alert-info"&gt;&lt;span&gt;New message.&lt;/span&gt;&lt;/div&gt;
+  &lt;div class="alert alert-success"&gt;&lt;span&gt;Saved!&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/toast/" target="_blank" class="link link-primary">DaisyUI
+                    Toast</a> for more options.</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showToast(vertical, horizontal) {
+        const container = document.getElementById('toast-container');
+        container.innerHTML = `
+        <div class="toast toast-${vertical} toast-${horizontal}">
+            <div class="alert alert-success">
+                <span>Toast at ${vertical}-${horizontal}!</span>
+            </div>
+        </div>
+    `;
+        setTimeout(() => container.innerHTML = '', 3000);
+    }
+</script>

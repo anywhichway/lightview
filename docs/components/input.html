@@ -1,0 +1,332 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Input</li>
+            </ul>
+        </div>
+
+        <h1>Input</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Text input allows users to enter and edit text.
+            Supports labels, validation, helper text, and reactive state binding.
+        </p>
+
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Examples</h2>
+                <p class="text-sm opacity-70 mb-4">Simple inputs with various configurations</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Input component
+await LightviewX.initComponents();
+const { default: Input } = await import('/components/data-input/input.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+// 1. Basic input
+const basic = Input({ 
+    placeholder: 'Basic input' 
+});
+
+// 2. Input with label and helper
+const withLabel = Input({ 
+    label: 'Email Address',
+    type: 'email',
+    placeholder: 'you@example.com',
+    helper: 'We will never share your email.'
+});
+
+// 3. Input with color
+const withColor = Input({ 
+    label: 'Primary Color',
+    placeholder: 'Styled input',
+    color: 'primary'
+});
+
+// 4. Required input
+const requiredInput = Input({ 
+    label: 'Username',
+    placeholder: 'Enter username',
+    required: true
+});
+
+// Insert all examples
+$('#demo').insert(
+    div({ class: 'space-y-4' }, basic, withLabel, withColor, requiredInput)
+);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Reactive Example</h2>
+                <p class="text-sm opacity-70 mb-4">Two-way binding with signals and live validation</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">await LightviewX.initComponents();
+const { default: Input } = await import('/components/data-input/input.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, p, span } = tags;
+
+// Signal for two-way binding
+const username = signal('');
+
+// Validation function
+const validateUsername = (val) => {
+    if (!val) return 'Username is required';
+    if (val.length < 3) return 'Username must be at least 3 characters';
+    if (!/^[a-zA-Z0-9_]+$/.test(val)) return 'Only letters, numbers, and underscores allowed';
+    return null;
+};
+
+// Reactive input with validation
+const reactiveDemo = div({ class: 'space-y-4' },
+    Input({ 
+        label: 'Username',
+        placeholder: 'Enter your username...',
+        value: username,
+        validate: validateUsername,
+        required: true
+    }),
+    p({ class: 'text-sm' }, 
+        span({ class: 'opacity-70' }, 'Current value: '),
+        span({ class: 'font-mono text-primary' }, () => username.value || '(empty)')
+    ),
+    p({ class: 'text-sm' }, 
+        () => {
+            const error = validateUsername(username.value);
+            return error 
+                ? span({ class: 'text-error' }, '✗ ' + error)
+                : span({ class: 'text-success' }, '✓ Username is valid!');
+        }
+    )
+);
+
+$('#demo').insert(reactiveDemo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>type</code></td>
+                        <td>string</td>
+                        <td>'text'</td>
+                        <td>Input type (text, password, email, number, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td><code>value</code></td>
+                        <td>string | signal</td>
+                        <td>-</td>
+                        <td>Input value (reactive with signals)</td>
+                    </tr>
+                    <tr>
+                        <td><code>defaultValue</code></td>
+                        <td>string</td>
+                        <td>''</td>
+                        <td>Default value for uncontrolled mode</td>
+                    </tr>
+                    <tr>
+                        <td><code>placeholder</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Placeholder text</td>
+                    </tr>
+                    <tr>
+                        <td><code>label</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Label text displayed above input</td>
+                    </tr>
+                    <tr>
+                        <td><code>helper</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Helper text displayed below the input</td>
+                    </tr>
+                    <tr>
+                        <td><code>error</code></td>
+                        <td>string | function</td>
+                        <td>-</td>
+                        <td>Error message or reactive error function</td>
+                    </tr>
+                    <tr>
+                        <td><code>validate</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Validation function: <code>(value) => errorMessage | null</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>'md'</td>
+                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                    </tr>
+                    <tr>
+                        <td><code>ghost</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Ghost style (no background)</td>
+                    </tr>
+                    <tr>
+                        <td><code>disabled</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Disable the input</td>
+                    </tr>
+                    <tr>
+                        <td><code>required</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Mark as required field (shows asterisk)</td>
+                    </tr>
+                    <tr>
+                        <td><code>onChange</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when value changes: <code>(value, event) => void</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>onBlur</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when input loses focus</td>
+                    </tr>
+                    <tr>
+                        <td><code>useShadow</code></td>
+                        <td>boolean</td>
+                        <td>*</td>
+                        <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sizes Example -->
+        <h2 class="text-xl font-bold mb-4">Sizes</h2>
+        <div class="flex flex-wrap items-end gap-4 mb-8">
+            <input type="text" placeholder="Extra small" class="input input-xs" />
+            <input type="text" placeholder="Small" class="input input-sm" />
+            <input type="text" placeholder="Medium" class="input" />
+            <input type="text" placeholder="Large" class="input input-lg" />
+        </div>
+
+        <!-- Colors Example -->
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <input type="text" placeholder="Primary" class="input input-primary" />
+            <input type="text" placeholder="Secondary" class="input input-secondary" />
+            <input type="text" placeholder="Accent" class="input input-accent" />
+            <input type="text" placeholder="Info" class="input input-info" />
+            <input type="text" placeholder="Success" class="input input-success" />
+            <input type="text" placeholder="Warning" class="input input-warning" />
+            <input type="text" placeholder="Error" class="input input-error" />
+            <input type="text" placeholder="Ghost" class="input input-ghost" />
+        </div>
+
+        <!-- With Fieldset -->
+        <h2 class="text-xl font-bold mb-4">With Label (Fieldset Pattern)</h2>
+        <div class="max-w-md mb-8">
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">Email Address</legend>
+                <input type="email" class="input w-full" placeholder="you@example.com" />
+                <p class="label">We'll never share your email.</p>
+            </fieldset>
+        </div>
+
+        <!-- DaisyUI Reference -->
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples and styling options, see the
+                <a href="https://daisyui.com/components/input/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Input documentation</a>.
+            </span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '320px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '220px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

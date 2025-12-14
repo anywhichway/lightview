@@ -1,0 +1,54 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Join</li>
+            </ul>
+        </div>
+        <h1>Join</h1>
+        <p class="text-lg opacity-70 mb-6">Join groups elements together with shared borders.</p>
+
+        <h2 class="text-xl font-bold mb-4">Horizontal</h2>
+        <div class="join mb-8">
+            <button class="btn join-item">Button 1</button>
+            <button class="btn join-item">Button 2</button>
+            <button class="btn join-item">Button 3</button>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Vertical</h2>
+        <div class="join join-vertical mb-8">
+            <button class="btn join-item">Button 1</button>
+            <button class="btn join-item">Button 2</button>
+            <button class="btn join-item">Button 3</button>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Inputs</h2>
+        <div class="join mb-8">
+            <input class="input input-bordered join-item" placeholder="Email" />
+            <button class="btn btn-primary join-item">Subscribe</button>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Radio Group</h2>
+        <div class="join mb-8">
+            <input class="join-item btn" type="radio" name="options" aria-label="Radio 1" />
+            <input class="join-item btn" type="radio" name="options" aria-label="Radio 2" checked />
+            <input class="join-item btn" type="radio" name="options" aria-label="Radio 3" />
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="join"&gt;
+  &lt;button class="btn join-item"&gt;Button 1&lt;/button&gt;
+  &lt;button class="btn join-item"&gt;Button 2&lt;/button&gt;
+  &lt;button class="btn join-item"&gt;Button 3&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/join/" target="_blank" class="link link-primary">DaisyUI
+                    Join</a> for more options.</span>
+        </div>
+    </div>
+</div>

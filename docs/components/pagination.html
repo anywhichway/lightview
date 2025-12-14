@@ -1,0 +1,74 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Pagination</li>
+            </ul>
+        </div>
+        <h1>Pagination</h1>
+        <p class="text-lg opacity-70 mb-6">Pagination is a group of buttons that allow navigation between pages.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="join mb-8">
+            <button class="join-item btn">«</button>
+            <button class="join-item btn">Page 1</button>
+            <button class="join-item btn">»</button>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Numbers</h2>
+        <div class="join mb-8">
+            <button class="join-item btn">1</button>
+            <button class="join-item btn btn-active">2</button>
+            <button class="join-item btn">3</button>
+            <button class="join-item btn">4</button>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Radio Inputs</h2>
+        <div class="join mb-8">
+            <input class="join-item btn btn-square" type="radio" name="options" aria-label="1" checked />
+            <input class="join-item btn btn-square" type="radio" name="options" aria-label="2" />
+            <input class="join-item btn btn-square" type="radio" name="options" aria-label="3" />
+            <input class="join-item btn btn-square" type="radio" name="options" aria-label="4" />
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Sizes</h2>
+        <div class="flex flex-col gap-4 mb-8">
+            <div class="join">
+                <button class="join-item btn btn-xs">1</button>
+                <button class="join-item btn btn-xs btn-active">2</button>
+                <button class="join-item btn btn-xs">3</button>
+            </div>
+            <div class="join">
+                <button class="join-item btn btn-sm">1</button>
+                <button class="join-item btn btn-sm btn-active">2</button>
+                <button class="join-item btn btn-sm">3</button>
+            </div>
+            <div class="join">
+                <button class="join-item btn btn-md">1</button>
+                <button class="join-item btn btn-md btn-active">2</button>
+                <button class="join-item btn btn-md">3</button>
+            </div>
+            <div class="join">
+                <button class="join-item btn btn-lg">1</button>
+                <button class="join-item btn btn-lg btn-active">2</button>
+                <button class="join-item btn btn-lg">3</button>
+            </div>
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="join"&gt;
+  &lt;button class="join-item btn"&gt;1&lt;/button&gt;
+  &lt;button class="join-item btn btn-active"&gt;2&lt;/button&gt;
+  &lt;button class="join-item btn"&gt;3&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/pagination/" target="_blank"
+                    class="link link-primary">DaisyUI Pagination</a> (uses Join) for more options.</span>
+        </div>
+    </div>
+</div>

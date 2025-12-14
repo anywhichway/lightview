@@ -1,0 +1,78 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Avatar</li>
+            </ul>
+        </div>
+        <h1>Avatar</h1>
+        <p class="text-lg opacity-70 mb-6">Avatar is used to show a thumbnail representation of an individual or
+            business.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="flex gap-4 mb-8">
+            <div class="avatar">
+                <div class="w-16 rounded-full"><img src="https://i.pravatar.cc/100?img=1" alt="Avatar" /></div>
+            </div>
+            <div class="avatar">
+                <div class="w-16 rounded"><img src="https://i.pravatar.cc/100?img=2" alt="Avatar" /></div>
+            </div>
+            <div class="avatar">
+                <div class="w-16 mask mask-squircle"><img src="https://i.pravatar.cc/100?img=3" alt="Avatar" /></div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Ring</h2>
+        <div class="avatar mb-8">
+            <div class="w-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <img src="https://i.pravatar.cc/100?img=4" alt="Avatar" />
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Online/Offline Status</h2>
+        <div class="flex gap-4 mb-8">
+            <div class="avatar online">
+                <div class="w-16 rounded-full"><img src="https://i.pravatar.cc/100?img=5" alt="Avatar" /></div>
+            </div>
+            <div class="avatar offline">
+                <div class="w-16 rounded-full"><img src="https://i.pravatar.cc/100?img=6" alt="Avatar" /></div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Placeholder</h2>
+        <div class="flex gap-4 mb-8">
+            <div class="avatar placeholder">
+                <div class="bg-neutral text-neutral-content w-16 rounded-full"><span class="text-xl">AI</span></div>
+            </div>
+            <div class="avatar placeholder">
+                <div class="bg-primary text-primary-content w-16 rounded-full"><span class="text-xl">JD</span></div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Avatar Group</h2>
+        <div class="avatar-group -space-x-6 mb-8">
+            <div class="avatar">
+                <div class="w-12"><img src="https://i.pravatar.cc/100?img=7" alt="Avatar" /></div>
+            </div>
+            <div class="avatar">
+                <div class="w-12"><img src="https://i.pravatar.cc/100?img=8" alt="Avatar" /></div>
+            </div>
+            <div class="avatar">
+                <div class="w-12"><img src="https://i.pravatar.cc/100?img=9" alt="Avatar" /></div>
+            </div>
+            <div class="avatar placeholder">
+                <div class="bg-neutral text-neutral-content w-12"><span>+99</span></div>
+            </div>
+        </div>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/avatar/" target="_blank" class="link link-primary">DaisyUI
+                    Avatar</a> for more options.</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Countdown</li>
+            </ul>
+        </div>
+        <h1>Countdown</h1>
+        <p class="text-lg opacity-70 mb-6">Countdown displays a numeric value with transition animation.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="flex gap-5 mb-8">
+            <span class="countdown font-mono text-4xl"><span style="--value:10;"></span></span>
+            <span class="countdown font-mono text-4xl"><span style="--value:24;"></span></span>
+            <span class="countdown font-mono text-4xl"><span style="--value:59;"></span></span>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Labels</h2>
+        <div class="grid grid-flow-col gap-5 text-center auto-cols-max mb-8">
+            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                <span class="countdown font-mono text-5xl"><span style="--value:15;"></span></span>
+                days
+            </div>
+            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                <span class="countdown font-mono text-5xl"><span style="--value:10;"></span></span>
+                hours
+            </div>
+            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                <span class="countdown font-mono text-5xl"><span style="--value:24;"></span></span>
+                min
+            </div>
+            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                <span class="countdown font-mono text-5xl"><span id="countdown-sec" style="--value:59;"></span></span>
+                sec
+            </div>
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;span class="countdown font-mono text-4xl"&gt;
+  &lt;span style="--value:59;"&gt;&lt;/span&gt;
+&lt;/span&gt;
+
+// Update with JavaScript:
+document.querySelector('.countdown span').style.setProperty('--value', 58);</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/countdown/" target="_blank"
+                    class="link link-primary">DaisyUI Countdown</a> for more options.</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animate the seconds countdown
+    let sec = 59;
+    setInterval(() => {
+        sec = sec > 0 ? sec - 1 : 59;
+        const el = document.getElementById('countdown-sec');
+        if (el) el.style.setProperty('--value', sec);
+    }, 1000);
+</script>

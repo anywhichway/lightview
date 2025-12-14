@@ -1,0 +1,79 @@
+[
+  {
+    "tag": "div",
+    "attributes": {
+      "style": "padding: 1rem; background: #f8fafc; border-radius: 8px; margin-top: 1rem;"
+    },
+    "children": [
+      {
+        "tag": "div",
+        "attributes": {
+          "style": "padding: 0.75rem; border-bottom: 1px solid #e2e8f0;"
+        },
+        "children": [
+          {
+            "tag": "strong",
+            "attributes": { "style": "color: #f59e0b;" },
+            "children": ["⭐⭐⭐⭐⭐"]
+          },
+          {
+            "tag": "span",
+            "attributes": { "style": "margin-left: 0.5rem; color: #334155;" },
+            "children": ["\"Best shoes ever! Super comfortable and stylish.\""]
+          },
+          {
+            "tag": "div",
+            "attributes": { "style": "font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;" },
+            "children": ["— Maria S."]
+          }
+        ]
+      },
+      {
+        "tag": "div",
+        "attributes": {
+          "style": "padding: 0.75rem; border-bottom: 1px solid #e2e8f0;"
+        },
+        "children": [
+          {
+            "tag": "strong",
+            "attributes": { "style": "color: #f59e0b;" },
+            "children": ["⭐⭐⭐⭐"]
+          },
+          {
+            "tag": "span",
+            "attributes": { "style": "margin-left: 0.5rem; color: #334155;" },
+            "children": ["\"Great quality for the price. Would buy again.\""]
+          },
+          {
+            "tag": "div",
+            "attributes": { "style": "font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;" },
+            "children": ["— John D."]
+          }
+        ]
+      },
+      {
+        "tag": "div",
+        "attributes": {
+          "style": "padding: 0.75rem;"
+        },
+        "children": [
+          {
+            "tag": "strong",
+            "attributes": { "style": "color: #f59e0b;" },
+            "children": ["⭐⭐⭐⭐⭐"]
+          },
+          {
+            "tag": "span",
+            "attributes": { "style": "margin-left: 0.5rem; color: #334155;" },
+            "children": ["\"Perfect fit! Arrived faster than expected.\""]
+          },
+          {
+            "tag": "div",
+            "attributes": { "style": "font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;" },
+            "children": ["— Alex K."]
+          }
+        ]
+      }
+    ]
+  }
+]

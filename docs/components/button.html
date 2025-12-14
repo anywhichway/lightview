@@ -1,0 +1,256 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Button</li>
+            </ul>
+        </div>
+
+        <h1>Button</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Buttons allow the user to take actions or make choices.
+            Available in multiple variants, colors, and sizes.
+        </p>
+
+        <!-- Quick Example -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Quick Example</h2>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button class="btn">Default</button>
+                    <button class="btn btn-primary">Primary</button>
+                    <button class="btn btn-secondary">Secondary</button>
+                    <button class="btn btn-accent">Accent</button>
+                </div>
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import Button from './components/actions/button.js';
+
+// Using Lightview component
+Button({ color: 'primary' }, 'Primary')
+
+// Or using DaisyUI classes directly
+&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'neutral' | 'info' | 'success' | 'warning' | 'error' |
+                            'ghost' | 'link'</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>'md'</td>
+                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                    </tr>
+                    <tr>
+                        <td><code>variant</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'outline' | 'soft' | 'dash' | 'wide' | 'block' | 'square' | 'circle'</td>
+                    </tr>
+                    <tr>
+                        <td><code>disabled</code></td>
+                        <td>boolean | function</td>
+                        <td>false</td>
+                        <td>Disable the button (reactive)</td>
+                    </tr>
+                    <tr>
+                        <td><code>loading</code></td>
+                        <td>boolean | function</td>
+                        <td>false</td>
+                        <td>Show loading state (reactive)</td>
+                    </tr>
+                    <tr>
+                        <td><code>active</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Force active/pressed state</td>
+                    </tr>
+                    <tr>
+                        <td><code>glass</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Glass morphism effect</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Colors -->
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="flex flex-wrap gap-2 mb-8">
+            <button class="btn">Default</button>
+            <button class="btn btn-neutral">Neutral</button>
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-accent">Accent</button>
+            <button class="btn btn-info">Info</button>
+            <button class="btn btn-success">Success</button>
+            <button class="btn btn-warning">Warning</button>
+            <button class="btn btn-error">Error</button>
+        </div>
+
+        <!-- Variants -->
+        <h2 class="text-xl font-bold mb-4">Variants</h2>
+        <div class="space-y-4 mb-8">
+            <div>
+                <h3 class="font-semibold mb-2">Outline</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button class="btn btn-outline">Default</button>
+                    <button class="btn btn-outline btn-primary">Primary</button>
+                    <button class="btn btn-outline btn-secondary">Secondary</button>
+                    <button class="btn btn-outline btn-accent">Accent</button>
+                </div>
+            </div>
+            <div>
+                <h3 class="font-semibold mb-2">Soft</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button class="btn btn-soft">Default</button>
+                    <button class="btn btn-soft btn-primary">Primary</button>
+                    <button class="btn btn-soft btn-secondary">Secondary</button>
+                    <button class="btn btn-soft btn-accent">Accent</button>
+                </div>
+            </div>
+            <div>
+                <h3 class="font-semibold mb-2">Ghost & Link</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button class="btn btn-ghost">Ghost</button>
+                    <button class="btn btn-link">Link</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sizes -->
+        <h2 class="text-xl font-bold mb-4">Sizes</h2>
+        <div class="flex flex-wrap items-end gap-2 mb-8">
+            <button class="btn btn-primary btn-xs">Extra Small</button>
+            <button class="btn btn-primary btn-sm">Small</button>
+            <button class="btn btn-primary">Medium</button>
+            <button class="btn btn-primary btn-lg">Large</button>
+        </div>
+
+        <!-- States -->
+        <h2 class="text-xl font-bold mb-4">States</h2>
+        <div class="flex flex-wrap gap-2 mb-8">
+            <button class="btn btn-primary">Normal</button>
+            <button class="btn btn-primary btn-active">Active</button>
+            <button class="btn btn-primary" disabled>Disabled</button>
+            <button class="btn btn-primary">
+                <span class="loading loading-spinner loading-sm"></span>
+                Loading
+            </button>
+        </div>
+
+        <!-- Special Shapes -->
+        <h2 class="text-xl font-bold mb-4">Special Shapes</h2>
+        <div class="flex flex-wrap gap-2 mb-8">
+            <button class="btn btn-wide">Wide</button>
+            <button class="btn btn-block">Block (Full Width)</button>
+            <button class="btn btn-square">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <button class="btn btn-circle">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Reactive Example -->
+        <h2 class="text-xl font-bold mb-4">Reactive Loading State</h2>
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <div id="reactive-button-demo"></div>
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mt-4"><code>const { signal, tags } = Lightview;
+const { button, span } = tags;
+
+const isLoading = signal(false);
+
+const LoadingButton = button({
+    class: 'btn btn-primary',
+    onclick: async () => {
+        isLoading.value = true;
+        await new Promise(r => setTimeout(r, 2000));
+        isLoading.value = false;
+    }
+},
+    () => isLoading.value 
+        ? [span({ class: 'loading loading-spinner' }), ' Saving...']
+        : 'Save Changes'
+);</code></pre>
+            </div>
+        </div>
+
+        <script type="module">
+            const { signal, tags, $ } = Lightview;
+            const { button, span, div } = tags;
+
+            const isLoading = signal(false);
+
+            const demo = div({ class: 'flex gap-2' },
+                button({
+                    class: () => `btn btn-primary ${isLoading.value ? 'btn-disabled' : ''}`,
+                    onclick: async () => {
+                        isLoading.value = true;
+                        await new Promise(r => setTimeout(r, 2000));
+                        isLoading.value = false;
+                    }
+                },
+                    () => isLoading.value
+                        ? [span({ class: 'loading loading-spinner loading-sm' }), ' Saving...']
+                        : 'Save Changes'
+                ),
+                span({ class: 'self-center text-sm opacity-70' },
+                    () => isLoading.value ? 'Loading...' : 'Click to test loading state'
+                )
+            );
+
+            $('#reactive-button-demo').insert(demo);
+        </script>
+
+        <!-- DaisyUI Reference -->
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples and options, see the
+                <a href="https://daisyui.com/components/button/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Button documentation</a>.
+            </span>
+        </div>
+
+    </div>
+</div>

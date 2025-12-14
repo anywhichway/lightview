@@ -1,0 +1,53 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Collapse</li>
+            </ul>
+        </div>
+        <h1>Collapse</h1>
+        <p class="text-lg opacity-70 mb-6">Collapse is used for showing and hiding content.</p>
+
+        <h2 class="text-xl font-bold mb-4">With Arrow Icon</h2>
+        <div class="collapse collapse-arrow bg-base-100 border border-base-300 mb-4">
+            <input type="checkbox" />
+            <div class="collapse-title font-semibold">Click to open/close</div>
+            <div class="collapse-content">
+                <p>This content is hidden by default.</p>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Plus/Minus Icon</h2>
+        <div class="collapse collapse-plus bg-base-100 border border-base-300 mb-4">
+            <input type="checkbox" />
+            <div class="collapse-title font-semibold">Click to expand</div>
+            <div class="collapse-content">
+                <p>Expanded content here.</p>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Force Open</h2>
+        <div class="collapse collapse-open bg-base-100 border border-base-300 mb-8">
+            <div class="collapse-title font-semibold">I am always open</div>
+            <div class="collapse-content">
+                <p>This collapse is forced open with <code>collapse-open</code>.</p>
+            </div>
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="collapse collapse-arrow bg-base-100 border"&gt;
+  &lt;input type="checkbox" /&gt;
+  &lt;div class="collapse-title font-semibold"&gt;Title&lt;/div&gt;
+  &lt;div class="collapse-content"&gt;Content&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/collapse/" target="_blank"
+                    class="link link-primary">DaisyUI Collapse</a> for more options.</span>
+        </div>
+    </div>
+</div>

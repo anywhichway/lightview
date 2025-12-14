@@ -1,0 +1,120 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="./nav.html"></aside>
+
+    <main class="docs-content">
+        <h1>Signals</h1>
+        <p>
+            Signals are the heart of Lightview's reactivity. They hold values that can change over time,
+            and automatically notify anything that depends on them.
+        </p>
+
+        <h2>Creating Signals</h2>
+        <pre><code>const { signal } = Lightview;
+
+// Create a signal with an initial value
+const count = signal(0);
+const name = signal('World');
+const items = signal([]);
+const user = signal({ name: 'Alice', age: 25 });</code></pre>
+
+        <h2>Reading Values</h2>
+        <pre><code>// Two ways to read
+console.log(count.value);  // Property access: 0
+console.log(count());      // Function call: 0
+
+// Both work identically - pick your style</code></pre>
+
+        <h2>Writing Values</h2>
+        <pre><code>// Two ways to write
+count.value = 5;           // Property assignment
+count(10);                 // Function call with argument
+
+// Both trigger reactive updates</code></pre>
+
+        <h2>Reactive UI</h2>
+        <p>
+            The magic happens when you use signals in your UI. Wrap expressions in functions to make them reactive:
+        </p>
+        <pre><code>const { signal, tags } = Lightview;
+const { div, p, button } = tags;
+
+const count = signal(0);
+
+// Static - won't update
+p(`Count: ${count.value}`)  // ❌ "Count: 0" forever
+
+// Reactive - updates automatically
+p(() => `Count: ${count.value}`)  // ✅ Updates when count changes!</code></pre>
+
+        <div class="code-example">
+            <div class="code-example-preview" id="signal-demo"></div>
+            <div class="code-example-code">
+                <pre><code>const count = signal(0);
+
+div(
+    p(() => `Count: ${count.value}`),
+    button({ onclick: () => count.value++ }, '+1')
+)</code></pre>
+            </div>
+        </div>
+
+        <h2>Named Signals (lightview-x)</h2>
+        <p>
+            With the hypermedia extension, you can name signals for use in templates:
+        </p>
+        <pre><code>// Register a named signal
+const count = signal(0, 'count');
+
+// Retrieve it elsewhere
+const sameCount = signal.get('count');
+
+// Get or create with default
+const score = signal.get('score', 100);  // Creates if doesn't exist</code></pre>
+
+        <h2>Tips & Patterns</h2>
+
+        <h3>Derived State</h3>
+        <p>For values computed from signals, use <a href="./computed">computed()</a> instead:</p>
+        <pre><code>const count = signal(0);
+const doubled = computed(() => count.value * 2);  // Auto-updates</code></pre>
+
+        <h3>Objects & Arrays</h3>
+        <p>For deep reactivity on objects/arrays, consider <a href="./state">state()</a>:</p>
+        <pre><code>// Signal: only triggers on reassignment
+const items = signal([1, 2, 3]);
+items.value.push(4);        // ❌ Won't trigger update
+items.value = [...items.value, 4];  // ✅ Triggers update
+
+// State: deep reactivity
+const items = state([1, 2, 3]);
+items.push(4);              // ✅ Triggers update automatically</code></pre>
+    </main>
+</div>
+
+<script>
+    (function () {
+        const { signal, tags } = Lightview;
+        const { div, p, button } = tags;
+
+        const count = signal(0);
+
+        const demo = div({ style: 'display: flex; align-items: center; gap: 1rem;' },
+            p({ style: 'margin: 0; font-size: 1.25rem;' }, () => `Count: ${count.value}`),
+            button({
+                onclick: () => count.value++,
+                style: 'padding: 0.5rem 1rem; cursor: pointer; background: var(--site-primary); color: white; border: none; border-radius: 6px;'
+            }, '+1')
+        );
+
+        const container = document.getElementById('signal-demo');
+        if (container) container.appendChild(demo.domEl);
+    })();
+</script>

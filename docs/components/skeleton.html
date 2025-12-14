@@ -1,0 +1,50 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Skeleton</li>
+            </ul>
+        </div>
+        <h1>Skeleton</h1>
+        <p class="text-lg opacity-70 mb-6">Skeleton is used as placeholder while content is loading.</p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="flex flex-col gap-4 w-52 mb-8">
+            <div class="skeleton h-32 w-full"></div>
+            <div class="skeleton h-4 w-28"></div>
+            <div class="skeleton h-4 w-full"></div>
+            <div class="skeleton h-4 w-full"></div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Card Skeleton</h2>
+        <div class="flex w-52 flex-col gap-4 mb-8">
+            <div class="skeleton h-32 w-full"></div>
+            <div class="skeleton h-4 w-28"></div>
+            <div class="skeleton h-4 w-full"></div>
+            <div class="skeleton h-4 w-full"></div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">With Avatar</h2>
+        <div class="flex items-center gap-4 mb-8">
+            <div class="skeleton h-16 w-16 shrink-0 rounded-full"></div>
+            <div class="flex flex-col gap-4">
+                <div class="skeleton h-4 w-20"></div>
+                <div class="skeleton h-4 w-28"></div>
+            </div>
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="skeleton h-32 w-full"&gt;&lt;/div&gt;
+&lt;div class="skeleton h-4 w-28"&gt;&lt;/div&gt;
+&lt;div class="skeleton h-16 w-16 rounded-full"&gt;&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/skeleton/" target="_blank"
+                    class="link link-primary">DaisyUI Skeleton</a> for more options.</span>
+        </div>
+    </div>
+</div>

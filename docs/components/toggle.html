@@ -1,0 +1,293 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Toggle</li>
+            </ul>
+        </div>
+
+        <h1>Toggle</h1>
+        <p class="text-lg opacity-70 mb-6">
+            Toggle is a checkbox styled as a switch.
+            Used for binary choices or switching settings on/off.
+        </p>
+
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Examples</h2>
+                <p class="text-sm opacity-70 mb-4">Toggle switches with various configurations</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Toggle component
+await LightviewX.initComponents();
+const { default: Toggle } = await import('/components/data-input/toggle.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+// 1. Basic toggle
+const basic = Toggle({ 
+    label: 'Wi-Fi',
+    defaultChecked: true,
+    color: 'primary'
+});
+
+// 2. Toggle with description
+const withDesc = Toggle({ 
+    label: 'Dark Mode',
+    description: 'Switch between light and dark themes',
+    color: 'secondary'
+});
+
+// 3. Toggle with label on right
+const labelRight = Toggle({ 
+    label: 'Notifications',
+    labelPosition: 'right',
+    color: 'accent'
+});
+
+// 4. Disabled toggle
+const disabled = Toggle({ 
+    label: 'Maintenance Mode',
+    defaultChecked: true,
+    disabled: true
+});
+
+// Insert all examples
+$('#demo').insert(
+    div({ class: 'space-y-4' }, basic, withDesc, labelRight, disabled)
+);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Reactive Example</h2>
+                <p class="text-sm opacity-70 mb-4">Two-way binding with signals</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">await LightviewX.initComponents();
+const { default: Toggle } = await import('/components/data-input/toggle.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, p, span } = tags;
+
+// Signals for settings
+const wifi = signal(true);
+const bluetooth = signal(false);
+const airplane = signal(false);
+
+// Reactive toggles
+const reactiveDemo = div({ class: 'space-y-4 max-w-sm' },
+    Toggle({ 
+        label: 'Wi-Fi',
+        description: () => wifi.value ? 'Connected to HomeNetwork' : 'Disconnected',
+        checked: wifi,
+        color: 'primary'
+    }),
+    Toggle({ 
+        label: 'Bluetooth',
+        description: () => bluetooth.value ? 'Discoverable' : 'Off',
+        checked: bluetooth,
+        color: 'info'
+    }),
+    Toggle({ 
+        label: 'Airplane Mode',
+        description: 'Disables all wireless connections',
+        checked: airplane,
+        color: 'warning'
+    }),
+    div({ class: 'divider' }),
+    p({ class: 'text-sm font-mono opacity-70' },
+        () => `WiFi: ${wifi.value}, BT: ${bluetooth.value}, Airplane: ${airplane.value}`
+    )
+);
+
+$('#demo').insert(reactiveDemo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>checked</code></td>
+                        <td>boolean | signal</td>
+                        <td>-</td>
+                        <td>Checked state (reactive with signals)</td>
+                    </tr>
+                    <tr>
+                        <td><code>defaultChecked</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Default checked state for uncontrolled mode</td>
+                    </tr>
+                    <tr>
+                        <td><code>label</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Label text displayed next to toggle</td>
+                    </tr>
+                    <tr>
+                        <td><code>labelPosition</code></td>
+                        <td>string</td>
+                        <td>'left'</td>
+                        <td>'left' | 'right' - Position of label relative to toggle</td>
+                    </tr>
+                    <tr>
+                        <td><code>description</code></td>
+                        <td>string | function</td>
+                        <td>-</td>
+                        <td>Description text below the label (can be reactive)</td>
+                    </tr>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>'md'</td>
+                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                    </tr>
+                    <tr>
+                        <td><code>disabled</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Disable the toggle</td>
+                    </tr>
+                    <tr>
+                        <td><code>onChange</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when value changes: <code>(checked, event) => void</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>useShadow</code></td>
+                        <td>boolean</td>
+                        <td>*</td>
+                        <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Colors Example -->
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="flex flex-wrap gap-4 mb-8">
+            <input type="checkbox" class="toggle" checked />
+            <input type="checkbox" class="toggle toggle-primary" checked />
+            <input type="checkbox" class="toggle toggle-secondary" checked />
+            <input type="checkbox" class="toggle toggle-accent" checked />
+            <input type="checkbox" class="toggle toggle-success" checked />
+            <input type="checkbox" class="toggle toggle-warning" checked />
+            <input type="checkbox" class="toggle toggle-info" checked />
+            <input type="checkbox" class="toggle toggle-error" checked />
+        </div>
+
+        <!-- Sizes Example -->
+        <h2 class="text-xl font-bold mb-4">Sizes</h2>
+        <div class="flex items-center gap-4 mb-8">
+            <input type="checkbox" class="toggle toggle-xs" checked />
+            <input type="checkbox" class="toggle toggle-sm" checked />
+            <input type="checkbox" class="toggle toggle-md" checked />
+            <input type="checkbox" class="toggle toggle-lg" checked />
+        </div>
+
+        <!-- With Label -->
+        <h2 class="text-xl font-bold mb-4">With Label</h2>
+        <div class="form-control w-52 mb-8">
+            <label class="label cursor-pointer">
+                <span class="label-text">Remember me</span>
+                <input type="checkbox" class="toggle toggle-primary" checked />
+            </label>
+        </div>
+
+        <!-- DaisyUI Reference -->
+        <div class="alert mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples and options, see the
+                <a href="https://daisyui.com/components/toggle/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Toggle documentation</a>.
+            </span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '280px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '300px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

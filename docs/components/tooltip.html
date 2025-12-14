@@ -1,0 +1,60 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 1000px;">
+        <div class="breadcrumbs text-sm mb-4">
+            <ul>
+                <li><a href="/docs/components">Components</a></li>
+                <li>Tooltip</li>
+            </ul>
+        </div>
+        <h1>Tooltip</h1>
+        <p class="text-lg opacity-70 mb-6">Tooltip displays informative text when users hover, focus, or tap an element.
+        </p>
+
+        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <div class="tooltip mb-8" data-tip="Hello!">
+            <button class="btn">Hover me</button>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Positions</h2>
+        <div class="flex flex-wrap gap-4 mb-8">
+            <div class="tooltip tooltip-top" data-tip="Top"><button class="btn">Top</button></div>
+            <div class="tooltip tooltip-bottom" data-tip="Bottom"><button class="btn">Bottom</button></div>
+            <div class="tooltip tooltip-left" data-tip="Left"><button class="btn">Left</button></div>
+            <div class="tooltip tooltip-right" data-tip="Right"><button class="btn">Right</button></div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <div class="flex flex-wrap gap-4 mb-8">
+            <div class="tooltip tooltip-primary" data-tip="Primary"><button class="btn">Primary</button></div>
+            <div class="tooltip tooltip-secondary" data-tip="Secondary"><button class="btn">Secondary</button></div>
+            <div class="tooltip tooltip-accent" data-tip="Accent"><button class="btn">Accent</button></div>
+            <div class="tooltip tooltip-info" data-tip="Info"><button class="btn">Info</button></div>
+            <div class="tooltip tooltip-success" data-tip="Success"><button class="btn">Success</button></div>
+            <div class="tooltip tooltip-warning" data-tip="Warning"><button class="btn">Warning</button></div>
+            <div class="tooltip tooltip-error" data-tip="Error"><button class="btn">Error</button></div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Force Open</h2>
+        <div class="tooltip tooltip-open tooltip-primary" data-tip="Always visible">
+            <button class="btn btn-primary">Always Open</button>
+        </div>
+
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mt-8 mb-8"><code>&lt;div class="tooltip" data-tip="Hello!"&gt;
+  &lt;button class="btn"&gt;Hover me&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- With position and color --&gt;
+&lt;div class="tooltip tooltip-bottom tooltip-primary" data-tip="Primary tooltip"&gt;
+  &lt;button class="btn"&gt;Hover&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="alert mt-8">
+            <span>See <a href="https://daisyui.com/components/tooltip/" target="_blank"
+                    class="link link-primary">DaisyUI Tooltip</a> for more options.</span>
+        </div>
+    </div>
+</div>
