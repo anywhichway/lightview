@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,22 +15,175 @@
             </ul>
         </div>
         <h1>Swap</h1>
-        <p class="text-lg opacity-70 mb-6">Swap toggles the visibility of two elements with a smooth transition.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Swap toggles the visibility of two elements with a smooth transition.
+            Perfect for toggle buttons, theme switchers, and animated icons.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic (Rotate)</h2>
-        <label class="swap swap-rotate text-4xl mb-8">
-            <input type="checkbox" />
-            <div class="swap-on">😈</div>
-            <div class="swap-off">😇</div>
-        </label>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Swap with rotate animation</p>
 
-        <h2 class="text-xl font-bold mb-4">Flip</h2>
-        <label class="swap swap-flip text-4xl mb-8">
-            <input type="checkbox" />
-            <div class="swap-on">🥳</div>
-            <div class="swap-off">😭</div>
-        </label>
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
 
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Swap } = await import('/components/actions/swap.js');
+
+const { tags, $ } = Lightview;
+const { div, span } = tags;
+
+// Emoji swap with rotate effect
+const emojiSwap = Swap({ effect: 'rotate', class: 'text-4xl' },
+    Swap.On({}, '😈'),
+    Swap.Off({}, '😇')
+);
+
+// Play/Pause swap
+const playPause = Swap({ effect: 'rotate', class: 'btn btn-circle' },
+    Swap.On({}, '⏸️'),
+    Swap.Off({}, '▶️')
+);
+
+$('#demo').insert(
+    div({ class: 'flex gap-8 items-center' }, 
+        emojiSwap, 
+        playPause
+    )
+);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Reactive Toggle</h2>
+                <p class="text-sm opacity-70 mb-4">Controlled swap with signal binding</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Swap } = await import('/components/actions/swap.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, span, p } = tags;
+
+const isActive = signal(false);
+
+// Controlled swap
+const swap = Swap({ 
+    effect: 'flip',
+    class: 'text-6xl',
+    active: () => isActive.value,
+    onChange: (checked) => { isActive.value = checked; }
+},
+    Swap.On({}, '🥳'),
+    Swap.Off({}, '😭')
+);
+
+// External control
+const demo = div({ class: 'flex flex-col gap-4 items-center' },
+    swap,
+    p({ class: 'text-sm' }, 
+        () => isActive.value ? 'Party time! 🎉' : 'So sad... 💔'
+    ),
+    Button({ 
+        color: 'primary',
+        size: 'sm',
+        onclick: () => { isActive.value = !isActive.value; }
+    }, 'Toggle from button')
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>active</code></td>
+                        <td>boolean | function</td>
+                        <td>false</td>
+                        <td>Control swap state (reactive)</td>
+                    </tr>
+                    <tr>
+                        <td><code>effect</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'rotate' | 'flip'</td>
+                    </tr>
+                    <tr>
+                        <td><code>onChange</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when state changes: <code>(checked) => void</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Swap.On</code></td>
+                        <td>Content visible when active/checked</td>
+                    </tr>
+                    <tr>
+                        <td><code>Swap.Off</code></td>
+                        <td>Content visible when inactive/unchecked</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Effects -->
+        <h2 class="text-xl font-bold mb-4">Effects</h2>
+        <div class="flex flex-wrap gap-8 mb-8">
+            <div class="text-center">
+                <p class="text-sm opacity-70 mb-2">Rotate</p>
+                <label class="swap swap-rotate text-4xl">
+                    <input type="checkbox" />
+                    <div class="swap-on">😈</div>
+                    <div class="swap-off">😇</div>
+                </label>
+            </div>
+            <div class="text-center">
+                <p class="text-sm opacity-70 mb-2">Flip</p>
+                <label class="swap swap-flip text-4xl">
+                    <input type="checkbox" />
+                    <div class="swap-on">🥳</div>
+                    <div class="swap-off">😭</div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Hamburger Menu Icon -->
         <h2 class="text-xl font-bold mb-4">Hamburger Menu Icon</h2>
         <label class="btn btn-circle swap swap-rotate mb-8">
             <input type="checkbox" />
@@ -41,7 +198,8 @@
             </svg>
         </label>
 
-        <h2 class="text-xl font-bold mb-4">Theme Icons (Sun/Moon)</h2>
+        <!-- Theme Toggle -->
+        <h2 class="text-xl font-bold mb-4">Theme Toggle (Sun/Moon)</h2>
         <label class="swap swap-rotate mb-8">
             <input type="checkbox" class="theme-controller" value="dark" />
             <svg class="swap-off h-10 w-10 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -54,15 +212,60 @@
             </svg>
         </label>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;label class="swap swap-rotate"&gt;
-  &lt;input type="checkbox" /&gt;
-  &lt;div class="swap-on"&gt;ON&lt;/div&gt;
-  &lt;div class="swap-off"&gt;OFF&lt;/div&gt;
-&lt;/label&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/swap/" target="_blank" class="link link-primary">DaisyUI
-                    Swap</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/swap/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Swap documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '80px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '180px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

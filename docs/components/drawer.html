@@ -1,52 +1,239 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+  if (window.LightviewRouter) {
+    LightviewRouter.base('../../index.html');
+  }
+</script>
 
 <div class="section">
-    <div class="section-content" style="max-width: 1000px;">
-        <div class="breadcrumbs text-sm mb-4">
-            <ul>
-                <li><a href="/docs/components">Components</a></li>
-                <li>Drawer</li>
-            </ul>
-        </div>
-        <h1>Drawer</h1>
-        <p class="text-lg opacity-70 mb-6">Drawer is a sidebar that can be opened from the left or right.</p>
-
-        <h2 class="text-xl font-bold mb-4">Example</h2>
-        <div class="drawer mb-8">
-            <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-            <div class="drawer-content">
-                <label for="my-drawer" class="btn btn-primary drawer-button">Open drawer</label>
-            </div>
-            <div class="drawer-side z-50">
-                <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-                    <li><a>Sidebar Item 1</a></li>
-                    <li><a>Sidebar Item 2</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="drawer"&gt;
-  &lt;input id="my-drawer" type="checkbox" class="drawer-toggle" /&gt;
-  &lt;div class="drawer-content"&gt;
-    &lt;label for="my-drawer" class="btn btn-primary drawer-button"&gt;
-      Open drawer
-    &lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="drawer-side"&gt;
-    &lt;label for="my-drawer" class="drawer-overlay"&gt;&lt;/label&gt;
-    &lt;ul class="menu bg-base-200 min-h-full w-80 p-4"&gt;
-      &lt;li&gt;&lt;a&gt;Sidebar Item 1&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a&gt;Sidebar Item 2&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-
-        <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/drawer/" target="_blank" class="link link-primary">DaisyUI
-                    Drawer</a> for more options.</span>
-        </div>
+  <div class="section-content" style="max-width: 1000px;">
+    <div class="breadcrumbs text-sm mb-4">
+      <ul>
+        <li><a href="/docs/components">Components</a></li>
+        <li>Drawer</li>
+      </ul>
     </div>
+    <h1>Drawer</h1>
+    <p class="text-lg opacity-70 mb-6">
+      Drawer is a sidebar that can be opened from the left or right side.
+      Perfect for navigation menus and side panels.
+    </p>
+
+    <!-- Basic Example with Examplify -->
+    <div class="card bg-base-200 mb-8">
+      <div class="card-body">
+        <h2 class="card-title">Basic Example</h2>
+        <p class="text-sm opacity-70 mb-4">Drawer with toggle button and menu</p>
+
+        <!-- Preview container -->
+        <div id="basic-preview" class="mb-4"></div>
+
+        <!-- Code display -->
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Drawer } = await import('/components/layout/drawer.js');
+
+const { tags, $ } = Lightview;
+const { ul, li, a, p } = tags;
+
+const drawerId = 'my-drawer';
+
+const drawer = Drawer({ id: drawerId },
+    Drawer.Content({},
+        Drawer.Button({ for: drawerId }, 'Open Drawer'),
+        p({ class: 'py-4' }, 'Main content area. Click the button to open the drawer.')
+    ),
+    Drawer.Side({ class: 'z-50' },
+        Drawer.Overlay({ for: drawerId }),
+        ul({ class: 'menu bg-base-200 text-base-content min-h-full w-64 p-4' },
+            li({}, a({}, '📁 Dashboard')),
+            li({}, a({}, '👤 Profile')),
+            li({}, a({}, '⚙️ Settings')),
+            li({}, a({}, '🚪 Logout'))
+        )
+    )
+);
+
+$('#demo').insert(drawer);</code></pre>
+      </div>
+    </div>
+
+    <!-- Reactive Example with Examplify -->
+    <div class="card bg-base-200 mb-8">
+      <div class="card-body">
+        <h2 class="card-title">Right Side Drawer</h2>
+        <p class="text-sm opacity-70 mb-4">Drawer opening from the right</p>
+
+        <!-- Preview container -->
+        <div id="reactive-preview" class="mb-4"></div>
+
+        <!-- Code display -->
+        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Drawer } = await import('/components/layout/drawer.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { tags, $ } = Lightview;
+const { ul, li, a, div, p, h3 } = tags;
+
+const drawerId = 'cart-drawer';
+
+const drawer = Drawer({ id: drawerId, end: true },
+    Drawer.Content({},
+        Drawer.Button({ for: drawerId, class: 'btn-accent' }, '🛒 View Cart')
+    ),
+    Drawer.Side({ class: 'z-50' },
+        Drawer.Overlay({ for: drawerId }),
+        div({ class: 'bg-base-200 text-base-content min-h-full w-80 p-4' },
+            h3({ class: 'text-lg font-bold mb-4' }, '🛒 Shopping Cart'),
+            div({ class: 'divider' }),
+            p({ class: 'opacity-70' }, 'Your cart is empty'),
+            div({ class: 'mt-4' },
+                Button({ color: 'primary', class: 'w-full' }, 'Checkout')
+            )
+        )
+    )
+);
+
+$('#demo').insert(drawer);</code></pre>
+      </div>
+    </div>
+
+    <!-- Props Table -->
+    <h2 class="text-xl font-bold mb-4">Props</h2>
+    <div class="overflow-x-auto mb-8">
+      <table class="table table-zebra">
+        <thead>
+          <tr>
+            <th>Prop</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>id</code></td>
+            <td>string</td>
+            <td>auto</td>
+            <td>Unique ID for the drawer toggle</td>
+          </tr>
+          <tr>
+            <td><code>open</code></td>
+            <td>boolean | function</td>
+            <td>false</td>
+            <td>Control open state (reactive)</td>
+          </tr>
+          <tr>
+            <td><code>end</code></td>
+            <td>boolean</td>
+            <td>false</td>
+            <td>Open from right side</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sub-components -->
+    <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+    <div class="overflow-x-auto mb-8">
+      <table class="table table-zebra">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Drawer.Content</code></td>
+            <td>Main content area (visible when drawer is closed)</td>
+          </tr>
+          <tr>
+            <td><code>Drawer.Side</code></td>
+            <td>Sidebar content container</td>
+          </tr>
+          <tr>
+            <td><code>Drawer.Overlay</code></td>
+            <td>Click-to-close overlay backdrop</td>
+          </tr>
+          <tr>
+            <td><code>Drawer.Button</code></td>
+            <td>Toggle button to open drawer</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Static Example -->
+    <h2 class="text-xl font-bold mb-4">Interactive Demo</h2>
+    <div class="drawer mb-8 h-48 rounded-lg overflow-hidden border border-base-300">
+      <input id="demo-drawer" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex flex-col items-center justify-center">
+        <label for="demo-drawer" class="btn btn-primary drawer-button">Open drawer</label>
+      </div>
+      <div class="drawer-side z-50">
+        <label for="demo-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+          <li><a>Sidebar Item 1</a></li>
+          <li><a>Sidebar Item 2</a></li>
+          <li><a>Sidebar Item 3</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="alert mt-8">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span>
+        For more examples, see the
+        <a href="https://daisyui.com/components/drawer/" target="_blank" rel="noopener"
+          class="link link-primary">DaisyUI Drawer documentation</a>.
+      </span>
+    </div>
+  </div>
 </div>
+
+<script>
+  // Use examplify to run the code and show preview
+  (function () {
+    // Basic example
+    const basicCodeEl = document.getElementById('basic-code');
+    const basicPreview = document.getElementById('basic-preview');
+
+    if (typeof examplify !== 'undefined' && basicCodeEl) {
+      const result = examplify(basicCodeEl, {
+        scripts: ['/lightview.js', '/lightview-x.js'],
+        type: 'module',
+        html: '<div id="demo" style="height: 200px;"></div>',
+        height: '220px'
+      });
+
+      if (result && result.iframe) {
+        basicPreview.appendChild(result.iframe);
+        result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+        result.iframe.style.borderRadius = '0.5rem';
+      }
+    }
+
+    // Reactive example
+    const reactiveCodeEl = document.getElementById('reactive-code');
+    const reactivePreview = document.getElementById('reactive-preview');
+
+    if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+      const result = examplify(reactiveCodeEl, {
+        scripts: ['/lightview.js', '/lightview-x.js'],
+        type: 'module',
+        html: '<div id="demo" style="height: 200px;"></div>',
+        height: '220px'
+      });
+
+      if (result && result.iframe) {
+        reactivePreview.appendChild(result.iframe);
+        result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+        result.iframe.style.borderRadius = '0.5rem';
+      }
+    }
+  })();
+</script>

@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,17 +15,91 @@
             </ul>
         </div>
         <h1>Breadcrumbs</h1>
-        <p class="text-lg opacity-70 mb-6">Breadcrumbs shows hierarchy and navigational path to the current page.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Breadcrumbs shows hierarchy and navigational path to the current page.
+            Supports icons and custom separators.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <div class="breadcrumbs text-sm mb-8">
-            <ul>
-                <li><a>Home</a></li>
-                <li><a>Documents</a></li>
-                <li>Add Document</li>
-            </ul>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Navigation breadcrumb trail</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+
+const { tags, $ } = Lightview;
+
+const path = [
+    { label: 'Home', href: '/' },
+    { label: 'Products', href: '/products' },
+    { label: 'Electronics', href: '/products/electronics' },
+    { label: 'Phones' } // Current page (no href)
+];
+
+const breadcrumbs = Breadcrumbs({ class: 'text-sm' },
+    ...path.map(item => 
+        item.href 
+            ? Breadcrumbs.Item({ href: item.href }, item.label)
+            : Breadcrumbs.Item({}, item.label)
+    )
+);
+
+$('#demo').insert(breadcrumbs);</code></pre>
+            </div>
         </div>
 
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>class</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Additional classes (text-sm, text-lg)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Props</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Breadcrumbs.Item</code></td>
+                        <td>href</td>
+                        <td>Individual breadcrumb item</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- With Icons -->
         <h2 class="text-xl font-bold mb-4">With Icons</h2>
         <div class="breadcrumbs text-sm mb-8">
             <ul>
@@ -45,29 +123,42 @@
                         Documents
                     </a>
                 </li>
-                <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        class="h-4 w-4 stroke-current">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
-                    Add Document
-                </li>
+                <li>Add Document</li>
             </ul>
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="breadcrumbs text-sm"&gt;
-  &lt;ul&gt;
-    &lt;li&gt;&lt;a&gt;Home&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a&gt;Documents&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;Add Document&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/breadcrumbs/" target="_blank"
-                    class="link link-primary">DaisyUI Breadcrumbs</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/breadcrumbs/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Breadcrumbs documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '60px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

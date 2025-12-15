@@ -19,22 +19,78 @@
         <h1>Loading</h1>
         <p class="text-lg opacity-70 mb-6">
             Loading shows an animated indicator for loading states.
+            Multiple types and sizes available.
         </p>
 
-        <!-- Quick Example -->
+        <!-- Basic Example with Examplify -->
         <div class="card bg-base-200 mb-8">
             <div class="card-body">
-                <h2 class="card-title">Quick Example</h2>
-                <div class="mb-4">
-                    <span class="loading loading-spinner loading-md"></span>
-                </div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import Loading from './components/data-display/loading.js';
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Different loading types and sizes</p>
 
-// Using Lightview component
-Loading({ type: 'spinner', size: 'md' })
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
 
-// Or using DaisyUI classes directly
-&lt;span class="loading loading-spinner loading-md"&gt;&lt;/span&gt;</code></pre>
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Loading } = await import('/components/data-display/loading.js');
+
+const { tags, $ } = Lightview;
+const { div, p } = tags;
+
+const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
+
+const loaders = div({ class: 'flex flex-wrap gap-8' },
+    ...types.map(type => 
+        div({ class: 'text-center' },
+            Loading({ type, size: 'lg' }),
+            p({ class: 'text-sm mt-2 opacity-50' }, type)
+        )
+    )
+);
+
+$('#demo').insert(loaders);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Loading Button</h2>
+                <p class="text-sm opacity-70 mb-4">Button with reactive loading state</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Loading } = await import('/components/data-display/loading.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, span } = tags;
+
+const isLoading = signal(false);
+
+const handleClick = async () => {
+    isLoading.value = true;
+    await new Promise(r => setTimeout(r, 2000));
+    isLoading.value = false;
+};
+
+const demo = div({ class: 'flex gap-4 items-center' },
+    () => isLoading.value
+        ? Button({ color: 'primary', disabled: true },
+            Loading({ type: 'spinner', size: 'sm' }),
+            span({}, ' Processing...')
+        )
+        : Button({ color: 'primary', onclick: handleClick }, 'Submit'),
+    span({ class: 'text-sm opacity-70' },
+        () => isLoading.value ? 'Please wait...' : 'Click the button'
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
             </div>
         </div>
 
@@ -105,10 +161,22 @@ Loading({ type: 'spinner', size: 'md' })
         <!-- Sizes -->
         <h2 class="text-xl font-bold mb-4">Sizes</h2>
         <div class="flex items-center gap-6 mb-8">
-            <span class="loading loading-spinner loading-xs"></span>
-            <span class="loading loading-spinner loading-sm"></span>
-            <span class="loading loading-spinner loading-md"></span>
-            <span class="loading loading-spinner loading-lg"></span>
+            <div class="text-center">
+                <span class="loading loading-spinner loading-xs"></span>
+                <p class="text-xs mt-1 opacity-50">xs</p>
+            </div>
+            <div class="text-center">
+                <span class="loading loading-spinner loading-sm"></span>
+                <p class="text-xs mt-1 opacity-50">sm</p>
+            </div>
+            <div class="text-center">
+                <span class="loading loading-spinner loading-md"></span>
+                <p class="text-xs mt-1 opacity-50">md</p>
+            </div>
+            <div class="text-center">
+                <span class="loading loading-spinner loading-lg"></span>
+                <p class="text-xs mt-1 opacity-50">lg</p>
+            </div>
         </div>
 
         <!-- Colors -->
@@ -150,3 +218,46 @@ Loading({ type: 'spinner', size: 'md' })
         </div>
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '100px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '80px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

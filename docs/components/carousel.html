@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,17 +15,147 @@
             </ul>
         </div>
         <h1>Carousel</h1>
-        <p class="text-lg opacity-70 mb-6">Carousel shows images or content in a scrollable horizontal view.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Carousel shows images or content in a scrollable horizontal view.
+            Supports snap points, vertical layout, and full-width items.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <div class="carousel rounded-box w-full mb-8">
-            <div class="carousel-item"><img src="https://picsum.photos/400/300?random=1" alt="Slide 1" /></div>
-            <div class="carousel-item"><img src="https://picsum.photos/400/300?random=2" alt="Slide 2" /></div>
-            <div class="carousel-item"><img src="https://picsum.photos/400/300?random=3" alt="Slide 3" /></div>
-            <div class="carousel-item"><img src="https://picsum.photos/400/300?random=4" alt="Slide 4" /></div>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Image carousel with center snap</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Carousel } = await import('/components/data-display/carousel.js');
+
+const { tags, $ } = Lightview;
+
+const images = [
+    'https://picsum.photos/400/300?random=1',
+    'https://picsum.photos/400/300?random=2',
+    'https://picsum.photos/400/300?random=3',
+    'https://picsum.photos/400/300?random=4'
+];
+
+const carousel = Carousel({ snap: 'center', class: 'rounded-box bg-neutral p-4 gap-4' },
+    ...images.map((src, i) => 
+        Carousel.Item({ src, alt: `Slide ${i + 1}`, class: 'rounded-box' })
+    )
+);
+
+$('#demo').insert(carousel);</code></pre>
+            </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">Centered</h2>
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Full Width with Indicators</h2>
+                <p class="text-sm opacity-70 mb-4">Navigable carousel with buttons</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Carousel } = await import('/components/data-display/carousel.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, a } = tags;
+
+const slides = [
+    { id: 'slide1', img: 'https://picsum.photos/800/400?random=10', title: 'Welcome' },
+    { id: 'slide2', img: 'https://picsum.photos/800/400?random=11', title: 'Features' },
+    { id: 'slide3', img: 'https://picsum.photos/800/400?random=12', title: 'Get Started' }
+];
+
+const demo = div({},
+    Carousel({ full: true, class: 'w-full' },
+        ...slides.map((slide, i) => 
+            div({ id: slide.id, class: 'carousel-item relative w-full' },
+                tags.img({ src: slide.img, class: 'w-full' }),
+                div({ class: 'absolute left-5 right-5 top-1/2 flex -translate-y-1/2 justify-between' },
+                    a({ href: `#${slides[(i - 1 + slides.length) % slides.length].id}`, class: 'btn btn-circle' }, '❮'),
+                    a({ href: `#${slides[(i + 1) % slides.length].id}`, class: 'btn btn-circle' }, '❯')
+                )
+            )
+        )
+    ),
+    div({ class: 'flex justify-center w-full py-2 gap-2' },
+        ...slides.map((slide, i) => 
+            a({ href: `#${slide.id}`, class: 'btn btn-xs' }, i + 1)
+        )
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>snap</code></td>
+                        <td>string</td>
+                        <td>'start'</td>
+                        <td>'start' | 'center' | 'end'</td>
+                    </tr>
+                    <tr>
+                        <td><code>vertical</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Vertical layout</td>
+                    </tr>
+                    <tr>
+                        <td><code>full</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Full width container</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Props</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Carousel.Item</code></td>
+                        <td>id, src, alt</td>
+                        <td>Individual slide item</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Examples -->
+        <h2 class="text-xl font-bold mb-4">Centered Carousel</h2>
         <div class="carousel carousel-center bg-neutral rounded-box space-x-4 p-4 mb-8">
             <div class="carousel-item"><img src="https://picsum.photos/300/200?random=5" class="rounded-box"
                     alt="Slide" /></div>
@@ -31,14 +165,55 @@
                     alt="Slide" /></div>
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="carousel rounded-box"&gt;
-  &lt;div class="carousel-item"&gt;&lt;img src="..." /&gt;&lt;/div&gt;
-  &lt;div class="carousel-item"&gt;&lt;img src="..." /&gt;&lt;/div&gt;
-&lt;/div&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/carousel/" target="_blank"
-                    class="link link-primary">DaisyUI Carousel</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/carousel/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Carousel documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '260px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '340px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

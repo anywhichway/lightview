@@ -12,18 +12,22 @@ import '../daisyui.js';
  * @param {number} props.totalPages - Total number of pages
  * @param {function} props.onPageChange - Callback when page changes
  * @param {string} props.size - 'xs' | 'sm' | 'md' | 'lg'
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Pagination = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { div, button } = tags;
+    const { div, button, shadowDOM } = tags;
 
     const {
         currentPage = 1,
         totalPages = 1,
         onPageChange,
         size,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -69,7 +73,35 @@ const Pagination = (props = {}, ...children) => {
         }, '»')
     );
 
-    return div({ class: classes.join(' '), ...rest }, ...buttons, ...children);
+    const paginationEl = div({ class: classes.join(' '), ...rest }, ...buttons, ...children);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Pagination: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    paginationEl
+                )
+            )
+        );
+    }
+
+    return paginationEl;
 };
 
 if (typeof window !== 'undefined' && window.LightviewX) {

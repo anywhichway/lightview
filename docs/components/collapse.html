@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,9 +15,156 @@
             </ul>
         </div>
         <h1>Collapse</h1>
-        <p class="text-lg opacity-70 mb-6">Collapse is used for showing and hiding content.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Collapse is used for showing and hiding content.
+            Unlike Accordion, multiple collapses can be open simultaneously.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">With Arrow Icon</h2>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Independent collapse sections</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Collapse } = await import('/components/data-display/collapse.js');
+
+const { tags, $ } = Lightview;
+const { div, p } = tags;
+
+const demo = div({ class: 'space-y-2' },
+    Collapse({ icon: 'arrow' },
+        Collapse.Title({}, '📖 Description'),
+        Collapse.Content({}, 
+            p({}, 'This is a detailed product description that can be expanded.')
+        )
+    ),
+    Collapse({ icon: 'arrow' },
+        Collapse.Title({}, '📦 Shipping Info'),
+        Collapse.Content({}, 
+            p({}, 'Free shipping on orders over $50. Delivery in 3-5 days.')
+        )
+    ),
+    Collapse({ icon: 'arrow' },
+        Collapse.Title({}, '🔄 Returns'),
+        Collapse.Content({}, 
+            p({}, '30-day return policy for unused items in original packaging.')
+        )
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Initially Open</h2>
+                <p class="text-sm opacity-70 mb-4">Collapse with open prop</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Collapse } = await import('/components/data-display/collapse.js');
+
+const { tags, $ } = Lightview;
+const { div, p, ul, li } = tags;
+
+const demo = div({ class: 'space-y-2' },
+    Collapse({ icon: 'plus', open: true },
+        Collapse.Title({}, '🎁 What\'s included'),
+        Collapse.Content({}, 
+            ul({ class: 'list-disc pl-4' },
+                li({}, 'Premium headphones'),
+                li({}, 'Carrying case'),
+                li({}, '3.5mm audio cable'),
+                li({}, 'User manual')
+            )
+        )
+    ),
+    Collapse({ icon: 'plus' },
+        Collapse.Title({}, '⚡ Specifications'),
+        Collapse.Content({}, 
+            ul({ class: 'list-disc pl-4' },
+                li({}, 'Driver size: 40mm'),
+                li({}, 'Battery: 30h playtime'),
+                li({}, 'Bluetooth 5.0')
+            )
+        )
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>icon</code></td>
+                        <td>string</td>
+                        <td>'arrow'</td>
+                        <td>'arrow' | 'plus'</td>
+                    </tr>
+                    <tr>
+                        <td><code>open</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Initially open</td>
+                    </tr>
+                    <tr>
+                        <td><code>focus</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Open on focus (accessibility)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Collapse.Title</code></td>
+                        <td>Clickable header area</td>
+                    </tr>
+                    <tr>
+                        <td><code>Collapse.Content</code></td>
+                        <td>Hidden content container</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Examples -->
+        <h2 class="text-xl font-bold mb-4">Arrow Icon</h2>
         <div class="collapse collapse-arrow bg-base-100 border border-base-300 mb-4">
             <input type="checkbox" />
             <div class="collapse-title font-semibold">Click to open/close</div>
@@ -22,7 +173,7 @@
             </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">With Plus/Minus Icon</h2>
+        <h2 class="text-xl font-bold mb-4">Plus/Minus Icon</h2>
         <div class="collapse collapse-plus bg-base-100 border border-base-300 mb-4">
             <input type="checkbox" />
             <div class="collapse-title font-semibold">Click to expand</div>
@@ -39,15 +190,55 @@
             </div>
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="collapse collapse-arrow bg-base-100 border"&gt;
-  &lt;input type="checkbox" /&gt;
-  &lt;div class="collapse-title font-semibold"&gt;Title&lt;/div&gt;
-  &lt;div class="collapse-content"&gt;Content&lt;/div&gt;
-&lt;/div&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/collapse/" target="_blank"
-                    class="link link-primary">DaisyUI Collapse</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/collapse/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Collapse documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '180px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '200px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

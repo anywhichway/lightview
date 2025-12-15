@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,43 +15,214 @@
             </ul>
         </div>
         <h1>Accordion</h1>
-        <p class="text-lg opacity-70 mb-6">Accordion is used for showing and hiding content in collapsible sections.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Accordion is used for showing and hiding content in collapsible sections.
+            Only one section can be open at a time.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Examples</h2>
-        <div class="space-y-2 mb-8">
-            <div class="collapse collapse-arrow bg-base-100 border border-base-300">
-                <input type="radio" name="accordion-1" checked="checked" />
-                <div class="collapse-title font-semibold">Click to open this one and close others</div>
-                <div class="collapse-content text-sm">Content for section one.</div>
-            </div>
-            <div class="collapse collapse-arrow bg-base-100 border border-base-300">
-                <input type="radio" name="accordion-1" />
-                <div class="collapse-title font-semibold">Click to open this one</div>
-                <div class="collapse-content text-sm">Content for section two.</div>
-            </div>
-            <div class="collapse collapse-arrow bg-base-100 border border-base-300">
-                <input type="radio" name="accordion-1" />
-                <div class="collapse-title font-semibold">Click to open this one</div>
-                <div class="collapse-content text-sm">Content for section three.</div>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">FAQ-style accordion</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Accordion } = await import('/components/data-display/accordion.js');
+
+const { tags, $ } = Lightview;
+
+const faq = [
+    { q: 'What is Lightview?', a: 'A lightweight reactive UI library.' },
+    { q: 'Does it support TypeScript?', a: 'Yes! Full TypeScript support.' },
+    { q: 'How do I get started?', a: 'Check out our Getting Started guide!' }
+];
+
+const accordion = Accordion({},
+    ...faq.map((item, i) => 
+        Accordion.Item({ name: 'faq', checked: i === 0 },
+            Accordion.Title({}, item.q),
+            Accordion.Content({}, item.a)
+        )
+    )
+);
+
+$('#demo').insert(accordion);</code></pre>
             </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">With Plus/Minus Icon</h2>
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Plus/Minus Icon</h2>
+                <p class="text-sm opacity-70 mb-4">Accordion with plus/minus toggle icon</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Accordion } = await import('/components/data-display/accordion.js');
+
+const { tags, $ } = Lightview;
+
+const sections = [
+    { title: '📦 Shipping', content: 'Free shipping on orders over $50.' },
+    { title: '🔄 Returns', content: '30-day return policy for unused items.' },
+    { title: '💳 Payment', content: 'We accept all major credit cards.' }
+];
+
+const accordion = Accordion({ join: true },
+    ...sections.map((item, i) => 
+        Accordion.Item({ name: 'info', icon: 'plus', join: true, checked: i === 0 },
+            Accordion.Title({}, item.title),
+            Accordion.Content({}, item.content)
+        )
+    )
+);
+
+$('#demo').insert(accordion);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>join</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Use connected/joined style</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Accordion.Item Props -->
+        <h2 class="text-xl font-bold mb-4">Accordion.Item Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>name</code></td>
+                        <td>string</td>
+                        <td>'accordion'</td>
+                        <td>Radio group name (only one opens at a time)</td>
+                    </tr>
+                    <tr>
+                        <td><code>icon</code></td>
+                        <td>string</td>
+                        <td>'arrow'</td>
+                        <td>'arrow' | 'plus'</td>
+                    </tr>
+                    <tr>
+                        <td><code>checked</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Initially open</td>
+                    </tr>
+                    <tr>
+                        <td><code>join</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Use joined styling</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Examples -->
+        <h2 class="text-xl font-bold mb-4">Arrow Icon (Default)</h2>
+        <div class="space-y-2 mb-8">
+            <div class="collapse collapse-arrow bg-base-100 border border-base-300">
+                <input type="radio" name="accordion-demo" checked="checked" />
+                <div class="collapse-title font-semibold">Click to open this one</div>
+                <div class="collapse-content text-sm">Content for section one.</div>
+            </div>
+            <div class="collapse collapse-arrow bg-base-100 border border-base-300">
+                <input type="radio" name="accordion-demo" />
+                <div class="collapse-title font-semibold">Click to open this one</div>
+                <div class="collapse-content text-sm">Content for section two.</div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4">Plus/Minus Icon</h2>
         <div class="collapse collapse-plus bg-base-100 border border-base-300 mb-8">
             <input type="checkbox" />
             <div class="collapse-title font-semibold">Click me to show/hide</div>
             <div class="collapse-content text-sm">Hidden content revealed!</div>
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="collapse collapse-arrow bg-base-100 border"&gt;
-  &lt;input type="radio" name="accordion" checked /&gt;
-  &lt;div class="collapse-title font-semibold"&gt;Title&lt;/div&gt;
-  &lt;div class="collapse-content"&gt;Content&lt;/div&gt;
-&lt;/div&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/accordion/" target="_blank"
-                    class="link link-primary">DaisyUI Accordion</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/accordion/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Accordion documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '180px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '180px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

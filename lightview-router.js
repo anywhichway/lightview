@@ -12,6 +12,7 @@
 
         // Check if we're in the shell or loaded directly
         const inShell = document.getElementById('content') !== null;
+        document.baseURI = shellPath;
         if (inShell) return;
 
         // Get current path relative to domain root

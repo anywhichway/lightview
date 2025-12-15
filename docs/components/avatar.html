@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,10 +15,175 @@
             </ul>
         </div>
         <h1>Avatar</h1>
-        <p class="text-lg opacity-70 mb-6">Avatar is used to show a thumbnail representation of an individual or
-            business.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Avatar is used to show a thumbnail representation of an individual or business.
+            Supports images, placeholders, status indicators, and grouping.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Avatars with different shapes and features</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Avatar } = await import('/components/data-display/avatar.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+const avatars = div({ class: 'flex gap-4 items-center' },
+    // Image avatar
+    Avatar({ 
+        src: 'https://i.pravatar.cc/100?img=1',
+        alt: 'User 1',
+        size: 'w-16'
+    }),
+    // With ring
+    Avatar({ 
+        src: 'https://i.pravatar.cc/100?img=2',
+        size: 'w-16',
+        ring: true,
+        ringColor: 'ring-primary'
+    }),
+    // Placeholder
+    Avatar({ 
+        placeholder: 'JD',
+        size: 'w-16'
+    }),
+    // Online status
+    Avatar({ 
+        src: 'https://i.pravatar.cc/100?img=4',
+        size: 'w-16',
+        online: true
+    })
+);
+
+$('#demo').insert(avatars);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">User Status Toggle</h2>
+                <p class="text-sm opacity-70 mb-4">Avatar with reactive online/offline status</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Avatar } = await import('/components/data-display/avatar.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, span } = tags;
+
+const isOnline = signal(true);
+
+const demo = div({ class: 'flex items-center gap-6' },
+    () => Avatar({ 
+        src: 'https://i.pravatar.cc/100?img=5',
+        size: 'w-20',
+        ring: true,
+        ringColor: isOnline.value ? 'ring-success' : 'ring-error',
+        online: isOnline.value,
+        offline: !isOnline.value
+    }),
+    div({ class: 'flex flex-col gap-2' },
+        span({ class: 'font-bold' }, 'Sarah Johnson'),
+        span({ class: 'text-sm' }, 
+            () => isOnline.value ? '🟢 Online' : '⚫ Offline'
+        ),
+        Button({ 
+            size: 'sm',
+            onclick: () => { isOnline.value = !isOnline.value; }
+        }, () => isOnline.value ? 'Go Offline' : 'Go Online')
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>src</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Image source URL</td>
+                    </tr>
+                    <tr>
+                        <td><code>alt</code></td>
+                        <td>string</td>
+                        <td>'Avatar'</td>
+                        <td>Alt text for image</td>
+                    </tr>
+                    <tr>
+                        <td><code>placeholder</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Text to show when no image (e.g., initials)</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>'w-12'</td>
+                        <td>Width class (w-8, w-12, w-16, w-24, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td><code>shape</code></td>
+                        <td>string</td>
+                        <td>'circle'</td>
+                        <td>'circle' | 'rounded' | 'squircle' | 'hexagon' | 'triangle'</td>
+                    </tr>
+                    <tr>
+                        <td><code>ring</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Add ring border</td>
+                    </tr>
+                    <tr>
+                        <td><code>ringColor</code></td>
+                        <td>string</td>
+                        <td>'ring-primary'</td>
+                        <td>Ring color class</td>
+                    </tr>
+                    <tr>
+                        <td><code>online</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Show online indicator</td>
+                    </tr>
+                    <tr>
+                        <td><code>offline</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Show offline indicator</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Shapes -->
+        <h2 class="text-xl font-bold mb-4">Shapes</h2>
         <div class="flex gap-4 mb-8">
             <div class="avatar">
                 <div class="w-16 rounded-full"><img src="https://i.pravatar.cc/100?img=1" alt="Avatar" /></div>
@@ -25,8 +194,12 @@
             <div class="avatar">
                 <div class="w-16 mask mask-squircle"><img src="https://i.pravatar.cc/100?img=3" alt="Avatar" /></div>
             </div>
+            <div class="avatar">
+                <div class="w-16 mask mask-hexagon"><img src="https://i.pravatar.cc/100?img=4" alt="Avatar" /></div>
+            </div>
         </div>
 
+        <!-- With Ring -->
         <h2 class="text-xl font-bold mb-4">With Ring</h2>
         <div class="avatar mb-8">
             <div class="w-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
@@ -34,6 +207,7 @@
             </div>
         </div>
 
+        <!-- Online/Offline Status -->
         <h2 class="text-xl font-bold mb-4">Online/Offline Status</h2>
         <div class="flex gap-4 mb-8">
             <div class="avatar online">
@@ -44,6 +218,7 @@
             </div>
         </div>
 
+        <!-- Placeholder -->
         <h2 class="text-xl font-bold mb-4">Placeholder</h2>
         <div class="flex gap-4 mb-8">
             <div class="avatar placeholder">
@@ -54,6 +229,7 @@
             </div>
         </div>
 
+        <!-- Avatar Group -->
         <h2 class="text-xl font-bold mb-4">Avatar Group</h2>
         <div class="avatar-group -space-x-6 mb-8">
             <div class="avatar">
@@ -71,8 +247,59 @@
         </div>
 
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/avatar/" target="_blank" class="link link-primary">DaisyUI
-                    Avatar</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/avatar/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Avatar documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '100px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '120px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

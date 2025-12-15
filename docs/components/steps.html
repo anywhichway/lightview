@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,25 +15,112 @@
             </ul>
         </div>
         <h1>Steps</h1>
-        <p class="text-lg opacity-70 mb-6">Steps show a sequence of steps and current progress.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Steps show a sequence of steps and current progress.
+            Supports colors, icons, and vertical layout.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <ul class="steps mb-8">
-            <li class="step step-primary">Register</li>
-            <li class="step step-primary">Choose plan</li>
-            <li class="step">Purchase</li>
-            <li class="step">Receive Product</li>
-        </ul>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Interactive checkout steps</p>
 
-        <h2 class="text-xl font-bold mb-4">With Icons</h2>
-        <ul class="steps mb-8">
-            <li class="step step-info" data-content="?">Step 1</li>
-            <li class="step step-info" data-content="!">Step 2</li>
-            <li class="step step-info" data-content="✓">Step 3</li>
-            <li class="step step-info" data-content="✕">Step 4</li>
-            <li class="step step-info" data-content="★">Step 5</li>
-        </ul>
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
 
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Steps } = await import('/components/navigation/steps.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div } = tags;
+
+const currentStep = signal(1);
+const stepNames = ['Cart', 'Shipping', 'Payment', 'Confirm'];
+
+const demo = div({ class: 'flex flex-col gap-4' },
+    Steps({},
+        ...stepNames.map((name, i) => 
+            Steps.Step({ 
+                color: () => i < currentStep.value ? 'primary' : undefined 
+            }, name)
+        )
+    ),
+    div({ class: 'flex gap-2 justify-center' },
+        Button({ 
+            size: 'sm',
+            disabled: () => currentStep.value <= 1,
+            onclick: () => { currentStep.value--; }
+        }, 'Back'),
+        Button({ 
+            size: 'sm',
+            color: 'primary',
+            disabled: () => currentStep.value >= stepNames.length,
+            onclick: () => { currentStep.value++; }
+        }, 'Next')
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vertical</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Vertical layout</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Steps.Step Props -->
+        <h2 class="text-xl font-bold mb-4">Steps.Step Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                    <tr>
+                        <td><code>content</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Custom icon/content for step circle</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Colors -->
         <h2 class="text-xl font-bold mb-4">Colors</h2>
         <ul class="steps mb-8">
             <li class="step step-primary">Primary</li>
@@ -41,6 +132,17 @@
             <li class="step step-error">Error</li>
         </ul>
 
+        <!-- With Icons -->
+        <h2 class="text-xl font-bold mb-4">With Icons</h2>
+        <ul class="steps mb-8">
+            <li class="step step-info" data-content="?">Step 1</li>
+            <li class="step step-info" data-content="!">Step 2</li>
+            <li class="step step-info" data-content="✓">Step 3</li>
+            <li class="step step-info" data-content="✕">Step 4</li>
+            <li class="step step-info" data-content="★">Step 5</li>
+        </ul>
+
+        <!-- Vertical -->
         <h2 class="text-xl font-bold mb-4">Vertical</h2>
         <ul class="steps steps-vertical mb-8">
             <li class="step step-primary">Register</li>
@@ -49,16 +151,38 @@
             <li class="step">Receive Product</li>
         </ul>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;ul class="steps"&gt;
-  &lt;li class="step step-primary"&gt;Register&lt;/li&gt;
-  &lt;li class="step step-primary"&gt;Choose plan&lt;/li&gt;
-  &lt;li class="step"&gt;Purchase&lt;/li&gt;
-  &lt;li class="step"&gt;Receive Product&lt;/li&gt;
-&lt;/ul&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/steps/" target="_blank" class="link link-primary">DaisyUI
-                    Steps</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/steps/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Steps documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '120px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

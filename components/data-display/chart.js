@@ -19,13 +19,16 @@ import '../daisyui.js';
  * @param {boolean} props.reverse - Reverse orientation (.reverse)
  * @param {boolean} props.multiple - Enable multiple datasets (.multiple)
  * @param {boolean} props.stacked - Enable stacked mode (.stacked)
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  * @param {string} props.class - Additional classes
  */
 const Chart = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { table, caption } = tags;
+    const { table, caption, div, shadowDOM } = tags;
 
     const {
         type = 'bar',
@@ -38,6 +41,7 @@ const Chart = (props = {}, ...children) => {
         reverse = false,
         multiple = false,
         stacked = false,
+        useShadow,
         class: className = '',
         style = '',
         ...rest
@@ -64,7 +68,35 @@ const Chart = (props = {}, ...children) => {
     }
     content.push(...children);
 
-    return table({ class: classes.join(' '), style, ...rest }, ...content);
+    const chartEl = table({ class: classes.join(' '), style, ...rest }, ...content);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Chart: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    chartEl
+                )
+            )
+        );
+    }
+
+    return chartEl;
 };
 
 

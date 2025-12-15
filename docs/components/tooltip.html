@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,22 +15,129 @@
             </ul>
         </div>
         <h1>Tooltip</h1>
-        <p class="text-lg opacity-70 mb-6">Tooltip displays informative text when users hover, focus, or tap an element.
+        <p class="text-lg opacity-70 mb-6">
+            Tooltip displays informative text when users hover, focus, or tap an element.
+            Supports multiple positions and colors.
         </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <div class="tooltip mb-8" data-tip="Hello!">
-            <button class="btn">Hover me</button>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Tooltips with different positions</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Tooltip } = await import('/components/data-display/tooltip.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+const tooltips = div({ class: 'flex flex-wrap gap-4 p-8' },
+    Tooltip({ tip: 'Tooltip on top', position: 'top' },
+        Button({}, 'Top')
+    ),
+    Tooltip({ tip: 'Tooltip on bottom', position: 'bottom' },
+        Button({}, 'Bottom')
+    ),
+    Tooltip({ tip: 'Tooltip on left', position: 'left' },
+        Button({}, 'Left')
+    ),
+    Tooltip({ tip: 'Tooltip on right', position: 'right' },
+        Button({}, 'Right')
+    )
+);
+
+$('#demo').insert(tooltips);</code></pre>
+            </div>
         </div>
 
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Colored Tooltips</h2>
+                <p class="text-sm opacity-70 mb-4">Tooltips with semantic colors</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Tooltip } = await import('/components/data-display/tooltip.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
+
+const tooltips = div({ class: 'flex flex-wrap gap-4 p-8' },
+    ...colors.map(color => 
+        Tooltip({ tip: `${color.charAt(0).toUpperCase() + color.slice(1)} tooltip`, color },
+            Button({ color, size: 'sm' }, color)
+        )
+    )
+);
+
+$('#demo').insert(tooltips);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>tip</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Tooltip text content</td>
+                    </tr>
+                    <tr>
+                        <td><code>position</code></td>
+                        <td>string</td>
+                        <td>'top'</td>
+                        <td>'top' | 'bottom' | 'left' | 'right'</td>
+                    </tr>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                    <tr>
+                        <td><code>open</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Force tooltip to stay open</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Positions -->
         <h2 class="text-xl font-bold mb-4">Positions</h2>
-        <div class="flex flex-wrap gap-4 mb-8">
+        <div class="flex flex-wrap gap-4 p-8 mb-8">
             <div class="tooltip tooltip-top" data-tip="Top"><button class="btn">Top</button></div>
             <div class="tooltip tooltip-bottom" data-tip="Bottom"><button class="btn">Bottom</button></div>
             <div class="tooltip tooltip-left" data-tip="Left"><button class="btn">Left</button></div>
             <div class="tooltip tooltip-right" data-tip="Right"><button class="btn">Right</button></div>
         </div>
 
+        <!-- Colors -->
         <h2 class="text-xl font-bold mb-4">Colors</h2>
         <div class="flex flex-wrap gap-4 mb-8">
             <div class="tooltip tooltip-primary" data-tip="Primary"><button class="btn">Primary</button></div>
@@ -38,23 +149,68 @@
             <div class="tooltip tooltip-error" data-tip="Error"><button class="btn">Error</button></div>
         </div>
 
+        <!-- Force Open -->
         <h2 class="text-xl font-bold mb-4">Force Open</h2>
-        <div class="tooltip tooltip-open tooltip-primary" data-tip="Always visible">
-            <button class="btn btn-primary">Always Open</button>
+        <div class="mb-8">
+            <div class="tooltip tooltip-open tooltip-primary" data-tip="Always visible">
+                <button class="btn btn-primary">Always Open</button>
+            </div>
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mt-8 mb-8"><code>&lt;div class="tooltip" data-tip="Hello!"&gt;
-  &lt;button class="btn"&gt;Hover me&lt;/button&gt;
-&lt;/div&gt;
-
-&lt;!-- With position and color --&gt;
-&lt;div class="tooltip tooltip-bottom tooltip-primary" data-tip="Primary tooltip"&gt;
-  &lt;button class="btn"&gt;Hover&lt;/button&gt;
-&lt;/div&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/tooltip/" target="_blank"
-                    class="link link-primary">DaisyUI Tooltip</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/tooltip/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Tooltip documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '100px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '100px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

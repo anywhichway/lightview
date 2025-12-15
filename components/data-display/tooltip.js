@@ -12,18 +12,22 @@ import '../daisyui.js';
  * @param {string} props.position - 'top' | 'bottom' | 'left' | 'right'
  * @param {string} props.color - 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'
  * @param {boolean} props.open - Force open state
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Tooltip = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { div } = tags;
+    const { div, shadowDOM } = tags;
 
     const {
         tip,
         position,
         color,
         open = false,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -34,11 +38,39 @@ const Tooltip = (props = {}, ...children) => {
     if (open) classes.push('tooltip-open');
     if (className) classes.push(className);
 
-    return div({
+    const tooltipEl = div({
         class: classes.join(' '),
         'data-tip': tip,
         ...rest
     }, ...children);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Tooltip: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    tooltipEl
+                )
+            )
+        );
+    }
+
+    return tooltipEl;
 };
 
 if (typeof window !== 'undefined' && window.LightviewX) {

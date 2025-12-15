@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,26 +15,84 @@
             </ul>
         </div>
         <h1>Join</h1>
-        <p class="text-lg opacity-70 mb-6">Join groups elements together with shared borders.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Join groups elements together with shared borders.
+            Perfect for button groups, input groups, and pagination.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Horizontal</h2>
-        <div class="join mb-8">
-            <button class="btn join-item">Button 1</button>
-            <button class="btn join-item">Button 2</button>
-            <button class="btn join-item">Button 3</button>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Button group and input group</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Join } = await import('/components/layout/join.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { default: Input } = await import('/components/data-input/input.js');
+
+const { signal, tags, $ } = Lightview;
+const { div } = tags;
+
+const email = signal('');
+
+const demo = div({ class: 'flex flex-col gap-4' },
+    // Button group
+    Join({},
+        Button({ class: 'join-item' }, 'Previous'),
+        Button({ class: 'join-item', color: 'primary' }, 'Current'),
+        Button({ class: 'join-item' }, 'Next')
+    ),
+    // Input with button
+    Join({},
+        Input({ 
+            class: 'join-item',
+            placeholder: 'Enter your email',
+            value: () => email.value,
+            oninput: (e) => { email.value = e.target.value; }
+        }),
+        Button({ class: 'join-item', color: 'primary' }, 'Subscribe')
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
         </div>
 
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vertical</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Stack items vertically</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Examples -->
         <h2 class="text-xl font-bold mb-4">Vertical</h2>
         <div class="join join-vertical mb-8">
             <button class="btn join-item">Button 1</button>
             <button class="btn join-item">Button 2</button>
             <button class="btn join-item">Button 3</button>
-        </div>
-
-        <h2 class="text-xl font-bold mb-4">With Inputs</h2>
-        <div class="join mb-8">
-            <input class="input input-bordered join-item" placeholder="Email" />
-            <button class="btn btn-primary join-item">Subscribe</button>
         </div>
 
         <h2 class="text-xl font-bold mb-4">Radio Group</h2>
@@ -40,15 +102,38 @@
             <input class="join-item btn" type="radio" name="options" aria-label="Radio 3" />
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="join"&gt;
-  &lt;button class="btn join-item"&gt;Button 1&lt;/button&gt;
-  &lt;button class="btn join-item"&gt;Button 2&lt;/button&gt;
-  &lt;button class="btn join-item"&gt;Button 3&lt;/button&gt;
-&lt;/div&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/join/" target="_blank" class="link link-primary">DaisyUI
-                    Join</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/join/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Join documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '140px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

@@ -10,16 +10,20 @@ import '../daisyui.js';
  * @param {Object} props
  * @param {boolean|function} props.active - Control swap state
  * @param {string} props.effect - 'rotate' | 'flip'
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Swap = (props = {}, ...children) => {
     const { tags, signal } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { label, input } = tags;
+    const { label, input, div, shadowDOM } = tags;
 
     const {
         active = false,
         effect,
+        useShadow,
         class: className = '',
         onChange,
         ...rest
@@ -33,7 +37,7 @@ const Swap = (props = {}, ...children) => {
     // Handle reactive active state
     const isActive = typeof active === 'function' ? active : () => active;
 
-    return label({
+    const swapEl = label({
         class: () => {
             const base = [...classes];
             if (isActive()) base.push('swap-active');
@@ -50,6 +54,34 @@ const Swap = (props = {}, ...children) => {
         }),
         ...children
     );
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Swap: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    swapEl
+                )
+            )
+        );
+    }
+
+    return swapEl;
 };
 
 /**

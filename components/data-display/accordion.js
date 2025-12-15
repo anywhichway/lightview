@@ -10,15 +10,19 @@ import '../daisyui.js';
  * @param {Object} props
  * @param {boolean} props.join - Use join style (connected items)
  * @param {string} props.icon - 'arrow' | 'plus'
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Accordion = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { div } = tags;
+    const { div, shadowDOM } = tags;
 
     const {
         join = false,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -26,7 +30,35 @@ const Accordion = (props = {}, ...children) => {
     const classes = join ? ['join join-vertical w-full'] : ['space-y-2'];
     if (className) classes.push(className);
 
-    return div({ class: classes.join(' '), ...rest }, ...children);
+    const accordionEl = div({ class: classes.join(' '), ...rest }, ...children);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Accordion: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    accordionEl
+                )
+            )
+        );
+    }
+
+    return accordionEl;
 };
 
 /**

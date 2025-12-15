@@ -9,19 +9,50 @@ import '../daisyui.js';
  * Indicator Component - positions a badge/element on corner of another element
  * @param {Object} props
  * @param {string} props.position - Combination of 'top'|'middle'|'bottom' and 'start'|'center'|'end'
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Indicator = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { div } = tags;
+    const { div, shadowDOM } = tags;
 
-    const { class: className = '', ...rest } = props;
+    const { useShadow, class: className = '', ...rest } = props;
 
-    return div({
+    const indicatorEl = div({
         class: `indicator ${className}`.trim(),
         ...rest
     }, ...children);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Indicator: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    indicatorEl
+                )
+            )
+        );
+    }
+
+    return indicatorEl;
 };
 
 /**

@@ -11,17 +11,21 @@ import '../daisyui.js';
  * @param {boolean} props.snap - Snap to items
  * @param {boolean} props.vertical - Vertical layout
  * @param {boolean} props.compact - Compact mode
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Timeline = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { ul } = tags;
+    const { ul, div, shadowDOM } = tags;
 
     const {
         snap = false,
         vertical = true,
         compact = false,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -32,7 +36,35 @@ const Timeline = (props = {}, ...children) => {
     if (compact) classes.push('timeline-compact');
     if (className) classes.push(className);
 
-    return ul({ class: classes.join(' '), ...rest }, ...children);
+    const timelineEl = ul({ class: classes.join(' '), ...rest }, ...children);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Timeline: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    timelineEl
+                )
+            )
+        );
+    }
+
+    return timelineEl;
 };
 
 /**

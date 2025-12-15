@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,31 +15,65 @@
             </ul>
         </div>
         <h1>Pagination</h1>
-        <p class="text-lg opacity-70 mb-6">Pagination is a group of buttons that allow navigation between pages.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Pagination is a group of buttons that allow navigation between pages.
+            Uses the Join component for grouping.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <div class="join mb-8">
-            <button class="join-item btn">«</button>
-            <button class="join-item btn">Page 1</button>
-            <button class="join-item btn">»</button>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Interactive pagination with page state</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Join } = await import('/components/layout/join.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, span } = tags;
+
+const page = signal(1);
+const totalPages = 5;
+
+const demo = div({ class: 'flex flex-col gap-4 items-center' },
+    Join({},
+        Button({ 
+            class: 'join-item',
+            onclick: () => { if(page.value > 1) page.value--; }
+        }, '«'),
+        ...Array.from({ length: totalPages }, (_, i) => 
+            Button({ 
+                class: 'join-item',
+                color: () => page.value === i + 1 ? 'primary' : undefined,
+                onclick: () => { page.value = i + 1; }
+            }, i + 1)
+        ),
+        Button({ 
+            class: 'join-item',
+            onclick: () => { if(page.value < totalPages) page.value++; }
+        }, '»')
+    ),
+    span({ class: 'text-sm opacity-70' }, () => `Page ${page.value} of ${totalPages}`)
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">With Numbers</h2>
-        <div class="join mb-8">
-            <button class="join-item btn">1</button>
-            <button class="join-item btn btn-active">2</button>
-            <button class="join-item btn">3</button>
-            <button class="join-item btn">4</button>
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Note</h2>
+        <div class="alert alert-info mb-8">
+            <span>Pagination uses the <a href="/docs/components/join" class="link">Join</a> component to group buttons
+                together.</span>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">With Radio Inputs</h2>
-        <div class="join mb-8">
-            <input class="join-item btn btn-square" type="radio" name="options" aria-label="1" checked />
-            <input class="join-item btn btn-square" type="radio" name="options" aria-label="2" />
-            <input class="join-item btn btn-square" type="radio" name="options" aria-label="3" />
-            <input class="join-item btn btn-square" type="radio" name="options" aria-label="4" />
-        </div>
-
+        <!-- Sizes -->
         <h2 class="text-xl font-bold mb-4">Sizes</h2>
         <div class="flex flex-col gap-4 mb-8">
             <div class="join">
@@ -49,26 +87,53 @@
                 <button class="join-item btn btn-sm">3</button>
             </div>
             <div class="join">
-                <button class="join-item btn btn-md">1</button>
-                <button class="join-item btn btn-md btn-active">2</button>
-                <button class="join-item btn btn-md">3</button>
-            </div>
-            <div class="join">
                 <button class="join-item btn btn-lg">1</button>
                 <button class="join-item btn btn-lg btn-active">2</button>
                 <button class="join-item btn btn-lg">3</button>
             </div>
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="join"&gt;
-  &lt;button class="join-item btn"&gt;1&lt;/button&gt;
-  &lt;button class="join-item btn btn-active"&gt;2&lt;/button&gt;
-  &lt;button class="join-item btn"&gt;3&lt;/button&gt;
-&lt;/div&gt;</code></pre>
+        <!-- Radio Style -->
+        <h2 class="text-xl font-bold mb-4">Radio Style</h2>
+        <div class="join mb-8">
+            <input class="join-item btn btn-square" type="radio" name="options" aria-label="1" checked />
+            <input class="join-item btn btn-square" type="radio" name="options" aria-label="2" />
+            <input class="join-item btn btn-square" type="radio" name="options" aria-label="3" />
+            <input class="join-item btn btn-square" type="radio" name="options" aria-label="4" />
+        </div>
 
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/pagination/" target="_blank"
-                    class="link link-primary">DaisyUI Pagination</a> (uses Join) for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/pagination/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Pagination documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '100px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

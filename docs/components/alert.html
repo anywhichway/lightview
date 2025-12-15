@@ -18,7 +18,133 @@
         <h1>Alert</h1>
         <p class="text-lg opacity-70 mb-6">
             Alert informs users about important events or status messages.
+            Supports multiple colors, variants, and optional icons.
         </p>
+
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Alerts with different colors and icons</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Alert } = await import('/components/data-display/alert.js');
+
+const { tags, $ } = Lightview;
+const { div, span } = tags;
+
+const alerts = div({ class: 'space-y-4' },
+    Alert({ color: 'info', icon: 'info' },
+        span({}, 'New update available! Click to learn more.')
+    ),
+    Alert({ color: 'success', icon: 'success' },
+        span({}, 'Your order has been placed successfully!')
+    ),
+    Alert({ color: 'warning', icon: 'warning' },
+        span({}, 'Please review your information before proceeding.')
+    ),
+    Alert({ color: 'error', icon: 'error' },
+        span({}, 'Unable to connect to server. Please try again.')
+    )
+);
+
+$('#demo').insert(alerts);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Dismissible Alert</h2>
+                <p class="text-sm opacity-70 mb-4">Alert with close button using signals</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Alert } = await import('/components/data-display/alert.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, span } = tags;
+
+const visible = signal(true);
+
+const demo = div({},
+    () => visible.value 
+        ? Alert({ color: 'success', icon: 'success' },
+            span({}, 'Message sent successfully!'),
+            Button({ 
+                size: 'sm',
+                color: 'ghost',
+                onclick: () => { visible.value = false; }
+            }, '✕')
+        )
+        : div({ class: 'flex gap-2' },
+            span({ class: 'text-sm opacity-50' }, 'Alert dismissed'),
+            Button({ 
+                size: 'sm',
+                color: 'primary',
+                onclick: () => { visible.value = true; }
+            }, 'Show again')
+        )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'info' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                    <tr>
+                        <td><code>icon</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Auto-icon: 'info' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                    <tr>
+                        <td><code>soft</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Use soft/light background variant</td>
+                    </tr>
+                    <tr>
+                        <td><code>outline</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Use outlined border style</td>
+                    </tr>
+                    <tr>
+                        <td><code>dash</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Use dashed border style</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Colors -->
         <h2 class="text-xl font-bold mb-4">Colors</h2>
@@ -94,19 +220,6 @@
             </div>
         </div>
 
-        <!-- Code -->
-        <h2 class="text-xl font-bold mb-4">Usage</h2>
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>import Alert from './components/data-display/alert.js';
-
-Alert({ color: 'success', icon: 'success' },
-    'Your order has been placed successfully!'
-)
-
-// Or with DaisyUI classes
-&lt;div role="alert" class="alert alert-success"&gt;
-    &lt;span&gt;Success message&lt;/span&gt;
-&lt;/div&gt;</code></pre>
-
         <div class="alert mt-8">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 class="stroke-info h-6 w-6 shrink-0">
@@ -121,3 +234,46 @@ Alert({ color: 'success', icon: 'success' },
         </div>
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '280px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '80px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

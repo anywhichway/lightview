@@ -19,24 +19,90 @@
         <h1>Badge</h1>
         <p class="text-lg opacity-70 mb-6">
             Badges are used to inform the user of the status of specific data.
+            Perfect for notifications, labels, and status indicators.
         </p>
 
-        <!-- Quick Example -->
+        <!-- Basic Example with Examplify -->
         <div class="card bg-base-200 mb-8">
             <div class="card-body">
-                <h2 class="card-title">Quick Example</h2>
-                <div class="flex gap-2 mb-4">
-                    <span class="badge">Badge</span>
-                    <span class="badge badge-primary">Primary</span>
-                    <span class="badge badge-secondary">Secondary</span>
-                </div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import Badge from './components/data-display/badge.js';
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Badges with different colors and variants</p>
 
-// Using Lightview component
-Badge({ color: 'primary' }, 'Primary')
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
 
-// Or using DaisyUI classes directly
-&lt;span class="badge badge-primary"&gt;Primary&lt;/span&gt;</code></pre>
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Badge } = await import('/components/data-display/badge.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+const badges = div({ class: 'space-y-4' },
+    // Colors
+    div({ class: 'flex flex-wrap gap-2' },
+        Badge({}, 'Default'),
+        Badge({ color: 'primary' }, 'Primary'),
+        Badge({ color: 'secondary' }, 'Secondary'),
+        Badge({ color: 'accent' }, 'Accent'),
+        Badge({ color: 'info' }, 'Info'),
+        Badge({ color: 'success' }, 'Success'),
+        Badge({ color: 'warning' }, 'Warning'),
+        Badge({ color: 'error' }, 'Error')
+    ),
+    // Variants
+    div({ class: 'flex flex-wrap gap-2' },
+        Badge({ variant: 'outline' }, 'Outline'),
+        Badge({ variant: 'soft', color: 'primary' }, 'Soft'),
+        Badge({ variant: 'dash', color: 'secondary' }, 'Dash')
+    )
+);
+
+$('#demo').insert(badges);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Notification Counter</h2>
+                <p class="text-sm opacity-70 mb-4">Reactive badge showing notification count</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Badge } = await import('/components/data-display/badge.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div } = tags;
+
+const count = signal(5);
+
+const demo = div({ class: 'flex items-center gap-8' },
+    Button({ 
+        size: 'sm', 
+        color: 'primary',
+        onclick: () => { count.value++; }
+    }, '+ Add Message'),
+    
+    Button({},
+        'Inbox',
+        Badge({ 
+            color: 'secondary',
+            class: 'ml-2'
+        }, () => count.value > 99 ? '99+' : count.value)
+    ),
+    
+    Button({ 
+        size: 'sm',
+        onclick: () => { count.value = 0; }
+    }, 'Clear')
+);
+
+$('#demo').insert(demo);</code></pre>
             </div>
         </div>
 
@@ -121,63 +187,6 @@ Badge({ color: 'primary' }, 'Primary')
             </button>
         </div>
 
-        <!-- Reactive Example -->
-        <h2 class="text-xl font-bold mb-4">Reactive Example</h2>
-        <div class="card bg-base-200 mb-8">
-            <div class="card-body">
-                <div id="reactive-badge-demo"></div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mt-4"><code>const { signal, tags } = Lightview;
-const { div, button } = tags;
-const Badge = LightviewX.getComponent('Badge');
-
-const count = signal(0);
-
-const demo = div({ class: 'flex items-center gap-4' },
-    button({ class: 'btn btn-sm', onclick: () => count.value++ }, 'Increment'),
-    div({ class: 'relative inline-block' },
-        'Messages',
-        Badge({ 
-            class: 'badge-xs badge-primary absolute -top-2 -right-3',
-        }, () => count.value)
-    )
-);</code></pre>
-            </div>
-        </div>
-
-        <script type="module">
-            const { signal, tags, $ } = Lightview;
-            const { div, span, button } = tags;
-
-            // Simple demo definition
-            const Badge = (props, ...children) => {
-                const { color, size, variant, class: className = '', ...rest } = props || {};
-                const classes = [
-                    'badge',
-                    color ? `badge-${color}` : '',
-                    size ? `badge-${size}` : '',
-                    variant ? `badge-${variant}` : '',
-                    className
-                ].join(' ');
-
-                return span({ class: classes, ...rest }, ...children);
-            };
-
-            const count = signal(5);
-
-            const demo = div({ class: 'flex items-center gap-8' },
-                button({ class: 'btn btn-primary btn-sm', onclick: () => count.value++ }, 'Add Message'),
-                button({ class: 'btn', },
-                    'Inbox',
-                    Badge({
-                        color: 'secondary',
-                        class: 'ml-2'
-                    }, () => count.value > 99 ? '99+' : count.value)
-                )
-            );
-
-            $('#reactive-badge-demo').insert(demo);
-        </script>
-
         <!-- DaisyUI Reference -->
         <div class="alert mt-8">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -193,3 +202,46 @@ const demo = div({ class: 'flex items-center gap-4' },
         </div>
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '100px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '80px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

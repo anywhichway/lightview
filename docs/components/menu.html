@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,49 +15,154 @@
             </ul>
         </div>
         <h1>Menu</h1>
-        <p class="text-lg opacity-70 mb-6">Menu is used to display a list of links vertically or horizontally.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Menu is used to display a list of links vertically or horizontally.
+            Supports icons, submenus, and collapsible sections.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <ul class="menu bg-base-200 rounded-box w-56 mb-8">
-            <li><a>Item 1</a></li>
-            <li><a>Item 2</a></li>
-            <li><a>Item 3</a></li>
-        </ul>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Vertical menu with active state</p>
 
-        <h2 class="text-xl font-bold mb-4">With Icons</h2>
-        <ul class="menu bg-base-200 rounded-box w-56 mb-8">
-            <li>
-                <a>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    Home
-                </a>
-            </li>
-            <li>
-                <a>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Details
-                </a>
-            </li>
-            <li>
-                <a>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    Stats
-                </a>
-            </li>
-        </ul>
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
 
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Menu } = await import('/components/navigation/menu.js');
+
+const { signal, tags, $ } = Lightview;
+
+const active = signal('home');
+const items = ['home', 'profile', 'settings', 'logout'];
+
+const menu = Menu({ class: 'bg-base-200 rounded-box w-56' },
+    ...items.map(item => 
+        Menu.Item({},
+            Menu.Link({ 
+                active: () => active.value === item,
+                onclick: () => { active.value = item; }
+            }, item.charAt(0).toUpperCase() + item.slice(1))
+        )
+    )
+);
+
+$('#demo').insert(menu);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Horizontal Menu</h2>
+                <p class="text-sm opacity-70 mb-4">Navigation bar style menu</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+
+const { default: Menu } = await import('/components/navigation/menu.js');
+
+const { signal, tags, $ } = Lightview;
+
+const current = signal('features');
+
+const menu = Menu({ horizontal: true, class: 'bg-base-200 rounded-box' },
+    Menu.Item({},
+        Menu.Link({ 
+            active: () => current.value === 'features',
+            onclick: () => { current.value = 'features'; }
+        }, '✨ Features')
+    ),
+    Menu.Item({},
+        Menu.Link({ 
+            active: () => current.value === 'pricing',
+            onclick: () => { current.value = 'pricing'; }
+        }, '💰 Pricing')
+    ),
+    Menu.Item({},
+        Menu.Link({ 
+            active: () => current.value === 'docs',
+            onclick: () => { current.value = 'docs'; }
+        }, '📚 Docs')
+    )
+);
+
+$('#demo').insert(menu);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>horizontal</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Horizontal layout</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Props</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Menu.Item</code></td>
+                        <td>-</td>
+                        <td>Menu list item (li)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Menu.Link</code></td>
+                        <td>active, disabled, href</td>
+                        <td>Clickable link</td>
+                    </tr>
+                    <tr>
+                        <td><code>Menu.Title</code></td>
+                        <td>-</td>
+                        <td>Section header</td>
+                    </tr>
+                    <tr>
+                        <td><code>Menu.Details</code></td>
+                        <td>open</td>
+                        <td>Collapsible submenu</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Examples -->
         <h2 class="text-xl font-bold mb-4">With Title</h2>
         <ul class="menu bg-base-200 rounded-box w-56 mb-8">
             <li class="menu-title">Title</li>
@@ -77,23 +186,10 @@
             <li><a>Item 3</a></li>
         </ul>
 
-        <h2 class="text-xl font-bold mb-4">Horizontal</h2>
-        <ul class="menu menu-horizontal bg-base-200 rounded-box mb-8">
-            <li><a>Item 1</a></li>
-            <li><a>Item 2</a></li>
-            <li><a>Item 3</a></li>
-        </ul>
-
         <h2 class="text-xl font-bold mb-4">Sizes</h2>
         <div class="flex flex-wrap gap-4 mb-8">
             <ul class="menu menu-xs bg-base-200 rounded-box w-40">
                 <li><a>xs Item</a></li>
-            </ul>
-            <ul class="menu menu-sm bg-base-200 rounded-box w-40">
-                <li><a>sm Item</a></li>
-            </ul>
-            <ul class="menu menu-md bg-base-200 rounded-box w-40">
-                <li><a>md Item</a></li>
             </ul>
             <ul class="menu menu-lg bg-base-200 rounded-box w-48">
                 <li><a>lg Item</a></li>
@@ -101,8 +197,54 @@
         </div>
 
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/menu/" target="_blank" class="link link-primary">DaisyUI
-                    Menu</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/menu/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Menu documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '200px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '80px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

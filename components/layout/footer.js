@@ -9,15 +9,19 @@ import '../daisyui.js';
  * Footer Component
  * @param {Object} props
  * @param {boolean} props.center - Center content
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Footer = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { footer } = tags;
+    const { footer, div, shadowDOM } = tags;
 
     const {
         center = false,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -26,7 +30,35 @@ const Footer = (props = {}, ...children) => {
     if (center) classes.push('footer-center');
     if (className) classes.push(className);
 
-    return footer({ class: classes.join(' '), ...rest }, ...children);
+    const footerEl = footer({ class: classes.join(' '), ...rest }, ...children);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Footer: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    footerEl
+                )
+            )
+        );
+    }
+
+    return footerEl;
 };
 
 /**

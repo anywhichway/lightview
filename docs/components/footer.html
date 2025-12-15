@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,33 +15,104 @@
             </ul>
         </div>
         <h1>Footer</h1>
-        <p class="text-lg opacity-70 mb-6">Footer can contain logo, copyright notice, and links.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Footer can contain logo, links, and copyright notice.
+            Supports multiple column layouts.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <footer class="footer bg-neutral text-neutral-content p-10 mb-8 rounded-box">
-            <nav>
-                <h6 class="footer-title">Services</h6>
-                <a class="link link-hover">Branding</a>
-                <a class="link link-hover">Design</a>
-                <a class="link link-hover">Marketing</a>
-                <a class="link link-hover">Advertisement</a>
-            </nav>
-            <nav>
-                <h6 class="footer-title">Company</h6>
-                <a class="link link-hover">About us</a>
-                <a class="link link-hover">Contact</a>
-                <a class="link link-hover">Jobs</a>
-                <a class="link link-hover">Press kit</a>
-            </nav>
-            <nav>
-                <h6 class="footer-title">Legal</h6>
-                <a class="link link-hover">Terms of use</a>
-                <a class="link link-hover">Privacy policy</a>
-                <a class="link link-hover">Cookie policy</a>
-            </nav>
-        </footer>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Multi-column footer with links</p>
 
-        <h2 class="text-xl font-bold mb-4">With Logo and Copyright</h2>
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Footer } = await import('/components/layout/footer.js');
+
+const { tags, $ } = Lightview;
+const { a } = tags;
+
+const footer = Footer({ class: 'bg-neutral text-neutral-content p-10 rounded-box' },
+    Footer.Nav({},
+        Footer.Title({}, 'Services'),
+        a({ class: 'link link-hover' }, 'Branding'),
+        a({ class: 'link link-hover' }, 'Design'),
+        a({ class: 'link link-hover' }, 'Marketing')
+    ),
+    Footer.Nav({},
+        Footer.Title({}, 'Company'),
+        a({ class: 'link link-hover' }, 'About us'),
+        a({ class: 'link link-hover' }, 'Contact'),
+        a({ class: 'link link-hover' }, 'Jobs')
+    ),
+    Footer.Nav({},
+        Footer.Title({}, 'Legal'),
+        a({ class: 'link link-hover' }, 'Terms of use'),
+        a({ class: 'link link-hover' }, 'Privacy policy')
+    )
+);
+
+$('#demo').insert(footer);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>center</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Center aligned footer</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Footer.Nav</code></td>
+                        <td>Link group container</td>
+                    </tr>
+                    <tr>
+                        <td><code>Footer.Title</code></td>
+                        <td>Section title</td>
+                    </tr>
+                    <tr>
+                        <td><code>Footer.Aside</code></td>
+                        <td>Extra content area</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Examples -->
+        <h2 class="text-xl font-bold mb-4">Centered Footer</h2>
         <footer class="footer footer-center bg-base-300 text-base-content p-4 rounded-box">
             <aside>
                 <p>Copyright © 2024 - All rights reserved by ACME Industries Ltd</p>
@@ -45,8 +120,37 @@
         </footer>
 
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/footer/" target="_blank" class="link link-primary">DaisyUI
-                    Footer</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/footer/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Footer documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '200px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

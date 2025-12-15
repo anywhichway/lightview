@@ -9,22 +9,26 @@ import '../daisyui.js';
  * Countdown Component
  * @param {Object} props
  * @param {number|function} props.value - Countdown value (0-99)
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Countdown = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { span } = tags;
+    const { span, div, shadowDOM } = tags;
 
     const {
         value = 0,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
 
     const getValue = () => typeof value === 'function' ? value() : value;
 
-    return span({
+    const countdownEl = span({
         class: `countdown ${className}`.trim(),
         ...rest
     },
@@ -34,6 +38,34 @@ const Countdown = (props = {}, ...children) => {
                 : `--value:${value};`
         })
     );
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Countdown: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    countdownEl
+                )
+            )
+        );
+    }
+
+    return countdownEl;
 };
 
 if (typeof window !== 'undefined' && window.LightviewX) {

@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,8 +15,142 @@
             </ul>
         </div>
         <h1>Theme Controller</h1>
-        <p class="text-lg opacity-70 mb-6">Theme Controller allows users to switch between themes.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Theme Controller allows users to switch between DaisyUI themes.
+            Supports toggle, dropdown, and radio button styles.
+        </p>
 
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Theme toggle with reactive state</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: ThemeController } = await import('/components/actions/theme-controller.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, span } = tags;
+
+const isDark = signal(document.documentElement.getAttribute('data-theme') === 'dark');
+
+const demo = div({ class: 'flex items-center gap-4' },
+    ThemeController({
+        toggle: true,
+        lightTheme: 'light',
+        darkTheme: 'dark',
+        checked: () => isDark.value,
+        onChange: (dark) => { isDark.value = dark; }
+    }),
+    span({ class: 'text-sm' }, () => isDark.value ? '🌙 Dark Mode' : '☀️ Light Mode')
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Theme Selector</h2>
+                <p class="text-sm opacity-70 mb-4">Radio buttons for multiple themes</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+
+const { default: ThemeController } = await import('/components/actions/theme-controller.js');
+
+const { signal, tags, $ } = Lightview;
+const { div } = tags;
+
+const themes = ['light', 'dark', 'cupcake', 'cyberpunk', 'synthwave'];
+const current = signal('light');
+
+const demo = div({ class: 'flex flex-wrap gap-2' },
+    ...themes.map(theme =>
+        ThemeController({
+            radio: true,
+            name: 'theme-select',
+            theme: theme,
+            label: theme.charAt(0).toUpperCase() + theme.slice(1),
+            checked: () => current.value === theme,
+            onChange: () => { current.value = theme; }
+        })
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>toggle</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Use checkbox toggle style</td>
+                    </tr>
+                    <tr>
+                        <td><code>radio</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Use radio button style</td>
+                    </tr>
+                    <tr>
+                        <td><code>theme</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Theme value to apply</td>
+                    </tr>
+                    <tr>
+                        <td><code>lightTheme</code></td>
+                        <td>string</td>
+                        <td>'light'</td>
+                        <td>Theme when toggle unchecked</td>
+                    </tr>
+                    <tr>
+                        <td><code>darkTheme</code></td>
+                        <td>string</td>
+                        <td>'dark'</td>
+                        <td>Theme when toggle checked</td>
+                    </tr>
+                    <tr>
+                        <td><code>label</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Button label for radio style</td>
+                    </tr>
+                    <tr>
+                        <td><code>onChange</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when theme changes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Examples -->
         <h2 class="text-xl font-bold mb-4">Toggle (Light/Dark)</h2>
         <label class="swap swap-rotate mb-8">
             <input type="checkbox" class="theme-controller" value="dark" />
@@ -26,37 +164,6 @@
             </svg>
         </label>
 
-        <h2 class="text-xl font-bold mb-4">Dropdown Selector</h2>
-        <div class="dropdown mb-8">
-            <div tabindex="0" role="button" class="btn m-1">
-                Theme
-                <svg width="12px" height="12px" class="inline-block h-2 w-2 fill-current opacity-60"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
-                    <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
-                </svg>
-            </div>
-            <ul tabindex="0" class="dropdown-content bg-base-300 rounded-box z-1 w-52 p-2 shadow-2xl">
-                <li><input type="radio" name="theme-dropdown"
-                        class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="Default"
-                        value="default" /></li>
-                <li><input type="radio" name="theme-dropdown"
-                        class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="Light"
-                        value="light" /></li>
-                <li><input type="radio" name="theme-dropdown"
-                        class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="Dark"
-                        value="dark" /></li>
-                <li><input type="radio" name="theme-dropdown"
-                        class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="Cupcake"
-                        value="cupcake" /></li>
-                <li><input type="radio" name="theme-dropdown"
-                        class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="Cyberpunk"
-                        value="cyberpunk" /></li>
-                <li><input type="radio" name="theme-dropdown"
-                        class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="Synthwave"
-                        value="synthwave" /></li>
-            </ul>
-        </div>
-
         <h2 class="text-xl font-bold mb-4">Radio Buttons</h2>
         <div class="flex flex-wrap gap-2 mb-8">
             <input type="radio" name="theme-buttons" class="btn theme-controller" aria-label="Light" value="light" />
@@ -67,20 +174,55 @@
                 value="cyberpunk" />
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;!-- Toggle between light and dark --&gt;
-&lt;label class="swap swap-rotate"&gt;
-  &lt;input type="checkbox" class="theme-controller" value="dark" /&gt;
-  &lt;svg class="swap-off ..."&gt;...sun...&lt;/svg&gt;
-  &lt;svg class="swap-on ..."&gt;...moon...&lt;/svg&gt;
-&lt;/label&gt;
-
-&lt;!-- Radio buttons for multiple themes --&gt;
-&lt;input type="radio" class="btn theme-controller" aria-label="Light" value="light" /&gt;
-&lt;input type="radio" class="btn theme-controller" aria-label="Dark" value="dark" /&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/theme-controller/" target="_blank"
-                    class="link link-primary">DaisyUI Theme Controller</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/theme-controller/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Theme Controller documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '80px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '80px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

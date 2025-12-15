@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,45 +15,153 @@
             </ul>
         </div>
         <h1>Countdown</h1>
-        <p class="text-lg opacity-70 mb-6">Countdown displays a numeric value with transition animation.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Countdown displays a numeric value with smooth transition animation.
+            Supports reactive values for live countdowns.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <div class="flex gap-5 mb-8">
-            <span class="countdown font-mono text-4xl"><span style="--value:10;"></span></span>
-            <span class="countdown font-mono text-4xl"><span style="--value:24;"></span></span>
-            <span class="countdown font-mono text-4xl"><span style="--value:59;"></span></span>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Static countdown values</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Countdown } = await import('/components/data-display/countdown.js');
+
+const { tags, $ } = Lightview;
+const { div, span } = tags;
+
+const display = div({ class: 'flex gap-5' },
+    Countdown({ value: 15, class: 'font-mono text-4xl' }),
+    span({ class: 'text-4xl' }, ':'),
+    Countdown({ value: 30, class: 'font-mono text-4xl' }),
+    span({ class: 'text-4xl' }, ':'),
+    Countdown({ value: 45, class: 'font-mono text-4xl' })
+);
+
+$('#demo').insert(display);</code></pre>
+            </div>
         </div>
 
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Live Timer</h2>
+                <p class="text-sm opacity-70 mb-4">Reactive countdown with animated transitions</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Countdown } = await import('/components/data-display/countdown.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div } = tags;
+
+const seconds = signal(30);
+const running = signal(false);
+let interval = null;
+
+const toggle = () => {
+    if (running.value) {
+        clearInterval(interval);
+        running.value = false;
+    } else {
+        running.value = true;
+        interval = setInterval(() => {
+            if (seconds.value > 0) {
+                seconds.value--;
+            } else {
+                clearInterval(interval);
+                running.value = false;
+            }
+        }, 1000);
+    }
+};
+
+const reset = () => {
+    clearInterval(interval);
+    running.value = false;
+    seconds.value = 30;
+};
+
+const demo = div({ class: 'flex flex-col items-center gap-4' },
+    Countdown({ value: () => seconds.value, class: 'font-mono text-6xl' }),
+    div({ class: 'flex gap-2' },
+        Button({ 
+            color: () => running.value ? 'error' : 'primary',
+            onclick: toggle 
+        }, () => running.value ? 'Pause' : 'Start'),
+        Button({ onclick: reset }, 'Reset')
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>value</code></td>
+                        <td>number | function</td>
+                        <td>0</td>
+                        <td>Countdown value (0-99, reactive)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Examples -->
         <h2 class="text-xl font-bold mb-4">With Labels</h2>
         <div class="grid grid-flow-col gap-5 text-center auto-cols-max mb-8">
             <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-                <span class="countdown font-mono text-5xl"><span style="--value:15;"></span></span>
+                <span class="countdown font-mono text-5xl"><span id="cd-days" style="--value:15;"></span></span>
                 days
             </div>
             <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-                <span class="countdown font-mono text-5xl"><span style="--value:10;"></span></span>
+                <span class="countdown font-mono text-5xl"><span id="cd-hours" style="--value:10;"></span></span>
                 hours
             </div>
             <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-                <span class="countdown font-mono text-5xl"><span style="--value:24;"></span></span>
+                <span class="countdown font-mono text-5xl"><span id="cd-min" style="--value:24;"></span></span>
                 min
             </div>
             <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-                <span class="countdown font-mono text-5xl"><span id="countdown-sec" style="--value:59;"></span></span>
+                <span class="countdown font-mono text-5xl"><span id="cd-sec" style="--value:59;"></span></span>
                 sec
             </div>
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;span class="countdown font-mono text-4xl"&gt;
-  &lt;span style="--value:59;"&gt;&lt;/span&gt;
-&lt;/span&gt;
-
-// Update with JavaScript:
-document.querySelector('.countdown span').style.setProperty('--value', 58);</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/countdown/" target="_blank"
-                    class="link link-primary">DaisyUI Countdown</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/countdown/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Countdown documentation</a>.
+            </span>
         </div>
     </div>
 </div>
@@ -59,7 +171,43 @@ document.querySelector('.countdown span').style.setProperty('--value', 58);</cod
     let sec = 59;
     setInterval(() => {
         sec = sec > 0 ? sec - 1 : 59;
-        const el = document.getElementById('countdown-sec');
+        const el = document.getElementById('cd-sec');
         if (el) el.style.setProperty('--value', sec);
     }, 1000);
+
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '80px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '160px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
 </script>

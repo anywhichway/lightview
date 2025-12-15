@@ -16,16 +16,19 @@ import '../daisyui.js';
  * @param {boolean} props.active - Force active state
  * @param {boolean} props.glass - Glass morphism effect
  * @param {boolean} props.noAnimation - Disable click animation
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  * @param {...children} children - Button content
  */
 const Button = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) {
         console.error('Lightview not found');
         return null;
     }
 
-    const { button } = tags;
+    const { button, div, shadowDOM } = tags;
 
     const {
         color,
@@ -36,6 +39,7 @@ const Button = (props = {}, ...children) => {
         active = false,
         glass = false,
         noAnimation = false,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -84,7 +88,7 @@ const Button = (props = {}, ...children) => {
         return children;
     };
 
-    return button({
+    const buttonEl = button({
         class: typeof disabled === 'function' || typeof loading === 'function' || typeof active === 'function'
             ? () => getClassList()
             : getClassList(),
@@ -93,6 +97,35 @@ const Button = (props = {}, ...children) => {
             : disabled || loading,
         ...rest
     }, ...(typeof loading === 'function' ? [() => buildContent()] : buildContent()));
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Button: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        // Get current theme from document
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    buttonEl
+                )
+            )
+        );
+    }
+
+    return buttonEl;
 };
 
 // Auto-register with LightviewX if available

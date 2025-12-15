@@ -13,24 +13,32 @@ import { themes, setTheme, getTheme } from '../daisyui.js';
  * @param {string[]} props.themes - Array of theme names to show
  * @param {string} props.lightTheme - Theme for light mode (toggle only)
  * @param {string} props.darkTheme - Theme for dark mode (toggle only)
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const ThemeController = (props = {}) => {
     const { tags, signal } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
+
+    const { div, shadowDOM } = tags;
 
     const {
         type = 'toggle',
         themes: themeList = ['light', 'dark'],
         lightTheme = 'light',
         darkTheme = 'dark',
+        useShadow,
         class: className = '',
         ...rest
     } = props;
 
+    let controllerEl;
+
     if (type === 'toggle') {
         const isDark = signal(getTheme() === darkTheme);
 
-        return tags.label({
+        controllerEl = tags.label({
             class: `swap swap-rotate ${className}`.trim(),
             ...rest
         },
@@ -60,10 +68,8 @@ const ThemeController = (props = {}) => {
                 innerHTML: '<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>'
             })
         );
-    }
-
-    if (type === 'dropdown') {
-        return tags.div({ class: `dropdown ${className}`.trim(), ...rest },
+    } else if (type === 'dropdown') {
+        controllerEl = tags.div({ class: `dropdown ${className}`.trim(), ...rest },
             tags.div({ tabindex: '0', role: 'button', class: 'btn m-1' }, 'Theme'),
             tags.ul({
                 tabindex: '0',
@@ -83,22 +89,50 @@ const ThemeController = (props = {}) => {
                 )
             )
         );
+    } else {
+        // Radio buttons
+        controllerEl = tags.div({ class: `flex flex-wrap gap-2 ${className}`.trim(), ...rest },
+            ...themeList.map(theme =>
+                tags.input({
+                    type: 'radio',
+                    name: 'theme-radios',
+                    class: 'theme-controller btn btn-xs',
+                    'aria-label': theme,
+                    value: theme,
+                    checked: getTheme() === theme,
+                    onclick: () => setTheme(theme)
+                })
+            )
+        );
     }
 
-    // Radio buttons
-    return tags.div({ class: `flex flex-wrap gap-2 ${className}`.trim(), ...rest },
-        ...themeList.map(theme =>
-            tags.input({
-                type: 'radio',
-                name: 'theme-radios',
-                class: 'theme-controller btn btn-xs',
-                'aria-label': theme,
-                value: theme,
-                checked: getTheme() === theme,
-                onclick: () => setTheme(theme)
-            })
-        )
-    );
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview ThemeController: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    controllerEl
+                )
+            )
+        );
+    }
+
+    return controllerEl;
 };
 
 if (typeof window !== 'undefined' && window.LightviewX) {

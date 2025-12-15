@@ -19,8 +19,7 @@
             <button class="btn btn-primary step-btn active" onclick="loadStep(1)">1. Signals</button>
             <button class="btn btn-secondary step-btn" onclick="loadStep(2)">2. State</button>
             <button class="btn btn-secondary step-btn" onclick="loadStep(3)">3. Hypermedia</button>
-            <button class="btn btn-secondary step-btn" onclick="loadStep(4)">4. Styles</button>
-            <button class="btn btn-secondary step-btn" onclick="loadStep(5)">5. Components</button>
+            <button class="btn btn-secondary step-btn" onclick="loadStep(4)">4. Components</button>
         </div>
 
         <!-- Tutorial Layout: Preview on top, Code & Concepts below -->
@@ -381,134 +380,52 @@ $('#app').insert(App);`,
                 }
             },
             4: {
-                code: `// STEP 4: STYLES - Using Lightview component CSS without JS
-// Component CSS files can be used standalone!
-const { tags, $ } = Lightview;
-const { div, h3, p, img, link, style } = tags;
-
-// Load the card component CSS (no JS component needed)
-const cardCSS = link({
-    rel: 'stylesheet',
-    href: '../../components/display/card.css'
-});
-document.head.appendChild(cardCSS.domEl);
-
-// Load base theme variables for --lv-* CSS custom properties
-const themeCSS = link({
-    rel: 'stylesheet',
-    href: '../../components/utils/variables.css'
-});
-document.head.appendChild(themeCSS.domEl);
-
-// Build a card using just CSS classes - no Card() component!
-const App = div({},
-    // Basic card structure using lv-card CSS classes
-    div({ class: 'lv-card lv-card--elevated lv-card--hoverable', style: 'width: 320px;' },
-        // Card media
-        div({ class: 'lv-card__media lv-card__media--top' },
-            img({ 
-                src: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop',
-                alt: 'Red Nike Sneakers'
-            })
-        ),
-        // Card body
-        div({ class: 'lv-card__body' },
-            h3({ class: 'lv-card__title' }, 'Red Nike Sneakers'),
-            p({ class: 'lv-card__subtitle' }, 'Premium comfort and style')
-        ),
-        // Card footer
-        div({ class: 'lv-card__footer lv-card__footer--between' },
-            p({ style: 'margin: 0; font-weight: 600; font-size: 1.25rem;' }, '$99'),
-            div({ style: 'display: flex; gap: 0.5rem;' },
-                div({ class: 'btn' }, 'Details'),
-                div({ class: 'btn btn-primary' }, 'Add to Cart')
-            )
-        )
-    ),
-
-    // Override theme variables locally
-    style({},
-        \`/* Override Lightview theme variables */
-        .lv-card {
-            --lv-color-primary: #8b5cf6;  /* Purple theme */
-            --lv-radius-lg: 1rem;          /* More rounded */
-            --lv-shadow-md: 0 8px 30px rgba(139, 92, 246, 0.2);
-        }
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 1px solid #e5e7eb;
-            background: white;
-        }
-        .btn-primary {
-            background: var(--lv-color-primary, #8b5cf6);
-            color: white;
-            border-color: transparent;
-        }\`
-    )
-);
-
-$('#app').insert(App);`,
-                concepts: `
-                <h3 style="margin-top: 0; color: var(--site-primary);">Step 4: Component Styles</h3>
-                <p>Use <strong>Lightview component CSS</strong> directly—no JavaScript components required!</p>
-                
-                <h4>Key Concepts:</h4>
-                <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
-                    <li style="margin-bottom: 0.75rem;"><strong>CSS-Only Components</strong> — Load <code>card.css</code>, <code>button.css</code>, etc. and apply classes like <code>lv-card</code>, <code>lv-card--elevated</code>.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>Theme Variables</strong> — <code>variables.css</code> provides <code>--lv-*</code> CSS custom properties for colors, spacing, shadows, etc.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>Easy Overrides</strong> — Override <code>--lv-color-primary</code> or any variable locally to customize components.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>BEM Classes</strong> — Components use predictable class names like <code>lv-card__header</code>, <code>lv-card__body</code>.</li>
-                </ul>
-                <p><strong>Try it:</strong> Notice the purple theme override applied to this card!</p>
-            `
-            },
-            5: {
-                code: `// STEP 5: COMPONENTS - Using the Lightview component library
+                code: `// STEP 4: COMPONENTS - Using the Lightview component library
 // Import the real components from the component library
-import Button from '../../components/core/button.js';
-import Badge from '../../components/display/badge.js';
-import Card from '../../components/display/card.js';
+import Button from '../../components/actions/button.js';
+import Badge from '../../components/data-display/badge.js';
+import Card from '../../components/data-display/card.js';
 
 const { tags, signal, $ } = Lightview;
-const { div, h3, p, img } = tags;
+const { div, h3, p } = tags;
 
 // Reactive state for the add-to-cart button
 const isAdded = signal(false);
 
-const App = Card({ variant: 'elevated', hoverable: true, style: 'width: 320px;' },
-    Card.Media({ 
-        src: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop',
-        alt: 'Red Nike Sneakers'
-    }),
-    Card.Body({},
-        div({ style: 'display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;' },
-            h3({ style: 'margin: 0;' }, 'Red Nike Sneakers'),
-            Badge({ color: 'success', variant: 'light' }, 'In Stock')
-        ),
-        p({ style: 'color: #64748b; margin: 0.5rem 0 0;' }, 
-            'Premium comfort meeting modern style.'
-        )
+const App = Card({ class: 'w-[320px] bg-base-100 shadow-xl' },
+    Card.Figure({}, 
+        tags.img({
+            src: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop',
+            alt: 'Red Nike Sneakers'
+        })
     ),
-    Card.Footer({ align: 'between' },
-        Button({ 
-            color: 'primary',
-            onclick: () => isAdded.value = true 
-        }, () => isAdded.value ? '✓ Added!' : 'Add to Cart'),
-        Button({ variant: 'outline', color: 'neutral' }, 'Details')
+    Card.Body({},
+        div({ class: 'flex justify-between items-start mb-2' },
+            h3({ class: 'card-title m-0' }, 'Red Nike Sneakers'),
+            Badge({ color: 'success', variant: 'outline' }, 'In Stock')
+        ),
+        p({ class: 'text-base-content/70 m-0' },
+            'Premium comfort meeting modern style.'
+        ),
+        Card.Actions({ class: 'justify-end mt-4' },
+            Button({
+                color: 'primary',
+                onclick: () => isAdded.value = true
+            }, () => isAdded.value ? '✓ Added!' : 'Add to Cart'),
+            Button({ class: 'btn-ghost' }, 'Details')
+        )
     )
 );
 
 $('#app').insert(App);`,
                 concepts: `
-                <h3 style="margin-top: 0; color: var(--site-primary);">Step 5: Components</h3>
+                <h3 style="margin-top: 0; color: var(--site-primary);">Step 4: Components</h3>
                 <p>Use the <strong>Lightview Component Library</strong> for polished, accessible UI elements.</p>
                 
                 <h4>Key Concepts:</h4>
                 <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
                     <li style="margin-bottom: 0.75rem;"><strong>Real Components</strong> — <code>Button</code>, <code>Badge</code>, <code>Card</code> are pre-built with variants, colors, and accessibility.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>Composition</strong> — Use <code>Card.Header</code>, <code>Card.Body</code>, <code>Card.Footer</code>, <code>Card.Media</code> for structured layouts.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Composition</strong> — Use <code>Card.Figure</code>, <code>Card.Body</code>, <code>Card.Actions</code> for structured layouts.</li>
                     <li style="margin-bottom: 0.75rem;"><strong>Props</strong> — Components accept props like <code>variant</code>, <code>color</code>, <code>size</code> for customization.</li>
                 </ul>
                 <p><strong>Next:</strong> Explore the <a href="/docs/components">Components</a> library and <a href="/docs/playground">Playground</a>!</p>

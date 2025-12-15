@@ -12,18 +12,22 @@ import '../daisyui.js';
  * @param {boolean|function} props.open - Control open state reactively
  * @param {string} props.position - 'top' | 'bottom' | 'middle' (default)
  * @param {function} props.onClose - Callback when modal closes
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Modal = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { dialog, form } = tags;
+    const { dialog, div, shadowDOM } = tags;
 
     const {
         id,
         open = false,
         position,
         onClose,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -51,6 +55,32 @@ const Modal = (props = {}, ...children) => {
         };
         // Set up effect after element is in DOM
         setTimeout(checkOpen, 0);
+    }
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Modal: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    modalEl
+                )
+            )
+        );
     }
 
     return modalEl;

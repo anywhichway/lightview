@@ -33,7 +33,7 @@
 
                 <!-- Code display -->
                 <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Toggle component
-await LightviewX.initComponents();
+
 const { default: Toggle } = await import('/components/data-input/toggle.js');
 
 const { tags, $ } = Lightview;
@@ -84,7 +84,7 @@ $('#demo').insert(
                 <div id="reactive-preview" class="mb-4"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">await LightviewX.initComponents();
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
 const { default: Toggle } = await import('/components/data-input/toggle.js');
 
 const { signal, tags, $ } = Lightview;

@@ -19,34 +19,88 @@
         <h1>Tabs</h1>
         <p class="text-lg opacity-70 mb-6">
             Tabs allow showing and hiding content to organize information.
+            Supports boxed, bordered, and lifted variants.
         </p>
 
-        <!-- Quick Example -->
+        <!-- Basic Example with Examplify -->
         <div class="card bg-base-200 mb-8">
             <div class="card-body">
-                <h2 class="card-title">Quick Example</h2>
-                <div class="mb-4">
-                    <div role="tablist" class="tabs tabs-bordered">
-                        <a role="tab" class="tab">Tab 1</a>
-                        <a role="tab" class="tab tab-active">Tab 2</a>
-                        <a role="tab" class="tab">Tab 3</a>
-                    </div>
-                </div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import Tabs from './components/navigation/tabs.js';
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Interactive tabs with content panels</p>
 
-// Using Lightview component
-Tabs({ variant: 'bordered' },
-    Tabs.Tab({}, 'Tab 1'),
-    Tabs.Tab({ active: true }, 'Tab 2'),
-    Tabs.Tab({}, 'Tab 3')
-)
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
 
-// Or using DaisyUI classes directly
-&lt;div role="tablist" class="tabs tabs-bordered"&gt;
-  &lt;a role="tab" class="tab"&gt;Tab 1&lt;/a&gt;
-  &lt;a role="tab" class="tab tab-active"&gt;Tab 2&lt;/a&gt;
-  &lt;a role="tab" class="tab"&gt;Tab 3&lt;/a&gt;
-&lt;/div&gt;</code></pre>
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Tabs } = await import('/components/navigation/tabs.js');
+
+const { signal, tags, $ } = Lightview;
+const { div } = tags;
+
+const activeTab = signal(0);
+const tabLabels = ['Profile', 'Settings', 'Messages'];
+
+const demo = div({ class: 'flex flex-col gap-4' },
+    Tabs({ variant: 'bordered' },
+        ...tabLabels.map((label, i) =>
+            Tabs.Tab({ 
+                active: () => activeTab.value === i,
+                onclick: () => { activeTab.value = i; }
+            }, label)
+        )
+    ),
+    div({ class: 'p-6 border rounded bg-base-100' },
+        () => `Content for: ${tabLabels[activeTab.value]}`
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Lifted Tabs</h2>
+                <p class="text-sm opacity-70 mb-4">Tabs with lifted style and connected content</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+
+const { default: Tabs } = await import('/components/navigation/tabs.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, p, h3 } = tags;
+
+const active = signal(1);
+
+const contents = [
+    { title: 'Home', text: 'Welcome to your dashboard!' },
+    { title: 'Analytics', text: 'View your traffic stats here.' },
+    { title: 'Reports', text: 'Download detailed reports.' }
+];
+
+const demo = Tabs({ variant: 'lifted' },
+    ...contents.map((c, i) =>
+        Tabs.Tab({ 
+            active: () => active.value === i,
+            onclick: () => { active.value = i; }
+        }, c.title)
+    ),
+    Tabs.Content({ class: 'rounded-b-box' },
+        () => div({},
+            h3({ class: 'font-bold text-lg mb-2' }, contents[active.value].title),
+            p({}, contents[active.value].text)
+        )
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
             </div>
         </div>
 
@@ -79,29 +133,27 @@ Tabs({ variant: 'bordered' },
             </table>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">Props (Tabs.Tab)</h2>
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
         <div class="overflow-x-auto mb-8">
             <table class="table table-zebra">
                 <thead>
                     <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
+                        <th>Component</th>
+                        <th>Props</th>
                         <th>Description</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><code>active</code></td>
-                        <td>boolean | signal</td>
-                        <td>false</td>
-                        <td>Active state</td>
+                        <td><code>Tabs.Tab</code></td>
+                        <td>active, disabled</td>
+                        <td>Individual tab button</td>
                     </tr>
                     <tr>
-                        <td><code>disabled</code></td>
-                        <td>boolean | signal</td>
-                        <td>false</td>
-                        <td>Disabled state</td>
+                        <td><code>Tabs.Content</code></td>
+                        <td>-</td>
+                        <td>Content panel for lifted tabs</td>
                     </tr>
                 </tbody>
             </table>
@@ -119,18 +171,16 @@ Tabs({ variant: 'bordered' },
                 </div>
             </div>
             <div>
-                <h3 class="font-bold mb-2">Lifted</h3>
-                <div role="tablist" class="tabs tabs-lifted">
+                <h3 class="font-bold mb-2">Boxed</h3>
+                <div role="tablist" class="tabs tabs-boxed">
                     <a role="tab" class="tab">Tab 1</a>
                     <a role="tab" class="tab tab-active">Tab 2</a>
                     <a role="tab" class="tab">Tab 3</a>
-                    <div style="grid-column-start: 1; grid-column-end: span 4;"
-                        class="border-base-300 bg-base-100 border-l border-r border-b p-6">Content for Tab 2</div>
                 </div>
             </div>
             <div>
-                <h3 class="font-bold mb-2">Boxed</h3>
-                <div role="tablist" class="tabs tabs-boxed">
+                <h3 class="font-bold mb-2">Lifted</h3>
+                <div role="tablist" class="tabs tabs-lifted">
                     <a role="tab" class="tab">Tab 1</a>
                     <a role="tab" class="tab tab-active">Tab 2</a>
                     <a role="tab" class="tab">Tab 3</a>
@@ -141,93 +191,15 @@ Tabs({ variant: 'bordered' },
         <!-- Sizes -->
         <h2 class="text-xl font-bold mb-4">Sizes</h2>
         <div class="flex flex-col gap-4 mb-8">
-            <div role="tablist" class="tabs tabs-lifted tabs-xs">
-                <a role="tab" class="tab tab-active">Tiny</a>
-                <a role="tab" class="tab">Tiny</a>
+            <div role="tablist" class="tabs tabs-bordered tabs-xs">
+                <a role="tab" class="tab tab-active">xs</a>
+                <a role="tab" class="tab">xs</a>
             </div>
-            <div role="tablist" class="tabs tabs-lifted tabs-lg">
-                <a role="tab" class="tab tab-active">Large</a>
-                <a role="tab" class="tab">Large</a>
-            </div>
-        </div>
-
-        <!-- Reactive Example -->
-        <h2 class="text-xl font-bold mb-4">Reactive Example</h2>
-        <div class="card bg-base-200 mb-8">
-            <div class="card-body">
-                <div id="reactive-tabs-demo"></div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mt-4"><code>const { signal, tags } = Lightview;
-const { div } = tags;
-const Tabs = LightviewX.getComponent('Tabs');
-
-const activeTab = signal(0);
-const tabs = ['Profile', 'Settings', 'Messages'];
-
-const demo = div({ class: 'flex flex-col gap-4' },
-    Tabs({ variant: 'bordered' },
-        tabs.map((label, i) => 
-            Tabs.Tab({ 
-                active: () => activeTab.value === i,
-                onclick: () => activeTab.value = i
-            }, label)
-        )
-    ),
-    div({ class: 'p-4 border rounded bg-base-100' },
-        () => `Content for ${tabs[activeTab.value]}`
-    )
-);</code></pre>
+            <div role="tablist" class="tabs tabs-bordered tabs-lg">
+                <a role="tab" class="tab tab-active">lg</a>
+                <a role="tab" class="tab">lg</a>
             </div>
         </div>
-
-        <script type="module">
-            const { signal, tags, $ } = Lightview;
-            const { div, a } = tags;
-
-            // Simple demo definition matching DaisyUI structure
-            const Tabs = (props, ...children) => {
-                const { variant, size, class: className = '', ...rest } = props || {};
-                const classes = ['tabs'];
-                if (variant === 'boxed') classes.push('tabs-boxed');
-                else if (variant === 'bordered') classes.push('tabs-bordered');
-                else if (variant === 'lifted') classes.push('tabs-lifted');
-                if (size) classes.push(`tabs-${size}`);
-
-                return div({
-                    role: 'tablist',
-                    class: classes.join(' '),
-                    ...rest
-                }, ...children);
-            };
-
-            Tabs.Tab = (props, ...children) => {
-                const { active, onclick, ...rest } = props;
-                return a({
-                    role: 'tab',
-                    class: () => `tab ${active() ? 'tab-active' : ''}`, // Reactive class
-                    onclick,
-                    ...rest
-                }, ...children);
-            };
-
-            const activeTab = signal(0);
-            const tabLabels = ['Profile', 'Settings', 'Messages'];
-
-            const demo = div({ class: 'flex flex-col gap-4' },
-                Tabs({ variant: 'lifted' },
-                    ...tabLabels.map((label, i) =>
-                        Tabs.Tab({
-                            active: () => activeTab.value === i, // Pass function for reactivity
-                            onclick: () => activeTab.value = i
-                        }, label)
-                    )
-                ),
-                div({ class: 'p-8 border-base-300 bg-base-100 border rounded-b-box' },
-                    () => `Showing content for: ${tabLabels[activeTab.value]}`
-                )
-            );
-
-            $('#reactive-tabs-demo').insert(demo);
-        </script>
 
         <!-- DaisyUI Reference -->
         <div class="alert mt-8">
@@ -244,3 +216,41 @@ const demo = div({ class: 'flex flex-col gap-4' },
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '150px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '180px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

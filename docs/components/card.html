@@ -18,38 +18,85 @@
         <h1>Card</h1>
         <p class="text-lg opacity-70 mb-6">
             Cards are used to group and display content in a way that is easily readable.
+            Supports images, actions, and multiple layout variants.
         </p>
 
-        <!-- Quick Example -->
+        <!-- Basic Example with Examplify -->
         <div class="card bg-base-200 mb-8">
             <div class="card-body">
-                <h2 class="card-title">Quick Example</h2>
-                <div class="grid md:grid-cols-2 gap-4 mb-4">
-                    <div class="card bg-base-100 shadow-sm">
-                        <figure><img
-                                src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=200&fit=crop"
-                                alt="Shoes" /></figure>
-                        <div class="card-body">
-                            <h2 class="card-title">Nike Air Max</h2>
-                            <p>Premium comfort meets modern style.</p>
-                            <div class="card-actions justify-end">
-                                <button class="btn btn-primary">Buy Now</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import Card from './components/data-display/card.js';
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Card with image, title, and action button</p>
 
-Card({ shadow: 'sm' },
-    Card.Figure({ src: 'image.jpg', alt: 'Shoes' }),
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Card } = await import('/components/data-display/card.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { tags, $ } = Lightview;
+const { p } = tags;
+
+const card = Card({ class: 'w-72' },
+    Card.Figure({ 
+        src: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=200&fit=crop',
+        alt: 'Shoes'
+    }),
     Card.Body({},
         Card.Title({}, 'Nike Air Max'),
-        'Premium comfort meets modern style.',
+        p({}, 'Premium comfort meets modern style.'),
         Card.Actions({ justify: 'end' },
             Button({ color: 'primary' }, 'Buy Now')
         )
     )
-)</code></pre>
+);
+
+$('#demo').insert(card);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Product Card with Cart</h2>
+                <p class="text-sm opacity-70 mb-4">Interactive card with add to cart functionality</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Card } = await import('/components/data-display/card.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { default: Badge } = await import('/components/data-display/badge.js');
+
+const { signal, tags, $ } = Lightview;
+const { p, span, div } = tags;
+
+const inCart = signal(false);
+
+const card = Card({ class: 'w-72' },
+    Card.Figure({ 
+        src: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=200&fit=crop',
+        alt: 'Watch'
+    }),
+    Card.Body({},
+        div({ class: 'flex justify-between items-start' },
+            Card.Title({}, 'Smart Watch'),
+            Badge({ color: 'success' }, 'New')
+        ),
+        p({ class: 'text-sm opacity-70' }, 'Track your fitness goals with precision.'),
+        div({ class: 'text-xl font-bold' }, '$299'),
+        Card.Actions({ justify: 'end' },
+            () => inCart.value
+                ? Button({ color: 'success', onclick: () => { inCart.value = false; } }, '✓ In Cart')
+                : Button({ color: 'primary', onclick: () => { inCart.value = true; } }, 'Add to Cart')
+        )
+    )
+);
+
+$('#demo').insert(card);</code></pre>
             </div>
         </div>
 
@@ -76,7 +123,7 @@ Card({ shadow: 'sm' },
                         <td><code>imageFull</code></td>
                         <td>boolean</td>
                         <td>false</td>
-                        <td>Image fills the entire card width</td>
+                        <td>Image fills the entire card width with overlay text</td>
                     </tr>
                     <tr>
                         <td><code>bg</code></td>
@@ -89,6 +136,37 @@ Card({ shadow: 'sm' },
                         <td>string</td>
                         <td>'shadow-sm'</td>
                         <td>Shadow class (shadow-sm, shadow-md, shadow-xl)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Card.Body</code></td>
+                        <td>Content container with padding</td>
+                    </tr>
+                    <tr>
+                        <td><code>Card.Title</code></td>
+                        <td>Card heading (h2)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Card.Actions</code></td>
+                        <td>Container for action buttons (props: justify)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Card.Figure</code></td>
+                        <td>Image container (props: src, alt)</td>
                     </tr>
                 </tbody>
             </table>
@@ -164,3 +242,46 @@ Card({ shadow: 'sm' },
         </div>
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '340px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '380px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

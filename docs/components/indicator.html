@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,14 +15,82 @@
             </ul>
         </div>
         <h1>Indicator</h1>
-        <p class="text-lg opacity-70 mb-6">Indicator is used to place an element at the corner of another element.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Indicator is used to place an element at the corner of another element.
+            Perfect for notifications, badges, and status indicators.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <div class="indicator mb-8">
-            <span class="indicator-item badge badge-primary">99+</span>
-            <div class="bg-base-300 p-6 rounded-box">Inbox</div>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Notification badge on inbox</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Indicator } = await import('/components/layout/indicator.js');
+const { default: Badge } = await import('/components/data-display/badge.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div } = tags;
+
+const count = signal(3);
+
+const demo = div({ class: 'flex gap-8' },
+    Indicator({},
+        Indicator.Item({},
+            Badge({ color: 'primary' }, () => count.value)
+        ),
+        Button({ 
+            onclick: () => { count.value++; }
+        }, 'Messages')
+    ),
+    Indicator({},
+        Indicator.Item({ position: 'bottom-end' },
+            Badge({ color: 'success', size: 'xs' })
+        ),
+        div({ class: 'avatar' },
+            div({ class: 'w-12 rounded-full' },
+                tags.img({ src: 'https://i.pravatar.cc/100?img=5' })
+            )
+        )
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
         </div>
 
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Indicator.Item Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>position</code></td>
+                        <td>string</td>
+                        <td>'top-end'</td>
+                        <td>'top-start' | 'top-center' | 'top-end' | 'bottom-start' | 'bottom-center' | 'bottom-end'
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Positions -->
         <h2 class="text-xl font-bold mb-4">Positions</h2>
         <div class="flex flex-wrap gap-8 mb-8">
             <div class="indicator">
@@ -33,6 +105,9 @@
                 <span class="indicator-item indicator-top indicator-end badge badge-secondary">top-end</span>
                 <div class="bg-base-300 p-6 rounded-box">content</div>
             </div>
+        </div>
+
+        <div class="flex flex-wrap gap-8 mb-8">
             <div class="indicator">
                 <span class="indicator-item indicator-bottom indicator-start badge badge-secondary">bottom-start</span>
                 <div class="bg-base-300 p-6 rounded-box">content</div>
@@ -48,23 +123,38 @@
             </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">On Button</h2>
-        <div class="indicator mb-8">
-            <span class="indicator-item badge badge-secondary">new</span>
-            <button class="btn">Inbox</button>
-        </div>
-
-        <h2 class="text-xl font-bold mb-4">On Avatar</h2>
-        <div class="indicator mb-8">
-            <span class="indicator-item badge badge-success"></span>
-            <div class="avatar">
-                <div class="w-16 rounded-full"><img src="https://i.pravatar.cc/100?img=20" alt="Avatar" /></div>
-            </div>
-        </div>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/indicator/" target="_blank"
-                    class="link link-primary">DaisyUI Indicator</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/indicator/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Indicator documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '100px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

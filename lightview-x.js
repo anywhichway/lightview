@@ -39,7 +39,6 @@
                     throw new Error(`Failed to fetch DaisyUI CSS: ${response.status}`);
                 }
                 const cssText = await response.text();
-
                 const sheet = new CSSStyleSheet();
                 sheet.replaceSync(cssText);
                 componentConfig.daisyStyleSheet = sheet;
@@ -51,6 +50,7 @@
 
         componentConfig.initialized = true;
     };
+    initComponents();
 
     /**
      * Get or create a CSSStyleSheet for a component's CSS file

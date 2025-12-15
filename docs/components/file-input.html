@@ -18,23 +18,124 @@
 
         <h1>File Input</h1>
         <p class="text-lg opacity-70 mb-6">
-            File Input allows users to upload files.
+            File Input allows users to select and upload files.
+            Supports labels, validation, helper text, and multiple file selection.
         </p>
 
-        <!-- Quick Example -->
+        <!-- Basic Example with Examplify -->
         <div class="card bg-base-200 mb-8">
             <div class="card-body">
-                <h2 class="card-title">Quick Example</h2>
-                <div class="mb-4">
-                    <input type="file" class="file-input file-input-bordered w-full max-w-xs" />
-                </div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import FileInput from './components/data-input/file-input.js';
+                <h2 class="card-title">Basic Examples</h2>
+                <p class="text-sm opacity-70 mb-4">File inputs with various configurations</p>
 
-// Using Lightview component
-FileInput({ bordered: true, accept: 'image/*' })
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
 
-// Or using DaisyUI classes directly
-&lt;input type="file" class="file-input file-input-bordered" /&gt;</code></pre>
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the FileInput component
+
+const { default: FileInput } = await import('/components/data-input/file-input.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+// 1. Basic file input
+const basic = FileInput({});
+
+// 2. With label and helper
+const withLabel = FileInput({ 
+    label: 'Upload Document',
+    helper: 'PDF, DOC, or DOCX files only',
+    accept: '.pdf,.doc,.docx'
+});
+
+// 3. Multiple files with color
+const multiple = FileInput({ 
+    label: 'Upload Images',
+    accept: 'image/*',
+    multiple: true,
+    color: 'primary',
+    helper: 'You can select multiple images'
+});
+
+// 4. Required file input
+const required = FileInput({ 
+    label: 'Resume',
+    required: true,
+    accept: '.pdf'
+});
+
+// Insert all examples
+$('#demo').insert(
+    div({ class: 'space-y-4 max-w-md' }, basic, withLabel, multiple, required)
+);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Reactive Example</h2>
+                <p class="text-sm opacity-70 mb-4">File validation and state display</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: FileInput } = await import('/components/data-input/file-input.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, p, span, ul, li } = tags;
+
+// Signals for tracking selected files
+const selectedFiles = signal([]);
+
+// Custom validation function
+const validateFile = (files) => {
+    if (!files || files.length === 0) return 'Please select a file';
+    for (const file of files) {
+        if (file.size > 5 * 1024 * 1024) {
+            return `File "${file.name}" exceeds 5MB limit`;
+        }
+    }
+    return null;
+};
+
+// Reactive demo
+const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
+    FileInput({ 
+        label: 'Upload Files',
+        helper: 'Max 5MB per file',
+        multiple: true,
+        validate: validateFile,
+        onChange: (files) => {
+            selectedFiles.value = Array.from(files);
+        }
+    }),
+    div({ class: 'divider' }),
+    () => {
+        const files = selectedFiles.value;
+        if (files.length === 0) {
+            return p({ class: 'text-sm opacity-50' }, 'No files selected');
+        }
+        return div({},
+            p({ class: 'text-sm font-semibold mb-2' }, 
+                `${files.length} file(s) selected:`
+            ),
+            ul({ class: 'text-xs font-mono space-y-1' },
+                ...files.map(f => 
+                    li({}, 
+                        span({ class: 'text-primary' }, f.name),
+                        span({ class: 'opacity-50' }, ` (${(f.size / 1024).toFixed(1)} KB)`)
+                    )
+                )
+            )
+        );
+    }
+);
+
+$('#demo').insert(reactiveDemo);</code></pre>
             </div>
         </div>
 
@@ -55,19 +156,43 @@ FileInput({ bordered: true, accept: 'image/*' })
                         <td><code>accept</code></td>
                         <td>string</td>
                         <td>-</td>
-                        <td>Accepted file types</td>
+                        <td>Accepted file types (e.g., '.pdf,.doc', 'image/*')</td>
                     </tr>
                     <tr>
                         <td><code>multiple</code></td>
                         <td>boolean</td>
                         <td>false</td>
-                        <td>Allow multiple files</td>
+                        <td>Allow multiple file selection</td>
+                    </tr>
+                    <tr>
+                        <td><code>label</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Label text displayed above the input</td>
+                    </tr>
+                    <tr>
+                        <td><code>helper</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Helper text displayed below the input</td>
+                    </tr>
+                    <tr>
+                        <td><code>error</code></td>
+                        <td>string | function</td>
+                        <td>-</td>
+                        <td>Error message or reactive error function</td>
+                    </tr>
+                    <tr>
+                        <td><code>validate</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Validation function: <code>(files) => errorMessage | null</code></td>
                     </tr>
                     <tr>
                         <td><code>color</code></td>
                         <td>string</td>
                         <td>-</td>
-                        <td>'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'info' | 'error' | 'ghost'</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
                     </tr>
                     <tr>
                         <td><code>size</code></td>
@@ -76,10 +201,34 @@ FileInput({ bordered: true, accept: 'image/*' })
                         <td>'xs' | 'sm' | 'md' | 'lg'</td>
                     </tr>
                     <tr>
-                        <td><code>bordered</code></td>
+                        <td><code>ghost</code></td>
                         <td>boolean</td>
-                        <td>true</td>
-                        <td>Add border</td>
+                        <td>false</td>
+                        <td>Ghost style (no background)</td>
+                    </tr>
+                    <tr>
+                        <td><code>disabled</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Disable the file input</td>
+                    </tr>
+                    <tr>
+                        <td><code>required</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Mark as required field (shows asterisk)</td>
+                    </tr>
+                    <tr>
+                        <td><code>onChange</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when files selected: <code>(files, event) => void</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>useShadow</code></td>
+                        <td>boolean</td>
+                        <td>*</td>
+                        <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
                     </tr>
                 </tbody>
             </table>
@@ -100,17 +249,33 @@ FileInput({ bordered: true, accept: 'image/*' })
         <!-- Sizes -->
         <h2 class="text-xl font-bold mb-4">Sizes</h2>
         <div class="flex flex-col gap-4 mb-8">
-            <input type="file" class="file-input file-input-bordered file-input-xs w-full max-w-xs" />
-            <input type="file" class="file-input file-input-bordered file-input-sm w-full max-w-xs" />
-            <input type="file" class="file-input file-input-bordered file-input-md w-full max-w-xs" />
-            <input type="file" class="file-input file-input-bordered file-input-lg w-full max-w-xs" />
+            <input type="file" class="file-input file-input-xs w-full max-w-xs" />
+            <input type="file" class="file-input file-input-sm w-full max-w-xs" />
+            <input type="file" class="file-input file-input-md w-full max-w-xs" />
+            <input type="file" class="file-input file-input-lg w-full max-w-xs" />
         </div>
 
         <!-- Variants -->
         <h2 class="text-xl font-bold mb-4">Variants</h2>
         <div class="flex flex-col gap-4 mb-8">
-            <input type="file" class="file-input file-input-ghost w-full max-w-xs" />
-            <input type="file" class="file-input file-input-bordered w-full max-w-xs" disabled />
+            <div>
+                <p class="text-sm opacity-70 mb-1">Ghost</p>
+                <input type="file" class="file-input file-input-ghost w-full max-w-xs" />
+            </div>
+            <div>
+                <p class="text-sm opacity-70 mb-1">Disabled</p>
+                <input type="file" class="file-input w-full max-w-xs" disabled />
+            </div>
+        </div>
+
+        <!-- With Fieldset -->
+        <h2 class="text-xl font-bold mb-4">With Label (Fieldset Pattern)</h2>
+        <div class="max-w-md mb-8">
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">Upload Avatar</legend>
+                <input type="file" class="file-input w-full" accept="image/*" />
+                <p class="label">JPG, PNG, or GIF up to 2MB</p>
+            </fieldset>
         </div>
 
         <!-- DaisyUI Reference -->
@@ -128,3 +293,46 @@ FileInput({ bordered: true, accept: 'image/*' })
         </div>
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '350px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '280px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

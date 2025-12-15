@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,9 +15,79 @@
             </ul>
         </div>
         <h1>Dock</h1>
-        <p class="text-lg opacity-70 mb-6">Dock is a bottom navigation bar for mobile interfaces.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Dock is a bottom navigation bar for mobile interfaces.
+            Supports icons with labels and active states.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Interactive bottom navigation</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Dock } = await import('/components/navigation/dock.js');
+
+const { signal, tags, $ } = Lightview;
+const { div } = tags;
+
+const active = signal('home');
+
+const demo = div({ class: 'relative h-32 bg-base-200 rounded-box overflow-hidden' },
+    Dock({ class: 'absolute bottom-0 left-0 right-0' },
+        Dock.Item({ 
+            active: () => active.value === 'home',
+            onclick: () => { active.value = 'home'; }
+        }, '🏠', Dock.Label({}, 'Home')),
+        Dock.Item({ 
+            active: () => active.value === 'search',
+            onclick: () => { active.value = 'search'; }
+        }, '🔍', Dock.Label({}, 'Search')),
+        Dock.Item({ 
+            active: () => active.value === 'profile',
+            onclick: () => { active.value = 'profile'; }
+        }, '👤', Dock.Label({}, 'Profile'))
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Props</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Dock.Item</code></td>
+                        <td>active</td>
+                        <td>Navigation item</td>
+                    </tr>
+                    <tr>
+                        <td><code>Dock.Label</code></td>
+                        <td>-</td>
+                        <td>Text label below icon</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Example -->
+        <h2 class="text-xl font-bold mb-4">Static Demo</h2>
         <div class="relative h-32 bg-base-200 rounded-box mb-8 overflow-hidden">
             <div class="dock bg-base-100 absolute bottom-0 left-0 right-0">
                 <button class="dock-active">
@@ -43,20 +117,38 @@
             </div>
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="dock"&gt;
-  &lt;button class="dock-active"&gt;
-    &lt;svg&gt;...&lt;/svg&gt;
-    &lt;span class="dock-label"&gt;Home&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;button&gt;
-    &lt;svg&gt;...&lt;/svg&gt;
-    &lt;span class="dock-label"&gt;Details&lt;/span&gt;
-  &lt;/button&gt;
-&lt;/div&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/dock/" target="_blank" class="link link-primary">DaisyUI
-                    Dock</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/dock/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Dock documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '150px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

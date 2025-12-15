@@ -11,17 +11,21 @@ import '../daisyui.js';
  * @param {string} props.icon - 'arrow' | 'plus'
  * @param {boolean} props.open - Initially open
  * @param {boolean} props.focus - Open on focus
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Collapse = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { div, input } = tags;
+    const { div, input, shadowDOM } = tags;
 
     const {
         icon = 'arrow',
         open = false,
         focus = false,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -31,10 +35,38 @@ const Collapse = (props = {}, ...children) => {
     else if (icon === 'plus') classes.push('collapse-plus');
     if (className) classes.push(className);
 
-    return div({ class: classes.join(' '), ...rest },
+    const collapseEl = div({ class: classes.join(' '), ...rest },
         input({ type: 'checkbox', checked: open }),
         ...children
     );
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Collapse: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    collapseEl
+                )
+            )
+        );
+    }
+
+    return collapseEl;
 };
 
 /**

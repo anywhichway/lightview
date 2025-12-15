@@ -22,6 +22,52 @@
             Use CSS classes to turn your data into beautiful charts.
         </p>
 
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Dynamic bar chart with Lightview component API</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Chart } = await import('/components/data-display/chart.js');
+
+const { tags, $ } = Lightview;
+
+const data = [
+    { label: 'React', value: 0.8, color: '#61DAFB' },
+    { label: 'Vue', value: 0.6, color: '#42B883' },
+    { label: 'Svelte', value: 0.4, color: '#FF3E00' },
+    { label: 'Lightview', value: 1.0, color: '#7480ff' }
+];
+
+const chart = Chart({ 
+    type: 'bar', 
+    labels: true, 
+    primaryAxis: true, 
+    spacing: 5,
+    heading: 'Framework Popularity'
+},
+    Chart.Body({},
+        ...data.map(d => 
+            Chart.Row({},
+                Chart.Label({}, d.label),
+                Chart.Data({ value: d.value, color: d.color }, 
+                    tags.span({ class: 'data' }, `${d.value * 100}%`)
+                )
+            )
+        )
+    )
+);
+
+$('#demo').insert(chart);</code></pre>
+            </div>
+        </div>
+
         <!-- Notes Section -->
         <h2 class="text-xl font-bold mb-4">Notes</h2>
         <div class="alert alert-warning mb-8">
@@ -43,6 +89,27 @@
                 </p>
             </div>
         </div>
+
+        <script>
+            (function () {
+                const basicCodeEl = document.getElementById('basic-code');
+                const basicPreview = document.getElementById('basic-preview');
+
+                if (typeof examplify !== 'undefined' && basicCodeEl) {
+                    const result = examplify(basicCodeEl, {
+                        scripts: ['/lightview.js', '/lightview-x.js'],
+                        type: 'module',
+                        html: '<div id="demo" style="max-width: 500px;"></div>',
+                        height: '250px'
+                    });
+                    if (result && result.iframe) {
+                        basicPreview.appendChild(result.iframe);
+                        result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                        result.iframe.style.borderRadius = '0.5rem';
+                    }
+                }
+            })();
+        </script>
 
         <!-- Bar Chart -->
         <h2 class="text-xl font-bold mb-4 flex items-center gap-2">

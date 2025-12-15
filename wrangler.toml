@@ -1,14 +1,8 @@
 name = "lightview"
 compatibility_date = "2024-01-01"
 
-# Static assets are served from the root
-[site]
-bucket = "."
 
-# Add CORS headers
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, OPTIONS"
-    Access-Control-Allow-Headers = "*"
+# Cloudflare Pages configuration
+# Note: Static asset headers are now defined in _headers file
+# and the build directory is specified in the deploy command or dashboard.
+

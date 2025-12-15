@@ -19,26 +19,94 @@
         <h1>Button</h1>
         <p class="text-lg opacity-70 mb-6">
             Buttons allow the user to take actions or make choices.
-            Available in multiple variants, colors, and sizes.
+            Available in multiple variants, colors, and sizes with reactive state support.
         </p>
 
-        <!-- Quick Example -->
+        <!-- Basic Example with Examplify -->
         <div class="card bg-base-200 mb-8">
             <div class="card-body">
-                <h2 class="card-title">Quick Example</h2>
-                <div class="flex flex-wrap gap-2 mb-4">
-                    <button class="btn">Default</button>
-                    <button class="btn btn-primary">Primary</button>
-                    <button class="btn btn-secondary">Secondary</button>
-                    <button class="btn btn-accent">Accent</button>
-                </div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import Button from './components/actions/button.js';
+                <h2 class="card-title">Basic Examples</h2>
+                <p class="text-sm opacity-70 mb-4">Buttons with various colors and variants</p>
 
-// Using Lightview component
-Button({ color: 'primary' }, 'Primary')
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
 
-// Or using DaisyUI classes directly
-&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;</code></pre>
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Button component
+
+
+const { default: Button } = await import('/components/actions/button.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+// Various button styles
+const buttons = div({ class: 'space-y-4' },
+    // Colors
+    div({ class: 'flex flex-wrap gap-2' },
+        Button({}, 'Default'),
+        Button({ color: 'primary' }, 'Primary'),
+        Button({ color: 'secondary' }, 'Secondary'),
+        Button({ color: 'accent' }, 'Accent')
+    ),
+    // Variants
+    div({ class: 'flex flex-wrap gap-2' },
+        Button({ color: 'primary', variant: 'outline' }, 'Outline'),
+        Button({ color: 'primary', variant: 'soft' }, 'Soft'),
+        Button({ color: 'ghost' }, 'Ghost'),
+        Button({ color: 'link' }, 'Link')
+    ),
+    // Sizes
+    div({ class: 'flex flex-wrap items-center gap-2' },
+        Button({ color: 'primary', size: 'xs' }, 'Tiny'),
+        Button({ color: 'primary', size: 'sm' }, 'Small'),
+        Button({ color: 'primary' }, 'Normal'),
+        Button({ color: 'primary', size: 'lg' }, 'Large')
+    )
+);
+
+$('#demo').insert(buttons);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Reactive Loading State</h2>
+                <p class="text-sm opacity-70 mb-4">Button with reactive loading state</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, span } = tags;
+
+// Signal for loading state
+const isLoading = signal(false);
+
+// Simulate async operation
+const handleClick = async () => {
+    isLoading.value = true;
+    await new Promise(r => setTimeout(r, 2000));
+    isLoading.value = false;
+};
+
+const demo = div({ class: 'flex gap-4 items-center' },
+    Button({ 
+        color: 'primary',
+        loading: () => isLoading.value,
+        onclick: handleClick
+    }, 'Save Changes'),
+    span({ class: 'text-sm opacity-70' },
+        () => isLoading.value ? '⏳ Saving...' : 'Click to test loading'
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
             </div>
         </div>
 
@@ -78,13 +146,13 @@ Button({ color: 'primary' }, 'Primary')
                         <td><code>disabled</code></td>
                         <td>boolean | function</td>
                         <td>false</td>
-                        <td>Disable the button (reactive)</td>
+                        <td>Disable the button (supports reactive function)</td>
                     </tr>
                     <tr>
                         <td><code>loading</code></td>
                         <td>boolean | function</td>
                         <td>false</td>
-                        <td>Show loading state (reactive)</td>
+                        <td>Show loading spinner (supports reactive function)</td>
                     </tr>
                     <tr>
                         <td><code>active</code></td>
@@ -97,6 +165,12 @@ Button({ color: 'primary' }, 'Primary')
                         <td>boolean</td>
                         <td>false</td>
                         <td>Glass morphism effect</td>
+                    </tr>
+                    <tr>
+                        <td><code>noAnimation</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Disable click animation</td>
                     </tr>
                 </tbody>
             </table>
@@ -186,58 +260,6 @@ Button({ color: 'primary' }, 'Primary')
             </button>
         </div>
 
-        <!-- Reactive Example -->
-        <h2 class="text-xl font-bold mb-4">Reactive Loading State</h2>
-        <div class="card bg-base-200 mb-8">
-            <div class="card-body">
-                <div id="reactive-button-demo"></div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mt-4"><code>const { signal, tags } = Lightview;
-const { button, span } = tags;
-
-const isLoading = signal(false);
-
-const LoadingButton = button({
-    class: 'btn btn-primary',
-    onclick: async () => {
-        isLoading.value = true;
-        await new Promise(r => setTimeout(r, 2000));
-        isLoading.value = false;
-    }
-},
-    () => isLoading.value 
-        ? [span({ class: 'loading loading-spinner' }), ' Saving...']
-        : 'Save Changes'
-);</code></pre>
-            </div>
-        </div>
-
-        <script type="module">
-            const { signal, tags, $ } = Lightview;
-            const { button, span, div } = tags;
-
-            const isLoading = signal(false);
-
-            const demo = div({ class: 'flex gap-2' },
-                button({
-                    class: () => `btn btn-primary ${isLoading.value ? 'btn-disabled' : ''}`,
-                    onclick: async () => {
-                        isLoading.value = true;
-                        await new Promise(r => setTimeout(r, 2000));
-                        isLoading.value = false;
-                    }
-                },
-                    () => isLoading.value
-                        ? [span({ class: 'loading loading-spinner loading-sm' }), ' Saving...']
-                        : 'Save Changes'
-                ),
-                span({ class: 'self-center text-sm opacity-70' },
-                    () => isLoading.value ? 'Loading...' : 'Click to test loading state'
-                )
-            );
-
-            $('#reactive-button-demo').insert(demo);
-        </script>
-
         <!-- DaisyUI Reference -->
         <div class="alert mt-8">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -254,3 +276,46 @@ const LoadingButton = button({
 
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '180px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '80px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

@@ -18,52 +18,196 @@
         <h1>Modal</h1>
         <p class="text-lg opacity-70 mb-6">
             Modal is used to show a dialog or a box when you click a button.
-            Uses the native HTML <code>&lt;dialog&gt;</code> element.
+            Uses the native HTML <code>&lt;dialog&gt;</code> element for accessibility.
         </p>
 
-        <!-- Quick Example -->
+        <!-- Basic Example with Examplify -->
         <div class="card bg-base-200 mb-8">
             <div class="card-body">
-                <h2 class="card-title">Quick Example</h2>
-                <button class="btn btn-primary" onclick="document.getElementById('demo_modal').showModal()">
-                    Open Modal
-                </button>
-                <dialog id="demo_modal" class="modal">
-                    <div class="modal-box">
-                        <h3 class="text-lg font-bold">Hello!</h3>
-                        <p class="py-4">This is a simple modal dialog.</p>
-                        <div class="modal-action">
-                            <form method="dialog">
-                                <button class="btn">Close</button>
-                            </form>
-                        </div>
-                    </div>
-                    <form method="dialog" class="modal-backdrop">
-                        <button>close</button>
-                    </form>
-                </dialog>
-            </div>
-        </div>
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Simple modal with open/close functionality</p>
 
-        <!-- Code Example -->
-        <h2 class="text-xl font-bold mb-4">Usage</h2>
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>import Modal from './components/actions/modal.js';
-import Button from './components/actions/button.js';
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
 
-// Open modal programmatically
-Modal.open('my_modal');
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Modal } = await import('/components/actions/modal.js');
+const { default: Button } = await import('/components/actions/button.js');
 
-// Or with the component
-Modal({ id: 'my_modal' },
+const { tags, $ } = Lightview;
+const { h3, p } = tags;
+
+const modalId = 'my_modal';
+
+// Create the modal
+const modal = Modal({ id: modalId },
     Modal.Box({},
-        tags.h3({ class: 'text-lg font-bold' }, 'Hello!'),
-        tags.p({ class: 'py-4' }, 'This is a modal dialog.'),
+        h3({ class: 'text-lg font-bold' }, 'Hello! 👋'),
+        p({ class: 'py-4' }, 'This modal was created with Lightview components.'),
         Modal.Action({},
-            Button({ onclick: () => Modal.close('my_modal') }, 'Close')
+            Button({ onclick: () => Modal.close(modalId) }, 'Close')
         )
     ),
     Modal.Backdrop({})
-)</code></pre>
+);
+
+// Create trigger button
+const trigger = Button({ 
+    color: 'primary',
+    onclick: () => Modal.open(modalId)
+}, 'Open Modal');
+
+$('#demo').insert(trigger, modal);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Confirmation Dialog</h2>
+                <p class="text-sm opacity-70 mb-4">Modal with confirm/cancel actions</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Modal } = await import('/components/actions/modal.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, h3, p } = tags;
+
+const status = signal('Ready');
+const modalId = 'confirm_modal';
+
+const handleConfirm = () => {
+    status.value = '✅ Confirmed!';
+    Modal.close(modalId);
+};
+
+const handleCancel = () => {
+    status.value = '❌ Cancelled';
+    Modal.close(modalId);
+};
+
+const confirmModal = Modal({ id: modalId },
+    Modal.Box({},
+        h3({ class: 'text-lg font-bold' }, 'Are you sure?'),
+        p({ class: 'py-4' }, 'This action cannot be undone.'),
+        Modal.Action({},
+            Button({ color: 'ghost', onclick: handleCancel }, 'Cancel'),
+            Button({ color: 'error', onclick: handleConfirm }, 'Delete')
+        )
+    ),
+    Modal.Backdrop({})
+);
+
+const demo = div({ class: 'flex items-center gap-4' },
+    Button({ 
+        color: 'error',
+        variant: 'outline',
+        onclick: () => Modal.open(modalId)
+    }, 'Delete Item'),
+    p({ class: 'text-sm opacity-70' }, () => `Status: ${status.value}`),
+    confirmModal
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>id</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Required unique ID for the modal</td>
+                    </tr>
+                    <tr>
+                        <td><code>open</code></td>
+                        <td>boolean | function</td>
+                        <td>false</td>
+                        <td>Control open state (reactive)</td>
+                    </tr>
+                    <tr>
+                        <td><code>position</code></td>
+                        <td>string</td>
+                        <td>'middle'</td>
+                        <td>'top' | 'middle' | 'bottom'</td>
+                    </tr>
+                    <tr>
+                        <td><code>onClose</code></td>
+                        <td>function</td>
+                        <td>-</td>
+                        <td>Callback when modal closes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Methods -->
+        <h2 class="text-xl font-bold mb-4">Static Methods</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Modal.open(id)</code></td>
+                        <td>Open a modal by its ID</td>
+                    </tr>
+                    <tr>
+                        <td><code>Modal.close(id)</code></td>
+                        <td>Close a modal by its ID</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Modal.Box</code></td>
+                        <td>The content container</td>
+                    </tr>
+                    <tr>
+                        <td><code>Modal.Action</code></td>
+                        <td>Container for action buttons (typically at bottom)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Modal.Backdrop</code></td>
+                        <td>Click-to-close backdrop</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Positions -->
         <h2 class="text-xl font-bold mb-4">Positions</h2>
@@ -109,7 +253,7 @@ Modal({ id: 'my_modal' },
         <!-- Responsive -->
         <h2 class="text-xl font-bold mb-4">Responsive Modal</h2>
         <p class="opacity-70 mb-4">Full-screen on mobile, centered on desktop.</p>
-        <button class="btn btn-primary" onclick="document.getElementById('modal_responsive').showModal()">
+        <button class="btn btn-primary mb-8" onclick="document.getElementById('modal_responsive').showModal()">
             Open Responsive Modal
         </button>
 
@@ -142,3 +286,46 @@ Modal({ id: 'my_modal' },
         </div>
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '60px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '60px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

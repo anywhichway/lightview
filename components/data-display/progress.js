@@ -11,17 +11,21 @@ import '../daisyui.js';
  * @param {number|function} props.value - Progress value (0-100)
  * @param {number} props.max - Maximum value (default: 100)
  * @param {string} props.color - 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Progress = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { progress } = tags;
+    const { progress, div, shadowDOM } = tags;
 
     const {
         value = 0,
         max = 100,
         color,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -30,12 +34,40 @@ const Progress = (props = {}, ...children) => {
     if (color) classes.push(`progress-${color}`);
     if (className) classes.push(className);
 
-    return progress({
+    const progressEl = progress({
         class: classes.join(' '),
         value: typeof value === 'function' ? value : value,
         max,
         ...rest
     });
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Progress: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    progressEl
+                )
+            )
+        );
+    }
+
+    return progressEl;
 };
 
 if (typeof window !== 'undefined' && window.LightviewX) {

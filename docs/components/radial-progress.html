@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,17 +15,132 @@
             </ul>
         </div>
         <h1>Radial Progress</h1>
-        <p class="text-lg opacity-70 mb-6">Radial progress shows a circular progress indicator.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Radial progress shows a circular progress indicator.
+            Supports custom colors, sizes, and thickness.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <div class="flex gap-4 mb-8">
-            <div class="radial-progress" style="--value:0;" role="progressbar">0%</div>
-            <div class="radial-progress" style="--value:25;" role="progressbar">25%</div>
-            <div class="radial-progress" style="--value:50;" role="progressbar">50%</div>
-            <div class="radial-progress" style="--value:75;" role="progressbar">75%</div>
-            <div class="radial-progress" style="--value:100;" role="progressbar">100%</div>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Static radial progress indicators</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+const demo = div({ class: 'flex gap-4' },
+    RadialProgress({ value: 0 }, '0%'),
+    RadialProgress({ value: 25 }, '25%'),
+    RadialProgress({ value: 50, color: 'primary' }, '50%'),
+    RadialProgress({ value: 75, color: 'secondary' }, '75%'),
+    RadialProgress({ value: 100, color: 'success' }, '100%')
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
         </div>
 
+        <!-- Reactive Example -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Animated Progress</h2>
+                <p class="text-sm opacity-70 mb-4">Live updating progress indicator</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+
+const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div } = tags;
+
+const progress = signal(0);
+let interval;
+
+const start = () => {
+    if (interval) return;
+    interval = setInterval(() => {
+        progress.value = (progress.value + 1) % 101;
+    }, 50);
+};
+
+const stop = () => {
+    clearInterval(interval);
+    interval = null;
+};
+
+const demo = div({ class: 'flex flex-col items-center gap-4' },
+    RadialProgress({ 
+        value: () => progress.value,
+        size: '8rem',
+        color: () => progress.value >= 100 ? 'success' : 'primary'
+    }, () => `${progress.value}%`),
+    div({ class: 'flex gap-2' },
+        Button({ size: 'sm', onclick: start }, 'Start'),
+        Button({ size: 'sm', onclick: stop }, 'Stop'),
+        Button({ size: 'sm', onclick: () => { progress.value = 0; } }, 'Reset')
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>value</code></td>
+                        <td>number | signal</td>
+                        <td>0</td>
+                        <td>Progress value (0-100)</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>CSS size value (e.g., '8rem')</td>
+                    </tr>
+                    <tr>
+                        <td><code>thickness</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>Line thickness (e.g., '4px', '1rem')</td>
+                    </tr>
+                    <tr>
+                        <td><code>color</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'error'</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Colors -->
         <h2 class="text-xl font-bold mb-4">Colors</h2>
         <div class="flex gap-4 mb-8">
             <div class="radial-progress text-primary" style="--value:70;" role="progressbar">70%</div>
@@ -30,6 +149,7 @@
             <div class="radial-progress text-success" style="--value:70;" role="progressbar">70%</div>
         </div>
 
+        <!-- Custom Size & Thickness -->
         <h2 class="text-xl font-bold mb-4">Custom Size & Thickness</h2>
         <div class="flex gap-4 items-center mb-8">
             <div class="radial-progress" style="--value:70; --size:8rem;" role="progressbar">70%</div>
@@ -37,18 +157,55 @@
             <div class="radial-progress" style="--value:70; --size:8rem; --thickness:1rem;" role="progressbar">70%</div>
         </div>
 
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-8"><code>&lt;div class="radial-progress" style="--value:70;" role="progressbar"&gt;
-  70%
-&lt;/div&gt;
-
-&lt;!-- Custom size and thickness --&gt;
-&lt;div class="radial-progress" style="--value:70; --size:8rem; --thickness:4px;"&gt;
-  70%
-&lt;/div&gt;</code></pre>
-
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/radial-progress/" target="_blank"
-                    class="link link-primary">DaisyUI Radial Progress</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/radial-progress/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Radial Progress documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '100px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '200px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

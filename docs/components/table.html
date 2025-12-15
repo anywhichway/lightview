@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,82 +15,202 @@
             </ul>
         </div>
         <h1>Table</h1>
-        <p class="text-lg opacity-70 mb-6">Table can be used to show data in a tabular format.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Table can be used to show data in a tabular format.
+            Supports zebra striping, pinned rows/columns, and multiple sizes.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <div class="overflow-x-auto mb-8">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Job</th>
-                        <th>Company</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th>1</th>
-                        <td>Alice Johnson</td>
-                        <td>Engineer</td>
-                        <td>TechCorp</td>
-                    </tr>
-                    <tr>
-                        <th>2</th>
-                        <td>Bob Smith</td>
-                        <td>Designer</td>
-                        <td>DesignCo</td>
-                    </tr>
-                    <tr>
-                        <th>3</th>
-                        <td>Charlie Brown</td>
-                        <td>Manager</td>
-                        <td>BizInc</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Simple table with zebra striping</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Table } = await import('/components/data-display/table.js');
+
+const { tags, $ } = Lightview;
+
+const data = [
+    { id: 1, name: 'Alice Johnson', job: 'Engineer', company: 'TechCorp' },
+    { id: 2, name: 'Bob Smith', job: 'Designer', company: 'DesignCo' },
+    { id: 3, name: 'Charlie Brown', job: 'Manager', company: 'BizInc' }
+];
+
+const table = Table({ zebra: true },
+    Table.Head({},
+        Table.Row({},
+            Table.Th({}, '#'),
+            Table.Th({}, 'Name'),
+            Table.Th({}, 'Job'),
+            Table.Th({}, 'Company')
+        )
+    ),
+    Table.Body({},
+        ...data.map(row => 
+            Table.Row({},
+                Table.Th({}, row.id),
+                Table.Td({}, row.name),
+                Table.Td({}, row.job),
+                Table.Td({}, row.company)
+            )
+        )
+    )
+);
+
+$('#demo').insert(table);</code></pre>
+            </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">Zebra Striping</h2>
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Interactive Table</h2>
+                <p class="text-sm opacity-70 mb-4">Table with row selection</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Table } = await import('/components/data-display/table.js');
+const { default: Badge } = await import('/components/data-display/badge.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, span } = tags;
+
+const selected = signal(null);
+const users = [
+    { id: 1, name: 'Alice', status: 'active' },
+    { id: 2, name: 'Bob', status: 'pending' },
+    { id: 3, name: 'Charlie', status: 'inactive' }
+];
+
+const demo = div({},
+    Table({ zebra: true, size: 'sm' },
+        Table.Head({},
+            Table.Row({},
+                Table.Th({}, 'Name'),
+                Table.Th({}, 'Status'),
+                Table.Th({}, 'Action')
+            )
+        ),
+        Table.Body({},
+            ...users.map(user => 
+                Table.Row({ 
+                    hover: true,
+                    active: () => selected.value === user.id,
+                    onclick: () => { selected.value = user.id; }
+                },
+                    Table.Td({}, user.name),
+                    Table.Td({}, 
+                        Badge({ 
+                            color: user.status === 'active' ? 'success' : 
+                                   user.status === 'pending' ? 'warning' : 'error',
+                            size: 'sm'
+                        }, user.status)
+                    ),
+                    Table.Td({}, 
+                        tags.button({ class: 'btn btn-xs' }, 'Edit')
+                    )
+                )
+            )
+        )
+    ),
+    span({ class: 'text-sm opacity-70 mt-2 block' }, 
+        () => selected.value ? `Selected: User ${selected.value}` : 'Click a row to select'
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Props</h2>
         <div class="overflow-x-auto mb-8">
             <table class="table table-zebra">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Job</th>
-                        <th>Company</th>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th>1</th>
-                        <td>Alice Johnson</td>
-                        <td>Engineer</td>
-                        <td>TechCorp</td>
+                        <td><code>zebra</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Alternating row colors</td>
                     </tr>
                     <tr>
-                        <th>2</th>
-                        <td>Bob Smith</td>
-                        <td>Designer</td>
-                        <td>DesignCo</td>
+                        <td><code>pinRows</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Pin header row on scroll</td>
                     </tr>
                     <tr>
-                        <th>3</th>
-                        <td>Charlie Brown</td>
-                        <td>Manager</td>
-                        <td>BizInc</td>
+                        <td><code>pinCols</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Pin first column on scroll</td>
                     </tr>
                     <tr>
-                        <th>4</th>
-                        <td>Diana Ross</td>
-                        <td>Developer</td>
-                        <td>DevShop</td>
+                        <td><code>size</code></td>
+                        <td>string</td>
+                        <td>-</td>
+                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Table.Head</code></td>
+                        <td>Table header (thead)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Table.Body</code></td>
+                        <td>Table body (tbody)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Table.Foot</code></td>
+                        <td>Table footer (tfoot)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Table.Row</code></td>
+                        <td>Table row with hover/active props</td>
+                    </tr>
+                    <tr>
+                        <td><code>Table.Th</code></td>
+                        <td>Table header cell</td>
+                    </tr>
+                    <tr>
+                        <td><code>Table.Td</code></td>
+                        <td>Table data cell</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sizes -->
         <h2 class="text-xl font-bold mb-4">Sizes</h2>
         <div class="space-y-4 mb-8">
             <div class="overflow-x-auto">
@@ -146,8 +270,54 @@
         </div>
 
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/table/" target="_blank" class="link link-primary">DaisyUI
-                    Table</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/table/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Table documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '180px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '200px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

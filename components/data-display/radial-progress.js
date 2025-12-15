@@ -12,18 +12,22 @@ import '../daisyui.js';
  * @param {string} props.size - Size in CSS units (e.g., '4rem')
  * @param {string} props.thickness - Border thickness (e.g., '2px')
  * @param {string} props.color - Color class (e.g., 'text-primary')
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const RadialProgress = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { div } = tags;
+    const { div, shadowDOM } = tags;
 
     const {
         value = 0,
         size = '4rem',
         thickness = '4px',
         color,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -34,7 +38,7 @@ const RadialProgress = (props = {}, ...children) => {
 
     const getValue = () => typeof value === 'function' ? value() : value;
 
-    return div({
+    const radialEl = div({
         class: classes.join(' '),
         style: typeof value === 'function'
             ? () => `--value:${getValue()}; --size:${size}; --thickness:${thickness};`
@@ -45,6 +49,34 @@ const RadialProgress = (props = {}, ...children) => {
         'aria-valuemax': '100',
         ...rest
     }, children.length ? children : [() => getValue() + '%']);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview RadialProgress: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    radialEl
+                )
+            )
+        );
+    }
+
+    return radialEl;
 };
 
 if (typeof window !== 'undefined' && window.LightviewX) {

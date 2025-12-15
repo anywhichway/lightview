@@ -12,18 +12,22 @@ import '../daisyui.js';
  * @param {boolean} props.pinRows - Pin rows on scroll
  * @param {boolean} props.pinCols - Pin columns on scroll
  * @param {string} props.size - 'xs' | 'sm' | 'md' | 'lg'
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Table = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { table } = tags;
+    const { table, div, shadowDOM } = tags;
 
     const {
         zebra = false,
         pinRows = false,
         pinCols = false,
         size,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -35,7 +39,35 @@ const Table = (props = {}, ...children) => {
     if (size) classes.push(`table-${size}`);
     if (className) classes.push(className);
 
-    return table({ class: classes.join(' '), ...rest }, ...children);
+    const tableEl = table({ class: classes.join(' '), ...rest }, ...children);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Table: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    tableEl
+                )
+            )
+        );
+    }
+
+    return tableEl;
 };
 
 /**

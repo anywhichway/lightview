@@ -19,22 +19,97 @@
         <h1>Progress</h1>
         <p class="text-lg opacity-70 mb-6">
             Progress bar shows the progression of a task.
+            Supports reactive values and multiple colors.
         </p>
 
-        <!-- Quick Example -->
+        <!-- Basic Example with Examplify -->
         <div class="card bg-base-200 mb-8">
             <div class="card-body">
-                <h2 class="card-title">Quick Example</h2>
-                <div class="mb-4">
-                    <progress class="progress w-56" value="40" max="100"></progress>
-                </div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import Progress from './components/data-display/progress.js';
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Progress bars with different colors</p>
 
-// Using Lightview component
-Progress({ value: 40, max: 100 })
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
 
-// Or using DaisyUI classes directly
-&lt;progress class="progress w-56" value="40" max="100"&gt;&lt;/progress&gt;</code></pre>
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Progress } = await import('/components/data-display/progress.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
+
+const progressBars = div({ class: 'flex flex-col gap-4 w-64' },
+    ...colors.map((color, i) => 
+        Progress({ 
+            value: 30 + i * 10, 
+            max: 100, 
+            color
+        })
+    )
+);
+
+$('#demo').insert(progressBars);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Animated Progress</h2>
+                <p class="text-sm opacity-70 mb-4">Reactive progress with live updates</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Progress } = await import('/components/data-display/progress.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, p } = tags;
+
+const progress = signal(0);
+const isRunning = signal(false);
+let interval = null;
+
+const startDownload = () => {
+    if (isRunning.value) return;
+    progress.value = 0;
+    isRunning.value = true;
+    interval = setInterval(() => {
+        progress.value += Math.random() * 15;
+        if (progress.value >= 100) {
+            progress.value = 100;
+            isRunning.value = false;
+            clearInterval(interval);
+        }
+    }, 200);
+};
+
+const demo = div({ class: 'flex flex-col gap-4 w-72' },
+    Progress({ 
+        value: () => progress.value, 
+        max: 100, 
+        color: 'success',
+        class: 'w-full'
+    }),
+    p({ class: 'font-mono text-sm' }, 
+        () => progress.value >= 100 
+            ? '✓ Complete!' 
+            : `Downloading: ${Math.round(progress.value)}%`
+    ),
+    Button({ 
+        color: 'primary',
+        size: 'sm',
+        disabled: () => isRunning.value,
+        onclick: startDownload
+    }, () => isRunning.value ? 'Downloading...' : 'Start Download')
+);
+
+$('#demo').insert(demo);</code></pre>
             </div>
         </div>
 
@@ -53,9 +128,9 @@ Progress({ value: 40, max: 100 })
                 <tbody>
                     <tr>
                         <td><code>value</code></td>
-                        <td>number | signal</td>
+                        <td>number | function</td>
                         <td>0</td>
-                        <td>Current value</td>
+                        <td>Current progress value (reactive)</td>
                     </tr>
                     <tr>
                         <td><code>max</code></td>
@@ -87,71 +162,10 @@ Progress({ value: 40, max: 100 })
 
         <!-- Indeterminate -->
         <h2 class="text-xl font-bold mb-4">Indeterminate</h2>
+        <p class="text-sm opacity-70 mb-2">Omit the value attribute for indeterminate state</p>
         <div class="mb-8">
             <progress class="progress w-56"></progress>
         </div>
-
-        <!-- Reactive Example -->
-        <h2 class="text-xl font-bold mb-4">Reactive Example</h2>
-        <div class="card bg-base-200 mb-8">
-            <div class="card-body">
-                <div id="reactive-progress-demo"></div>
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mt-4"><code>const { signal, tags } = Lightview;
-const { div, button } = tags;
-const Progress = LightviewX.getComponent('Progress');
-
-const progress = signal(0);
-setInterval(() => {
-    progress.value = (progress.value + 10) % 110;
-}, 500);
-
-const demo = div({ class: 'flex flex-col gap-4' },
-    Progress({ 
-        value: progress, 
-        max: 100, 
-        class: 'progress-primary w-full' 
-    }),
-    div(() => `Loading... ${progress.value}%`)
-);</code></pre>
-            </div>
-        </div>
-
-        <script type="module">
-            const { signal, tags, $ } = Lightview;
-            const { div, progress: progressTag } = tags;
-
-            // Simple demo definition
-            const Progress = (props) => {
-                const { value, max, class: className = '', ...rest } = props;
-                return progressTag({
-                    class: `progress ${className}`,
-                    value: value,
-                    max,
-                    ...rest
-                });
-            };
-
-            const progressVal = signal(10);
-
-            // Simulate download
-            const interval = setInterval(() => {
-                const next = progressVal.value + 5;
-                progressVal.value = next > 100 ? 0 : next;
-            }, 200);
-
-            // Cleanup on page navigation (not handled here but good practice)
-
-            const demo = div({ class: 'flex flex-col gap-4' },
-                Progress({
-                    value: progressVal,
-                    max: 100,
-                    class: 'progress-primary w-56'
-                }),
-                div({ class: 'font-mono text-sm' }, () => `Downloading: ${progressVal.value}%`)
-            );
-
-            $('#reactive-progress-demo').insert(demo);
-        </script>
 
         <!-- DaisyUI Reference -->
         <div class="alert mt-8">
@@ -168,3 +182,46 @@ const demo = div({ class: 'flex flex-col gap-4' },
         </div>
     </div>
 </div>
+
+<script>
+    // Use examplify to run the code and show preview
+    (function () {
+        // Basic example
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '220px'
+            });
+
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        // Reactive example
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '140px'
+            });
+
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

@@ -44,7 +44,7 @@ export { default as Radio } from './data-input/radio.js';
 export { default as Range } from './data-input/range.js';
 export { default as Rating } from './data-input/rating.js';
 export { default as Select } from './data-input/select.js';
-export { default as TextInput } from './data-input/text-input.js';
+export { default as Input } from './data-input/input.js';
 export { default as Textarea } from './data-input/textarea.js';
 export { default as Toggle } from './data-input/toggle.js';
 
@@ -106,7 +106,7 @@ export const componentManifest = {
         { name: 'Range', description: 'Slider input' },
         { name: 'Rating', description: 'Star rating input' },
         { name: 'Select', description: 'Dropdown select' },
-        { name: 'TextInput', description: 'Text input field' },
+        { name: 'Input', description: 'Text input field' },
         { name: 'Textarea', description: 'Multi-line text input' },
         { name: 'Toggle', description: 'Switch toggle' }
     ],

@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,39 +15,163 @@
             </ul>
         </div>
         <h1>Chat</h1>
-        <p class="text-lg opacity-70 mb-6">Chat bubbles for messaging interfaces.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Chat bubbles for messaging interfaces.
+            Supports avatars, headers, footers, and color variants.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <div class="mb-8">
-            <div class="chat chat-start">
-                <div class="chat-bubble">It's over Anakin, I have the high ground.</div>
-            </div>
-            <div class="chat chat-end">
-                <div class="chat-bubble">You underestimate my power!</div>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Simple chat conversation</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Chat } = await import('/components/data-display/chat.js');
+
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+const conversation = div({},
+    Chat({ position: 'start' },
+        Chat.Image({ src: 'https://i.pravatar.cc/100?img=10' }),
+        Chat.Header({}, 'Obi-Wan'),
+        Chat.Bubble({}, "It's over Anakin, I have the high ground."),
+        Chat.Footer({}, 'Delivered')
+    ),
+    Chat({ position: 'end' },
+        Chat.Image({ src: 'https://i.pravatar.cc/100?img=11' }),
+        Chat.Header({}, 'Anakin'),
+        Chat.Bubble({}, 'You underestimate my power!'),
+        Chat.Footer({}, 'Seen')
+    )
+);
+
+$('#demo').insert(conversation);</code></pre>
             </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">With Avatar & Header</h2>
-        <div class="mb-8">
-            <div class="chat chat-start">
-                <div class="chat-image avatar">
-                    <div class="w-10 rounded-full"><img src="https://i.pravatar.cc/100?img=10" alt="Avatar" /></div>
-                </div>
-                <div class="chat-header">Obi-Wan Kenobi <time class="text-xs opacity-50">12:45</time></div>
-                <div class="chat-bubble">You were the chosen one!</div>
-                <div class="chat-footer opacity-50">Delivered</div>
-            </div>
-            <div class="chat chat-end">
-                <div class="chat-image avatar">
-                    <div class="w-10 rounded-full"><img src="https://i.pravatar.cc/100?img=11" alt="Avatar" /></div>
-                </div>
-                <div class="chat-header">Anakin <time class="text-xs opacity-50">12:46</time></div>
-                <div class="chat-bubble">I hate you!</div>
-                <div class="chat-footer opacity-50">Seen at 12:46</div>
+        <!-- Reactive Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Typing Indicator</h2>
+                <p class="text-sm opacity-70 mb-4">Chat with reactive message sending</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Chat } = await import('/components/data-display/chat.js');
+const { default: Button } = await import('/components/actions/button.js');
+
+const { signal, tags, $ } = Lightview;
+const { div, input } = tags;
+
+const messages = signal([
+    { pos: 'start', text: 'Hey! How are you?', time: '10:00' }
+]);
+const inputVal = signal('');
+
+const sendMessage = () => {
+    if (!inputVal.value.trim()) return;
+    messages.value = [...messages.value, 
+        { pos: 'end', text: inputVal.value, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }
+    ];
+    inputVal.value = '';
+};
+
+const demo = div({ class: 'flex flex-col gap-4' },
+    div({ class: 'h-48 overflow-y-auto' },
+        () => messages.value.map(m => 
+            Chat({ position: m.pos },
+                Chat.Bubble({ color: m.pos === 'end' ? 'primary' : undefined }, m.text),
+                Chat.Footer({}, m.time)
+            )
+        )
+    ),
+    div({ class: 'flex gap-2' },
+        input({ 
+            type: 'text', 
+            class: 'input input-bordered flex-1',
+            placeholder: 'Type a message...',
+            value: () => inputVal.value,
+            oninput: (e) => { inputVal.value = e.target.value; },
+            onkeypress: (e) => { if(e.key === 'Enter') sendMessage(); }
+        }),
+        Button({ color: 'primary', onclick: sendMessage }, 'Send')
+    )
+);
+
+$('#demo').insert(demo);</code></pre>
             </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Chat Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>position</code></td>
+                        <td>string</td>
+                        <td>'start'</td>
+                        <td>'start' (left) | 'end' (right)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Props</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Chat.Image</code></td>
+                        <td>src, alt</td>
+                        <td>Avatar image</td>
+                    </tr>
+                    <tr>
+                        <td><code>Chat.Header</code></td>
+                        <td>-</td>
+                        <td>Name/timestamp header</td>
+                    </tr>
+                    <tr>
+                        <td><code>Chat.Bubble</code></td>
+                        <td>color</td>
+                        <td>Message bubble</td>
+                    </tr>
+                    <tr>
+                        <td><code>Chat.Footer</code></td>
+                        <td>-</td>
+                        <td>Read status/time</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Colors -->
+        <h2 class="text-xl font-bold mb-4">Bubble Colors</h2>
         <div class="mb-8">
             <div class="chat chat-start">
                 <div class="chat-bubble chat-bubble-primary">Primary</div>
@@ -54,11 +182,69 @@
             <div class="chat chat-start">
                 <div class="chat-bubble chat-bubble-accent">Accent</div>
             </div>
+            <div class="chat chat-start">
+                <div class="chat-bubble chat-bubble-info">Info</div>
+            </div>
+            <div class="chat chat-start">
+                <div class="chat-bubble chat-bubble-success">Success</div>
+            </div>
+            <div class="chat chat-start">
+                <div class="chat-bubble chat-bubble-warning">Warning</div>
+            </div>
+            <div class="chat chat-start">
+                <div class="chat-bubble chat-bubble-error">Error</div>
+            </div>
         </div>
 
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/chat/" target="_blank" class="link link-primary">DaisyUI
-                    Chat</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/chat/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Chat documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '200px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '300px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

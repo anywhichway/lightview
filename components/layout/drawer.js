@@ -11,17 +11,21 @@ import '../daisyui.js';
  * @param {string} props.id - Unique ID for the drawer
  * @param {boolean|function} props.open - Control open state
  * @param {boolean} props.end - Drawer on right side
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Drawer = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { div, input, label } = tags;
+    const { div, input, label, shadowDOM } = tags;
 
     const {
         id = 'drawer-' + Math.random().toString(36).slice(2),
         open = false,
         end = false,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -30,7 +34,7 @@ const Drawer = (props = {}, ...children) => {
     if (end) classes.push('drawer-end');
     if (className) classes.push(className);
 
-    return div({ class: classes.join(' '), ...rest },
+    const drawerEl = div({ class: classes.join(' '), ...rest },
         input({
             id,
             type: 'checkbox',
@@ -39,6 +43,34 @@ const Drawer = (props = {}, ...children) => {
         }),
         ...children
     );
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Drawer: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    drawerEl
+                )
+            )
+        );
+    }
+
+    return drawerEl;
 };
 
 /**

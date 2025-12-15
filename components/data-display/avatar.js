@@ -17,12 +17,15 @@ import '../daisyui.js';
  * @param {string} props.ringColor - Ring color class
  * @param {boolean} props.online - Show online indicator
  * @param {boolean} props.offline - Show offline indicator
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Avatar = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { div, img } = tags;
+    const { div, img, shadowDOM } = tags;
 
     const {
         src,
@@ -34,6 +37,7 @@ const Avatar = (props = {}, ...children) => {
         ringColor = 'ring-primary',
         online = false,
         offline = false,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -56,21 +60,50 @@ const Avatar = (props = {}, ...children) => {
     else if (shape === 'hexagon') innerClasses.push('mask mask-hexagon');
     else if (shape === 'triangle') innerClasses.push('mask mask-triangle');
 
+    let avatarEl;
     if (src) {
-        return div({ class: wrapperClasses.join(' '), ...rest },
+        avatarEl = div({ class: wrapperClasses.join(' '), ...rest },
             div({ class: innerClasses.join(' ') },
                 img({ src, alt })
             )
         );
+    } else {
+        // Placeholder avatar
+        innerClasses.push('bg-neutral text-neutral-content');
+        avatarEl = div({ class: wrapperClasses.join(' '), ...rest },
+            div({ class: innerClasses.join(' ') },
+                tags.span({}, placeholder || children[0] || '?')
+            )
+        );
     }
 
-    // Placeholder avatar
-    innerClasses.push('bg-neutral text-neutral-content');
-    return div({ class: wrapperClasses.join(' '), ...rest },
-        div({ class: innerClasses.join(' ') },
-            tags.span({}, placeholder || children[0] || '?')
-        )
-    );
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Avatar: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    avatarEl
+                )
+            )
+        );
+    }
+
+    return avatarEl;
 };
 
 /**

@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,47 +15,77 @@
             </ul>
         </div>
         <h1>Navbar</h1>
-        <p class="text-lg opacity-70 mb-6">Navbar is a horizontal navigation bar at the top of the page.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Navbar is a horizontal navigation bar at the top of the page.
+            Supports start, center, and end sections.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
-        <div class="navbar bg-base-100 rounded-box mb-8">
-            <a class="btn btn-ghost text-xl">daisyUI</a>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Navbar with brand and menu items</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+
+const { default: Navbar } = await import('/components/layout/navbar.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { default: Menu } = await import('/components/navigation/menu.js');
+
+const { tags, $ } = Lightview;
+
+const navbar = Navbar({ class: 'bg-base-100 rounded-box' },
+    Navbar.Start({},
+        Button({ ghost: true, class: 'text-xl' }, '🚀 Lightview')
+    ),
+    Navbar.Center({ class: 'hidden lg:flex' },
+        Menu({ horizontal: true },
+            Menu.Item({}, Menu.Link({}, 'Features')),
+            Menu.Item({}, Menu.Link({}, 'Pricing')),
+            Menu.Item({}, Menu.Link({}, 'About'))
+        )
+    ),
+    Navbar.End({},
+        Button({ color: 'primary' }, 'Get Started')
+    )
+);
+
+$('#demo').insert(navbar);</code></pre>
+            </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">With Title and Icon</h2>
-        <div class="navbar bg-base-100 rounded-box mb-8">
-            <div class="flex-1">
-                <a class="btn btn-ghost text-xl">daisyUI</a>
-            </div>
-            <div class="flex-none">
-                <button class="btn btn-square btn-ghost">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        class="inline-block h-5 w-5 stroke-current">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z">
-                        </path>
-                    </svg>
-                </button>
-            </div>
+        <!-- Props Table -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Navbar.Start</code></td>
+                        <td>Left section (flex-1)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Navbar.Center</code></td>
+                        <td>Center section</td>
+                    </tr>
+                    <tr>
+                        <td><code>Navbar.End</code></td>
+                        <td>Right section</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">With Start, Center, End</h2>
-        <div class="navbar bg-neutral text-neutral-content rounded-box mb-8">
-            <div class="navbar-start">
-                <a class="btn btn-ghost text-xl">daisyUI</a>
-            </div>
-            <div class="navbar-center hidden lg:flex">
-                <ul class="menu menu-horizontal px-1">
-                    <li><a>Item 1</a></li>
-                    <li><a>Item 2</a></li>
-                    <li><a>Item 3</a></li>
-                </ul>
-            </div>
-            <div class="navbar-end">
-                <a class="btn">Button</a>
-            </div>
-        </div>
-
+        <!-- Static Examples -->
         <h2 class="text-xl font-bold mb-4">With Dropdown</h2>
         <div class="navbar bg-base-100 rounded-box mb-8">
             <div class="flex-none">
@@ -85,9 +119,55 @@
             </div>
         </div>
 
+        <h2 class="text-xl font-bold mb-4">With Background Color</h2>
+        <div class="navbar bg-neutral text-neutral-content rounded-box mb-8">
+            <div class="navbar-start">
+                <a class="btn btn-ghost text-xl">daisyUI</a>
+            </div>
+            <div class="navbar-center hidden lg:flex">
+                <ul class="menu menu-horizontal px-1">
+                    <li><a>Item 1</a></li>
+                    <li><a>Item 2</a></li>
+                    <li><a>Item 3</a></li>
+                </ul>
+            </div>
+            <div class="navbar-end">
+                <a class="btn">Button</a>
+            </div>
+        </div>
+
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/navbar/" target="_blank" class="link link-primary">DaisyUI
-                    Navbar</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/navbar/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Navbar documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '80px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

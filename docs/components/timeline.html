@@ -1,6 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="../../../lightview-router.js"></script>
-<script>if (window.LightviewRouter) LightviewRouter.base('../../index.html');</script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
@@ -11,27 +15,183 @@
             </ul>
         </div>
         <h1>Timeline</h1>
-        <p class="text-lg opacity-70 mb-6">Timeline displays events in chronological order.</p>
+        <p class="text-lg opacity-70 mb-6">
+            Timeline displays events in chronological order.
+            Supports horizontal, vertical, and colored connectors.
+        </p>
 
-        <h2 class="text-xl font-bold mb-4">Basic</h2>
+        <!-- Basic Example with Examplify -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Basic Example</h2>
+                <p class="text-sm opacity-70 mb-4">Horizontal timeline with events</p>
+
+                <!-- Preview container -->
+                <div id="basic-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+const { default: Timeline } = await import('/components/data-display/timeline.js');
+
+const { tags, $ } = Lightview;
+
+const events = [
+    { date: '2020', title: 'Project Started', done: true },
+    { date: '2021', title: 'First Release', done: true },
+    { date: '2022', title: 'V2 Launch', done: true },
+    { date: '2023', title: 'Enterprise', done: false }
+];
+
+const timeline = Timeline({},
+    ...events.map((e, i) => 
+        Timeline.Item({ first: i === 0, last: i === events.length - 1 },
+            Timeline.Start({}, e.date),
+            Timeline.Middle({ done: e.done }),
+            Timeline.End({ box: true }, e.title),
+            i < events.length - 1 ? Timeline.Hr({ done: e.done }) : null
+        )
+    )
+);
+
+$('#demo').insert(timeline);</code></pre>
+            </div>
+        </div>
+
+        <!-- Reactive Example -->
+        <div class="card bg-base-200 mb-8">
+            <div class="card-body">
+                <h2 class="card-title">Vertical Timeline</h2>
+                <p class="text-sm opacity-70 mb-4">Order tracking timeline</p>
+
+                <!-- Preview container -->
+                <div id="reactive-preview" class="mb-4"></div>
+
+                <!-- Code display -->
+                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+const { default: Timeline } = await import('/components/data-display/timeline.js');
+
+const { tags, $ } = Lightview;
+
+const steps = [
+    { title: 'Order Placed', desc: 'Dec 10, 2023', done: true },
+    { title: 'Processing', desc: 'Dec 11, 2023', done: true },
+    { title: 'Shipped', desc: 'Dec 12, 2023', done: true },
+    { title: 'Delivered', desc: 'Expected Dec 15', done: false }
+];
+
+const timeline = Timeline({ vertical: true },
+    ...steps.map((s, i) => 
+        Timeline.Item({ first: i === 0, last: i === steps.length - 1 },
+            Timeline.Start({ box: true }, s.title),
+            Timeline.Middle({ done: s.done, color: s.done ? 'primary' : undefined }),
+            Timeline.End({}, s.desc),
+            i < steps.length - 1 ? Timeline.Hr({ done: steps[i+1].done, color: s.done ? 'primary' : undefined }) : null
+        )
+    )
+);
+
+$('#demo').insert(timeline);</code></pre>
+            </div>
+        </div>
+
+        <!-- Props Tables -->
+        <h2 class="text-xl font-bold mb-4">Timeline Props</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Prop</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vertical</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Vertical layout</td>
+                    </tr>
+                    <tr>
+                        <td><code>snap</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Snap to items</td>
+                    </tr>
+                    <tr>
+                        <td><code>compact</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Compact layout</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sub-components -->
+        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Props</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Timeline.Item</code></td>
+                        <td>first, last</td>
+                        <td>Individual timeline event</td>
+                    </tr>
+                    <tr>
+                        <td><code>Timeline.Start</code></td>
+                        <td>box</td>
+                        <td>Left/top content</td>
+                    </tr>
+                    <tr>
+                        <td><code>Timeline.Middle</code></td>
+                        <td>done, color</td>
+                        <td>Center icon/indicator</td>
+                    </tr>
+                    <tr>
+                        <td><code>Timeline.End</code></td>
+                        <td>box</td>
+                        <td>Right/bottom content</td>
+                    </tr>
+                    <tr>
+                        <td><code>Timeline.Hr</code></td>
+                        <td>done, color</td>
+                        <td>Connector line</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Static Example -->
+        <h2 class="text-xl font-bold mb-4">Interactive Demo</h2>
         <ul class="timeline mb-8">
             <li>
                 <div class="timeline-start">1984</div>
                 <div class="timeline-middle">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                        class="h-5 w-5 text-primary">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
                             clip-rule="evenodd" />
                     </svg>
                 </div>
                 <div class="timeline-end timeline-box">First Macintosh</div>
-                <hr />
+                <hr class="bg-primary" />
             </li>
             <li>
-                <hr />
+                <hr class="bg-primary" />
                 <div class="timeline-start">1998</div>
                 <div class="timeline-middle">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                        class="h-5 w-5 text-primary">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
                             clip-rule="evenodd" />
@@ -51,61 +211,58 @@
                     </svg>
                 </div>
                 <div class="timeline-end timeline-box">iPhone</div>
-                <hr />
-            </li>
-            <li>
-                <hr />
-                <div class="timeline-start">2015</div>
-                <div class="timeline-middle">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        class="h-5 w-5 text-primary">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="timeline-end timeline-box">Apple Watch</div>
-            </li>
-        </ul>
-
-        <h2 class="text-xl font-bold mb-4">Vertical with Colors</h2>
-        <ul class="timeline timeline-vertical mb-8">
-            <li>
-                <div class="timeline-start timeline-box">Start</div>
-                <div class="timeline-middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                        fill="currentColor" class="h-5 w-5 text-primary">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                            clip-rule="evenodd" />
-                    </svg></div>
-                <hr class="bg-primary" />
-            </li>
-            <li>
-                <hr class="bg-primary" />
-                <div class="timeline-middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                        fill="currentColor" class="h-5 w-5 text-primary">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                            clip-rule="evenodd" />
-                    </svg></div>
-                <div class="timeline-end timeline-box">Middle</div>
-                <hr />
-            </li>
-            <li>
-                <hr />
-                <div class="timeline-start timeline-box">End</div>
-                <div class="timeline-middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                        fill="currentColor" class="h-5 w-5">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                            clip-rule="evenodd" />
-                    </svg></div>
             </li>
         </ul>
 
         <div class="alert mt-8">
-            <span>See <a href="https://daisyui.com/components/timeline/" target="_blank"
-                    class="link link-primary">DaisyUI Timeline</a> for more options.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="stroke-info h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+                For more examples, see the
+                <a href="https://daisyui.com/components/timeline/" target="_blank" rel="noopener"
+                    class="link link-primary">DaisyUI Timeline documentation</a>.
+            </span>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const basicCodeEl = document.getElementById('basic-code');
+        const basicPreview = document.getElementById('basic-preview');
+
+        if (typeof examplify !== 'undefined' && basicCodeEl) {
+            const result = examplify(basicCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '100px'
+            });
+            if (result && result.iframe) {
+                basicPreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+
+        const reactiveCodeEl = document.getElementById('reactive-code');
+        const reactivePreview = document.getElementById('reactive-preview');
+
+        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
+            const result = examplify(reactiveCodeEl, {
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                html: '<div id="demo"></div>',
+                height: '280px'
+            });
+            if (result && result.iframe) {
+                reactivePreview.appendChild(result.iframe);
+                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                result.iframe.style.borderRadius = '0.5rem';
+            }
+        }
+    })();
+</script>

@@ -11,17 +11,21 @@ import '../daisyui.js';
  * @param {string} props.snap - 'start' | 'center' | 'end'
  * @param {boolean} props.vertical - Vertical carousel
  * @param {boolean} props.full - Full width items
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Carousel = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { div } = tags;
+    const { div, shadowDOM } = tags;
 
     const {
         snap = 'start',
         vertical = false,
         full = false,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -35,7 +39,35 @@ const Carousel = (props = {}, ...children) => {
     if (full) classes.push('w-full');
     if (className) classes.push(className);
 
-    return div({ class: classes.join(' '), ...rest }, ...children);
+    const carouselEl = div({ class: classes.join(' '), ...rest }, ...children);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Carousel: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    carouselEl
+                )
+            )
+        );
+    }
+
+    return carouselEl;
 };
 
 /**

@@ -9,15 +9,19 @@ import '../daisyui.js';
  * Dock Component - bottom navigation bar
  * @param {Object} props
  * @param {string} props.size - 'xs' | 'sm' | 'md' | 'lg'
+ * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Dock = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
+    const LVX = window.LightviewX || {};
+
     if (!tags) return null;
 
-    const { div } = tags;
+    const { div, shadowDOM } = tags;
 
     const {
         size,
+        useShadow,
         class: className = '',
         ...rest
     } = props;
@@ -26,7 +30,35 @@ const Dock = (props = {}, ...children) => {
     if (size) classes.push(`dock-${size}`);
     if (className) classes.push(className);
 
-    return div({ class: classes.join(' '), ...rest }, ...children);
+    const dockEl = div({ class: classes.join(' '), ...rest }, ...children);
+
+    // Check if we should use shadow DOM
+    let usesShadow = false;
+    if (LVX.shouldUseShadow) {
+        usesShadow = LVX.shouldUseShadow(useShadow);
+    } else {
+        usesShadow = useShadow === true;
+    }
+
+    if (usesShadow) {
+        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+
+        if (adoptedStyleSheets.length === 0) {
+            console.warn('Lightview Dock: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        return div({ class: 'contents' },
+            shadowDOM({ mode: 'open', adoptedStyleSheets },
+                div({ 'data-theme': currentTheme },
+                    dockEl
+                )
+            )
+        );
+    }
+
+    return dockEl;
 };
 
 /**
