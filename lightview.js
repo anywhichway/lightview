@@ -288,8 +288,15 @@
                 }
             } else if (key.startsWith('on')) {
                 // Event handler
-                const eventName = key.slice(2).toLowerCase();
-                domNode.addEventListener(eventName, value);
+                if (typeof value === 'function') {
+                    // Function handler - use addEventListener
+                    const eventName = key.slice(2).toLowerCase();
+                    domNode.addEventListener(eventName, value);
+                } else if (typeof value === 'string') {
+                    // String handler (from parsed HTML) - use setAttribute
+                    // Browser will compile the string into a handler function
+                    domNode.setAttribute(key, value);
+                }
                 reactiveAttrs[key] = value;
             } else if (typeof value === 'function') {
                 // Reactive binding

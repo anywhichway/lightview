@@ -1014,6 +1014,9 @@
      */
     const setupSrcObserver = (LV) => {
         const observer = new MutationObserver((mutations) => {
+            // Collect all nodes to process
+            const nodesToProcess = [];
+
             for (const mutation of mutations) {
                 // Handle added nodes
                 if (mutation.type === 'childList') {
@@ -1021,21 +1024,30 @@
                         if (node.nodeType !== Node.ELEMENT_NODE) continue;
 
                         // Check the added node itself
-                        processSrcOnNode(node, LV);
+                        nodesToProcess.push(node);
 
                         // Check descendants with src attribute (excluding standard src tags)
                         const selector = '[src]:not(' + STANDARD_SRC_TAGS.join('):not(') + ')';
                         const descendants = node.querySelectorAll(selector);
                         for (const desc of descendants) {
-                            processSrcOnNode(desc, LV);
+                            nodesToProcess.push(desc);
                         }
                     }
                 }
 
                 // Handle attribute changes (specifically 'src' attribute)
                 if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
-                    processSrcOnNode(mutation.target, LV);
+                    nodesToProcess.push(mutation.target);
                 }
+            }
+
+            // Defer processing to next animation frame
+            // This allows the router's pushState to complete first,
+            // ensuring document.baseURI reflects the correct path
+            if (nodesToProcess.length > 0) {
+                requestAnimationFrame(() => {
+                    nodesToProcess.forEach(node => processSrcOnNode(node, LV));
+                });
             }
         });
 
