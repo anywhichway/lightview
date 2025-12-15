@@ -186,10 +186,6 @@ const Range = (props = {}) => {
     if (usesShadow) {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
-        if (adoptedStyleSheets.length === 0) {
-            console.warn('Lightview Range: Shadow DOM enabled but DaisyUI stylesheet not loaded.');
-        }
-
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
         return div({ class: 'contents' },

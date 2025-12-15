@@ -109,10 +109,6 @@ const Button = (props = {}, ...children) => {
     if (usesShadow) {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
-        if (adoptedStyleSheets.length === 0) {
-            console.warn('Lightview Button: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
-        }
-
         // Get current theme from document
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 

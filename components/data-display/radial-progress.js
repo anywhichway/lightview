@@ -61,10 +61,6 @@ const RadialProgress = (props = {}, ...children) => {
     if (usesShadow) {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
-        if (adoptedStyleSheets.length === 0) {
-            console.warn('Lightview RadialProgress: Shadow DOM enabled but DaisyUI stylesheet not loaded. Call LightviewX.initComponents() at app startup.');
-        }
-
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
         return div({ class: 'contents' },
