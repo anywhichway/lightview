@@ -1,6 +1,10 @@
 name = "lightview"
 compatibility_date = "2024-01-01"
 
+[build]
+command = "npm run build"
+
+
 
 # Cloudflare Pages configuration
 # Note: Static asset headers are now defined in _headers file
