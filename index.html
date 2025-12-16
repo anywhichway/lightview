@@ -135,27 +135,10 @@
                 });
             }
 
-            // Middleware: Fetch page content
-            const fetchPage = async (ctx) => {
-                const path = typeof ctx === 'string' ? ctx : ctx.path;
-                try {
-                    const res = await fetch(path);
-                    if (res.ok) return res;
-                } catch (e) { }
-                return null;
-            };
-
-            // Initialize Router
+            // Initialize Router with contentEl for automatic rendering
             const appRouter = LightviewRouter.router({
-                notFound: (path) => {
-                    contentEl.innerHTML = `
-                        <div class="error-page">
-                            <h1>404</h1>
-                            <p>Page not found</p>
-                            <a href="/" class="btn btn-primary">Go Home</a>
-                        </div>
-                    `;
-                },
+                contentEl: contentEl, // Routes will render here automatically
+
                 // On Start (Loading UI)
                 onStart: (path) => {
                     contentEl.innerHTML = `
@@ -165,7 +148,8 @@
                     `;
                     updateActiveNav(path);
                 },
-                // On Response (Render)
+
+                // On Response (Render) - called after handler returns Response
                 onResponse: async (response, path) => {
                     const html = await response.text();
                     contentEl.innerHTML = html;
@@ -186,28 +170,32 @@
                 }
             });
 
-            // Static Routes
-            appRouter.use('/', '/docs/index.html', fetchPage);
-            appRouter.use('/docs', '/docs/index.html', fetchPage);
-            appRouter.use('/docs/index.html', fetchPage);
-            appRouter.use('/docs/getting-started', '/docs/getting-started/index.html', fetchPage);
-            appRouter.use('/docs/about', '/docs/about.html', fetchPage);
-            appRouter.use('/docs/styles', '/docs/styles/index.html', fetchPage);
-            appRouter.use('/docs/playground', '/docs/playground.html', fetchPage);
-            appRouter.use('/docs/api', '/docs/api/index.html', fetchPage);
-            appRouter.use('/docs/components', '/docs/components/index.html', fetchPage);
-            appRouter.use('/docs/examples', '/docs/examples/index.html', fetchPage);
+            // Static Routes - automatic fetch when contentEl is set
+            appRouter.use('/', '/docs/index.html');
+            appRouter.use('/docs', '/docs/index.html');
+            appRouter.use('/docs/index.html');
+            appRouter.use('/docs/getting-started', '/docs/getting-started/index.html');
+            appRouter.use('/docs/about', '/docs/about.html');
+            appRouter.use('/docs/styles', '/docs/styles/index.html');
+            appRouter.use('/docs/playground', '/docs/playground.html');
+            appRouter.use('/docs/api', '/docs/api/index.html');
+            appRouter.use('/docs/components', '/docs/components/index.html');
+            appRouter.use('/docs/examples', '/docs/examples/index.html');
+            appRouter.use('/docs/router', '/docs/router.html');
 
-            // Wildcard Routes (Standard)
-            appRouter.use('/docs/api/*', '/docs/api/*', fetchPage);
-            appRouter.use('/docs/components/*', '/docs/components/*', fetchPage);
-            appRouter.use('/docs/examples/*', '/docs/examples/*', fetchPage);
+            // Wildcard Routes - path replacement with automatic fetch
+            appRouter.use('/docs/api/*');
+            appRouter.use('/docs/components/*');
+            appRouter.use('/docs/examples/*');
 
             // Direct HTML files
-            appRouter.use('/docs/*.html', '/docs/*.html', fetchPage);
+            appRouter.use('/docs/*.html');
 
             // Fallback Routes (Try appending .html)
-            appRouter.use('/docs/*', '/docs/*.html', fetchPage);
+            appRouter.use('/docs/*', '/docs/*.html');
+
+            // 404 Handler - uses contentEl from context
+            appRouter.use(notFound());
 
             // Start Router
             appRouter.start();

@@ -32,6 +32,7 @@
     const router = (options = {}) => {
         const {
             base = '',
+            contentEl = null,
             notFound = null,
             debug = false,
             onResponse = null,
@@ -128,7 +129,7 @@
 
         /**
          * Convert a replacement string into a function
-         * Returns: (ctx) => newPathString
+         * Returns: (ctx) => updated context with new path
          */
         const createReplacer = (pattern) => {
             return (ctx) => {
@@ -141,13 +142,32 @@
                         newPath = newPath.replace(':' + key, val);
                     });
                 }
-                return newPath;
+                // Return updated context instead of just string
+                return { ...ctx, path: newPath };
             };
+        };
+
+        /**
+         * Default fetch handler - fetches the current path and returns Response
+         * Uses contentEl from context (allows middleware to override target)
+         */
+        const defaultFetchHandler = async (ctx) => {
+            const path = typeof ctx === 'string' ? ctx : ctx.path;
+            try {
+                const res = await fetch(path);
+                if (res.ok) return res;
+            } catch (e) {
+                if (debug) console.error('[Router] Fetch error:', e);
+            }
+            return null;
         };
 
         /**
          * Register a route chain
          * usage: router.use(pattern, replacement, handler, ...)
+         * 
+         * If contentEl is set and the chain ends with a string (path) or has no handlers,
+         * the router automatically appends a fetch handler.
          */
         const use = (...args) => {
             if (args.length === 0) return;
@@ -160,14 +180,22 @@
                 chain.push(firstArg);
             }
 
+            let hasCustomHandler = false;
             for (let i = 1; i < args.length; i++) {
                 const arg = args[i];
                 if (typeof arg === 'string') {
                     chain.push(createReplacer(arg));
-                } else {
+                } else if (typeof arg === 'function') {
                     chain.push(arg);
+                    hasCustomHandler = true;
                 }
             }
+
+            // If contentEl is set and no custom handler provided, append default fetch
+            if (contentEl && !hasCustomHandler) {
+                chain.push(defaultFetchHandler);
+            }
+
             chains.push(chain);
             return routerInstance;
         };
@@ -177,7 +205,8 @@
          */
         const route = async (rawPath) => {
             let currentPath = normalizePath(rawPath);
-            let context = { path: currentPath };
+            // Include contentEl in context for middleware to access/override
+            let context = { path: currentPath, contentEl };
 
             if (debug) console.log(`[Router] Routing: ${currentPath}`);
 
@@ -206,15 +235,17 @@
                 if (!chainFailed) {
                     // Fallthrough with updated context
                     if (typeof chainResult === 'string') {
-                        context = { path: chainResult };
+                        context = { path: chainResult, contentEl };
                         if (debug) console.log(`[Router] Path updated to: ${chainResult}`);
                     } else if (chainResult && chainResult.path) {
                         context = chainResult;
+                        // Ensure contentEl is preserved if not in result
+                        if (!context.contentEl) context.contentEl = contentEl;
                     }
                 }
             }
 
-            if (notFound) return notFound(currentPath);
+            if (notFound) return notFound(context);
             return null;
         };
 
