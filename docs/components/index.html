@@ -6,885 +6,652 @@
     }
 </script>
 
-<!-- Drawer Toggle Script -->
-<script>
-    function toggleSidebar() {
-        const drawer = document.getElementById('main-drawer');
-        const icon = document.getElementById('toggle-icon');
-        const toggleBtn = document.getElementById('sidebar-toggle');
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
 
-        if (window.innerWidth >= 1024) {
-            // Desktop: toggle persistent sidebar
-            const isOpen = drawer.classList.toggle('lg:drawer-open');
+<!-- Gallery Structure -->
+<div class="gallery-page">
+    <div class="gallery-layout">
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-            // Updating logic to match icon path change in the HTML update
-            if (isOpen) {
-                icon.style.transform = 'rotate(0deg)'; // Point Left (Close)
-            } else {
-                icon.style.transform = 'rotate(180deg)'; // Point Right (Open)
-            }
-        } else {
-            // Mobile: delegate to checkbox
-            const checkbox = document.getElementById('components-drawer');
-            checkbox.checked = !checkbox.checked;
-        }
-    }
-</script>
-
-<div class="drawer lg:drawer-open" id="main-drawer">
-    <input id="components-drawer" type="checkbox" class="drawer-toggle" />
-
-    <div class="drawer-content flex flex-col transition-all duration-300">
-        <!-- Sticky Header with Drawer Toggle -->
-        <div
-            class="navbar bg-base-100 border-b border-base-200 sticky top-0 z-30 backdrop-blur-md bg-opacity-90 min-h-16 px-4 flex items-center gap-4">
-            <!-- Toggle Button with Chevron Icon -->
-            <button onclick="toggleSidebar()" id="sidebar-toggle"
-                class="p-2 rounded-full hover:bg-base-200 transition-colors focus:outline-none flex items-center justify-center text-base-content"
-                aria-label="Toggle Sidebar" style="width: 40px; height: 40px;">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    class="w-6 h-6 stroke-current stroke-2 transition-transform duration-300 transform rotate-180 lg:rotate-0"
-                    id="toggle-icon">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7">
-                    </path>
-                </svg>
-            </button>
-            <h1 class="text-4xl font-bold mb-4">Components Gallery</h1>
+        <!-- Sidebar -->
+        <div id="gallery-sidebar" class="gallery-sidebar open">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Components</h2>
+                <p class="sidebar-subtitle">Over 50 components</p>
+            </div>
+            <ul class="sidebar-nav" style="max-height: calc(100vh - 120px); overflow-y: auto;" id="sidebar-links"></ul>
         </div>
 
-        <!-- Main View -->
-        <div class=" p-6 md:p-10 max-w-7xl mx-auto w-full">
-
-            <div class="mb-10">
-                <p class="text-xl opacity-70">
-                    Explore all Lightview components powered by DaisyUI and ChartsCSS using the pull out tray to the
-                    left. Many examples are also displayed below.
-                </p>
+        <!-- Main Content -->
+        <div id="gallery-main" class="gallery-main">
+            <!-- Header -->
+            <div class="gallery-header">
+                <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+                        style="stroke: currentColor; stroke-width: 2;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <h1 class="gallery-title">Components Gallery</h1>
             </div>
 
-            <!-- Using Components -->
-            <section class="mb-16">
-                <div class="card bg-base-200 shadow-sm">
-                    <div class="card-body">
-                        <h2 class="card-title mb-4">Using Components</h2>
-                        <p class="mb-4">Two ways to use:</p>
-
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <h3 class="font-bold mb-2">1. JavaScript Components</h3>
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>import { Button, Card } from './components/index.js';
-
-const App = Card({ shadow: 'md' },
-    Card.Body({},
-        Button({ color: 'primary' }, 'Click me')
-    )
-);</code></pre>
-                            </div>
-                            <div>
-                                <h3 class="font-bold mb-2">2. DaisyUI Classes</h3>
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>&lt;div class="card bg-base-100 shadow-md"&gt;
-    &lt;div class="card-body"&gt;
-        &lt;button class="btn btn-primary"&gt;
-            Click me
-        &lt;/button&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Content -->
+            <div class="gallery-content">
+                <!-- Intro -->
+                <div class="gallery-intro">
+                    <p>Explore all Lightview components powered by DaisyUI. Use the sidebar to navigate to individual
+                        component documentation, or browse the examples below.</p>
                 </div>
-            </section>
 
-            <!-- GALLERIES -->
-
-            <!-- Buttons -->
-            <section class="mb-16 scroll-mt-20" id="buttons">
-                <!-- Buttons -->
-                <section class="mb-16 scroll-mt-20" id="buttons">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-primary badge-lg">Buttons</span>
-                            <a href="/docs/components/button"
-                                class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                aria-label="View Button Docs">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="w-5 h-5 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
-                        </h2>
-                    </div>
-                    <div class="card bg-base-100 border border-base-200 shadow-sm">
-                        <div class="card-body">
-                            <!-- Colors -->
-                            <div class="mb-4">
-                                <h3 class="text-sm font-bold opacity-50 uppercase mb-2">Colors</h3>
-                                <div class="flex flex-wrap gap-2">
-                                    <button class="btn">Default</button>
-                                    <button class="btn btn-neutral">Neutral</button>
-                                    <button class="btn btn-primary">Primary</button>
-                                    <button class="btn btn-secondary">Secondary</button>
-                                    <button class="btn btn-accent">Accent</button>
-                                    <button class="btn btn-info">Info</button>
-                                    <button class="btn btn-success">Success</button>
-                                    <button class="btn btn-warning">Warning</button>
-                                    <button class="btn btn-error">Error</button>
-                                </div>
-                            </div>
-                            <!-- Variants -->
-                            <div class="mb-4">
-                                <h3 class="text-sm font-bold opacity-50 uppercase mb-2">Variants</h3>
-                                <div class="flex flex-wrap gap-2">
-                                    <button class="btn btn-outline btn-primary">Outline</button>
-                                    <button class="btn btn-soft btn-primary">Soft</button>
-                                    <button class="btn btn-ghost">Ghost</button>
-                                    <button class="btn btn-link">Link</button>
-                                </div>
-                            </div>
-                            <!-- Sizes -->
-                            <div>
-                                <h3 class="text-sm font-bold opacity-50 uppercase mb-2">Sizes</h3>
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <button class="btn btn-xs">Tiny</button>
-                                    <button class="btn btn-sm">Small</button>
-                                    <button class="btn btn-md">Medium</button>
-                                    <button class="btn btn-lg">Large</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Inputs -->
-                <section class="mb-16 scroll-mt-20" id="inputs">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-accent badge-lg">Inputs</span>
-                        </h2>
-                    </div>
-
-                    <div class="card bg-base-100 border border-base-200 shadow-sm">
-                        <div class="card-body">
-                            <div class="grid md:grid-cols-2 gap-8">
-                                <div class="form-control w-full">
-                                    <label class="label">
-                                        <span class="label-text">Text Input</span>
-                                        <a href="/docs/components/input"
-                                            class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                            aria-label="View Input Docs">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                class="w-4 h-4 stroke-current">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                                </path>
-                                            </svg>
-                                        </a>
-                                    </label>
-                                    <input type="text" placeholder="Type here" class="input input-bordered w-full" />
-                                </div>
-                                <div class="form-control w-full">
-                                    <label class="label">
-                                        <span class="label-text">Select</span>
-                                        <a href="/docs/components/select"
-                                            class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                            aria-label="View Select Docs">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                class="w-4 h-4 stroke-current">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                                </path>
-                                            </svg>
-                                        </a>
-                                    </label>
-                                    <select class="select select-bordered w-full">
-                                        <option disabled selected>Pick one</option>
-                                        <option>Han Solo</option>
-                                        <option>Greedo</option>
-                                    </select>
-                                </div>
-                                <div class="form-control w-full">
-                                    <label class="label">
-                                        <span class="label-text">File Input</span>
-                                        <a href="/docs/components/file-input"
-                                            class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                            aria-label="View File Input Docs">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                class="w-4 h-4 stroke-current">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                                </path>
-                                            </svg>
-                                        </a>
-                                    </label>
-                                    <input type="file" class="file-input file-input-bordered w-full" />
-                                </div>
-                                <div class="form-control w-full">
-                                    <label class="label">
-                                        <span class="label-text">Range</span>
-                                        <a href="/docs/components/range"
-                                            class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                            aria-label="View Range Docs">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                class="w-4 h-4 stroke-current">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                                </path>
-                                            </svg>
-                                        </a>
-                                    </label>
-                                    <input type="range" min="0" max="100" value="40" class="range range-primary" />
-                                </div>
-                                <div class="form-control w-full">
-                                    <label class="label">
-                                        <span class="label-text">Textarea</span>
-                                        <a href="/docs/components/textarea"
-                                            class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                            aria-label="View Textarea Docs">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                class="w-4 h-4 stroke-current">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                                </path>
-                                            </svg>
-                                        </a>
-                                    </label>
-                                    <textarea class="textarea textarea-bordered h-24" placeholder="Bio"></textarea>
-                                </div>
-                                <div class="form-control w-full">
-                                    <label class="label">
-                                        <span class="label-text">Rating</span>
-                                        <a href="/docs/components/rating"
-                                            class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                            aria-label="View Rating Docs">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                class="w-4 h-4 stroke-current">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                                </path>
-                                            </svg>
-                                        </a>
-                                    </label>
-                                    <div class="rating">
-                                        <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
-                                        <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400"
-                                            checked />
-                                        <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
-                                        <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
-                                        <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="divider">Toggles</div>
-
-                            <div class="flex flex-wrap gap-8">
-                                <label class="label cursor-pointer gap-2">
-                                    <span class="label-text">Checkbox</span>
-                                    <a href="/docs/components/checkbox"
-                                        class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                        aria-label="View Checkbox Docs">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            class="w-4 h-4 stroke-current">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </a>
-                                    <input type="checkbox" checked="checked" class="checkbox checkbox-primary" />
-                                </label>
-                                <label class="label cursor-pointer gap-2">
-                                    <span class="label-text">Toggle</span>
-                                    <a href="/docs/components/toggle"
-                                        class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                        aria-label="View Toggle Docs">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            class="w-4 h-4 stroke-current">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </a>
-                                    <input type="checkbox" class="toggle toggle-secondary" checked />
-                                </label>
-                                <label class="label cursor-pointer gap-2">
-                                    <span class="label-text">Radio</span>
-                                    <a href="/docs/components/radio"
-                                        class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                        aria-label="View Radio Docs">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            class="w-4 h-4 stroke-current">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </a>
-                                    <input type="radio" name="radio-1" class="radio radio-accent" checked />
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Cards -->
-                <section class="mb-16 scroll-mt-20" id="cards">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-secondary badge-lg">Cards</span>
-                            <a href="/docs/components/card"
-                                class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                aria-label="View Card Docs">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="w-5 h-5 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
-                        </h2>
-                    </div>
-                    <div class="grid md:grid-cols-3 gap-6">
-                        <div class="card bg-base-100 shadow-xl image-full">
-                            <figure><img
-                                    src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=200&fit=crop"
-                                    alt="Shoes" /></figure>
-                            <div class="card-body">
-                                <h2 class="card-title">Image Overlay</h2>
-                                <p>Seamless image integration.</p>
-                            </div>
-                        </div>
-                        <div class="card bg-base-100 shadow-xl">
-                            <div class="card-body">
-                                <h2 class="card-title">Standard</h2>
-                                <p>A simple card with padding and shadow.</p>
-                                <div class="card-actions justify-end">
-                                    <button class="btn btn-primary btn-sm">Action</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card bg-primary text-primary-content shadow-xl">
-                            <div class="card-body">
-                                <h2 class="card-title">Colored</h2>
-                                <p>Cards can use theme colors directly.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Alerts -->
-                <section class="mb-16 scroll-mt-20" id="alerts">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-info badge-lg">Alerts</span>
-                            <a href="/docs/components/alert"
-                                class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                aria-label="View Alert Docs">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="w-5 h-5 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
-                        </h2>
-                    </div>
-                    <div class="flex flex-col gap-4">
-                        <div role="alert" class="alert alert-info">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                class="stroke-current shrink-0 w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>New software update available.</span>
-                        </div>
-                        <div role="alert" class="alert alert-success">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 w-6 h-6" fill="none"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>Your purchase has been confirmed!</span>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Badges & Avatars -->
-                <section class="mb-16 scroll-mt-20" id="badges">
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <!-- Badges -->
-                        <div>
-                            <div class="flex items-center gap-2 mb-6">
-                                <h2 class="text-2xl font-bold flex items-center gap-2">
-                                    <span class="badge badge-success badge-lg">Badges</span>
-                                    <a href="/docs/components/badge"
-                                        class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                        aria-label="View Badge Docs">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            class="w-5 h-5 stroke-current">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </a>
-                                </h2>
-                            </div>
-                            <div class="card bg-base-100 border border-base-200 p-6">
-                                <div class="flex flex-wrap gap-2">
-                                    <span class="badge">default</span>
-                                    <span class="badge badge-primary">primary</span>
-                                    <span class="badge badge-outline">outline</span>
-                                    <span class="badge badge-ghost">ghost</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Avatars -->
-                        <div>
-                            <div class="flex items-center gap-2 mb-6">
-                                <h2 class="text-2xl font-bold flex items-center gap-2">
-                                    <span class="badge badge-neutral badge-lg">Avatars</span>
-                                    <a href="/docs/components/avatar"
-                                        class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                        aria-label="View Avatar Docs">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            class="w-5 h-5 stroke-current">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </a>
-                                </h2>
-                            </div>
-                            <div class="card bg-base-100 border border-base-200 p-6">
-                                <div class="flex flex-wrap gap-4">
-                                    <div class="avatar online">
-                                        <div class="w-12 rounded-full">
-                                            <img src="https://i.pravatar.cc/150?img=1" />
-                                        </div>
-                                    </div>
-                                    <div class="avatar offline">
-                                        <div class="w-12 rounded-full">
-                                            <img src="https://i.pravatar.cc/150?img=2" />
-                                        </div>
-                                    </div>
-                                    <div class="avatar placeholder">
-                                        <div class="bg-neutral text-neutral-content w-12 rounded-full">
-                                            <span class="text-xs">UI</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Stats -->
-                <section class="mb-16 scroll-mt-20" id="stats">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-lg">Stats</span>
-                            <a href="/docs/components/stats"
-                                class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                aria-label="View Stats Docs">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="w-5 h-5 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
-                        </h2>
-                    </div>
-                    <div class="stats shadow w-full bg-base-100">
-                        <div class="stat">
-                            <div class="stat-figure text-primary">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="inline-block w-8 h-8 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <div class="stat-title">Total Likes</div>
-                            <div class="stat-value text-primary">25.6K</div>
-                            <div class="stat-desc">21% more than last month</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-figure text-secondary">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="inline-block w-8 h-8 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                </svg>
-                            </div>
-                            <div class="stat-title">Page Views</div>
-                            <div class="stat-value text-secondary">2.6M</div>
-                            <div class="stat-desc">21% more than last month</div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Charts -->
-                <section class="mb-16 scroll-mt-20" id="charts">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-lg">Charts</span>
-                            <a href="/docs/components/chart"
-                                class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                aria-label="View Chart Docs">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="w-5 h-5 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
-                        </h2>
-                    </div>
-                    <div class="card bg-base-100 border border-base-200 shadow-sm overflow-hidden">
-                        <div class="card-body">
-                            <div id="demo-bar-chart" style="width: 100%; height: 200px;">
-                                <table
-                                    class="charts-css bar show-labels show-primary-axis show-data-on-hover data-spacing-5">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Year </th>
-                                            <th scope="col"> Growth </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> 2021 </th>
-                                            <td style="--size: 0.4;"> <span class="data"> 40% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2022 </th>
-                                            <td style="--size: 0.6;"> <span class="data"> 60% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2023 </th>
-                                            <td style="--size: 0.75;"> <span class="data"> 75% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2024 </th>
-                                            <td style="--size: 0.9; --color: #7480ff;"> <span class="data"> 90% </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Progress & Loading -->
-                <section class="mb-16 scroll-mt-20" id="progress">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-accent badge-lg">Progress</span>
-                            <a href="/docs/components/progress"
-                                class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                aria-label="View Progress Docs">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="w-5 h-5 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
-                        </h2>
-                    </div>
-                    <div class="card bg-base-100 border border-base-200 shadow-sm">
-                        <div class="card-body">
-                            <div class="flex flex-col gap-8">
-                                <div>
-                                    <h3 class="text-sm font-bold opacity-50 uppercase mb-4">Bars</h3>
-                                    <div class="flex flex-col gap-4">
-                                        <progress class="progress w-56" value="0" max="100"></progress>
-                                        <progress class="progress progress-primary w-56" value="40"
-                                            max="100"></progress>
-                                        <progress class="progress progress-secondary w-56" value="70"
-                                            max="100"></progress>
-                                        <progress class="progress progress-accent w-56" value="100"
-                                            max="100"></progress>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <h3 class="text-sm font-bold opacity-50 uppercase mb-4">Radial & Loading</h3>
-                                    <div class="flex flex-wrap gap-8 items-center">
-                                        <div class="radial-progress text-primary" style="--value:70;"
-                                            role="progressbar">70%
-                                        </div>
-                                        <div class="radial-progress bg-primary text-primary-content border-4 border-primary"
-                                            style="--value:70;" role="progressbar">70%</div>
-                                        <span class="loading loading-spinner text-primary"></span>
-                                        <span class="loading loading-dots text-secondary"></span>
-                                        <span class="loading loading-ring text-accent"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Steps -->
-                <section class="mb-16 scroll-mt-20" id="steps">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-neutral badge-lg">Steps</span>
-                            <a href="/docs/components/steps"
-                                class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                aria-label="View Steps Docs">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="w-5 h-5 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
-                        </h2>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <ul class="steps steps-vertical lg:steps-horizontal w-full">
-                            <li class="step step-primary">Register</li>
-                            <li class="step step-primary">Choose plan</li>
-                            <li class="step">Purchase</li>
-                            <li class="step">Receive Product</li>
-                        </ul>
-                    </div>
-                </section>
-
-                <!-- Chat -->
-                <section class="mb-16 scroll-mt-20" id="chat">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-info badge-lg">Chat</span>
-                            <a href="/docs/components/chat"
-                                class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                aria-label="View Chat Docs">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="w-5 h-5 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
-                        </h2>
-                    </div>
-                    <div class="mockup-window border border-base-300 bg-base-200 p-4">
-                        <div class="chat chat-start">
-                            <div class="chat-image avatar">
-                                <div class="w-10 rounded-full">
-                                    <img alt="Tailwind CSS chat bubble component"
-                                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                                </div>
-                            </div>
-                            <div class="chat-header">
-                                Obi-Wan Kenobi
-                                <time class="text-xs opacity-50">12:45</time>
-                            </div>
-                            <div class="chat-bubble">You were the Chosen One!</div>
-                            <div class="chat-footer opacity-50">Delivered</div>
-                        </div>
-                        <div class="chat chat-end">
-                            <div class="chat-image avatar">
-                                <div class="w-10 rounded-full">
-                                    <img alt="Tailwind CSS chat bubble component"
-                                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                                </div>
-                            </div>
-                            <div class="chat-header">
-                                Anakin
-                                <time class="text-xs opacity-50">12:46</time>
-                            </div>
-                            <div class="chat-bubble">I hate you!</div>
-                            <div class="chat-footer opacity-50">Seen at 12:46</div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Timeline -->
-                <section class="mb-16 scroll-mt-20" id="timeline">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-success badge-lg">Timeline</span>
-                            <a href="/docs/components/timeline"
-                                class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                aria-label="View Timeline Docs">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="w-5 h-5 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
-                        </h2>
-                    </div>
-                    <ul class="timeline timeline-vertical lg:timeline-horizontal">
-                        <li>
-                            <div class="timeline-start timeline-box">Start</div>
-                            <div class="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                    class="w-5 h-5 text-primary">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <hr class="bg-primary" />
-                        </li>
-                        <li>
-                            <hr class="bg-primary" />
-                            <div class="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                    class="w-5 h-5 text-primary">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="timeline-end timeline-box">Apple Inc.</div>
-                            <hr class="bg-primary" />
-                        </li>
-                        <li>
-                            <hr class="bg-primary" />
-                            <div class="timeline-start timeline-box">Google</div>
-                            <div class="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                    class="w-5 h-5 text-primary">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <hr />
-                        </li>
-                        <li>
-                            <hr />
-                            <div class="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                    class="w-5 h-5">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="timeline-end timeline-box">SpaceX</div>
-                        </li>
-                    </ul>
-                </section>
-
-                <!-- Table -->
-                <section class="mb-16 scroll-mt-20" id="table">
-                    <div class="flex items-center gap-2 mb-6">
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <span class="badge badge-lg">Table</span>
-                            <a href="/docs/components/table"
-                                class="text-info opacity-70 hover:opacity-100 transition-opacity"
-                                aria-label="View Table Docs">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    class="w-5 h-5 stroke-current">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
-                        </h2>
-                    </div>
-                    <div class="overflow-x-auto border border-base-200 rounded-box">
-                        <table class="table">
-                            <!-- head -->
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th>Job</th>
-                                    <th>Favorite Color</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- row 1 -->
-                                <tr>
-                                    <th>1</th>
-                                    <td>Cy Ganderton</td>
-                                    <td>Quality Control Specialist</td>
-                                    <td>Blue</td>
-                                </tr>
-                                <!-- row 2 -->
-                                <tr class="hover">
-                                    <th>2</th>
-                                    <td>Hart Hagerty</td>
-                                    <td>Desktop Support Technician</td>
-                                    <td>Purple</td>
-                                </tr>
-                                <!-- row 3 -->
-                                <tr>
-                                    <th>3</th>
-                                    <td>Brice Swyre</td>
-                                    <td>Tax Accountant</td>
-                                    <td>Red</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-        </div>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="drawer-side h-full z-40">
-        <label for="components-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-        <div class="bg-base-200 min-h-full w-80 p-4 pt-16 lg:pt-4">
-            <div class="mb-6 px-2 flex justify-between items-center">
-                <div>
-                    <h2 class="font-bold text-lg mb-1">Components</h2>
-                    <p class="text-xs opacity-60">Over 50 components</p>
-                </div>
+                <!-- Section placeholders - each script renders into its section -->
+                <section class="gallery-section" id="usage-section"></section>
+                <section class="gallery-section" id="buttons-section"></section>
+                <section class="gallery-section" id="inputs-section"></section>
+                <section class="gallery-section" id="cards-section"></section>
+                <section class="gallery-section" id="alerts-section"></section>
+                <section class="gallery-section" id="badges-section"></section>
+                <section class="gallery-section" id="stats-section"></section>
+                <section class="gallery-section" id="charts-section"></section>
+                <section class="gallery-section" id="progress-section"></section>
+                <section class="gallery-section" id="steps-section"></section>
+                <section class="gallery-section" id="chat-section"></section>
+                <section class="gallery-section" id="timeline-section"></section>
+                <section class="gallery-section" id="table-section"></section>
             </div>
-
-            <!-- Search Stub (Visual only) -->
-
-
-            <ul class="menu p-0 text-sm overflow-y-auto" style="max-height: calc(100vh - 150px);">
-                <li><a href="/docs/components/accordion">Accordion</a></li>
-                <li><a href="/docs/components/alert">Alert</a></li>
-                <li><a href="/docs/components/avatar">Avatar</a></li>
-                <li><a href="/docs/components/badge">Badge</a></li>
-                <li><a href="/docs/components/breadcrumbs">Breadcrumbs</a></li>
-                <li><a href="/docs/components/button">Button</a></li>
-                <li><a href="/docs/components/card">Card</a></li>
-                <li><a href="/docs/components/carousel">Carousel</a></li>
-                <li><a href="/docs/components/chart">Chart</a></li>
-                <li><a href="/docs/components/chat">Chat</a></li>
-                <li><a href="/docs/components/checkbox">Checkbox</a></li>
-                <li><a href="/docs/components/collapse">Collapse</a></li>
-                <li><a href="/docs/components/countdown">Countdown</a></li>
-                <li><a href="/docs/components/diff">Diff</a></li>
-                <li><a href="/docs/components/divider">Divider</a></li>
-                <li><a href="/docs/components/dock">Dock</a></li>
-                <li><a href="/docs/components/drawer">Drawer</a></li>
-                <li><a href="/docs/components/dropdown">Dropdown</a></li>
-                <li><a href="/docs/components/file-input">File Input</a></li>
-                <li><a href="/docs/components/footer">Footer</a></li>
-                <li><a href="/docs/components/hero">Hero</a></li>
-                <li><a href="/docs/components/indicator">Indicator</a></li>
-                <li><a href="/docs/components/input">Input</a></li>
-                <li><a href="/docs/components/join">Join</a></li>
-                <li><a href="/docs/components/kbd">Kbd</a></li>
-                <li><a href="/docs/components/loading">Loading</a></li>
-                <li><a href="/docs/components/menu">Menu</a></li>
-                <li><a href="/docs/components/modal">Modal</a></li>
-                <li><a href="/docs/components/navbar">Navbar</a></li>
-                <li><a href="/docs/components/pagination">Pagination</a></li>
-                <li><a href="/docs/components/progress">Progress</a></li>
-                <li><a href="/docs/components/radial-progress">Radial Progress</a></li>
-                <li><a href="/docs/components/radio">Radio</a></li>
-                <li><a href="/docs/components/range">Range</a></li>
-                <li><a href="/docs/components/rating">Rating</a></li>
-                <li><a href="/docs/components/select">Select</a></li>
-                <li><a href="/docs/components/skeleton">Skeleton</a></li>
-
-                <li><a href="/docs/components/stats">Stats</a></li>
-                <li><a href="/docs/components/steps">Steps</a></li>
-                <li><a href="/docs/components/swap">Swap</a></li>
-
-                <li><a href="/docs/components/table">Table</a></li>
-                <li><a href="/docs/components/tabs">Tabs</a></li>
-
-                <li><a href="/docs/components/textarea">Textarea</a></li>
-                <li><a href="/docs/components/theme-controller">Theme Controller</a></li>
-                <li><a href="/docs/components/timeline">Timeline</a></li>
-                <li><a href="/docs/components/toast">Toast</a></li>
-                <li><a href="/docs/components/toggle">Toggle</a></li>
-                <li><a href="/docs/components/tooltip">Tooltip</a></li>
-            </ul>
         </div>
     </div>
 </div>
+
+<!-- Shared helpers and sidebar setup -->
+<script type="module">
+    const { tags, signal, $ } = Lightview;
+    const { div, section, h2, h3, p, a, button, span, ul, li, svg, path, pre, code } = tags;
+
+    // Sidebar state
+    const sidebarOpen = signal(window.innerWidth >= 1024);
+
+    // Toggle sidebar
+    const sidebar = document.getElementById('gallery-sidebar');
+    const main = document.getElementById('gallery-main');
+    const overlay = document.getElementById('sidebar-overlay');
+    const toggleBtn = document.getElementById('toggle-btn');
+    const toggleIcon = toggleBtn.querySelector('svg');
+
+    function updateSidebarUI() {
+        sidebar.className = `gallery-sidebar ${sidebarOpen.value ? 'open' : 'closed'}`;
+        main.className = `gallery-main ${sidebarOpen.value ? '' : 'sidebar-closed'}`;
+        overlay.className = `sidebar-overlay ${sidebarOpen.value ? 'active' : ''}`;
+        toggleIcon.setAttribute('class', `toggle-icon ${sidebarOpen.value ? '' : 'rotated'}`);
+    }
+
+    toggleBtn.onclick = () => { sidebarOpen.value = !sidebarOpen.value; updateSidebarUI(); };
+    overlay.onclick = () => { sidebarOpen.value = false; updateSidebarUI(); };
+    updateSidebarUI();
+
+    // Populate sidebar links
+    const sidebarLinks = [
+        'Accordion', 'Alert', 'Avatar', 'Badge', 'Breadcrumbs', 'Button', 'Card',
+        'Carousel', 'Chart', 'Chat', 'Checkbox', 'Collapse', 'Countdown', 'Diff',
+        'Divider', 'Dock', 'Drawer', 'Dropdown', 'File Input', 'Footer', 'Hero',
+        'Indicator', 'Input', 'Join', 'Kbd', 'Loading', 'Menu', 'Modal', 'Navbar',
+        'Pagination', 'Progress', 'Radial Progress', 'Radio', 'Range', 'Rating',
+        'Select', 'Skeleton', 'Stats', 'Steps', 'Swap', 'Table', 'Tabs', 'Textarea',
+        'Theme Controller', 'Timeline', 'Toast', 'Toggle', 'Tooltip'
+    ];
+
+    const linksContainer = $('#sidebar-links');
+    sidebarLinks.forEach(name => {
+        const slug = name.toLowerCase().replace(/\s+/g, '-');
+        linksContainer.insert(li({}, a({ href: `/docs/components/${slug}` }, name)));
+    });
+
+    // Info icon helper (shared via window)
+    window.InfoIcon = () => svg(
+        { xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", class: "info-icon", style: "stroke: currentColor;" },
+        path({ "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" })
+    );
+</script>
+
+<!-- Usage Section -->
+<script type="module">
+    const { default: Card } = await import('/components/data-display/card.js');
+    const { tags } = Lightview;
+    const { div, h2, h3, p, pre, code } = tags;
+
+    const content = Card({ styleSheets: ['/docs/components/index.css'] },
+        Card.Body({},
+            h2({ class: "card-title" }, "Using Components"),
+            p({ style: "margin-bottom: 1rem;" }, "Two ways to use:"),
+            div({ style: "display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" },
+                div({ class: "usage-item" },
+                    h3({}, "1. JavaScript Components"),
+                    pre({ class: "code-block" },
+                        code({}, `const { default: Button } = await import('/components/actions/button.js');
+const { default: Card } = await import('/components/data-display/card.js');
+
+const App = Card({ useShadow: true },
+    Card.Body({},
+        Button({ color: 'primary', useShadow: true }, 'Click me')
+    )
+);`)
+                    )
+                ),
+                div({ class: "usage-item" },
+                    h3({}, "2. DaisyUI Classes (in Shadow DOM)"),
+                    pre({ class: "code-block" },
+                        code({}, `// Components automatically use DaisyUI 
+// classes inside their shadow DOM
+Button({ 
+    color: 'primary', 
+    useShadow: true 
+}, 'Click me');`)
+                    )
+                )
+            )
+        )
+    );
+
+    $('#usage-section').insert(content);
+</script>
+
+<!-- Buttons Section -->
+<script type="module">
+    const { default: Button } = await import('/components/actions/button.js');
+    const { default: Card } = await import('/components/data-display/card.js');
+    const { tags } = Lightview;
+    const { div, span, a } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge" }, "Buttons"),
+            a({ href: "/docs/components/button", class: "info-link", "aria-label": "View Button Docs" }, InfoIcon())
+        ),
+        Card({ styleSheets: ['/docs/components/index.css'] },
+            Card.Body({},
+                div({ style: "margin-bottom: 1.5rem;" },
+                    div({ class: "component-label" }, "Colors"),
+                    div({ class: "component-row" },
+                        Button({ useShadow: true }, "Default"),
+                        Button({ color: "neutral", useShadow: true }, "Neutral"),
+                        Button({ color: "primary", useShadow: true }, "Primary"),
+                        Button({ color: "secondary", useShadow: true }, "Secondary"),
+                        Button({ color: "accent", useShadow: true }, "Accent"),
+                        Button({ color: "info", useShadow: true }, "Info"),
+                        Button({ color: "success", useShadow: true }, "Success"),
+                        Button({ color: "warning", useShadow: true }, "Warning"),
+                        Button({ color: "error", useShadow: true }, "Error")
+                    )
+                ),
+                div({ style: "margin-bottom: 1.5rem;" },
+                    div({ class: "component-label" }, "Variants"),
+                    div({ class: "component-row" },
+                        Button({ variant: "outline", color: "primary", useShadow: true }, "Outline"),
+                        Button({ variant: "soft", color: "primary", useShadow: true }, "Soft"),
+                        Button({ color: "ghost", useShadow: true }, "Ghost"),
+                        Button({ color: "link", useShadow: true }, "Link")
+                    )
+                ),
+                div({},
+                    div({ class: "component-label" }, "Sizes"),
+                    div({ class: "component-row centered" },
+                        Button({ size: "xs", useShadow: true }, "Tiny"),
+                        Button({ size: "sm", useShadow: true }, "Small"),
+                        Button({ size: "md", useShadow: true }, "Medium"),
+                        Button({ size: "lg", useShadow: true }, "Large")
+                    )
+                )
+            )
+        )
+    );
+
+    $('#buttons-section').insert(content);
+</script>
+
+<!-- Inputs Section -->
+<script type="module">
+    const { default: Input } = await import('/components/data-input/input.js');
+    const { default: Select } = await import('/components/data-input/select.js');
+    const { default: FileInput } = await import('/components/data-input/file-input.js');
+    const { default: Range } = await import('/components/data-input/range.js');
+    const { default: Textarea } = await import('/components/data-input/textarea.js');
+    const { default: Rating } = await import('/components/data-input/rating.js');
+    const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+    const { default: Toggle } = await import('/components/data-input/toggle.js');
+    const { default: Radio } = await import('/components/data-input/radio.js');
+    const { default: Card } = await import('/components/data-display/card.js');
+    const { tags } = Lightview;
+    const { div, span, a, option } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge accent" }, "Inputs")
+        ),
+        Card({ styleSheets: ['/docs/components/index.css'] },
+            Card.Body({},
+                // Row 1: Text Input, Select, File Input, Textarea (2 columns)
+                div({ class: "inputs-2col", style: "margin-bottom: 1.5rem;" },
+                    div({ class: "form-group" },
+                        div({ class: "form-label" },
+                            span({ class: "label-text" }, "Text Input"),
+                            a({ href: "/docs/components/input", class: "info-link" }, InfoIcon())
+                        ),
+                        Input({ placeholder: "Type here", useShadow: true })
+                    ),
+                    div({ class: "form-group" },
+                        div({ class: "form-label" },
+                            span({ class: "label-text" }, "Select"),
+                            a({ href: "/docs/components/select", class: "info-link" }, InfoIcon())
+                        ),
+                        Select({ useShadow: true },
+                            option({ disabled: true, selected: true }, "Pick one"),
+                            option({}, "Option A"),
+                            option({}, "Option B")
+                        )
+                    ),
+                    div({ class: "form-group" },
+                        div({ class: "form-label" },
+                            span({ class: "label-text" }, "File Input"),
+                            a({ href: "/docs/components/file-input", class: "info-link" }, InfoIcon())
+                        ),
+                        FileInput({ useShadow: true })
+                    ),
+                    div({ class: "form-group" },
+                        div({ class: "form-label" },
+                            span({ class: "label-text" }, "Textarea"),
+                            a({ href: "/docs/components/textarea", class: "info-link" }, InfoIcon())
+                        ),
+                        Textarea({ placeholder: "Bio", useShadow: true })
+                    )
+                ),
+                // Row 2: Rating and Range (2 columns)
+                div({ class: "inputs-2col", style: "margin-bottom: 1.5rem;" },
+                    div({ class: "form-group" },
+                        div({ class: "form-label" },
+                            span({ class: "label-text" }, "Rating"),
+                            a({ href: "/docs/components/rating", class: "info-link" }, InfoIcon())
+                        ),
+                        Rating({ value: 3, max: 5, useShadow: true })
+                    ),
+                    div({ class: "form-group" },
+                        div({ class: "form-label" },
+                            span({ class: "label-text" }, "Range"),
+                            a({ href: "/docs/components/range", class: "info-link" }, InfoIcon())
+                        ),
+                        Range({ min: 0, max: 100, value: 40, color: "primary", useShadow: true })
+                    )
+                ),
+                // Row 3: Checkbox, Toggle, Radio (3 columns)
+                div({ class: "inputs-3col" },
+                    div({ class: "toggle-item" },
+                        span({}, "Checkbox"),
+                        a({ href: "/docs/components/checkbox", class: "info-link" }, InfoIcon()),
+                        Checkbox({ color: "primary", checked: true, useShadow: true })
+                    ),
+                    div({ class: "toggle-item" },
+                        span({}, "Toggle"),
+                        a({ href: "/docs/components/toggle", class: "info-link" }, InfoIcon()),
+                        Toggle({ color: "secondary", checked: true, useShadow: true })
+                    ),
+                    div({ class: "toggle-item" },
+                        span({}, "Radio"),
+                        a({ href: "/docs/components/radio", class: "info-link" }, InfoIcon()),
+                        Radio({ color: "accent", checked: true, name: "demo-radio", useShadow: true })
+                    )
+                )
+            )
+        )
+    );
+
+    $('#inputs-section').insert(content);
+</script>
+
+<!-- Cards Section -->
+<script type="module">
+    const { default: Card } = await import('/components/data-display/card.js');
+    const { default: Button } = await import('/components/actions/button.js');
+    const { tags } = Lightview;
+    const { div, span, a, p, img } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge secondary" }, "Cards"),
+            a({ href: "/docs/components/card", class: "info-link" }, InfoIcon())
+        ),
+        div({ class: "card-grid" },
+            Card({ imageFull: true, useShadow: true, tyleSheets: ['/docs/components/index.css'] },
+                Card.Figure({},
+                    img({ src: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=200&fit=crop", alt: "Shoes" })
+                ),
+                Card.Body({},
+                    Card.Title({}, "Image Overlay"),
+                    p({}, "Seamless image integration.")
+                )
+            ),
+            Card({ styleSheets: ['/docs/components/index.css'] },
+                Card.Body({},
+                    Card.Title({}, "Standard"),
+                    p({}, "A simple card with padding and shadow."),
+                    Card.Actions({ justify: "end" },
+                        Button({ color: "primary", size: "sm" }, "Action")
+                    )
+                )
+            ),
+            Card({ bg: "bg-primary", useShadow: true, class: "text-primary-content", styleSheets: ['/docs/components/index.css'] },
+                Card.Body({},
+                    Card.Title({}, "Colored"),
+                    p({}, "Cards can use theme colors directly.")
+                )
+            )
+        )
+    );
+
+    $('#cards-section').insert(content);
+</script>
+
+<!-- Alerts Section -->
+<script type="module">
+    const { default: Alert } = await import('/components/data-display/alert.js');
+    const { tags } = Lightview;
+    const { div, span, a } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge info" }, "Alerts"),
+            a({ href: "/docs/components/alert", class: "info-link" }, InfoIcon())
+        ),
+        div({ class: "alert-stack" },
+            Alert({ color: "info", useShadow: true }, span({}, "New software update available.")),
+            Alert({ color: "success", useShadow: true }, span({}, "Your purchase has been confirmed!"))
+        )
+    );
+
+    $('#alerts-section').insert(content);
+</script>
+
+<!-- Badges & Avatars Section -->
+<script type="module">
+    const { default: Badge } = await import('/components/data-display/badge.js');
+    const { default: Avatar } = await import('/components/data-display/avatar.js');
+    const { default: Card } = await import('/components/data-display/card.js');
+    const { tags } = Lightview;
+    const { div, span, a } = tags;
+
+    const content = div({ class: "component-grid-2" },
+        div({},
+            div({ class: "section-header" },
+                span({ class: "section-badge success" }, "Badges"),
+                a({ href: "/docs/components/badge", class: "info-link" }, InfoIcon())
+            ),
+            Card({ styleSheets: ['/docs/components/index.css'] },
+                Card.Body({},
+                    div({ class: "badge-group" },
+                        Badge({ useShadow: true }, "default"),
+                        Badge({ color: "primary", useShadow: true }, "primary"),
+                        Badge({ variant: "outline", useShadow: true }, "outline"),
+                        Badge({ variant: "ghost", useShadow: true }, "ghost")
+                    )
+                )
+            )
+        ),
+        div({},
+            div({ class: "section-header" },
+                span({ class: "section-badge neutral" }, "Avatars"),
+                a({ href: "/docs/components/avatar", class: "info-link" }, InfoIcon())
+            ),
+            Card({ styleSheets: ['/docs/components/index.css'] },
+                Card.Body({},
+                    div({ class: "avatar-group" },
+                        Avatar({ src: "https://i.pravatar.cc/150?img=1", online: true, useShadow: true }),
+                        Avatar({ src: "https://i.pravatar.cc/150?img=2", offline: true, useShadow: true }),
+                        Avatar({ placeholder: "UI", useShadow: true })
+                    )
+                )
+            )
+        )
+    );
+
+    $('#badges-section').insert(content);
+</script>
+
+<!-- Stats Section -->
+<script type="module">
+    const { default: Stats } = await import('/components/data-display/stats.js');
+    const { tags } = Lightview;
+    const { div, span, a } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge" }, "Stats"),
+            a({ href: "/docs/components/stats", class: "info-link" }, InfoIcon())
+        ),
+        Stats({ useShadow: true, shadow: true },
+            Stats.Stat({},
+                Stats.Title({}, "Total Likes"),
+                Stats.Value({ class: "text-primary" }, "25.6K"),
+                Stats.Desc({}, "21% more than last month")
+            ),
+            Stats.Stat({},
+                Stats.Title({}, "Page Views"),
+                Stats.Value({ class: "text-secondary" }, "2.6M"),
+                Stats.Desc({}, "21% more than last month")
+            )
+        )
+    );
+
+    $('#stats-section').insert(content);
+</script>
+
+<!-- Charts Section -->
+<script type="module">
+    const { default: Chart } = await import('/components/data-display/chart.js');
+    const { default: Card } = await import('/components/data-display/card.js');
+    const { tags } = Lightview;
+    const { div, span, a, tr, th, td } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge" }, "Charts"),
+            a({ href: "/docs/components/chart", class: "info-link" }, InfoIcon())
+        ),
+        Card({ styleSheets: ['/docs/components/index.css'] },
+            Card.Body({},
+                Chart({
+                    type: "bar",
+                    showLabels: true,
+                    showPrimaryAxis: true,
+                    dataSpacing: 5,
+                    useShadow: true,
+                    style: "height: 200px;"
+                },
+                    Chart.Head({},
+                        tr({}, th({}, "Year"), th({}, "Growth"))
+                    ),
+                    Chart.Body({},
+                        tr({}, th({}, "2021"), td({ style: "--size: 0.4;" }, span({ class: "data" }, "40%"))),
+                        tr({}, th({}, "2022"), td({ style: "--size: 0.6;" }, span({ class: "data" }, "60%"))),
+                        tr({}, th({}, "2023"), td({ style: "--size: 0.75;" }, span({ class: "data" }, "75%"))),
+                        tr({}, th({}, "2024"), td({ style: "--size: 0.9; --color: #7480ff;" }, span({ class: "data" }, "90%")))
+                    )
+                )
+            )
+        )
+    );
+
+    $('#charts-section').insert(content);
+</script>
+
+<!-- Progress Section -->
+<script type="module">
+    const { default: Progress } = await import('/components/data-display/progress.js');
+    const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
+    const { default: Loading } = await import('/components/data-display/loading.js');
+    const { default: Card } = await import('/components/data-display/card.js');
+    const { tags } = Lightview;
+    const { div, span, a } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge accent" }, "Progress"),
+            a({ href: "/docs/components/progress", class: "info-link" }, InfoIcon())
+        ),
+        Card({ styleSheets: ['/docs/components/index.css'] },
+            Card.Body({},
+                div({ class: "component-grid-2" },
+                    div({},
+                        div({ class: "component-label" }, "Bars"),
+                        div({ class: "progress-stack" },
+                            Progress({ value: 0, useShadow: true }),
+                            Progress({ value: 40, color: "primary", useShadow: true }),
+                            Progress({ value: 70, color: "secondary", useShadow: true }),
+                            Progress({ value: 100, color: "accent", useShadow: true })
+                        )
+                    ),
+                    div({},
+                        div({ class: "component-label" }, "Radial & Loading"),
+                        div({ class: "loading-row" },
+                            RadialProgress({ value: 70, color: "primary", useShadow: true }, "70%"),
+                            Loading({ type: "spinner", color: "primary", useShadow: true }),
+                            Loading({ type: "dots", color: "secondary", useShadow: true }),
+                            Loading({ type: "ring", color: "accent", useShadow: true })
+                        )
+                    )
+                )
+            )
+        )
+    );
+
+    $('#progress-section').insert(content);
+</script>
+
+<!-- Steps Section -->
+<script type="module">
+    const { default: Steps } = await import('/components/navigation/steps.js');
+    const { tags } = Lightview;
+    const { div, span, a } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge neutral" }, "Steps"),
+            a({ href: "/docs/components/steps", class: "info-link" }, InfoIcon())
+        ),
+        div({ class: "steps-container" },
+            Steps({ useShadow: true },
+                Steps.Item({ color: "primary" }, "Register"),
+                Steps.Item({ color: "primary" }, "Choose plan"),
+                Steps.Item({}, "Purchase"),
+                Steps.Item({}, "Receive Product")
+            )
+        )
+    );
+
+    $('#steps-section').insert(content);
+</script>
+
+<!-- Chat Section -->
+<script type="module">
+    const { default: Chat } = await import('/components/data-display/chat.js');
+    const { tags } = Lightview;
+    const { div, span, a, time } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge info" }, "Chat"),
+            a({ href: "/docs/components/chat", class: "info-link" }, InfoIcon())
+        ),
+        div({ class: "mockup-window" },
+            div({ class: "mockup-header" },
+                span({ class: "mockup-dot" }),
+                span({ class: "mockup-dot" }),
+                span({ class: "mockup-dot" })
+            ),
+            div({ class: "mockup-content" },
+                div({ class: "chat-container" },
+                    Chat({ position: "start", useShadow: true },
+                        Chat.Image({ src: "https://i.pravatar.cc/150?img=32" }),
+                        Chat.Header({}, "Alex ", time({ class: "text-xs opacity-50" }, "12:45")),
+                        Chat.Bubble({}, "Hey! Did you see the new component library?"),
+                        Chat.Footer({}, "Delivered")
+                    ),
+                    Chat({ position: "end", useShadow: true },
+                        Chat.Image({ src: "https://i.pravatar.cc/150?img=12" }),
+                        Chat.Header({}, "Jordan ", time({ class: "text-xs opacity-50" }, "12:46")),
+                        Chat.Bubble({}, "Yes! It looks amazing. Really clean design."),
+                        Chat.Footer({}, "Seen at 12:46")
+                    )
+                )
+            )
+        )
+    );
+
+    $('#chat-section').insert(content);
+</script>
+
+<!-- Timeline Section -->
+<script type="module">
+    const { default: Timeline } = await import('/components/data-display/timeline.js');
+    const { tags } = Lightview;
+    const { div, span, a } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge success" }, "Timeline"),
+            a({ href: "/docs/components/timeline", class: "info-link" }, InfoIcon())
+        ),
+        div({ class: "timeline-container" },
+            Timeline({ vertical: false, useShadow: true },
+                Timeline.Item({},
+                    Timeline.Start({ class: "timeline-box" }, "Start"),
+                    Timeline.Middle({}),
+                    Timeline.Hr({ color: "primary" })
+                ),
+                Timeline.Item({},
+                    Timeline.Hr({ color: "primary" }),
+                    Timeline.Middle({}),
+                    Timeline.End({ box: true }, "Apple Inc."),
+                    Timeline.Hr({ color: "primary" })
+                ),
+                Timeline.Item({},
+                    Timeline.Hr({ color: "primary" }),
+                    Timeline.Start({ class: "timeline-box" }, "Google"),
+                    Timeline.Middle({}),
+                    Timeline.Hr({})
+                ),
+                Timeline.Item({},
+                    Timeline.Hr({}),
+                    Timeline.Middle({}),
+                    Timeline.End({ box: true }, "SpaceX")
+                )
+            )
+        )
+    );
+
+    $('#timeline-section').insert(content);
+</script>
+
+<!-- Table Section -->
+<script type="module">
+    const { default: Table } = await import('/components/data-display/table.js');
+    const { tags } = Lightview;
+    const { div, span, a, tr, th, td } = tags;
+
+    const content = div({},
+        div({ class: "section-header" },
+            span({ class: "section-badge" }, "Table"),
+            a({ href: "/docs/components/table", class: "info-link" }, InfoIcon())
+        ),
+        Table({ zebra: true, useShadow: true },
+            Table.Head({},
+                tr({}, th({}), th({}, "Name"), th({}, "Job"), th({}, "Favorite Color"))
+            ),
+            Table.Body({},
+                tr({}, th({}, "1"), td({}, "Cy Ganderton"), td({}, "Quality Control Specialist"), td({}, "Blue")),
+                tr({ class: "hover" }, th({}, "2"), td({}, "Hart Hagerty"), td({}, "Desktop Support Technician"), td({}, "Purple")),
+                tr({}, th({}, "3"), td({}, "Brice Swyre"), td({}, "Tax Accountant"), td({}, "Red"))
+            )
+        )
+    );
+
+    $('#table-section').insert(content);
+</script>

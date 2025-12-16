@@ -20,7 +20,7 @@ const RadialProgress = (props = {}, ...children) => {
 
     if (!tags) return null;
 
-    const { div, shadowDOM } = tags;
+    const { div, span, shadowDOM } = tags;
 
     const {
         value = 0,
@@ -63,7 +63,7 @@ const RadialProgress = (props = {}, ...children) => {
 
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
-        return div({ class: 'contents' },
+        return div({ class: 'contents', style: 'display: inline-block' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
                 div({ 'data-theme': currentTheme },
                     radialEl

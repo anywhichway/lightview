@@ -11,12 +11,6 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/docs/assets/images/logo.svg">
 
-    <!-- DaisyUI + Tailwind -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
     <!-- Site Styles -->
     <link rel="stylesheet" href="/docs/assets/styles/site.css">
 </head>
@@ -41,10 +35,11 @@
                 <a href="/docs/api" class="nav-link">API</a>
                 <a href="/docs/styles" class="nav-link">Styles</a>
                 <a href="/docs/components" class="nav-link">Components</a>
+                <a href="/docs/router" class="nav-link">Router</a>
                 <a href="/docs/playground" class="nav-link">Playground</a>
 
                 <a href="/docs/about" class="nav-link">About</a>
-                <a href="https://github.com/pnmartinez/lightview" class="nav-link nav-link-external" target="_blank"
+                <a href="https://github.com/anywhichway/lightview" class="nav-link nav-link-external" target="_blank"
                     rel="noopener">
                     GitHub
                     <svg class="external-icon" viewBox="0 0 24 24" width="14" height="14" fill="none"
@@ -85,12 +80,12 @@
                         <h4>Resources</h4>
                         <a href="/docs/playground">Playground</a>
 
-                        <a href="https://github.com/pnmartinez/lightview" target="_blank" rel="noopener">GitHub</a>
+                        <a href="https://github.com/anywhichway/lightview" target="_blank" rel="noopener">GitHub</a>
                     </div>
                     <div class="footer-column">
                         <h4>More</h4>
                         <a href="/docs/about">About</a>
-                        <a href="https://github.com/pnmartinez/lightview/issues" target="_blank" rel="noopener">Report
+                        <a href="https://github.com/anywhichway/lightview/issues" target="_blank" rel="noopener">Report
                             Issue</a>
                     </div>
                 </div>
@@ -109,11 +104,15 @@
     <script>const { $ } = Lightview;</script>
 
     <!-- Router -->
-    <script>
+    <script type="module">
+        import { localeHandler } from '/middleware/locale.js';
+        import { markdownHandler } from '/middleware/markdown.js';
+        import { notFound } from '/middleware/notFound.js';
+
         (async function () {
             // Initialize components with shadow DOM enabled by default
             //await LightviewX.initComponents({ shadowDefault: true });
-
+            await LightviewX.registerStyleSheet('/docs/components/index.css');
             const contentEl = document.getElementById('content');
             const navLinks = document.querySelectorAll('.nav-link');
 
@@ -121,7 +120,7 @@
             function updateActiveNav(path) {
                 navLinks.forEach(link => {
                     const href = link.getAttribute('href');
-                    const linkPath = href.startsWith('#') ? href.slice(1) : href;
+                    const linkPath = href.startsWith('https://') || href.startsWith('http://') ? href : (href.startsWith('#') ? href.slice(1) : href);
 
                     if (path === '/') {
                         if (linkPath === '/' || linkPath === './docs/') link.classList.add('active');

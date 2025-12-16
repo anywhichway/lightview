@@ -11,13 +11,15 @@
         <h1>Styles</h1>
         <p class="text-lg opacity-70 mb-6">
             Lightview components use <strong>DaisyUI</strong> for styling — a complete component library
-            built on top of Tailwind CSS with 30+ themes and 50+ components.
+            built on top of Tailwind CSS with 12+ themes and 50+ components.
         </p>
 
         <!-- Include DaisyUI -->
         <section class="mb-12">
             <h2 class="text-2xl font-bold mb-4">Including DaisyUI</h2>
-            <p class="opacity-70 mb-4">Add DaisyUI and Tailwind to your HTML:</p>
+            <p class="opacity-70 mb-4">DaisyUI and Tailwind polute the global CSS space a redefine things like H1. By
+                default Lightview componetns isolaten DaisyUI and Tailwind styles to shadowDOMS. If you would like to
+                use DaisyUI and Tailwind styles outside of shadowDOMS, add DaisyUI and Tailwind to your HTML:</p>
             <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>&lt;!-- DaisyUI + Tailwind CSS (CDN) --&gt;
 &lt;link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" /&gt;
 &lt;link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" /&gt;
@@ -27,8 +29,9 @@
         <!-- Themes -->
         <section class="mb-12">
             <h2 class="text-2xl font-bold mb-4">Themes</h2>
-            <p class="opacity-70 mb-4">DaisyUI includes 30+ built-in themes. Set a theme with the
-                <code>data-theme</code> attribute:</p>
+            <p class="opacity-70 mb-4">DaisyUI includes 12+ built-in themes. Set a theme with the
+                <code>data-theme</code> attribute. You can try these thems by clicking on the buttons below.
+            </p>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
                 <button class="btn btn-sm"
@@ -56,15 +59,6 @@
                 <button class="btn btn-sm"
                     onclick="document.documentElement.setAttribute('data-theme', 'dracula')">Dracula</button>
             </div>
-
-            <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>&lt;html data-theme="dark"&gt;
-  &lt;!-- Everything inside uses dark theme --&gt;
-&lt;/html&gt;
-
-&lt;!-- Or set on specific elements --&gt;
-&lt;div data-theme="cupcake"&gt;
-  &lt;button class="btn btn-primary"&gt;Cupcake themed!&lt;/button&gt;
-&lt;/div&gt;</code></pre>
         </section>
 
         <!-- Theme Colors Preview -->
@@ -231,6 +225,50 @@ $('#app').insert(
     )
 );</code></pre>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registering Styles -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">Registering Styles</h2>
+            <p class="opacity-70 mb-4">
+                Components like <code>Card</code> allow you to inject custom styles directly into their Shadow DOM
+                using the <code>styleSheets</code> prop.
+                This allows you to pass an array of CSS file URLs which <code>LightviewX</code> will fetch, cache, and
+                adopt.
+            </p>
+            <p class="opacity-70 mb-4">
+                You might want to do this to:
+            </p>
+            <ul class="list-disc list-inside opacity-70 mb-4 ml-4">
+                <li>Create self-contained custom themes that don't leak out (styles are encapsulated).</li>
+                <li>Reuse the same CSS file across multiple isolated components efficiently.</li>
+                <li>Override DaisyUI defaults for specific component instances without using inline styles.</li>
+            </ul>
+
+            <div class="card bg-base-200">
+                <div class="card-body">
+                    <h3 class="card-title">Example</h3>
+                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>// 1. Create a CSS file (e.g., /styles/card-theme.css)
+/* 
+    :host { --card-bg: #f0f; } 
+    .card { background: var(--card-bg); }
+*/
+
+// 2. Pass the URL to the component
+$('#app').insert(
+    Card({ 
+        useShadow: true,
+        // LightviewX handles fetching and caching automatically
+        styleSheets: ['/styles/card-theme.css'] 
+    },
+        Card.Body({},
+            Card.Title({}, 'Themed Card'),
+            tags.p({}, 'This card uses encapsulated styles from a file.')
+        )
+    )
+);</code></pre>
                 </div>
             </div>
         </section>

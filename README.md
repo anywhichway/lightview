@@ -1,15 +1,26 @@
-# Lightview
+<!-- SEO-friendly SPA Shim -->
+<script src="./lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('index.html');
+    }
+</script>
+# Lightview: README.md
 
 A lightweight reactive UI library with signal-based reactivity and a clean API. Build dynamic UIs with automatic DOM synchronization.
 
-**Core**: ~18KB | **With Hypermedia Extension**: ~25KB total
+Access the full documentaion at [lightview.dev](/index.html).
+
+**Core**: ~6KB | **With Hypermedia Extensions and Component Library Support**: ~18KB total
+
+Fast: This [gallery of components](/docs/components) loads in about 1 second: 
 
 ## Modular Architecture
 
 Lightview is split into two files:
 
 - **`lightview.js`** - Core reactivity (signals, state, effects, elements)
-- **`lightview-x.js`** - Hypermedia extension (src fetching, href navigation, template literals, named registries, Object DOM syntax)
+- **`lightview-x.js`** - Hypermedia extension (src fetching, href navigation, template literals, named registries, Object DOM syntax, UI component library support)
 
 ### API Behavior
 

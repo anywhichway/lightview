@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightview Components Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--lv-color-background);
+            color: var(--lv-color-text);
+        }
+        .demo-header {
+            background: linear-gradient(135deg, var(--lv-color-primary), var(--lv-color-secondary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .demo-header h1 {
+            margin: 0 0 0.5rem;
+            font-size: 2.5rem;
+        }
+        .demo-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+        .demo-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--lv-color-border);
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .demo-card {
+            padding: 1.5rem;
+            background: var(--lv-color-surface);
+            border: 1px solid var(--lv-color-border);
+            border-radius: var(--lv-radius-lg);
+        }
+        .demo-card h3 {
+            margin: 0 0 1rem;
+            font-size: 1rem;
+            color: var(--lv-color-text-secondary);
+        }
+        .demo-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        .demo-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .theme-toggle-wrapper {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="theme-toggle"></div>
+    
+    <header class="demo-header">
+        <h1>Lightview Components</h1>
+        <p>A beautiful, accessible component library built with Lightview</p>
+    </header>
+    
+    <main class="demo-container">
+        <!-- Buttons -->
+        <section class="demo-section">
+            <h2>Buttons</h2>
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>Variants</h3>
+                    <div class="demo-row" id="button-variants"></div>
+                </div>
+                <div class="demo-card">
+                    <h3>Colors</h3>
+                    <div class="demo-row" id="button-colors"></div>
+                </div>
+                <div class="demo-card">
+                    <h3>Sizes</h3>
+                    <div class="demo-row" id="button-sizes"></div>
+                </div>
+                <div class="demo-card">
+                    <h3>States</h3>
+                    <div class="demo-row" id="button-states"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Form Controls -->
+        <section class="demo-section">
+            <h2>Form Controls</h2>
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>Input</h3>
+                    <div class="demo-stack" id="input-demo"></div>
+                </div>
+                <div class="demo-card">
+                    <h3>Select</h3>
+                    <div class="demo-stack" id="select-demo"></div>
+                </div>
+                <div class="demo-card">
+                    <h3>Checkbox & Switch</h3>
+                    <div class="demo-stack" id="checkbox-demo"></div>
+                </div>
+                <div class="demo-card">
+                    <h3>Radio</h3>
+                    <div class="demo-stack" id="radio-demo"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Feedback -->
+        <section class="demo-section">
+            <h2>Feedback</h2>
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>Alerts</h3>
+                    <div class="demo-stack" id="alert-demo"></div>
+                </div>
+                <div class="demo-card">
+                    <h3>Progress</h3>
+                    <div class="demo-stack" id="progress-demo"></div>
+                </div>
+                <div class="demo-card">
+                    <h3>Spinners</h3>
+                    <div class="demo-row" id="spinner-demo"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Display -->
+        <section class="demo-section">
+            <h2>Display</h2>
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>Badges</h3>
+                    <div class="demo-row" id="badge-demo"></div>
+                </div>
+                <div class="demo-card">
+                    <h3>Avatars</h3>
+                    <div class="demo-row" id="avatar-demo"></div>
+                </div>
+                <div class="demo-card">
+                    <h3>Tooltips</h3>
+                    <div class="demo-row" id="tooltip-demo"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Navigation -->
+        <section class="demo-section">
+            <h2>Navigation</h2>
+            <div class="demo-card">
+                <h3>Tabs</h3>
+                <div id="tabs-demo"></div>
+            </div>
+        </section>
+        
+        <!-- Overlays -->
+        <section class="demo-section">
+            <h2>Overlays</h2>
+            <div class="demo-row">
+                <div id="modal-trigger"></div>
+                <div id="drawer-trigger"></div>
+            </div>
+        </section>
+        
+        <!-- Cards -->
+        <section class="demo-section">
+            <h2>Cards</h2>
+            <div class="demo-grid" id="cards-demo"></div>
+        </section>
+    </main>
+    
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+    <div id="drawer-container"></div>
+    
+    <!-- Load Lightview first (non-module) -->
+    <script src="./lightview.js"></script>
+    
+    <script type="module">
+        // Lightview is already on window.Lightview from lightview.js
+        const { tags, signal, element, effect } = window.Lightview;
+        
+        // Import base styles (CSS variables for light/dark themes)
+        import './components/utils/variables.js';
+        
+        // Import components
+        import Button from './components/core/button.js';
+        import Input from './components/core/input.js';
+        import Select from './components/core/select.js';
+        import Checkbox from './components/core/checkbox.js';
+        import Switch from './components/core/switch.js';
+        import Radio from './components/core/radio.js';
+        import Card from './components/display/card.js';
+        import Badge from './components/display/badge.js';
+        import Avatar from './components/display/avatar.js';
+        import Alert from './components/feedback/alert.js';
+        import Spinner from './components/feedback/spinner.js';
+        import Progress from './components/feedback/progress.js';
+        import Tooltip from './components/feedback/tooltip.js';
+        import Modal from './components/feedback/modal.js';
+        import Drawer from './components/feedback/drawer.js';
+        import Tabs from './components/navigation/tabs.js';
+        import ThemeSwitch from './components/theme/theme-switch.js';
+        
+        const { div, span, p } = tags;
+        
+        // Helper to get DOM element from Lightview wrapper
+        const dom = (el) => el?.domEl || el;
+        const domAll = (...els) => els.map(dom);
+        
+        // Theme Toggle
+        document.getElementById('theme-toggle').appendChild(
+            dom(div({ class: 'theme-toggle-wrapper' },
+                ThemeSwitch({ size: 'md' })
+            ))
+        );
+        
+        // Button Variants
+        document.getElementById('button-variants').append(
+            ...domAll(
+                Button({ variant: 'solid' }, 'Solid'),
+                Button({ variant: 'outline' }, 'Outline'),
+                Button({ variant: 'ghost' }, 'Ghost')
+            )
+        );
+        
+        // Button Colors
+        document.getElementById('button-colors').append(
+            ...domAll(
+                Button({ color: 'primary' }, 'Primary'),
+                Button({ color: 'secondary' }, 'Secondary'),
+                Button({ color: 'success' }, 'Success'),
+                Button({ color: 'danger' }, 'Danger')
+            )
+        );
+        
+        // Button Sizes
+        document.getElementById('button-sizes').append(
+            ...domAll(
+                Button({ size: 'sm' }, 'Small'),
+                Button({ size: 'md' }, 'Medium'),
+                Button({ size: 'lg' }, 'Large')
+            )
+        );
+        
+        // Button States
+        document.getElementById('button-states').append(
+            ...domAll(
+                Button({ disabled: true }, 'Disabled'),
+                Button({ loading: true }, 'Loading')
+            )
+        );
+        
+        // Input Demo
+        document.getElementById('input-demo').append(
+            ...domAll(
+                Input({ label: 'Email', type: 'email', placeholder: 'Enter your email' }),
+                Input({ label: 'Password', type: 'password', placeholder: 'Enter password', helper: 'Must be 8+ characters' }),
+                Input({ label: 'Error State', error: 'This field is required' })
+            )
+        );
+        
+        // Select Demo
+        document.getElementById('select-demo').append(
+            ...domAll(
+                Select({
+                    label: 'Country',
+                    placeholder: 'Select country',
+                    options: [
+                        { value: 'us', label: 'United States' },
+                        { value: 'uk', label: 'United Kingdom' },
+                        { value: 'ca', label: 'Canada' },
+                        { value: 'au', label: 'Australia' }
+                    ]
+                }),
+                Select({
+                    label: 'Searchable',
+                    placeholder: 'Search...',
+                    searchable: true,
+                    options: ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry', 'Fig', 'Grape']
+                })
+            )
+        );
+        
+        // Checkbox & Switch Demo
+        document.getElementById('checkbox-demo').append(
+            ...domAll(
+                Checkbox({ label: 'Accept terms and conditions' }),
+                Checkbox({ label: 'Subscribe to newsletter', defaultChecked: true }),
+                Switch({ label: 'Dark mode' }),
+                Switch({ label: 'Notifications', defaultChecked: true })
+            )
+        );
+        
+        // Radio Demo
+        document.getElementById('radio-demo').append(
+            dom(Radio({
+                label: 'Preferred contact method',
+                options: [
+                    { value: 'email', label: 'Email' },
+                    { value: 'phone', label: 'Phone' },
+                    { value: 'mail', label: 'Mail' }
+                ],
+                defaultValue: 'email'
+            }))
+        );
+        
+        // Alert Demo
+        document.getElementById('alert-demo').append(
+            ...domAll(
+                Alert({ type: 'info', title: 'Info', dismissible: true }, 'This is an informational message.'),
+                Alert({ type: 'success', title: 'Success' }, 'Operation completed successfully!'),
+                Alert({ type: 'warning', variant: 'light' }, 'Please review your changes.'),
+                Alert({ type: 'danger', variant: 'outlined' }, 'An error occurred.')
+            )
+        );
+        
+        // Progress Demo
+        const progressValue = signal(65);
+        document.getElementById('progress-demo').append(
+            ...domAll(
+                Progress({ value: progressValue, label: 'Progress', showValue: true }),
+                Progress({ value: 80, color: 'success', striped: true, animated: true }),
+                Progress({ indeterminate: true, color: 'secondary' })
+            )
+        );
+        
+        // Spinner Demo
+        document.getElementById('spinner-demo').append(
+            ...domAll(
+                Spinner({ size: 'sm' }),
+                Spinner({ size: 'md', color: 'secondary' }),
+                Spinner({ size: 'lg', color: 'success' }),
+                Spinner({ size: 'md', label: 'Loading...' })
+            )
+        );
+        
+        // Badge Demo
+        document.getElementById('badge-demo').append(
+            ...domAll(
+                Badge({ color: 'primary' }, '5'),
+                Badge({ color: 'secondary', variant: 'light' }, 'New'),
+                Badge({ color: 'success' }, 'Active'),
+                Badge({ color: 'warning', variant: 'outline' }, 'Pending'),
+                Badge({ color: 'danger', dot: true }),
+                Badge({ color: 'info', pill: true }, 'Beta')
+            )
+        );
+        
+        // Avatar Demo
+        document.getElementById('avatar-demo').append(
+            ...domAll(
+                Avatar({ name: 'John Doe', size: 'sm' }),
+                Avatar({ name: 'Jane Smith', size: 'md', color: 'primary' }),
+                Avatar({ name: 'Bob', size: 'lg', status: 'online' }),
+                Avatar({ src: 'https://i.pravatar.cc/150?u=demo', size: 'lg' }),
+                Avatar.Group({ max: 3 },
+                    Avatar({ name: 'User 1', size: 'md' }),
+                    Avatar({ name: 'User 2', size: 'md', color: 'secondary' }),
+                    Avatar({ name: 'User 3', size: 'md', color: 'success' }),
+                    Avatar({ name: 'User 4', size: 'md', color: 'warning' }),
+                    Avatar({ name: 'User 5', size: 'md', color: 'danger' })
+                )
+            )
+        );
+        
+        // Tooltip Demo
+        document.getElementById('tooltip-demo').append(
+            ...domAll(
+                Tooltip({ content: 'Top tooltip', position: 'top' },
+                    Button({ variant: 'outline' }, 'Top')
+                ),
+                Tooltip({ content: 'Bottom tooltip', position: 'bottom' },
+                    Button({ variant: 'outline' }, 'Bottom')
+                ),
+                Tooltip({ content: 'Left tooltip', position: 'left' },
+                    Button({ variant: 'outline' }, 'Left')
+                ),
+                Tooltip({ content: 'Right tooltip', position: 'right' },
+                    Button({ variant: 'outline' }, 'Right')
+                )
+            )
+        );
+        
+        // Tabs Demo
+        document.getElementById('tabs-demo').appendChild(
+            dom(Tabs({
+                tabs: [
+                    { id: 'overview', label: 'Overview', content: p({}, 'This is the overview content. It contains general information about the product.') },
+                    { id: 'features', label: 'Features', badge: 3, content: p({}, 'Features tab content with a list of amazing features.') },
+                    { id: 'pricing', label: 'Pricing', content: p({}, 'Pricing information and plans available.') },
+                    { id: 'reviews', label: 'Reviews', disabled: true, content: p({}, 'Customer reviews.') }
+                ],
+                variant: 'underline'
+            }))
+        );
+        
+        // Modal
+        const modalOpen = signal(false);
+        document.getElementById('modal-trigger').appendChild(
+            dom(Button({
+                onclick: () => { modalOpen.value = true; }
+            }, 'Open Modal'))
+        );
+        
+        document.getElementById('modal-container').appendChild(
+            dom(Modal({
+                open: modalOpen,
+                title: 'Example Modal',
+                onClose: () => { modalOpen.value = false; }
+            },
+                p({}, 'This is the modal content. You can put any content here including forms, text, or other components.'),
+                Modal.Footer({},
+                    Button({ variant: 'ghost', onclick: () => { modalOpen.value = false; } }, 'Cancel'),
+                    Button({ color: 'primary', onclick: () => { modalOpen.value = false; } }, 'Confirm')
+                )
+            ))
+        );
+        
+        // Drawer
+        const drawerOpen = signal(false);
+        document.getElementById('drawer-trigger').appendChild(
+            dom(Button({
+                variant: 'outline',
+                onclick: () => { drawerOpen.value = true; }
+            }, 'Open Drawer'))
+        );
+        
+        document.getElementById('drawer-container').appendChild(
+            dom(Drawer({
+                open: drawerOpen,
+                title: 'Settings',
+                position: 'right',
+                onClose: () => { drawerOpen.value = false; }
+            },
+                div({ style: 'padding: 1rem;' },
+                    Switch({ label: 'Enable notifications', defaultChecked: true }),
+                    div({ style: 'margin-top: 1rem;' },
+                        Switch({ label: 'Dark mode' })
+                    ),
+                    div({ style: 'margin-top: 1rem;' },
+                        Input({ label: 'Username', placeholder: 'Enter username' })
+                    )
+                )
+            ))
+        );
+        
+        // Cards Demo
+        document.getElementById('cards-demo').append(
+            ...domAll(
+                Card({ variant: 'elevated' },
+                    Card.Header({}, 'Elevated Card'),
+                    Card.Body({},
+                        p({}, 'This is an elevated card with a shadow effect.')
+                    ),
+                    Card.Footer({},
+                        Button({ variant: 'ghost', size: 'sm' }, 'Learn More')
+                    )
+                ),
+                Card({ variant: 'outlined' },
+                    Card.Header({}, 'Outlined Card'),
+                    Card.Body({},
+                        p({}, 'This is an outlined card with a border.')
+                    )
+                ),
+                Card({ variant: 'filled', hoverable: true },
+                    Card.Header({}, 'Hoverable Card'),
+                    Card.Body({},
+                        p({}, 'Hover over this card to see the effect.')
+                    )
+                )
+            )
+        );
+        
+        console.log('Lightview Components Demo loaded!');
+    </script>
+</body>
+</html>

@@ -172,7 +172,7 @@ const Checkbox = (props = {}) => {
             const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
-            return div({ class: 'contents' },
+            return div({ class: 'content', style: 'display: inline-block' },
                 shadowDOM({ mode: 'open', adoptedStyleSheets },
                     div({ 'data-theme': currentTheme }, checkboxInput)
                 )
@@ -226,9 +226,9 @@ const Checkbox = (props = {}) => {
 
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
-        return div({ class: 'contents' },
+        return span({ style: 'margin-right: 0.5rem' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme },
+                div({ 'data-theme': currentTheme, style: 'display: inline-block' },
                     formControl
                 )
             )

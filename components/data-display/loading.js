@@ -50,9 +50,9 @@ const Loading = (props = {}) => {
 
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
-        return div({ class: 'contents' },
+        return span({ style: 'margin-right: 0.5rem' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme },
+                div({ 'data-theme': currentTheme, style: 'display: inline-block' },
                     loadingEl
                 )
             )

@@ -16,7 +16,31 @@
         initialized: false,
         shadowDefault: true,  // Default: components use shadow DOM
         daisyStyleSheet: null,
-        componentStyleSheets: new Map()
+        componentStyleSheets: new Map(),
+        customStyleSheets: new Map() // Registry for named custom stylesheets
+    };
+
+    /**
+     * Register a named stylesheet for use in components
+     * @param {string} url - URL to the CSS file
+     * @returns {Promise<void>}
+     */
+    const registerStyleSheet = async (url) => {
+        // Use the URL as the key
+        if (componentConfig.customStyleSheets.has(url)) return;
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch CSS for '${url}': ${response.status}`);
+            }
+            const cssText = await response.text();
+            const sheet = new CSSStyleSheet();
+            sheet.replaceSync(cssText);
+            componentConfig.customStyleSheets.set(url, sheet);
+        } catch (e) {
+            console.error(`LightviewX: Failed to register stylesheet '${url}':`, e);
+        }
     };
 
     /**
@@ -50,7 +74,7 @@
 
         componentConfig.initialized = true;
     };
-    initComponents();
+    (async () => await initComponents())();
 
     /**
      * Get or create a CSSStyleSheet for a component's CSS file
@@ -104,20 +128,41 @@
     /**
      * Get the adopted stylesheets for a component
      * @param {string} componentCssUrl - URL to the component's CSS file
-     * @returns {CSSStyleSheet[]}
+     * @param {string[]} requestedSheets - Array of stylesheet URLs to include
+     * @returns {(CSSStyleSheet|string)[]} - Mixed array of StyleSheet objects and URL strings (for link fallbacks)
      */
-    const getAdoptedStyleSheets = (componentCssUrl) => {
-        const sheets = [];
+    const getAdoptedStyleSheets = (componentCssUrl, requestedSheets = []) => {
+        const result = [];
+
+        // Add global DaisyUI sheet
         if (componentConfig.daisyStyleSheet) {
-            sheets.push(componentConfig.daisyStyleSheet);
+            result.push(componentConfig.daisyStyleSheet);
         }
+
+        // Add component-specific sheet
         if (componentCssUrl) {
             const componentSheet = componentConfig.componentStyleSheets.get(componentCssUrl);
             if (componentSheet) {
-                sheets.push(componentSheet);
+                result.push(componentSheet);
             }
         }
-        return sheets;
+
+        // Process requested sheets
+        if (Array.isArray(requestedSheets)) {
+            requestedSheets.forEach(url => {
+                const sheet = componentConfig.customStyleSheets.get(url);
+                if (sheet) {
+                    // Registered and loaded -> use object
+                    result.push(sheet);
+                } else {
+                    // Not found -> trigger load, but return string URL for immediate link tag
+                    registerStyleSheet(url); // Fire and forget
+                    result.push(url);
+                }
+            });
+        }
+
+        return result;
     };
 
     /**
@@ -1144,6 +1189,7 @@
         state,
         enhance,
         registerComponent,
+        registerStyleSheet,
         getComponent,
         useObjectDOMSyntax,
         convertObjectDOM,

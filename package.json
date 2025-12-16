@@ -7,8 +7,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev": "wrangler pages dev . --port 3000",
-    "preview": "wrangler pages dev dist --port 8788",
+    "dev": "wrangler pages dev --directory . --port 3000",
+    "preview": "npm run build && wrangler pages dev --directory dist --port 8788",
     "build": "node build.js",
     "deploy": "npm run build && wrangler pages deploy dist",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,5 +19,8 @@
   "type": "commonjs",
   "devDependencies": {
     "wrangler": "^4.54.0"
+  },
+  "dependencies": {
+    "marked": "^17.0.1"
   }
 }

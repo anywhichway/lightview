@@ -1,0 +1,207 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="/lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 800px;">
+        <h1>Lightview Router</h1>
+        <p class="text-secondary" style="font-size: 1.125rem;">
+            A lightweight, pipeline-based History API router with middleware support.
+        </p>
+
+        <h2>Overview</h2>
+        <p>
+            The Lightview Router provides a simple yet powerful way to handle client-side routing in your application.
+            It supports standard routes, wildcards, named parameters, and middleware pipelines.
+        </p>
+
+        <h3>Features</h3>
+        <ul>
+            <li>Pipeline-based routing (middleware style)</li>
+            <li>History API integration</li>
+            <li>Zero dependencies</li>
+            <li>Route parameters <code>/user/:id</code></li>
+            <li>Wildcard support <code>/api/*</code></li>
+            <li>Async handler support</li>
+        </ul>
+
+        <h2>Basic Usage</h2>
+        <p>Initialize the router with a target element and define your routes.</p>
+
+        <div class="code-block">
+            <pre><code>import { LightviewRouter } from '/lightview-router.js';
+
+// 1. Initialize
+const appRouter = LightviewRouter.router({
+    contentEl: document.getElementById('app'), // Routes will render here automatically
+    
+    // Optional: Lifecycle hooks
+    // onStart: (path) => console.log('Loading...'),
+    // notFound: (path) => console.log('404 Not Found')
+});
+
+// 2. Register routes
+// Simple path mapping (fetches /index.html -> renders to #app)
+appRouter.use('/', '/index.html');
+
+// Self-mapping (fetches /about.html -> renders to #app)
+appRouter.use('/about.html');
+
+// Wildcards (fetches matching path -> renders to #app)
+appRouter.use('/docs/*');
+
+// 3. Start listening
+appRouter.start();</code></pre>
+        </div>
+
+        <h2>Middleware & Pipelines</h2>
+        <p>
+            Lightview Router uses a "chain of responsibility" pattern. When you register a route, you can provide
+            multiple handlers.
+        </p>
+        <p>
+            <strong>Automatic Rendering:</strong> If you provide <code>contentEl</code> and your route chain ends with a
+            string (or has no handlers),
+            the router automatically appends a handler that fetches the path and renders it to <code>contentEl</code>.
+        </p>
+        <p>
+            You can still define manual handlers for advanced logic:
+        </p>
+
+        <div class="feature-grid" style="margin: 2rem 0;">
+            <div class="feature-card">
+                <h3 class="feature-title">➡️ Continue Chain</h3>
+                <p>
+                    If a handler returns <strong>null</strong>, <strong>undefined</strong>, or a <strong>context
+                        object</strong>, the router continues to the next handler in the chain.
+                </p>
+                <p class="text-secondary" style="font-size: 0.875rem;">Use this for logging, auth checks, or
+                    transforming the path.</p>
+                <pre style="margin-top: 1rem;"><code>// Middleware
+const logger = (ctx) => {
+    console.log('Visiting:', ctx.path);
+    // Returns undefined, so routing continues
+};</code></pre>
+            </div>
+            <div class="feature-card">
+                <h3 class="feature-title">🛑 Stop & Return</h3>
+                <p>
+                    If a handler returns a <strong>Response</strong> object, the chain stops immediately, and the router
+                    considers the navigation complete.
+                </p>
+                <p class="text-secondary" style="font-size: 0.875rem;">Use this for custom API responses or redirects.
+                </p>
+                <pre style="margin-top: 1rem;"><code>// Final Handler
+const loadPage = async (ctx) => {
+    return await fetch(ctx.path);
+    // Returns Response, stops routing
+};</code></pre>
+            </div>
+        </div>
+
+        <h3>Example Pipeline</h3>
+        <div class="code-block">
+            <pre><code>appRouter.use('/admin/*', 
+    // 1. Authentication Middleware
+    (ctx) => {
+        if (!user.isLoggedIn) {
+            router.navigate('/login'); 
+            return new Response('Redirecting...'); // Stop chain
+        }
+        // User is logged in, continue...
+    },
+    
+    // 2. Logging Middleware
+    (ctx) => {
+        console.log('Admin access at', new Date());
+        // implicitly returns undefined, continues...
+    },
+
+    // 3. Implicit Fetch (if contentEl is set)
+    // The router automatically fetches /admin/* and renders it
+);</code></pre>
+        </div>
+
+        <h2>API Reference</h2>
+
+        <h3><code>LightviewRouter.router(options)</code></h3>
+        <p>Creates a new router instance.</p>
+        <p><strong>Options:</strong></p>
+        <ul>
+            <li><code>contentEl</code> (HTMLElement): Element to automatically render content into.</li>
+            <li><code>base</code> (string): Base path for the router.</li>
+            <li><code>onStart</code> (function): Callback when navigation begins.</li>
+            <li><code>onResponse</code> (function): Callback when a handler returns a response.</li>
+        </ul>
+
+        <h2>Built-in Middleware</h2>
+
+        <h3><code>notFound(options)</code></h3>
+        <p>A final middleware that handles 404 errors when no other route matches.</p>
+        <p><strong>Usage:</strong> Add it as the very last route in your configuration.</p>
+
+        <div class="code-block">
+            <pre><code>import { notFound } from '/middleware/notFound.js';
+
+appRouter.use(notFound({
+    // contentEl: inherited from router options,
+    html: '&lt;h1&gt;404 Not Found&lt;/h1&gt;' // Optional custom HTML
+}));</code></pre>
+        </div>
+
+        <h3><code>router.use(pattern, ...handlers)</code></h3>
+        <p>Registers a route or middleware.</p>
+
+        <p><strong>Pattern types:</strong></p>
+        <ul>
+            <li><strong>String literal:</strong> <code>'/about'</code> - Exact match.</li>
+            <li><strong>Wildcard:</strong> <code>'/api/*'</code> - Matches any path starting with /api/.</li>
+            <li><strong>Parameter:</strong> <code>'/user/:id'</code> - Captures <code>:id</code> as a parameter.</li>
+        </ul>
+
+        <h3><code>router.navigate(path)</code></h3>
+        <p>Programmatically navigate to a new path.</p>
+        <div class="code-block">
+            <pre><code>router.navigate('/profile/settings');</code></pre>
+        </div>
+
+        <h3>Context Object</h3>
+        <p>Handlers receive a <code>context</code> object containing:</p>
+        <ul>
+            <li><code>path</code>: The current normalized path.</li>
+            <li><code>params</code>: Object containing named parameters (if any).</li>
+            <li><code>wildcard</code>: Content of the wildcard match (if any).</li>
+            <li><code>contentEl</code>: The main content element (allows middleware to render content or override the
+                target).</li>
+        </ul>
+
+        <h2>Advanced Configuration</h2>
+        <p>
+            The <code>router()</code> constructor accepts an options object for lifecycle hooks and error handling.
+        </p>
+
+        <div class="code-block">
+            <pre><code>const appRouter = LightviewRouter.router({
+    contentEl: document.getElementById('app'),
+
+    // Lifecycle: Called when navigation triggers (e.g., click or back button)
+    // Good for starting loading spinners
+    onStart: (path) => {
+        document.getElementById('spinner').style.display = 'block';
+    },
+
+    // Lifecycle: Called when a handler successfully returns a Response
+    // If contentEl is set, this runs AFTER render
+    onResponse: async (response, path) => {
+        document.getElementById('spinner').style.display = 'none';
+        // You can run additional logic here (e.g. analytics)
+    }
+});</code></pre>
+        </div>
+
+    </div>
+</div>

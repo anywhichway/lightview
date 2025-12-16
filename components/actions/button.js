@@ -28,7 +28,7 @@ const Button = (props = {}, ...children) => {
         return null;
     }
 
-    const { button, div, shadowDOM } = tags;
+    const { button, div, span, shadowDOM } = tags;
 
     const {
         color,
@@ -112,7 +112,7 @@ const Button = (props = {}, ...children) => {
         // Get current theme from document
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
-        return div({ class: 'contents' },
+        return div({ class: 'content', style: 'display: inline-block' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
                 div({ 'data-theme': currentTheme },
                     buttonEl

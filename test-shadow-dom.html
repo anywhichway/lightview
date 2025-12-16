@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightview Shadow DOM Test</title>
+    <style>
+        /* Global styles that should NOT affect shadow DOM content */
+        h1,
+        h2,
+        h3 {
+            color: red;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        p {
+            color: blue;
+        }
+
+        .card {
+            background: yellow;
+        }
+
+        /* Aggressive input styling to test isolation */
+        input {
+            background: pink !important;
+            border: 3px solid red !important;
+            color: green !important;
+        }
+
+        label {
+            color: orange !important;
+            font-size: 10px !important;
+        }
+
+        body {
+            font-family: system-ui, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .test-section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .test-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Shadow DOM Test Page</h1>
+    <p>This text is OUTSIDE shadow DOM - should be blue (global styles apply)</p>
+
+    <div class="test-section">
+        <div class="test-label">Light DOM Control (global styles apply):</div>
+        <div id="light-dom-control"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-label">Tags Syntax with shadowDOM:</div>
+        <div id="tags-test"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-label">Shadow DOM with External Stylesheet (DaisyUI):</div>
+        <div id="daisy-test"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-label">Input Component (default = shadow DOM, should be styled normally):</div>
+        <div id="input-shadow-test"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-label">Input Component with useShadow=false (affected by global pink/red styles):</div>
+        <div id="input-light-test"></div>
+    </div>
+
+    <script src="lightview.js"></script>
+    <script src="lightview-x.js"></script>
+    <script type="module">
+        // Import the Input component
+        import Input from './components/core/input.js';
+
+        const { tags, $, signal } = Lightview;
+
+        const DAISYUI_CDN = 'https://cdn.jsdelivr.net/npm/daisyui@5';
+
+        // ============= INITIALIZE COMPONENTS =============
+        // This is the ONE call needed at app startup!
+        // shadowDefault: true means all components use shadow DOM by default
+        await LightviewX.initComponents({ shadowDefault: true });
+        console.log('LightviewX.initComponents() complete!');
+
+        // ============= Light DOM Control (no shadow) =============
+        $('#light-dom-control').insert(
+            tags.div({},
+                tags.h2({}, 'H2 in Light DOM'),
+                tags.p({}, 'Paragraph in Light DOM'),
+                tags.div({ class: 'card' }, 'Card in Light DOM')
+            )
+        );
+
+        // ============= Tags Syntax Test =============
+        $('#tags-test').insert(
+            tags.div({ class: 'shadow-host' },
+                tags.shadowDOM({ mode: 'open' },
+                    tags.style({}, `
+                        h2 { color: green; font-size: 24px; font-weight: bold; }
+                        p { color: purple; font-size: 16px; }
+                        .card { background: lightgreen; padding: 10px; border-radius: 4px; }
+                    `),
+                    tags.h2({}, 'H2 in Shadow DOM (Tags)'),
+                    tags.p({}, 'Paragraph in Shadow DOM - should be purple, not blue'),
+                    tags.div({ class: 'card' }, 'Card in Shadow DOM - should be green, not yellow'),
+                    tags.slot()
+                ),
+                'Slotted light DOM content'
+            )
+        );
+
+        // ============= DaisyUI Shadow DOM Test =============
+        $('#daisy-test').insert(
+            tags.div({ class: 'daisy-host' },
+                tags.shadowDOM({
+                    mode: 'open',
+                    styles: [DAISYUI_CDN]
+                },
+                    tags.div({ 'data-theme': 'light', style: 'padding: 16px;' },
+                        tags.h2({ class: 'text-2xl font-bold mb-4' }, 'DaisyUI in Shadow DOM'),
+                        tags.div({ class: 'card bg-base-100 shadow-xl' },
+                            tags.div({ class: 'card-body' },
+                                tags.h3({ class: 'card-title' }, 'Card Title'),
+                                tags.p({}, 'This card uses DaisyUI styles, isolated from global CSS.'),
+                                tags.div({ class: 'card-actions justify-end' },
+                                    tags.button({ class: 'btn btn-primary' }, 'Primary'),
+                                    tags.button({ class: 'btn btn-secondary' }, 'Secondary')
+                                )
+                            )
+                        ),
+                        tags.div({ class: 'mt-4 flex gap-2' },
+                            tags.span({ class: 'badge badge-info' }, 'Info'),
+                            tags.span({ class: 'badge badge-success' }, 'Success'),
+                            tags.span({ class: 'badge badge-warning' }, 'Warning'),
+                            tags.span({ class: 'badge badge-error' }, 'Error')
+                        )
+                    )
+                )
+            )
+        );
+
+        // ============= Input with Shadow DOM (default behavior) =============
+        const inputValue = signal('');
+
+        $('#input-shadow-test').insert(
+            Input({
+                // useShadow not specified - uses global default (true)
+                label: 'Shadow DOM Input (default)',
+                placeholder: 'Type here - styles are isolated from global CSS',
+                helper: 'This input uses shadow DOM by default - NOT pink/red!',
+                value: inputValue,
+                onChange: (val) => console.log('Shadow input value:', val)
+            })
+        );
+
+        // ============= Input with useShadow=false (Light DOM) =============
+        $('#input-light-test').insert(
+            Input({
+                useShadow: false,  // Explicitly disable shadow DOM
+                label: 'Light DOM Input',
+                placeholder: 'This IS affected by global styles',
+                helper: 'This input renders in light DOM - WILL be pink with red border'
+            })
+        );
+
+        console.log('Shadow DOM tests rendered!');
+        console.log('');
+        console.log('Check that:');
+        console.log('1. Light DOM control shows red h2 and blue paragraph (global styles)');
+        console.log('2. Shadow DOM sections show their own styled content (not affected by global red/blue)');
+        console.log('3. DaisyUI section shows proper DaisyUI styling with cards and badges');
+        console.log('4. Default Input (no useShadow prop) has normal styling (NOT pink/red)');
+        console.log('5. Input with useShadow=false has pink background and red border from global CSS');
+    </script>
+</body>
+
+</html>

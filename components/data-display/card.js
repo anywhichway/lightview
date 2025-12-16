@@ -53,12 +53,16 @@ const Card = (props = {}, ...children) => {
     }
 
     if (usesShadow) {
-        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+        const mixedSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets(null, props.styleSheets) : [];
+        const adoptedStyleSheets = mixedSheets.filter(s => s instanceof CSSStyleSheet);
+        const fallbackLinks = mixedSheets.filter(s => typeof s === 'string');
 
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
         return div({ class: 'contents' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
+                // Inject fallback links if any
+                ...fallbackLinks.map(url => tags.link({ rel: 'stylesheet', href: url })),
                 div({ 'data-theme': currentTheme },
                     cardEl
                 )

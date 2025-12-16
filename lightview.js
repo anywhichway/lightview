@@ -145,6 +145,18 @@
     };
 
     // ============= REACTIVE UI =============
+    const SVG_TAGS = new Set([
+        'svg', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'g', 'defs', 'marker',
+        'pattern', 'mask', 'image', 'text', 'tspan', 'foreignObject', 'use', 'symbol', 'clipPath',
+        'linearGradient', 'radialGradient', 'stop', 'filter', 'animate', 'animateMotion',
+        'animateTransform', 'mpath', 'desc', 'metadata', 'title', 'feBlend', 'feColorMatrix',
+        'feComponentTransfer', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting',
+        'feDisplacementMap', 'feDistantLight', 'feDropShadow', 'feFlood', 'feFuncA', 'feFuncB',
+        'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode',
+        'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight',
+        'feTile', 'feTurbulence', 'view'
+    ]);
+
     const domToElement = new WeakMap();
 
     const wrapDomElement = (domNode, tag, attributes = {}, children = []) => {
@@ -171,7 +183,10 @@
             return createShadowDOMMarker(attributes, children);
         }
 
-        const domNode = document.createElement(tag);
+        const isSvg = SVG_TAGS.has(tag.toLowerCase());
+        const domNode = isSvg
+            ? document.createElementNS('http://www.w3.org/2000/svg', tag)
+            : document.createElement(tag);
         const proxy = wrapDomElement(domNode, tag);
         proxy.attributes = attributes;
         proxy.children = children;

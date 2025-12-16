@@ -292,6 +292,8 @@ img {
 .site-content {
     margin-top: var(--site-nav-height);
     min-height: calc(100vh - var(--site-nav-height));
+    margin-left: 2ch;
+    margin-right: 2ch;
 }
 
 /* ============= Footer ============= */

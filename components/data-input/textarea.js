@@ -269,7 +269,7 @@ const Textarea = (props = {}) => {
         // Get current theme from document
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
-        return div({ class: 'contents' },
+        return div({ class: 'content', style: 'display: inline-block' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
                 div({ 'data-theme': currentTheme },
                     wrapperEl

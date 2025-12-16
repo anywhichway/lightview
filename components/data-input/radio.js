@@ -107,7 +107,7 @@ const Radio = (props = {}) => {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
-        return div({ class: 'contents' },
+        return div({ class: 'content', style: 'display: inline-block' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
                 div({ 'data-theme': currentTheme }, formControl)
             )
@@ -308,9 +308,9 @@ const RadioGroup = (props = {}) => {
 
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
-        return div({ class: 'contents' },
+        return span({ style: 'margin-right: 0.5rem' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme }, wrapperEl)
+                div({ 'data-theme': currentTheme, style: 'display: inline-block' }, wrapperEl)
             )
         );
     }
