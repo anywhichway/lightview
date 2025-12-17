@@ -507,6 +507,21 @@
                     return el;
                 }
 
+                if (location === 'innerHTML') {
+                    el.innerHTML = '';
+                    array.forEach(item => {
+                        const childDom = item.domEl || item;
+                        el.appendChild(childDom);
+                    });
+                    return el;
+                }
+
+                if (location === 'outerHTML') {
+                    const replacements = array.map(item => item.domEl || item);
+                    el.replaceWith(...replacements);
+                    return el;
+                }
+
                 if (location === 'afterbegin' || location === 'afterend') {
                     array.reverse();
                 }

@@ -8,13 +8,22 @@
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
-        <div class="breadcrumbs text-sm mb-4">
-            <ul>
-                <li><a href="/docs/components">Components</a></li>
-                <li><a href="/docs/components/chart">Chart</a></li>
-                <li>Bar Chart</li>
-            </ul>
-        </div>
+        <!-- Breadcrumbs -->
+        <div id="page-breadcrumbs" class="mb-4"></div>
+        <script type="module">
+            const { $ } = Lightview;
+            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+
+            const breadcrumbs = Breadcrumbs({
+                items: [
+                    { label: 'Components', href: '/docs/components' },
+                    { label: 'Chart', href: '/docs/components/chart' },
+                    { label: 'Bar Chart' }
+                ]
+            });
+
+            $('#page-breadcrumbs').insert(breadcrumbs);
+        </script>
 
         <h1>Bar Chart</h1>
         <p class="text-lg opacity-70 mb-6">
@@ -71,7 +80,8 @@
         <div class="card bg-base-100 shadow-sm mb-8">
             <div class="card-body">
                 <p class="mb-4">Add multiple <code>Chart.Data</code> elements per row and set
-                    <code>multiple: true</code>:</p>
+                    <code>multiple: true</code>:
+                </p>
                 <div id="multiple-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
                     <table class="charts-css bar multiple show-labels show-primary-axis data-spacing-5">
                         <caption>Quarterly Sales by Region</caption>
@@ -280,7 +290,8 @@
         <div class="card bg-base-100 shadow-sm mb-8">
             <div class="card-body">
                 <p class="mb-4">Create stacked bars by setting <code>stacked: true</code> (or using
-                    <code>.stacked</code> class):</p>
+                    <code>.stacked</code> class):
+                </p>
                 <div id="stacked-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
                     <table class="charts-css bar multiple stacked show-labels">
                         <caption>Stacked Bar Chart</caption>

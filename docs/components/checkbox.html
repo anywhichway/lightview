@@ -13,14 +13,14 @@
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Checkbox' }
                 ]
             });
-            
+
             $('#page-breadcrumbs').insert(breadcrumbs);
         </script>
 
@@ -262,19 +262,7 @@ $('#demo').insert(reactiveDemo);</code></pre>
             </label>
         </div>
 
-        <!-- DaisyUI Reference -->
-        <div class="alert mt-8">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                class="stroke-info h-6 w-6 shrink-0">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <span>
-                For more examples and styling options, see the
-                <a href="https://daisyui.com/components/checkbox/" target="_blank" rel="noopener"
-                    class="link link-primary">DaisyUI Checkbox documentation</a>.
-            </span>
-        </div>
+
     </div>
 </div>
 

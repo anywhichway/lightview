@@ -8,13 +8,22 @@
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
-        <div class="breadcrumbs text-sm mb-4">
-            <ul>
-                <li><a href="/docs/components">Components</a></li>
-                <li><a href="/docs/components/chart">Chart</a></li>
-                <li>Column Chart</li>
-            </ul>
-        </div>
+        <!-- Breadcrumbs -->
+        <div id="page-breadcrumbs" class="mb-4"></div>
+        <script type="module">
+            const { $ } = Lightview;
+            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+
+            const breadcrumbs = Breadcrumbs({
+                items: [
+                    { label: 'Components', href: '/docs/components' },
+                    { label: 'Chart', href: '/docs/components/chart' },
+                    { label: 'Column Chart' }
+                ]
+            });
+
+            $('#page-breadcrumbs').insert(breadcrumbs);
+        </script>
 
         <h1>Column Chart</h1>
         <p class="text-lg opacity-70 mb-6">
@@ -79,7 +88,8 @@
         <div class="card bg-base-100 shadow-sm mb-8">
             <div class="card-body">
                 <p class="mb-4">Add multiple <code>Chart.Data</code> elements per row and set
-                    <code>multiple: true</code>:</p>
+                    <code>multiple: true</code>:
+                </p>
                 <div id="multiple-column" style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
                     <table class="charts-css column multiple show-labels show-primary-axis data-spacing-5">
                         <caption>Sales by Product</caption>
