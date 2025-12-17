@@ -1,7 +1,11 @@
+// Unique ID counter for iframe identification
+let examplifyIdCounter = 0;
+
 function examplify(target, options = {}) {
     const { scripts, styles, modules, html, location = 'beforeEnd', type, height, allowSameOrigin = false } = options;
     const originalContent = target.textContent;
-
+    const autoResize = !height; // Auto-resize if no explicit height is provided
+    const iframeId = `examplify-${++examplifyIdCounter}`;
 
     // 2. Create controls above the target
     let controls;
@@ -33,6 +37,15 @@ function examplify(target, options = {}) {
 
     }
 
+    // Set up message listener for auto-resize
+    if (autoResize) {
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'examplify-resize' && event.data.id === iframeId) {
+                iframe.style.height = event.data.height + 'px';
+            }
+        });
+    }
+
     // 3. Create iframe after target
     let iframe = createIframe(target.textContent);
     if (height) {
@@ -40,13 +53,55 @@ function examplify(target, options = {}) {
     }
     target.insertAdjacentElement(location, iframe);
     if (controls) {
-        target.insertAdjacentElement('beforebegin', controls);
+        if (target.parentElement && target.parentElement.tagName === 'PRE') {
+            target.parentElement.insertAdjacentElement('beforebegin', controls);
+            target.parentElement.classList.add('examplify-parent');
+            target.style.outline = 'none';
+            target.style.border = 'none';
+        } else {
+            target.insertAdjacentElement('beforebegin', controls);
+        }
     }
 
     function createIframe(content) {
         const frame = document.createElement('iframe');
         frame.className = 'examplify-iframe';
         frame.sandbox = `${allowSameOrigin ? 'allow-same-origin ' : ''}allow-scripts`;
+        // Auto-resize script that posts height to parent
+        const autoResizeScript = autoResize ? `
+    <script>
+        const frameId = '${iframeId}';
+        function sendHeight() {
+            const height = Math.max(
+                document.body.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.scrollHeight,
+                document.documentElement.offsetHeight
+            );
+            parent.postMessage({ type: 'examplify-resize', id: frameId, height: height }, '*');
+        }
+        
+        // Send height on load
+        window.addEventListener('load', () => {
+            sendHeight();
+            // Also send after a delay to catch async content
+            setTimeout(sendHeight, 300);
+            setTimeout(sendHeight, 1000);
+        });
+        
+        // Use ResizeObserver for dynamic content changes
+        if (typeof ResizeObserver !== 'undefined') {
+            const resizeObserver = new ResizeObserver(() => sendHeight());
+            resizeObserver.observe(document.body);
+        }
+        
+        // Also observe DOM mutations
+        const mutationObserver = new MutationObserver(() => {
+            setTimeout(sendHeight, 50);
+        });
+        mutationObserver.observe(document.body, { childList: true, subtree: true, attributes: true });
+    <\/script>
+` : '';
 
         const doc = `<!DOCTYPE html>
 <html>
@@ -60,10 +115,10 @@ function examplify(target, options = {}) {
 </head>
 <body>
 ${html ? html : ''}
-<script ${type ? `type="${type}"` : ''}>(async () => {${content}})()<\/script>
+<script ${type ? `type="${type}"` : ''}>setTimeout(async () => {${content}}, 250)<\/script>
+${autoResizeScript}
 </body>
 </html>`;
-
         frame.srcdoc = doc;
         return frame;
     }
@@ -85,41 +140,49 @@ ${html ? html : ''}
         });
     }
 
-    // Add styles if not already added
-    if (!document.querySelector('#examplify-styles')) {
-        const style = document.createElement('style');
-        style.id = 'examplify-styles';
-        style.textContent = `
-            .examplify-controls {
-                display: flex;
-                gap: 0.5rem;
-                margin-bottom: 0.5rem;
-            }
-            .examplify-btn {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.25rem;
-                padding: 0.25rem 0.5rem;
-                font-size: 0.75rem;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                background: #f5f5f5;
-                cursor: pointer;
-                transition: background 0.2s;
-            }
-            .examplify-btn:hover {
-                background: #e5e5e5;
-            }
-            .examplify-iframe {
-                width: 100%;
-                min-height: 150px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                margin-top: 0.5rem;
-            }
-        `;
-        document.head.appendChild(style);
-    }
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .examplify-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .examplify-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #f5f5f5;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .examplify-btn:hover {
+            background: #e5e5e5;
+        }
+        .examplify-iframe {
+            width: 100%;
+            height: 50px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            transition: height 0.15s ease-out;
+        }
+        .examplify-parent {
+            transition: outline 0.2s;
+            border-radius: 4px;
+        }
+        .examplify-parent:hover {
+            outline: 1px solid #ccc;
+            cursor: text;
+        }
+    `;
+
+    const insertionPoint = (target.parentElement && target.parentElement.tagName === 'PRE') ? target.parentElement : target;
+    insertionPoint.insertAdjacentElement('beforebegin', style);
 
     return { controls, iframe, target };
 }

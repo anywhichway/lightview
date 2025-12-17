@@ -693,3 +693,24 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ============= Utility Classes ============= */
+/* Text sizes */
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+/* Font weights */
+.font-bold {
+    font-weight: 700;
+}
+
+.font-semibold {
+    font-weight: 600;
+}

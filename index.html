@@ -149,23 +149,8 @@
                     updateActiveNav(path);
                 },
 
-                // On Response (Render) - called after handler returns Response
-                onResponse: async (response, path) => {
-                    const html = await response.text();
-                    contentEl.innerHTML = html;
-                    // Execute scripts
-                    const scripts = contentEl.querySelectorAll('script');
-                    scripts.forEach(script => {
-                        const newScript = document.createElement('script');
-                        if (script.type) newScript.type = script.type;
-                        if (script.src) {
-                            newScript.src = script.src;
-                        } else {
-                            newScript.textContent = script.textContent;
-                        }
-                        script.parentNode.replaceChild(newScript, script);
-                    });
-
+                // On Response - called AFTER auto-render for post-render logic
+                onResponse: (response, path) => {
                     window.scrollTo(0, 0);
                 }
             });

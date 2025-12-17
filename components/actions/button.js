@@ -48,7 +48,7 @@ const Button = (props = {}, ...children) => {
         const classes = ['btn'];
 
         // Color
-        if (color) classes.push(`btn-${color}`);
+        if (['primary', 'secondary', 'accent', 'neutral', 'info', 'success', 'warning', 'error', 'ghost', 'link'].includes(color)) classes.push(`btn-${color}`);
 
         // Size
         if (size) classes.push(`btn-${size}`);
@@ -88,6 +88,15 @@ const Button = (props = {}, ...children) => {
         return children;
     };
 
+    if (!['primary', 'secondary', 'accent', 'neutral', 'info', 'success', 'warning', 'error', 'ghost', 'link'].includes(color)) {
+        // set the background color using style
+        rest.style = rest.style || '';
+        if (typeof rest.style === 'object') {
+            rest.style.backgroundColor = color;
+        } else {
+            rest.style += `;background-color: ${color};`;
+        }
+    }
     const buttonEl = button({
         class: typeof disabled === 'function' || typeof loading === 'function' || typeof active === 'function'
             ? () => getClassList()

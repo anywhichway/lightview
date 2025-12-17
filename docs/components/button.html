@@ -6,113 +6,140 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div class="breadcrumbs text-sm mb-4">
-            <ul>
-                <li><a href="/docs/components">Components</a></li>
-                <li>Button</li>
-            </ul>
-        </div>
+        <div id="page-breadcrumbs"></div>
+        <script type="module">
+            const { $ } = Lightview;
+            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+
+            const breadcrumbs = Breadcrumbs({
+                items: [
+                    { label: 'Components', href: '/docs/components' },
+                    { label: 'Button' }
+                ]
+            });
+
+            $('#page-breadcrumbs').insert(breadcrumbs);
+        </script>
 
         <h1>Button</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p>
             Buttons allow the user to take actions or make choices.
             Available in multiple variants, colors, and sizes with reactive state support.
         </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
-            <div class="card-body">
-                <h2 class="card-title">Basic Examples</h2>
-                <p class="text-sm opacity-70 mb-4">Buttons with various colors and variants</p>
+        <!-- Interactive Examples -->
+        <div id="basic-example-card"></div>
+        <div id="reactive-example-card"></div>
 
-                <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+        <script type="module">
+            const { default: Card } = await import('/components/data-display/card.js');
+            const { tags, $ } = Lightview;
+            const { h2, p, pre, code, div } = tags;
 
-                <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Button component
+            // Helper to generate Card with Examplify setup
+            const createExampleCard = (title, description, codeContent, idPrefix, height = '100px') => {
+                const card = Card({
+                    styleSheets: ['/docs/components/index.css'],
+                    useShadow: true // Explicitly enable shadow DOM to ensure consistent behavior
+                },
+                    Card.Body({},
+                        h2({ class: "card-title" }, title),
+                        p({ class: "text-sm", style: "opacity: 0.7; margin-bottom: 1rem;" }, description),
+                        div({ id: `${idPrefix}-preview`, style: "margin-bottom: 1rem;" }),
+                        pre({ class: "code-block" },
+                            code({ id: `${idPrefix}-code`, contenteditable: true }, codeContent)
+                        )
+                    )
+                );
+                return card;
+            };
 
+            const runExamplify = (containerId, idPrefix, height) => {
+                if (typeof examplify !== 'undefined') {
+                    const container = document.getElementById(containerId);
+                    if (!container) return;
 
-const { default: Button } = await import('/components/actions/button.js');
+                    // Look for shadow root on the first child of the container (the Card host)
+                    let searchRoot = document;
+                    const cardHost = container.firstElementChild;
+                    if (cardHost && cardHost.shadowRoot) {
+                        searchRoot = cardHost.shadowRoot;
+                    }
 
+                    const codeEl = searchRoot.getElementById(`${idPrefix}-code`);
+                    const previewEl = searchRoot.getElementById(`${idPrefix}-preview`);
+
+                    if (codeEl && previewEl) {
+                        const result = examplify(codeEl, {
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            html: '<div id="demo"></div>',
+                            height: height
+                        });
+                        if (result && result.iframe) {
+                            previewEl.appendChild(result.iframe);
+                            result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
+                            result.iframe.style.borderRadius = '0.5rem';
+                        }
+                    }
+                }
+            };
+
+            // 1. Basic Example Code
+            const basicCode = `const { default: Button } = await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
-// Various button styles
-const buttons = div({ class: 'space-y-4' },
-    // Colors
-    div({ class: 'flex flex-wrap gap-2' },
-        Button({}, 'Default'),
-        Button({ color: 'primary' }, 'Primary'),
-        Button({ color: 'secondary' }, 'Secondary'),
-        Button({ color: 'accent' }, 'Accent')
-    ),
-    // Variants
-    div({ class: 'flex flex-wrap gap-2' },
-        Button({ color: 'primary', variant: 'outline' }, 'Outline'),
-        Button({ color: 'primary', variant: 'soft' }, 'Soft'),
-        Button({ color: 'ghost' }, 'Ghost'),
-        Button({ color: 'link' }, 'Link')
-    ),
-    // Sizes
-    div({ class: 'flex flex-wrap items-center gap-2' },
-        Button({ color: 'primary', size: 'xs' }, 'Tiny'),
-        Button({ color: 'primary', size: 'sm' }, 'Small'),
-        Button({ color: 'primary' }, 'Normal'),
-        Button({ color: 'primary', size: 'lg' }, 'Large')
-    )
+const buttons = div({ style: 'display: flex; gap: 0.5rem;' },
+    Button({}, 'Default'),
+    Button({ color: 'primary' }, 'Primary'),
+    Button({ color: 'secondary' }, 'Secondary')
 );
 
-$('#demo').insert(buttons);</code></pre>
-            </div>
-        </div>
+$('#demo').insert(buttons);`;
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
-            <div class="card-body">
-                <h2 class="card-title">Reactive Loading State</h2>
-                <p class="text-sm opacity-70 mb-4">Button with reactive loading state</p>
-
-                <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
-
-                <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
-const { default: Button } = await import('/components/actions/button.js');
-
+            // 2. Reactive Example Code
+            const reactiveCode = `const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 const { div, span } = tags;
 
-// Signal for loading state
 const isLoading = signal(false);
 
-// Simulate async operation
-const handleClick = async () => {
-    isLoading.value = true;
-    await new Promise(r => setTimeout(r, 2000));
-    isLoading.value = false;
-};
-
-const demo = div({ class: 'flex gap-4 items-center' },
+const demo = div({ style: 'display: flex; gap: 1rem; align-items: center;' },
     Button({ 
         color: 'primary',
         loading: () => isLoading.value,
-        onclick: handleClick
+        onclick: async () => {
+            isLoading.value = true;
+            await new Promise(r => setTimeout(r, 2000));
+            isLoading.value = false;
+        }
     }, 'Save Changes'),
-    span({ class: 'text-sm opacity-70' },
-        () => isLoading.value ? '⏳ Saving...' : 'Click to test loading'
+    span({ style: 'opacity: 0.7;' },
+        () => isLoading.value ? '⏳ Saving...' : 'Click to test'
     )
 );
 
-$('#demo').insert(demo);</code></pre>
-            </div>
-        </div>
+$('#demo').insert(demo);`;
+
+            // Insert Cards
+            $('#basic-example-card').insert(createExampleCard('Basic Usage', 'Standard buttons with default styling.', basicCode, 'basic', '100px'));
+            $('#reactive-example-card').insert(createExampleCard('Reactive State', 'Buttons with built-in loading and state handling.', reactiveCode, 'reactive', '80px'));
+
+            // Run Examplify
+            runExamplify('basic-example-card', 'basic');
+            runExamplify('reactive-example-card', 'reactive');
+        </script>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -176,146 +203,108 @@ $('#demo').insert(demo);</code></pre>
             </table>
         </div>
 
+        <!-- Visual Gallery (Static) -->
+
         <!-- Colors -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="flex flex-wrap gap-2 mb-8">
-            <button class="btn">Default</button>
-            <button class="btn btn-neutral">Neutral</button>
-            <button class="btn btn-primary">Primary</button>
-            <button class="btn btn-secondary">Secondary</button>
-            <button class="btn btn-accent">Accent</button>
-            <button class="btn btn-info">Info</button>
-            <button class="btn btn-success">Success</button>
-            <button class="btn btn-warning">Warning</button>
-            <button class="btn btn-error">Error</button>
-        </div>
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div id="colors-demo" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;"></div>
 
         <!-- Variants -->
-        <h2 class="text-xl font-bold mb-4">Variants</h2>
-        <div class="space-y-4 mb-8">
-            <div>
-                <h3 class="font-semibold mb-2">Outline</h3>
-                <div class="flex flex-wrap gap-2">
-                    <button class="btn btn-outline">Default</button>
-                    <button class="btn btn-outline btn-primary">Primary</button>
-                    <button class="btn btn-outline btn-secondary">Secondary</button>
-                    <button class="btn btn-outline btn-accent">Accent</button>
-                </div>
-            </div>
-            <div>
-                <h3 class="font-semibold mb-2">Soft</h3>
-                <div class="flex flex-wrap gap-2">
-                    <button class="btn btn-soft">Default</button>
-                    <button class="btn btn-soft btn-primary">Primary</button>
-                    <button class="btn btn-soft btn-secondary">Secondary</button>
-                    <button class="btn btn-soft btn-accent">Accent</button>
-                </div>
-            </div>
-            <div>
-                <h3 class="font-semibold mb-2">Ghost & Link</h3>
-                <div class="flex flex-wrap gap-2">
-                    <button class="btn btn-ghost">Ghost</button>
-                    <button class="btn btn-link">Link</button>
-                </div>
-            </div>
-        </div>
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
+        <div id="variants-demo" style="margin-bottom: 2rem;"></div>
 
         <!-- Sizes -->
-        <h2 class="text-xl font-bold mb-4">Sizes</h2>
-        <div class="flex flex-wrap items-end gap-2 mb-8">
-            <button class="btn btn-primary btn-xs">Extra Small</button>
-            <button class="btn btn-primary btn-sm">Small</button>
-            <button class="btn btn-primary">Medium</button>
-            <button class="btn btn-primary btn-lg">Large</button>
-        </div>
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+        <div id="sizes-demo"
+            style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem; margin-bottom: 2rem;"></div>
 
         <!-- States -->
-        <h2 class="text-xl font-bold mb-4">States</h2>
-        <div class="flex flex-wrap gap-2 mb-8">
-            <button class="btn btn-primary">Normal</button>
-            <button class="btn btn-primary btn-active">Active</button>
-            <button class="btn btn-primary" disabled>Disabled</button>
-            <button class="btn btn-primary">
-                <span class="loading loading-spinner loading-sm"></span>
-                Loading
-            </button>
-        </div>
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">States</h2>
+        <div id="states-demo" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;"></div>
 
         <!-- Special Shapes -->
-        <h2 class="text-xl font-bold mb-4">Special Shapes</h2>
-        <div class="flex flex-wrap gap-2 mb-8">
-            <button class="btn btn-wide">Wide</button>
-            <button class="btn btn-block">Block (Full Width)</button>
-            <button class="btn btn-square">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-            <button class="btn btn-circle">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Special Shapes</h2>
+        <div id="shapes-demo" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;"></div>
 
-        <!-- DaisyUI Reference -->
-        <div class="alert mt-8">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                class="stroke-info h-6 w-6 shrink-0">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <span>
-                For more examples and options, see the
-                <a href="https://daisyui.com/components/button/" target="_blank" rel="noopener"
-                    class="link link-primary">DaisyUI Button documentation</a>.
-            </span>
-        </div>
+        <script type="module">
+            const { default: Button } = await import('/components/actions/button.js');
+            const { tags, $ } = Lightview;
+            const { div, h3, svg, path } = tags;
+
+            // Helper to create X icon SVG Component
+            const XIcon = () => svg(
+                { xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", style: "width: 1.5rem; height: 1.5rem; stroke: currentColor;" },
+                path({ "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M6 18L18 6M6 6l12 12" })
+            );
+
+            // Colors Demo
+            $('#colors-demo').insert([
+                Button({ useShadow: true }, "Default"),
+                Button({ color: "neutral" }, "Neutral"),
+                Button({ color: "primary" }, "Primary"),
+                Button({ color: "secondary" }, "Secondary"),
+                Button({ color: "accent" }, "Accent"),
+                Button({ color: "info" }, "Info"),
+                Button({ color: "success" }, "Success"),
+                Button({ color: "warning" }, "Warning"),
+                Button({ color: "error" }, "Error")
+            ]);
+
+            // Variants Demo
+            $('#variants-demo').insert([
+                div({ style: "margin-bottom: 1rem;" },
+                    h3({ class: "font-semibold", style: "margin-bottom: 0.5rem;" }, "Outline"),
+                    div({ style: "display: flex; flex-wrap: wrap; gap: 0.5rem;" },
+                        Button({ variant: "outline" }, "Default"),
+                        Button({ variant: "outline", color: "primary" }, "Primary"),
+                        Button({ variant: "outline", color: "secondary" }, "Secondary"),
+                        Button({ variant: "outline", color: "accent" }, "Accent")
+                    )
+                ),
+                div({ style: "margin-bottom: 1rem;" },
+                    h3({ class: "font-semibold", style: "margin-bottom: 0.5rem;" }, "Soft"),
+                    div({ style: "display: flex; flex-wrap: wrap; gap: 0.5rem;" },
+                        Button({ variant: "soft" }, "Default"),
+                        Button({ variant: "soft", color: "primary" }, "Primary"),
+                        Button({ variant: "soft", color: "secondary" }, "Secondary"),
+                        Button({ variant: "soft", color: "accent" }, "Accent")
+                    )
+                ),
+                div({},
+                    h3({ class: "font-semibold", style: "margin-bottom: 0.5rem;" }, "Ghost & Link"),
+                    div({ style: "display: flex; flex-wrap: wrap; gap: 0.5rem;" },
+                        Button({ color: "ghost" }, "Ghost"),
+                        Button({ color: "link" }, "Link")
+                    )
+                )
+            ]);
+
+            // Sizes Demo
+            $('#sizes-demo').insert([
+                Button({ color: "primary", size: "xs" }, "Extra Small"),
+                Button({ color: "primary", size: "sm" }, "Small"),
+                Button({ color: "primary" }, "Medium"),
+                Button({ color: "primary", size: "lg" }, "Large")
+            ]);
+
+            // States Demo
+            $('#states-demo').insert([
+                Button({ color: "primary" }, "Normal"),
+                Button({ color: "primary", active: true }, "Active"),
+                Button({ color: "primary", disabled: true }, "Disabled"),
+                Button({ color: "primary", loading: true }, "Loading")
+            ]);
+
+            // Special Shapes Demo
+            $('#shapes-demo').insert([
+                Button({ variant: "wide" }, "Wide"),
+                Button({ variant: "block" }, "Block (Full Width)"),
+                Button({ variant: "square" }, XIcon()),
+                Button({ variant: "circle" }, XIcon())
+            ]);
+        </script>
+
+
 
     </div>
 </div>
-
-<script>
-    // Use examplify to run the code and show preview
-    (function () {
-        // Basic example
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '180px'
-            });
-
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        // Reactive example
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '80px'
-            });
-
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

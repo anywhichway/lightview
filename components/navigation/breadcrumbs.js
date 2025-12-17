@@ -54,7 +54,7 @@ const Breadcrumbs = (props = {}, ...children) => {
 
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
-        return div({ class: 'contents' },
+        return div({ class: 'contents', style: 'display: inline-block' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
                 div({ 'data-theme': currentTheme },
                     breadcrumbsEl

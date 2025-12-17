@@ -955,73 +955,7 @@
         }
     };
 
-    // ============= ENHANCE EXISTING DOM ELEMENTS =============
 
-    /**
-     * Enhance an existing DOM element with Lightview reactivity.
-     * @param {string|HTMLElement} selectorOrNode - CSS selector or DOM element
-     * @param {Object} options - Reactive options (attributes, event handlers, innerText, innerHTML)
-     * @returns {Object} - Lightview reactive element wrapper
-     */
-    const enhance = (selectorOrNode, options = {}) => {
-        // Resolve to DOM node
-        const domNode = typeof selectorOrNode === 'string'
-            ? document.querySelector(selectorOrNode)
-            : selectorOrNode;
-
-        if (!domNode || !(domNode instanceof HTMLElement)) {
-            console.warn('enhance: Invalid selector or DOM node', selectorOrNode);
-            return null;
-        }
-
-        // Check if Lightview is available
-        if (typeof window === 'undefined' || !window.Lightview) {
-            console.warn('enhance: Lightview not available');
-            return null;
-        }
-
-        const LV = window.Lightview;
-        const tagName = domNode.tagName.toLowerCase();
-
-        // Check if already wrapped
-        let el = LV.internals.domToElement.get(domNode);
-        if (!el) {
-            // Create reactive wrapper for existing element
-            el = LV.internals.wrapDomElement(domNode, tagName, {}, []);
-        }
-
-        // Extract special properties
-        const { innerText, innerHTML, ...attrs } = options;
-
-        // Handle innerText reactivity
-        if (innerText !== undefined) {
-            if (typeof innerText === 'function') {
-                LV.effect(() => {
-                    domNode.innerText = innerText();
-                });
-            } else {
-                domNode.innerText = innerText;
-            }
-        }
-
-        // Handle innerHTML reactivity
-        if (innerHTML !== undefined) {
-            if (typeof innerHTML === 'function') {
-                LV.effect(() => {
-                    domNode.innerHTML = innerHTML();
-                });
-            } else {
-                domNode.innerHTML = innerHTML;
-            }
-        }
-
-        // Apply remaining attributes (includes event handlers)
-        if (Object.keys(attrs).length > 0) {
-            el.attributes = attrs;
-        }
-
-        return el;
-    };
 
     // ============= DOM OBSERVER FOR SRC ATTRIBUTES =============
 
@@ -1187,7 +1121,6 @@
     // Export for module usage
     const LightviewX = {
         state,
-        enhance,
         registerComponent,
         registerStyleSheet,
         getComponent,

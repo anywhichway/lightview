@@ -445,13 +445,75 @@
     };
 
     // ============= EXPORTS =============
+    const enhance = (selectorOrNode, options = {}) => {
+        const domNode = typeof selectorOrNode === 'string'
+            ? document.querySelector(selectorOrNode)
+            : selectorOrNode;
+
+        // If it's already a Lightview element, use its domEl
+        const node = domNode.domEl || domNode;
+        if (!(node instanceof HTMLElement)) return null;
+
+        const tagName = node.tagName.toLowerCase();
+        let el = domToElement.get(node);
+
+        if (!el) {
+            el = wrapDomElement(node, tagName);
+        }
+
+        const { innerText, innerHTML, ...attrs } = options;
+
+        if (innerText !== undefined) {
+            if (typeof innerText === 'function') {
+                effect(() => { node.innerText = innerText(); });
+            } else {
+                node.innerText = innerText;
+            }
+        }
+
+        if (innerHTML !== undefined) {
+            if (typeof innerHTML === 'function') {
+                effect(() => { node.innerHTML = innerHTML(); });
+            } else {
+                node.innerHTML = innerHTML;
+            }
+        }
+
+        if (Object.keys(attrs).length > 0) {
+            // Merge with existing attributes or simply set them triggers the proxy
+            el.attributes = attrs;
+        }
+
+        return el;
+    };
+
     const $ = (cssSelector, startingDomEl = document.body) => {
         const el = startingDomEl.querySelector(cssSelector);
         if (!el) return null;
         Object.defineProperty(el, 'insert', {
             value(child, location = 'beforeend') {
-                const childDom = child.domEl || child;
-                el.insertAdjacentElement(location, childDom);
+                const array = Array.isArray(child) ? child : [child];
+
+                if (location === 'shadow') {
+                    let shadow = el.shadowRoot;
+                    if (!shadow) {
+                        shadow = el.attachShadow({ mode: 'open' });
+                    }
+                    shadow.innerHTML = '';
+                    array.forEach(item => {
+                        const childDom = item.domEl || item;
+                        shadow.appendChild(childDom);
+                    });
+                    return el;
+                }
+
+                if (location === 'afterbegin' || location === 'afterend') {
+                    array.reverse();
+                }
+                array.forEach(item => {
+                    const childDom = item.domEl || item;
+                    el.insertAdjacentElement(location, childDom);
+                });
                 return el;
             },
             configurable: true,
@@ -476,7 +538,7 @@
     });
 
     const Lightview = {
-        signal, computed, effect, element, getParent, tags, $,
+        signal, computed, effect, element, enhance, getParent, tags, $,
         // Extension hooks
         hooks: {
             onNonStandardHref: null,

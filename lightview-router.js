@@ -12,7 +12,6 @@
 
         // Check if we're in the shell or loaded directly
         const inShell = document.getElementById('content') !== null;
-        document.baseURI = shellPath;
         if (inShell) return;
 
         // Get current path relative to domain root
@@ -253,22 +252,42 @@
             if (onStart) onStart(path);
 
             const response = await route(path);
-            if (response && onResponse) {
-                await onResponse(response, path);
-            } else if (!response) {
+
+            if (!response) {
                 console.warn(`[Router] No route handled path: ${path}`);
+                return null;
             }
-            if (response.ok) {
-                document.baseURI = response.url;
+
+            // Auto-render to contentEl if provided and response is OK
+            if (response.ok && contentEl) {
+                const html = await response.text();
+                contentEl.innerHTML = html;
+
+                // Re-execute scripts in the loaded content
+                const scripts = contentEl.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.type) newScript.type = script.type;
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    script.parentNode.replaceChild(newScript, script);
+                });
             }
+
+            // Call onResponse AFTER auto-render for post-render logic (analytics, scroll, etc.)
+            if (onResponse) {
+                await onResponse(response, path);
+            }
+
             return response;
         };
 
         const navigate = (path) => {
             path = normalizePath(path);
             let fullPath = base + path;
-            const oldBase = document.baseURI;
-            document.baseURI = fullPath;
             return handleRequest(fullPath).then((response) => {
                 let dest = response?.url;
                 if (dest && (dest.startsWith('http') || dest.startsWith('//'))) {
@@ -282,7 +301,6 @@
                 window.history.pushState({ path: dest }, '', dest);
             }).catch((err) => {
                 console.error('[Router] Error handling request:', err);
-                document.baseURI = oldBase;
             })
         };
 

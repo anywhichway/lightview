@@ -9,12 +9,20 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div class="breadcrumbs text-sm mb-4">
-            <ul>
-                <li><a href="/docs/components">Components</a></li>
-                <li>Tabs</li>
-            </ul>
-        </div>
+        <div id="page-breadcrumbs" class="mb-4"></div>
+        <script type="module">
+            const { $ } = Lightview;
+            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+            
+            const breadcrumbs = Breadcrumbs({
+                items: [
+                    { label: 'Components', href: '/docs/components' },
+                    { label: 'Tabs' }
+                ]
+            });
+            
+            $('#page-breadcrumbs').insert(breadcrumbs);
+        </script>
 
         <h1>Tabs</h1>
         <p class="text-lg opacity-70 mb-6">

@@ -194,11 +194,12 @@ appRouter.use(notFound({
         document.getElementById('spinner').style.display = 'block';
     },
 
-    // Lifecycle: Called when a handler successfully returns a Response
-    // If contentEl is set, this runs AFTER render
-    onResponse: async (response, path) => {
+    // Lifecycle: Called AFTER auto-render completes
+    // Good for post-render logic like analytics or scroll position
+    onResponse: (response, path) => {
         document.getElementById('spinner').style.display = 'none';
-        // You can run additional logic here (e.g. analytics)
+        window.scrollTo(0, 0);
+        // Run additional logic here (analytics, etc.)
     }
 });</code></pre>
         </div>
