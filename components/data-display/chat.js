@@ -118,8 +118,6 @@ Chat.Footer = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Chat', Chat);
-}
+window.Lightview.tags.Chat = Chat;
 
 export default Chat;

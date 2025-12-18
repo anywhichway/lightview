@@ -67,8 +67,6 @@ const Badge = (props = {}, ...children) => {
     return badgeEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Badge', Badge);
-}
+window.Lightview.tags.Badge = Badge;
 
 export default Badge;

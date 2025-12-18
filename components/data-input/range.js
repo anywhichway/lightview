@@ -199,8 +199,6 @@ const Range = (props = {}) => {
 };
 
 // Auto-register
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Range', Range);
-}
+window.Lightview.tags.Range = Range;
 
 export default Range;

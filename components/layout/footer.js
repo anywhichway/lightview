@@ -72,8 +72,6 @@ Footer.Title = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Footer', Footer);
-}
+window.Lightview.tags.Footer = Footer;
 
 export default Footer;

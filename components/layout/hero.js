@@ -90,8 +90,6 @@ Hero.Content = (props = {}, ...children) => {
     return tags.div({ class: classes.join(' '), ...rest }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Hero', Hero);
-}
+window.Lightview.tags.Hero = Hero;
 
 export default Hero;

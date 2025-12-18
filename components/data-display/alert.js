@@ -99,8 +99,6 @@ function getAlertIcon(type) {
     });
 }
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Alert', Alert);
-}
+window.Lightview.tags.Alert = Alert;
 
 export default Alert;

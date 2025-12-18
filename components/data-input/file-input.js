@@ -219,8 +219,6 @@ const FileInput = (props = {}) => {
 };
 
 // Auto-register
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('FileInput', FileInput);
-}
+window.Lightview.tags.FileInput = FileInput;
 
 export default FileInput;

@@ -147,8 +147,6 @@ Stats.Actions = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Stats', Stats);
-}
+window.Lightview.tags.Stats = Stats;
 
 export default Stats;

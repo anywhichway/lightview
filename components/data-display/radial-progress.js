@@ -75,8 +75,6 @@ const RadialProgress = (props = {}, ...children) => {
     return radialEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('RadialProgress', RadialProgress);
-}
+window.Lightview.tags.RadialProgress = RadialProgress;
 
 export default RadialProgress;

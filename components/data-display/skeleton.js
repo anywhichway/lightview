@@ -61,8 +61,6 @@ const Skeleton = (props = {}, ...children) => {
     return skeletonEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Skeleton', Skeleton);
-}
+window.Lightview.tags.Skeleton = Skeleton;
 
 export default Skeleton;

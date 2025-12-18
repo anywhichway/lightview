@@ -111,8 +111,6 @@ Dropdown.Item = (props = {}, ...children) => {
     return tags.li(props, tags.a({}, ...children));
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Dropdown', Dropdown);
-}
+window.Lightview.tags.Dropdown = Dropdown;
 
 export default Dropdown;

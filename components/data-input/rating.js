@@ -214,8 +214,6 @@ const Rating = (props = {}) => {
 };
 
 // Auto-register
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Rating', Rating);
-}
+window.Lightview.tags.Rating = Rating;
 
 export default Rating;

@@ -83,8 +83,6 @@ Indicator.Item = (props = {}, ...children) => {
     return tags.span({ class: classes.join(' '), ...rest }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Indicator', Indicator);
-}
+window.Lightview.tags.Indicator = Indicator;
 
 export default Indicator;

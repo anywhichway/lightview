@@ -16,7 +16,7 @@
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
         <!-- Sidebar -->
-        <div id="gallery-sidebar" class="gallery-sidebar open">
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden">
             <div class="sidebar-header">
                 <h2 class="sidebar-title">Components</h2>
                 <p class="sidebar-subtitle">Over 50 components</p>
@@ -46,7 +46,112 @@
                 </div>
 
                 <!-- Section placeholders - each script renders into its section -->
-                <section class="gallery-section" id="usage-section"></section>
+                <section class="gallery-section" id="usage-section">
+                    <div class="card bg-base-100 shadow-sm" style="border: 1px solid var(--base-300);">
+                        <div class="card-body">
+                            <h2 class="card-title">Using Components</h2>
+                            <p style="margin-bottom: 1rem;">Components can be used with multiple syntaxes. Choose your
+                                style:</p>
+
+                            <script>
+                                window.switchUsageSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`usage-tab-${t}`);
+                                        const contentEl = document.getElementById(`usage-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+
+                            <!-- Tabs -->
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="usage-tab-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchUsageSyntaxTab('tagged')">Tagged</button>
+                                <button id="usage-tab-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchUsageSyntaxTab('vdom')">vDOM</button>
+                                <button id="usage-tab-object" role="tab" class="syntax-tab"
+                                    onclick="switchUsageSyntaxTab('object')">Object DOM</button>
+                            </div>
+
+                            <!-- Content Containers -->
+                            <div id="usage-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 105
+                                    });
+                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+const { tags, $ } = Lightview;
+const { div } = tags;
+
+const app = div({ style: 'padding: 1rem; display: flex; gap: 0.5rem;' },
+    Button({ color: 'primary' }, 'Save'),
+    Button({ variant: 'outline' }, 'Cancel')
+);
+
+$('#example').content(app);</code></pre>
+                            </div>
+
+                            <div id="usage-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 105
+                                    });
+                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+const { $ } = Lightview;
+
+const app = {
+    tag: 'div',
+    attributes: { style: 'padding: 1rem; display: flex; gap: 0.5rem;' },
+    children: [
+        { tag: Button, attributes: { color: 'primary' }, children: ['Save'] },
+        { tag: Button, attributes: { variant: 'outline' }, children: ['Cancel'] }
+    ]
+};
+
+$('#example').content(app);</code></pre>
+                            </div>
+
+                            <div id="usage-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 105
+                                    });
+                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Button = Button;
+
+const app = {
+    div: {
+        style: 'padding: 1rem; display: flex; gap: 0.5rem;',
+        children: [
+            { Button: { color: 'primary', children: ['Save'] } },
+            { Button: { variant: 'outline', children: ['Cancel'] } }
+        ]
+    }
+};
+
+$('#example').content(app);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <section class="gallery-section" id="buttons-section"></section>
                 <section class="gallery-section" id="inputs-section"></section>
                 <section class="gallery-section" id="cards-section"></section>
@@ -70,7 +175,7 @@
     const { div, section, h2, h3, p, a, button, span, ul, li, svg, path, pre, code } = tags;
 
     // Sidebar state
-    const sidebarOpen = signal(window.innerWidth >= 1024);
+    const sidebarOpen = signal(false);
 
     // Toggle sidebar
     const sidebar = document.getElementById('gallery-sidebar');
@@ -86,9 +191,16 @@
         toggleIcon.setAttribute('class', `toggle-icon ${sidebarOpen.value ? '' : 'rotated'}`);
     }
 
-    toggleBtn.onclick = () => { sidebarOpen.value = !sidebarOpen.value; updateSidebarUI(); };
+    toggleBtn.onclick = () => {
+        sidebar.style.visibility = ''; // Remove initial hidden state
+        sidebarOpen.value = !sidebarOpen.value;
+        updateSidebarUI();
+    };
     overlay.onclick = () => { sidebarOpen.value = false; updateSidebarUI(); };
     updateSidebarUI();
+
+    // Mark layout as ready - enables sidebar visibility after initial state is set
+    document.querySelector('.gallery-layout').classList.add('js-ready');
 
     // Populate sidebar links
     const sidebarLinks = [
@@ -114,47 +226,7 @@
     );
 </script>
 
-<!-- Usage Section -->
-<script type="module">
-    const { default: Card } = await import('/components/data-display/card.js');
-    const { tags } = Lightview;
-    const { div, h2, h3, p, pre, code } = tags;
 
-    const content = Card({ styleSheets: ['/docs/components/index.css'] },
-        Card.Body({},
-            h2({ class: "card-title" }, "Using Components"),
-            p({ style: "margin-bottom: 1rem;" }, "Two ways to use:"),
-            div({ style: "display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" },
-                div({ class: "usage-item" },
-                    h3({}, "1. JavaScript Components"),
-                    pre({ class: "code-block" },
-                        code({}, `const { default: Button } = await import('/components/actions/button.js');
-const { default: Card } = await import('/components/data-display/card.js');
-
-const App = Card({ useShadow: true },
-    Card.Body({},
-        Button({ color: 'primary', useShadow: true }, 'Click me')
-    )
-);`)
-                    )
-                ),
-                div({ class: "usage-item" },
-                    h3({}, "2. DaisyUI Classes (in Shadow DOM)"),
-                    pre({ class: "code-block" },
-                        code({}, `// Components automatically use DaisyUI 
-// classes inside their shadow DOM
-Button({ 
-    color: 'primary', 
-    useShadow: true 
-}, 'Click me');`)
-                    )
-                )
-            )
-        )
-    );
-
-    $('#usage-section').content(content);
-</script>
 
 <!-- Buttons Section -->
 <script type="module">
@@ -174,32 +246,32 @@ Button({
                     div({ class: "component-label" }, "Colors"),
                     div({ class: "component-row" },
                         Button({ useShadow: true }, "Default"),
-                        Button({ color: "neutral", useShadow: true }, "Neutral"),
-                        Button({ color: "primary", useShadow: true }, "Primary"),
-                        Button({ color: "secondary", useShadow: true }, "Secondary"),
-                        Button({ color: "accent", useShadow: true }, "Accent"),
-                        Button({ color: "info", useShadow: true }, "Info"),
-                        Button({ color: "success", useShadow: true }, "Success"),
-                        Button({ color: "warning", useShadow: true }, "Warning"),
-                        Button({ color: "error", useShadow: true }, "Error")
+                        Button({ color: "neutral" }, "Neutral"),
+                        Button({ color: "primary" }, "Primary"),
+                        Button({ color: "secondary" }, "Secondary"),
+                        Button({ color: "accent" }, "Accent"),
+                        Button({ color: "info" }, "Info"),
+                        Button({ color: "success" }, "Success"),
+                        Button({ color: "warning" }, "Warning"),
+                        Button({ color: "error" }, "Error")
                     )
                 ),
                 div({ style: "margin-bottom: 1.5rem;" },
                     div({ class: "component-label" }, "Variants"),
                     div({ class: "component-row" },
-                        Button({ variant: "outline", color: "primary", useShadow: true }, "Outline"),
-                        Button({ variant: "soft", color: "primary", useShadow: true }, "Soft"),
-                        Button({ color: "ghost", useShadow: true }, "Ghost"),
-                        Button({ color: "link", useShadow: true }, "Link")
+                        Button({ variant: "outline", color: "primary" }, "Outline"),
+                        Button({ variant: "soft", color: "primary" }, "Soft"),
+                        Button({ color: "ghost" }, "Ghost"),
+                        Button({ color: "link" }, "Link")
                     )
                 ),
                 div({},
                     div({ class: "component-label" }, "Sizes"),
                     div({ class: "component-row centered" },
-                        Button({ size: "xs", useShadow: true }, "Tiny"),
-                        Button({ size: "sm", useShadow: true }, "Small"),
-                        Button({ size: "md", useShadow: true }, "Medium"),
-                        Button({ size: "lg", useShadow: true }, "Large")
+                        Button({ size: "xs" }, "Tiny"),
+                        Button({ size: "sm" }, "Small"),
+                        Button({ size: "md" }, "Medium"),
+                        Button({ size: "lg" }, "Large")
                     )
                 )
             )
@@ -237,7 +309,7 @@ Button({
                             span({ class: "label-text" }, "Text Input"),
                             a({ href: "/docs/components/input", class: "info-link" }, InfoIcon())
                         ),
-                        Input({ placeholder: "Type here", useShadow: true })
+                        Input({ placeholder: "Type here" })
                     ),
                     div({ class: "form-group" },
                         div({ class: "form-label" },
@@ -262,7 +334,7 @@ Button({
                             span({ class: "label-text" }, "Textarea"),
                             a({ href: "/docs/components/textarea", class: "info-link" }, InfoIcon())
                         ),
-                        Textarea({ placeholder: "Bio", useShadow: true })
+                        Textarea({ placeholder: "Bio" })
                     )
                 ),
                 // Row 2: Rating and Range (2 columns)
@@ -272,14 +344,14 @@ Button({
                             span({ class: "label-text" }, "Rating"),
                             a({ href: "/docs/components/rating", class: "info-link" }, InfoIcon())
                         ),
-                        Rating({ value: 3, max: 5, useShadow: true })
+                        Rating({ value: 3, max: 5 })
                     ),
                     div({ class: "form-group" },
                         div({ class: "form-label" },
                             span({ class: "label-text" }, "Range"),
                             a({ href: "/docs/components/range", class: "info-link" }, InfoIcon())
                         ),
-                        Range({ min: 0, max: 100, value: 40, color: "primary", useShadow: true })
+                        Range({ min: 0, max: 100, value: 40, color: "primary" })
                     )
                 ),
                 // Row 3: Checkbox, Toggle, Radio (3 columns)
@@ -287,17 +359,17 @@ Button({
                     div({ class: "toggle-item" },
                         span({}, "Checkbox"),
                         a({ href: "/docs/components/checkbox", class: "info-link" }, InfoIcon()),
-                        Checkbox({ color: "primary", checked: true, useShadow: true })
+                        Checkbox({ color: "primary", checked: true })
                     ),
                     div({ class: "toggle-item" },
                         span({}, "Toggle"),
                         a({ href: "/docs/components/toggle", class: "info-link" }, InfoIcon()),
-                        Toggle({ color: "secondary", checked: true, useShadow: true })
+                        Toggle({ color: "secondary", checked: true })
                     ),
                     div({ class: "toggle-item" },
                         span({}, "Radio"),
                         a({ href: "/docs/components/radio", class: "info-link" }, InfoIcon()),
-                        Radio({ color: "accent", checked: true, name: "demo-radio", useShadow: true })
+                        Radio({ color: "accent", checked: true, name: "demo-radio" })
                     )
                 )
             )
@@ -362,8 +434,8 @@ Button({
             a({ href: "/docs/components/alert", class: "info-link" }, InfoIcon())
         ),
         div({ class: "alert-stack" },
-            Alert({ color: "info", useShadow: true }, span({}, "New software update available.")),
-            Alert({ color: "success", useShadow: true }, span({}, "Your purchase has been confirmed!"))
+            Alert({ color: "info" }, span({}, "New software update available.")),
+            Alert({ color: "success" }, span({}, "Your purchase has been confirmed!"))
         )
     );
 
@@ -388,9 +460,9 @@ Button({
                 Card.Body({},
                     div({ class: "badge-group" },
                         Badge({ useShadow: true }, "default"),
-                        Badge({ color: "primary", useShadow: true }, "primary"),
-                        Badge({ variant: "outline", useShadow: true }, "outline"),
-                        Badge({ variant: "ghost", useShadow: true }, "ghost")
+                        Badge({ color: "primary" }, "primary"),
+                        Badge({ variant: "outline" }, "outline"),
+                        Badge({ variant: "ghost" }, "ghost")
                     )
                 )
             )
@@ -403,9 +475,9 @@ Button({
             Card({ styleSheets: ['/docs/components/index.css'] },
                 Card.Body({},
                     div({ class: "avatar-group" },
-                        Avatar({ src: "https://i.pravatar.cc/150?img=1", online: true, useShadow: true }),
-                        Avatar({ src: "https://i.pravatar.cc/150?img=2", offline: true, useShadow: true }),
-                        Avatar({ placeholder: "UI", useShadow: true })
+                        Avatar({ src: "https://i.pravatar.cc/150?img=1", online: true }),
+                        Avatar({ src: "https://i.pravatar.cc/150?img=2", offline: true }),
+                        Avatar({ placeholder: "UI" })
                     )
                 )
             )
@@ -502,19 +574,19 @@ Button({
                     div({},
                         div({ class: "component-label" }, "Bars"),
                         div({ class: "progress-stack" },
-                            Progress({ value: 0, useShadow: true }),
-                            Progress({ value: 40, color: "primary", useShadow: true }),
-                            Progress({ value: 70, color: "secondary", useShadow: true }),
-                            Progress({ value: 100, color: "accent", useShadow: true })
+                            Progress({ value: 0 }),
+                            Progress({ value: 40, color: "primary" }),
+                            Progress({ value: 70, color: "secondary" }),
+                            Progress({ value: 100, color: "accent" })
                         )
                     ),
                     div({},
                         div({ class: "component-label" }, "Radial & Loading"),
                         div({ class: "loading-row" },
-                            RadialProgress({ value: 70, color: "primary", useShadow: true }, "70%"),
-                            Loading({ type: "spinner", color: "primary", useShadow: true }),
-                            Loading({ type: "dots", color: "secondary", useShadow: true }),
-                            Loading({ type: "ring", color: "accent", useShadow: true })
+                            RadialProgress({ value: 70, color: "primary" }, "70%"),
+                            Loading({ type: "spinner", color: "primary" }),
+                            Loading({ type: "dots", color: "secondary" }),
+                            Loading({ type: "ring", color: "accent" })
                         )
                     )
                 )
@@ -568,13 +640,13 @@ Button({
             ),
             div({ class: "mockup-content" },
                 div({ class: "chat-container" },
-                    Chat({ position: "start", useShadow: true },
+                    Chat({ position: "start" },
                         Chat.Image({ src: "https://i.pravatar.cc/150?img=32" }),
                         Chat.Header({}, "Alex ", time({ class: "text-xs opacity-50" }, "12:45")),
                         Chat.Bubble({}, "Hey! Did you see the new component library?"),
                         Chat.Footer({}, "Delivered")
                     ),
-                    Chat({ position: "end", useShadow: true },
+                    Chat({ position: "end" },
                         Chat.Image({ src: "https://i.pravatar.cc/150?img=12" }),
                         Chat.Header({}, "Jordan ", time({ class: "text-xs opacity-50" }, "12:46")),
                         Chat.Bubble({}, "Yes! It looks amazing. Really clean design."),
@@ -600,7 +672,7 @@ Button({
             a({ href: "/docs/components/timeline", class: "info-link" }, InfoIcon())
         ),
         div({ class: "timeline-container" },
-            Timeline({ vertical: false, useShadow: true },
+            Timeline({ vertical: false },
                 Timeline.Item({},
                     Timeline.Start({ class: "timeline-box" }, "Start"),
                     Timeline.Middle({}),
@@ -641,7 +713,7 @@ Button({
             span({ class: "section-badge" }, "Table"),
             a({ href: "/docs/components/table", class: "info-link" }, InfoIcon())
         ),
-        Table({ zebra: true, useShadow: true },
+        Table({ zebra: true },
             Table.Head({},
                 tr({}, th({}), th({}, "Name"), th({}, "Job"), th({}, "Favorite Color"))
             ),

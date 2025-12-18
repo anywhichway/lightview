@@ -172,8 +172,6 @@ const ThemeSwitch = (props = {}) => {
 };
 
 // Auto-register
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('ThemeSwitch', ThemeSwitch);
-}
+window.Lightview.tags.ThemeSwitch = ThemeSwitch;
 
 export default ThemeSwitch;

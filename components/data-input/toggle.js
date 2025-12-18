@@ -185,8 +185,6 @@ const Toggle = (props = {}) => {
 };
 
 // Auto-register
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Toggle', Toggle);
-}
+window.Lightview.tags.Toggle = Toggle;
 
 export default Toggle;

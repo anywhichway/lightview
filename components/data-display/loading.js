@@ -62,8 +62,6 @@ const Loading = (props = {}) => {
     return loadingEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Loading', Loading);
-}
+window.Lightview.tags.Loading = Loading;
 
 export default Loading;

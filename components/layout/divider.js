@@ -67,8 +67,6 @@ const Divider = (props = {}, ...children) => {
     return dividerEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Divider', Divider);
-}
+window.Lightview.tags.Divider = Divider;
 
 export default Divider;

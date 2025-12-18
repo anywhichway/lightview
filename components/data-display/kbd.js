@@ -52,8 +52,6 @@ const Kbd = (props = {}, ...children) => {
     return kbdEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Kbd', Kbd);
-}
+window.Lightview.tags.Kbd = Kbd;
 
 export default Kbd;

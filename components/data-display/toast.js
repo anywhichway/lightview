@@ -67,8 +67,6 @@ const Toast = (props = {}, ...children) => {
     return toastEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Toast', Toast);
-}
+window.Lightview.tags.Toast = Toast;
 
 export default Toast;

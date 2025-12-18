@@ -135,8 +135,6 @@ Timeline.Hr = (props = {}) => {
     return tags.hr({ class: classes.join(' ') || undefined, ...rest });
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Timeline', Timeline);
-}
+window.Lightview.tags.Timeline = Timeline;
 
 export default Timeline;

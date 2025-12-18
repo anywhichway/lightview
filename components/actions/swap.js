@@ -110,8 +110,6 @@ Swap.Off = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Swap', Swap);
-}
+window.Lightview.tags.Swap = Swap;
 
 export default Swap;

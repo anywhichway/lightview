@@ -115,8 +115,6 @@ Tabs.Content = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Tabs', Tabs);
-}
+window.Lightview.tags.Tabs = Tabs;
 
 export default Tabs;

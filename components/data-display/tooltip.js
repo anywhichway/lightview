@@ -69,8 +69,6 @@ const Tooltip = (props = {}, ...children) => {
     return tooltipEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Tooltip', Tooltip);
-}
+window.Lightview.tags.Tooltip = Tooltip;
 
 export default Tooltip;

@@ -239,8 +239,6 @@ const Checkbox = (props = {}) => {
 };
 
 // Auto-register
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Checkbox', Checkbox);
-}
+window.Lightview.tags.Checkbox = Checkbox;
 
 export default Checkbox;

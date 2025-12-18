@@ -66,8 +66,6 @@ const Progress = (props = {}, ...children) => {
     return progressEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Progress', Progress);
-}
+window.Lightview.tags.Progress = Progress;
 
 export default Progress;

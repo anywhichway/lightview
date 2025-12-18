@@ -119,8 +119,6 @@ Accordion.Content = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Accordion', Accordion);
-}
+window.Lightview.tags.Accordion = Accordion;
 
 export default Accordion;

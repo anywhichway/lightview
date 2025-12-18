@@ -73,8 +73,6 @@ Join.Item = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Join', Join);
-}
+window.Lightview.tags.Join = Join;
 
 export default Join;

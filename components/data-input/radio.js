@@ -319,10 +319,8 @@ const RadioGroup = (props = {}) => {
 };
 
 // Auto-register
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Radio', Radio);
-    window.LightviewX.registerComponent('RadioGroup', RadioGroup);
-}
+window.Lightview.tags.Radio = Radio;
+window.Lightview.tags.RadioGroup = RadioGroup;
 
 export default Radio;
 export { Radio, RadioGroup };

@@ -282,8 +282,6 @@ const Textarea = (props = {}) => {
 };
 
 // Auto-register
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Textarea', Textarea);
-}
+window.Lightview.tags.Textarea = Textarea;
 
 export default Textarea;

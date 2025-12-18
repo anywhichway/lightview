@@ -133,8 +133,6 @@ Table.Foot = (props = {}, ...children) => {
     return tags.tfoot(props, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Table', Table);
-}
+window.Lightview.tags.Table = Table;
 
 export default Table;

@@ -131,8 +131,6 @@ const ThemeController = (props = {}) => {
     return controllerEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('ThemeController', ThemeController);
-}
+window.Lightview.tags.ThemeController = ThemeController;
 
 export default ThemeController;

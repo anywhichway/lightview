@@ -82,8 +82,6 @@ Steps.Item = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Steps', Steps);
-}
+window.Lightview.tags.Steps = Steps;
 
 export default Steps;

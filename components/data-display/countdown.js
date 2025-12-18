@@ -64,8 +64,6 @@ const Countdown = (props = {}, ...children) => {
     return countdownEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Countdown', Countdown);
-}
+window.Lightview.tags.Countdown = Countdown;
 
 export default Countdown;

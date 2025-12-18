@@ -140,8 +140,6 @@ Card.Figure = (props = {}, ...children) => {
     return tags.figure({ class: className, ...rest }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Card', Card);
-}
+window.Lightview.tags.Card = Card;
 
 export default Card;

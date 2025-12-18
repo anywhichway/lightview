@@ -80,8 +80,6 @@ Dock.Item = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Dock', Dock);
-}
+window.Lightview.tags.Dock = Dock;
 
 export default Dock;

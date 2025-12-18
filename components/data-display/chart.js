@@ -193,8 +193,6 @@ Chart.Data = (props = {}, ...children) => {
     }, ...content);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Chart', Chart);
-}
+window.Lightview.tags.Chart = Chart;
 
 export default Chart;

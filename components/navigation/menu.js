@@ -117,8 +117,6 @@ Menu.Dropdown = (props = {}, ...children) => {
     return tags.li({}, details);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Menu', Menu);
-}
+window.Lightview.tags.Menu = Menu;
 
 export default Menu;

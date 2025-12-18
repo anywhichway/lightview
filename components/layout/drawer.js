@@ -132,8 +132,6 @@ Drawer.Button = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Drawer', Drawer);
-}
+window.Lightview.tags.Drawer = Drawer;
 
 export default Drawer;

@@ -264,8 +264,6 @@ const Select = (props = {}) => {
 };
 
 // Auto-register
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Select', Select);
-}
+window.Lightview.tags.Select = Select;
 
 export default Select;

@@ -2,7 +2,7 @@
 let examplifyIdCounter = 0;
 
 function examplify(target, options = {}) {
-    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, maxHeight = Infinity, allowSameOrigin = false } = options;
+    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false } = options;
     const originalContent = target.textContent;
     const autoResize = !height; // Auto-resize if no explicit height is provided
     const iframeId = `examplify-${++examplifyIdCounter}`;
@@ -40,7 +40,7 @@ function examplify(target, options = {}) {
     if (autoResize) {
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'examplify-resize' && event.data.id === iframeId) {
-                iframe.style.height = Math.min(event.data.height + 2, maxHeight) + 'px';
+                iframe.style.height = Math.max(minHeight, Math.min(event.data.height + 2, maxHeight)) + 'px';
             }
         });
     }
@@ -49,6 +49,9 @@ function examplify(target, options = {}) {
     let iframe = createIframe(target.textContent);
     if (height) {
         iframe.style.height = height;
+    }
+    if (minHeight) {
+        iframe.style.minHeight = minHeight;
     }
     if (maxHeight && maxHeight !== Infinity) {
         iframe.style.maxHeight = maxHeight;

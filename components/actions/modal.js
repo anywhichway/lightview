@@ -138,8 +138,6 @@ Modal.close = (id) => {
     document.getElementById(id)?.close?.();
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Modal', Modal);
-}
+window.Lightview.tags.Modal = Modal;
 
 export default Modal;

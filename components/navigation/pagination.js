@@ -100,8 +100,6 @@ const Pagination = (props = {}, ...children) => {
     return paginationEl;
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Pagination', Pagination);
-}
+window.Lightview.tags.Pagination = Pagination;
 
 export default Pagination;

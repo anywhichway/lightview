@@ -101,8 +101,6 @@ Navbar.End = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Navbar', Navbar);
-}
+window.Lightview.tags.Navbar = Navbar;
 
 export default Navbar;

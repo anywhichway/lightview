@@ -117,8 +117,6 @@ Avatar.Group = (props = {}, ...children) => {
     }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Avatar', Avatar);
-}
+window.Lightview.tags.Avatar = Avatar;
 
 export default Avatar;

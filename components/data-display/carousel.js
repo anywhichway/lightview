@@ -87,8 +87,6 @@ Carousel.Item = (props = {}, ...children) => {
     return tags.div({ id, class: classes.join(' '), ...rest }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Carousel', Carousel);
-}
+window.Lightview.tags.Carousel = Carousel;
 
 export default Carousel;
