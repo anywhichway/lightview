@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -35,14 +38,42 @@
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Interactive bottom navigation</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-
-const { default: Dock } = await import('/components/navigation/dock.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 150
+                        });
+                    </script><code contenteditable="true">const { default: Dock } = await import('/components/navigation/dock.js');
 const { signal, tags, $ } = Lightview;
 const { div } = tags;
 
@@ -66,6 +97,91 @@ const demo = div({ class: 'relative h-32 bg-base-200 rounded-box overflow-hidden
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 150
+                        });
+                    </script><code contenteditable="true">const { default: Dock } = await import('/components/navigation/dock.js');
+const { signal, $ } = Lightview;
+
+const active = signal('home');
+
+const demo = {
+    tag: 'div',
+    attributes: { class: 'relative h-32 bg-base-200 rounded-box overflow-hidden' },
+    children: [
+        {
+            tag: Dock,
+            attributes: { class: 'absolute bottom-0 left-0 right-0' },
+            children: [
+                {
+                    tag: Dock.Item,
+                    attributes: { active: () => active.value === 'home', onclick: () => { active.value = 'home'; } },
+                    children: ['🏠', { tag: Dock.Label, children: ['Home'] }]
+                },
+                {
+                    tag: Dock.Item,
+                    attributes: { active: () => active.value === 'search', onclick: () => { active.value = 'search'; } },
+                    children: ['🔍', { tag: Dock.Label, children: ['Search'] }]
+                },
+                {
+                    tag: Dock.Item,
+                    attributes: { active: () => active.value === 'profile', onclick: () => { active.value = 'profile'; } },
+                    children: ['👤', { tag: Dock.Label, children: ['Profile'] }]
+                }
+            ]
+        }
+    ]
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 150
+                        });
+                    </script><code contenteditable="true">const { default: Dock } = await import('/components/navigation/dock.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Dock = Dock;
+tags['Dock.Item'] = Dock.Item;
+tags['Dock.Label'] = Dock.Label;
+
+const active = signal('home');
+
+const demo = {
+    div: {
+        class: 'relative h-32 bg-base-200 rounded-box overflow-hidden',
+        children: [
+            {
+                Dock: {
+                    class: 'absolute bottom-0 left-0 right-0',
+                    children: [
+                        { 'Dock.Item': { active: () => active.value === 'home', onclick: () => { active.value = 'home'; }, children: ['🏠', { 'Dock.Label': { text: 'Home' } }] } },
+                        { 'Dock.Item': { active: () => active.value === 'search', onclick: () => { active.value = 'search'; }, children: ['🔍', { 'Dock.Label': { text: 'Search' } }] } },
+                        { 'Dock.Item': { active: () => active.value === 'profile', onclick: () => { active.value = 'profile'; }, children: ['👤', { 'Dock.Label': { text: 'Profile' } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -130,24 +246,3 @@ $('#example').content(demo);</code></pre>
 
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '150px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

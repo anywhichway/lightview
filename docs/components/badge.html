@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -30,20 +33,49 @@
             Perfect for notifications, labels, and status indicators.
         </p>
 
-        <!-- Basic Example with Examplify -->
+        <!-- Basic Usage -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Badges with different colors and variants
+                <h2 class="card-title">Basic Usage</h2>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Badges with different colors and variants.
                 </p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-const { default: Badge } = await import('/components/data-display/badge.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100
+                        });
+                    </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
@@ -68,24 +100,149 @@ const badges = div({ class: 'space-y-4' },
 );
 
 $('#example').content(badges);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100
+                        });
+                    </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
+const { $ } = Lightview;
+
+const badges = {
+    tag: 'div',
+    attributes: { class: 'space-y-4' },
+    children: [
+        {
+            tag: 'div',
+            attributes: { class: 'flex flex-wrap gap-2' },
+            children: [
+                { tag: Badge, children: ['Default'] },
+                { tag: Badge, attributes: { color: 'primary' }, children: ['Primary'] },
+                { tag: Badge, attributes: { color: 'secondary' }, children: ['Secondary'] },
+                { tag: Badge, attributes: { color: 'accent' }, children: ['Accent'] },
+                { tag: Badge, attributes: { color: 'info' }, children: ['Info'] },
+                { tag: Badge, attributes: { color: 'success' }, children: ['Success'] },
+                { tag: Badge, attributes: { color: 'warning' }, children: ['Warning'] },
+                { tag: Badge, attributes: { color: 'error' }, children: ['Error'] }
+            ]
+        },
+        {
+            tag: 'div',
+            attributes: { class: 'flex flex-wrap gap-2' },
+            children: [
+                { tag: Badge, attributes: { variant: 'outline' }, children: ['Outline'] },
+                { tag: Badge, attributes: { variant: 'soft', color: 'primary' }, children: ['Soft'] },
+                { tag: Badge, attributes: { variant: 'dash', color: 'secondary' }, children: ['Dash'] }
+            ]
+        }
+    ]
+};
+
+$('#example').content(badges);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100
+                        });
+                    </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Badge = Badge;
+
+const badges = {
+    div: {
+        class: 'space-y-4',
+        children: [
+            {
+                div: {
+                    class: 'flex flex-wrap gap-2',
+                    children: [
+                        { Badge: { children: ['Default'] } },
+                        { Badge: { color: 'primary', children: ['Primary'] } },
+                        { Badge: { color: 'secondary', children: ['Secondary'] } },
+                        { Badge: { color: 'accent', children: ['Accent'] } },
+                        { Badge: { color: 'info', children: ['Info'] } },
+                        { Badge: { color: 'success', children: ['Success'] } },
+                        { Badge: { color: 'warning', children: ['Warning'] } },
+                        { Badge: { color: 'error', children: ['Error'] } }
+                    ]
+                }
+            },
+            {
+                div: {
+                    class: 'flex flex-wrap gap-2',
+                    children: [
+                        { Badge: { variant: 'outline', children: ['Outline'] } },
+                        { Badge: { variant: 'soft', color: 'primary', children: ['Soft'] } },
+                        { Badge: { variant: 'dash', color: 'secondary', children: ['Dash'] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(badges);</code></pre>
+                </div>
             </div>
         </div>
 
-        <!-- Reactive Example with Examplify -->
+        <!-- Reactive Example -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Notification Counter</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Reactive badge showing notification count
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Reactive badge showing notification count.
                 </p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-const { default: Badge } = await import('/components/data-display/badge.js');
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
 const { default: Button } = await import('/components/actions/button.js');
-
 const { signal, tags, $ } = Lightview;
 const { div } = tags;
 
@@ -113,6 +270,111 @@ const demo = div({ class: 'flex items-center gap-8' },
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
+
+const count = signal(5);
+
+const demo = {
+    tag: 'div',
+    attributes: { class: 'flex items-center gap-8' },
+    children: [
+        {
+            tag: Button,
+            attributes: { size: 'sm', color: 'primary', onclick: () => { count.value++; } },
+            children: ['+ Add Message']
+        },
+        {
+            tag: Button,
+            children: [
+                'Inbox',
+                {
+                    tag: Badge,
+                    attributes: { color: 'secondary', class: 'ml-2' },
+                    children: [() => count.value > 99 ? '99+' : count.value]
+                }
+            ]
+        },
+        {
+            tag: Button,
+            attributes: { size: 'sm', onclick: () => { count.value = 0; } },
+            children: ['Clear']
+        }
+    ]
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Badge = Badge;
+tags.Button = Button;
+
+const count = signal(5);
+
+const demo = {
+    div: {
+        class: 'flex items-center gap-8',
+        children: [
+            {
+                Button: {
+                    size: 'sm',
+                    color: 'primary',
+                    onclick: () => { count.value++; },
+                    children: ['+ Add Message']
+                }
+            },
+            {
+                Button: {
+                    children: [
+                        'Inbox',
+                        {
+                            Badge: {
+                                color: 'secondary',
+                                class: 'ml-2',
+                                children: [() => count.value > 99 ? '99+' : count.value]
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                Button: {
+                    size: 'sm',
+                    onclick: () => { count.value = 0; },
+                    children: ['Clear']
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -200,46 +462,3 @@ $('#example').content(demo);</code></pre>
 
     </div>
 </div>
-
-<script>
-    // Use examplify to run the code and show preview
-    (function () {
-        // Basic example
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '100px'
-            });
-
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        // Reactive example
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '80px'
-            });
-
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

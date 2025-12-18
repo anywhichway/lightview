@@ -255,7 +255,7 @@ $('#example').content(button);</code></pre>
                             at: document.currentScript.parentElement,
                             scripts: ['/lightview.js', '/lightview-x.js'],
                             type: 'module',
-                            height: '80px'
+                            minHeight: 100
                         });
                     </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;

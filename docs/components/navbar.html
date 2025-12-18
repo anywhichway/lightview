@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -35,13 +38,42 @@
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navbar with brand and menu items</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-
-const { default: Navbar } = await import('/components/layout/navbar.js');
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { default: Menu } = await import('/components/navigation/menu.js');
 
@@ -64,6 +96,115 @@ const navbar = Navbar({ class: 'bg-base-100 rounded-box' },
 );
 
 $('#example').content(navbar);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { default: Menu } = await import('/components/navigation/menu.js');
+const { $ } = Lightview;
+
+const navbar = {
+    tag: Navbar,
+    attributes: { class: 'bg-base-100 rounded-box' },
+    children: [
+        {
+            tag: Navbar.Start,
+            children: [{ tag: Button, attributes: { ghost: true, class: 'text-xl' }, children: ['🚀 Lightview'] }]
+        },
+        {
+            tag: Navbar.Center,
+            attributes: { class: 'hidden lg:flex' },
+            children: [
+                {
+                    tag: Menu,
+                    attributes: { horizontal: true },
+                    children: [
+                        { tag: Menu.Item, children: [{ tag: Menu.Link, children: ['Features'] }] },
+                        { tag: Menu.Item, children: [{ tag: Menu.Link, children: ['Pricing'] }] },
+                        { tag: Menu.Item, children: [{ tag: Menu.Link, children: ['About'] }] }
+                    ]
+                }
+            ]
+        },
+        {
+            tag: Navbar.End,
+            children: [{ tag: Button, attributes: { color: 'primary' }, children: ['Get Started'] }]
+        }
+    ]
+};
+
+$('#example').content(navbar);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { default: Menu } = await import('/components/navigation/menu.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Navbar = Navbar;
+tags.Button = Button;
+tags.Menu = Menu;
+tags['Navbar.Start'] = Navbar.Start;
+tags['Navbar.Center'] = Navbar.Center;
+tags['Navbar.End'] = Navbar.End;
+tags['Menu.Item'] = Menu.Item;
+tags['Menu.Link'] = Menu.Link;
+
+const navbar = {
+    Navbar: {
+        class: 'bg-base-100 rounded-box',
+        children: [
+            {
+                'Navbar.Start': {
+                    children: [{ Button: { ghost: true, class: 'text-xl', text: '🚀 Lightview' } }]
+                }
+            },
+            {
+                'Navbar.Center': {
+                    class: 'hidden lg:flex',
+                    children: [
+                        {
+                            Menu: {
+                                horizontal: true,
+                                children: [
+                                    { 'Menu.Item': { children: [{ 'Menu.Link': { text: 'Features' } }] } },
+                                    { 'Menu.Item': { children: [{ 'Menu.Link': { text: 'Pricing' } }] } },
+                                    { 'Menu.Item': { children: [{ 'Menu.Link': { text: 'About' } }] } }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                'Navbar.End': {
+                    children: [{ Button: { color: 'primary', text: 'Get Started' } }]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(navbar);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -148,24 +289,3 @@ $('#example').content(navbar);</code></pre>
 
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '80px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -29,19 +32,48 @@
             Supports snap points, vertical layout, and full-width items.
         </p>
 
-        <!-- Basic Example with Examplify -->
+        <!-- Basic Usage -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Image carousel with center snap</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-const { default: Carousel } = await import('/components/data-display/carousel.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 260
+                        });
+                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
 const { tags, $ } = Lightview;
 
 const images = [
@@ -58,23 +90,123 @@ const carousel = Carousel({ snap: 'center', class: 'rounded-box bg-neutral p-4 g
 );
 
 $('#example').content(carousel);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 260
+                        });
+                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
+const { $ } = Lightview;
+
+const images = [
+    'https://picsum.photos/400/300?random=1',
+    'https://picsum.photos/400/300?random=2',
+    'https://picsum.photos/400/300?random=3',
+    'https://picsum.photos/400/300?random=4'
+];
+
+const carousel = {
+    tag: Carousel,
+    attributes: { snap: 'center', class: 'rounded-box bg-neutral p-4 gap-4' },
+    children: images.map((src, i) => ({
+        tag: Carousel.Item,
+        attributes: { src, alt: `Slide ${i + 1}`, class: 'rounded-box' }
+    }))
+};
+
+$('#example').content(carousel);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 260
+                        });
+                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Carousel = Carousel;
+tags.CarouselItem = Carousel.Item;
+
+const images = [
+    'https://picsum.photos/400/300?random=1',
+    'https://picsum.photos/400/300?random=2',
+    'https://picsum.photos/400/300?random=3',
+    'https://picsum.photos/400/300?random=4'
+];
+
+const carousel = {
+    Carousel: {
+        snap: 'center',
+        class: 'rounded-box bg-neutral p-4 gap-4',
+        children: images.map((src, i) => ({
+            CarouselItem: {
+                src,
+                alt: `Slide ${i + 1}`,
+                class: 'rounded-box'
+            }
+        }))
+    }
+};
+
+$('#example').content(carousel);</code></pre>
+                </div>
             </div>
         </div>
 
-        <!-- Reactive Example with Examplify -->
+        <!-- Reactive Example -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Full Width with Indicators</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navigable carousel with buttons</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-const { default: Carousel } = await import('/components/data-display/carousel.js');
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 340
+                        });
+                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
 const { default: Button } = await import('/components/actions/button.js');
-
 const { signal, tags, $ } = Lightview;
 const { div, a } = tags;
 
@@ -104,6 +236,126 @@ const demo = div({},
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 340
+                        });
+                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { $ } = Lightview;
+
+const slides = [
+    { id: 'slide1', img: 'https://picsum.photos/800/400?random=10', title: 'Welcome' },
+    { id: 'slide2', img: 'https://picsum.photos/800/400?random=11', title: 'Features' },
+    { id: 'slide3', img: 'https://picsum.photos/800/400?random=12', title: 'Get Started' }
+];
+
+const demo = {
+    tag: 'div',
+    children: [
+        {
+            tag: Carousel,
+            attributes: { full: true, class: 'w-full' },
+            children: slides.map((slide, i) => ({
+                tag: 'div',
+                attributes: { id: slide.id, class: 'carousel-item relative w-full' },
+                children: [
+                    { tag: 'img', attributes: { src: slide.img, class: 'w-full' } },
+                    {
+                        tag: 'div',
+                        attributes: { class: 'absolute left-5 right-5 top-1/2 flex -translate-y-1/2 justify-between' },
+                        children: [
+                            { tag: 'a', attributes: { href: `#${slides[(i - 1 + slides.length) % slides.length].id}`, class: 'btn btn-circle' }, children: ['❮'] },
+                            { tag: 'a', attributes: { href: `#${slides[(i + 1) % slides.length].id}`, class: 'btn btn-circle' }, children: ['❯'] }
+                        ]
+                    }
+                ]
+            }))
+        },
+        {
+            tag: 'div',
+            attributes: { class: 'flex justify-center w-full py-2 gap-2' },
+            children: slides.map((slide, i) => ({
+                tag: 'a',
+                attributes: { href: `#${slide.id}`, class: 'btn btn-xs' },
+                children: [i + 1]
+            }))
+        }
+    ]
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 340
+                        });
+                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Carousel = Carousel;
+
+const slides = [
+    { id: 'slide1', img: 'https://picsum.photos/800/400?random=10', title: 'Welcome' },
+    { id: 'slide2', img: 'https://picsum.photos/800/400?random=11', title: 'Features' },
+    { id: 'slide3', img: 'https://picsum.photos/800/400?random=12', title: 'Get Started' }
+];
+
+const demo = {
+    div: {
+        children: [
+            {
+                Carousel: {
+                    full: true,
+                    class: 'w-full',
+                    children: slides.map((slide, i) => ({
+                        div: {
+                            id: slide.id,
+                            class: 'carousel-item relative w-full',
+                            children: [
+                                { img: { src: slide.img, class: 'w-full' } },
+                                {
+                                    div: {
+                                        class: 'absolute left-5 right-5 top-1/2 flex -translate-y-1/2 justify-between',
+                                        children: [
+                                            { a: { href: `#${slides[(i - 1 + slides.length) % slides.length].id}`, class: 'btn btn-circle', children: ['❮'] } },
+                                            { a: { href: `#${slides[(i + 1) % slides.length].id}`, class: 'btn btn-circle', children: ['❯'] } }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }))
+                }
+            },
+            {
+                div: {
+                    class: 'flex justify-center w-full py-2 gap-2',
+                    children: slides.map((slide, i) => ({
+                        a: { href: `#${slide.id}`, class: 'btn btn-xs', children: [i + 1] }
+                    }))
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -178,41 +430,3 @@ $('#example').content(demo);</code></pre>
 
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '260px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '340px'
-            });
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

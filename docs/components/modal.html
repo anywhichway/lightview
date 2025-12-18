@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -37,12 +40,42 @@
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple modal with open/close functionality
                 </p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-const { default: Modal } = await import('/components/actions/modal.js');
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 60
+                        });
+                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
@@ -69,6 +102,113 @@ const trigger = Button({
 }, 'Open Modal');
 
 $('#example').content(trigger, modal);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 60
+                        });
+                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { $ } = Lightview;
+
+const modalId = 'my_modal';
+
+// Create the modal
+const modal = {
+    tag: Modal,
+    attributes: { id: modalId },
+    children: [
+        {
+            tag: Modal.Box,
+            children: [
+                { tag: 'h3', attributes: { class: 'text-lg font-bold' }, children: ['Hello! 👋'] },
+                { tag: 'p', attributes: { class: 'py-4' }, children: ['This modal was created with Lightview components.'] },
+                {
+                    tag: Modal.Action,
+                    children: [
+                        { tag: Button, attributes: { onclick: () => Modal.close(modalId) }, children: ['Close'] }
+                    ]
+                }
+            ]
+        },
+        { tag: Modal.Backdrop }
+    ]
+};
+
+// Create trigger button
+const trigger = {
+    tag: Button,
+    attributes: {
+        color: 'primary',
+        onclick: () => Modal.open(modalId)
+    },
+    children: ['Open Modal']
+};
+
+$('#example').content(trigger, modal);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 60
+                        });
+                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Modal = Modal;
+tags.Button = Button;
+tags['Modal.Box'] = Modal.Box;
+tags['Modal.Action'] = Modal.Action;
+tags['Modal.Backdrop'] = Modal.Backdrop;
+
+const modalId = 'my_modal';
+
+// Create the modal
+const modal = {
+    Modal: {
+        id: modalId,
+        children: [
+            {
+                'Modal.Box': {
+                    children: [
+                        { h3: { class: 'text-lg font-bold', text: 'Hello! 👋' } },
+                        { p: { class: 'py-4', text: 'This modal was created with Lightview components.' } },
+                        {
+                            'Modal.Action': {
+                                children: [{ Button: { onclick: () => Modal.close(modalId), text: 'Close' } }]
+                            }
+                        }
+                    ]
+                }
+            },
+            { 'Modal.Backdrop': {} }
+        ]
+    }
+};
+
+// Create trigger button
+const trigger = {
+    Button: {
+        color: 'primary',
+        onclick: () => Modal.open(modalId),
+        text: 'Open Modal'
+    }
+};
+
+$('#example').content(trigger, modal);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -78,12 +218,42 @@ $('#example').content(trigger, modal);</code></pre>
                 <h2 class="card-title">Confirmation Dialog</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Modal with confirm/cancel actions</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-reactive-${t}`);
+                            const contentEl = document.getElementById(`syntax-reactive-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-reactive-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-reactive-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-reactive-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-const { default: Modal } = await import('/components/actions/modal.js');
+                <!-- Tagged Syntax -->
+                <div id="syntax-reactive-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 60
+                        });
+                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
@@ -125,6 +295,154 @@ const demo = div({ class: 'flex items-center gap-4' },
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-reactive-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 60
+                        });
+                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
+
+const status = signal('Ready');
+const modalId = 'confirm_modal';
+
+const handleConfirm = () => {
+    status.value = '✅ Confirmed!';
+    Modal.close(modalId);
+};
+
+const handleCancel = () => {
+    status.value = '❌ Cancelled';
+    Modal.close(modalId);
+};
+
+const confirmModal = {
+    tag: Modal,
+    attributes: { id: modalId },
+    children: [
+        {
+            tag: Modal.Box,
+            children: [
+                { tag: 'h3', attributes: { class: 'text-lg font-bold' }, children: ['Are you sure?'] },
+                { tag: 'p', attributes: { class: 'py-4' }, children: ['This action cannot be undone.'] },
+                {
+                    tag: Modal.Action,
+                    children: [
+                        { tag: Button, attributes: { color: 'ghost', onclick: handleCancel }, children: ['Cancel'] },
+                        { tag: Button, attributes: { color: 'error', onclick: handleConfirm }, children: ['Delete'] }
+                    ]
+                }
+            ]
+        },
+        { tag: Modal.Backdrop }
+    ]
+};
+
+const demo = {
+    tag: 'div',
+    attributes: { class: 'flex items-center gap-4' },
+    children: [
+        {
+            tag: Button,
+            attributes: {
+                color: 'error',
+                variant: 'outline',
+                onclick: () => Modal.open(modalId)
+            },
+            children: ['Delete Item']
+        },
+        { tag: 'p', attributes: { class: 'text-sm opacity-70' }, children: [() => `Status: ${status.value}`] },
+        confirmModal
+    ]
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-reactive-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 60
+                        });
+                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Modal = Modal;
+tags.Button = Button;
+tags['Modal.Box'] = Modal.Box;
+tags['Modal.Action'] = Modal.Action;
+tags['Modal.Backdrop'] = Modal.Backdrop;
+
+const status = signal('Ready');
+const modalId = 'confirm_modal';
+
+const handleConfirm = () => {
+    status.value = '✅ Confirmed!';
+    Modal.close(modalId);
+};
+
+const handleCancel = () => {
+    status.value = '❌ Cancelled';
+    Modal.close(modalId);
+};
+
+const confirmModal = {
+    Modal: {
+        id: modalId,
+        children: [
+            {
+                'Modal.Box': {
+                    children: [
+                        { h3: { class: 'text-lg font-bold', text: 'Are you sure?' } },
+                        { p: { class: 'py-4', text: 'This action cannot be undone.' } },
+                        {
+                            'Modal.Action': {
+                                children: [
+                                    { Button: { color: 'ghost', onclick: handleCancel, text: 'Cancel' } },
+                                    { Button: { color: 'error', onclick: handleConfirm, text: 'Delete' } }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            { 'Modal.Backdrop': {} }
+        ]
+    }
+};
+
+const demo = {
+    div: {
+        class: 'flex items-center gap-4',
+        children: [
+            {
+                Button: {
+                    color: 'error',
+                    variant: 'outline',
+                    onclick: () => Modal.open(modalId),
+                    text: 'Delete Item'
+                }
+            },
+            { p: { class: 'text-sm opacity-70', text: () => `Status: ${status.value}` } },
+            confirmModal
+        ]
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -286,46 +604,3 @@ $('#example').content(demo);</code></pre>
 
     </div>
 </div>
-
-<script>
-    // Use examplify to run the code and show preview
-    (function () {
-        // Basic example
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '60px'
-            });
-
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        // Reactive example
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '60px'
-            });
-
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

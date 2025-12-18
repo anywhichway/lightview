@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -35,14 +38,42 @@
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Multi-column footer with links</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-
-const { default: Footer } = await import('/components/layout/footer.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 200
+                        });
+                    </script><code contenteditable="true">const { default: Footer } = await import('/components/layout/footer.js');
 const { tags, $ } = Lightview;
 const { a } = tags;
 
@@ -67,6 +98,111 @@ const footer = Footer({ class: 'bg-neutral text-neutral-content p-10 rounded-box
 );
 
 $('#example').content(footer);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 200
+                        });
+                    </script><code contenteditable="true">const { default: Footer } = await import('/components/layout/footer.js');
+const { $ } = Lightview;
+
+const footer = {
+    tag: Footer,
+    attributes: { class: 'bg-neutral text-neutral-content p-10 rounded-box' },
+    children: [
+        {
+            tag: Footer.Nav,
+            children: [
+                { tag: Footer.Title, children: ['Services'] },
+                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Branding'] },
+                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Design'] },
+                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Marketing'] }
+            ]
+        },
+        {
+            tag: Footer.Nav,
+            children: [
+                { tag: Footer.Title, children: ['Company'] },
+                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['About us'] },
+                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Contact'] },
+                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Jobs'] }
+            ]
+        },
+        {
+            tag: Footer.Nav,
+            children: [
+                { tag: Footer.Title, children: ['Legal'] },
+                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Terms of use'] },
+                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Privacy policy'] }
+            ]
+        }
+    ]
+};
+
+$('#example').content(footer);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 200
+                        });
+                    </script><code contenteditable="true">const { default: Footer } = await import('/components/layout/footer.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Footer = Footer;
+tags['Footer.Nav'] = Footer.Nav;
+tags['Footer.Title'] = Footer.Title;
+
+const footer = {
+    Footer: {
+        class: 'bg-neutral text-neutral-content p-10 rounded-box',
+        children: [
+            {
+                'Footer.Nav': {
+                    children: [
+                        { 'Footer.Title': { text: 'Services' } },
+                        { a: { class: 'link link-hover', text: 'Branding' } },
+                        { a: { class: 'link link-hover', text: 'Design' } },
+                        { a: { class: 'link link-hover', text: 'Marketing' } }
+                    ]
+                }
+            },
+            {
+                'Footer.Nav': {
+                    children: [
+                        { 'Footer.Title': { text: 'Company' } },
+                        { a: { class: 'link link-hover', text: 'About us' } },
+                        { a: { class: 'link link-hover', text: 'Contact' } },
+                        { a: { class: 'link link-hover', text: 'Jobs' } }
+                    ]
+                }
+            },
+            {
+                'Footer.Nav': {
+                    children: [
+                        { 'Footer.Title': { text: 'Legal' } },
+                        { a: { class: 'link link-hover', text: 'Terms of use' } },
+                        { a: { class: 'link link-hover', text: 'Privacy policy' } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(footer);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -131,24 +267,3 @@ $('#example').content(footer);</code></pre>
 
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '200px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

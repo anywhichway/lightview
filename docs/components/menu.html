@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -29,20 +32,48 @@
             Supports icons, submenus, and collapsible sections.
         </p>
 
-        <!-- Basic Example with Examplify -->
+        <!-- Basic Usage -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Vertical menu with active state</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-
-const { default: Menu } = await import('/components/navigation/menu.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 200
+                        });
+                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
 const { signal, tags, $ } = Lightview;
 
 const active = signal('home');
@@ -60,23 +91,125 @@ const menu = Menu({ class: 'bg-base-200 rounded-box w-56' },
 );
 
 $('#example').content(menu);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 200
+                        });
+                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
+const { signal, $ } = Lightview;
+
+const active = signal('home');
+const items = ['home', 'profile', 'settings', 'logout'];
+
+const menu = {
+    tag: Menu,
+    attributes: { class: 'bg-base-200 rounded-box w-56' },
+    children: items.map(item => ({
+        tag: Menu.Item,
+        children: [{
+            tag: Menu.Link,
+            attributes: { 
+                active: () => active.value === item,
+                onclick: () => { active.value = item; }
+            },
+            children: [item.charAt(0).toUpperCase() + item.slice(1)]
+        }]
+    }))
+};
+
+$('#example').content(menu);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 200
+                        });
+                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Menu = Menu;
+tags.MenuItem = Menu.Item;
+tags.MenuLink = Menu.Link;
+
+const active = signal('home');
+const items = ['home', 'profile', 'settings', 'logout'];
+
+const menu = {
+    Menu: {
+        class: 'bg-base-200 rounded-box w-56',
+        children: items.map(item => ({
+            MenuItem: {
+                children: [{
+                    MenuLink: {
+                        active: () => active.value === item,
+                        onclick: () => { active.value = item; },
+                        children: [item.charAt(0).toUpperCase() + item.slice(1)]
+                    }
+                }]
+            }
+        }))
+    }
+};
+
+$('#example').content(menu);</code></pre>
+                </div>
             </div>
         </div>
 
-        <!-- Reactive Example with Examplify -->
+        <!-- Horizontal Example -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Horizontal Menu</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navigation bar style menu</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-
-const { default: Menu } = await import('/components/navigation/menu.js');
-
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 120
+                        });
+                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
 const { signal, tags, $ } = Lightview;
 
 const current = signal('features');
@@ -103,6 +236,127 @@ const menu = Menu({ horizontal: true, class: 'bg-base-200 rounded-box' },
 );
 
 $('#example').content(menu);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 120
+                        });
+                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
+const { signal, $ } = Lightview;
+
+const current = signal('features');
+
+const menu = {
+    tag: Menu,
+    attributes: { horizontal: true, class: 'bg-base-200 rounded-box' },
+    children: [
+        {
+            tag: Menu.Item,
+            children: [{
+                tag: Menu.Link,
+                attributes: { 
+                    active: () => current.value === 'features',
+                    onclick: () => { current.value = 'features'; }
+                },
+                children: ['✨ Features']
+            }]
+        },
+        {
+            tag: Menu.Item,
+            children: [{
+                tag: Menu.Link,
+                attributes: { 
+                    active: () => current.value === 'pricing',
+                    onclick: () => { current.value = 'pricing'; }
+                },
+                children: ['💰 Pricing']
+            }]
+        },
+        {
+            tag: Menu.Item,
+            children: [{
+                tag: Menu.Link,
+                attributes: { 
+                    active: () => current.value === 'docs',
+                    onclick: () => { current.value = 'docs'; }
+                },
+                children: ['📚 Docs']
+            }]
+        }
+    ]
+};
+
+$('#example').content(menu);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 120
+                        });
+                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Menu = Menu;
+tags.MenuItem = Menu.Item;
+tags.MenuLink = Menu.Link;
+
+const current = signal('features');
+
+const menu = {
+    Menu: {
+        horizontal: true,
+        class: 'bg-base-200 rounded-box',
+        children: [
+            {
+                MenuItem: {
+                    children: [{
+                        MenuLink: {
+                            active: () => current.value === 'features',
+                            onclick: () => { current.value = 'features'; },
+                            children: ['✨ Features']
+                        }
+                    }]
+                }
+            },
+            {
+                MenuItem: {
+                    children: [{
+                        MenuLink: {
+                            active: () => current.value === 'pricing',
+                            onclick: () => { current.value = 'pricing'; },
+                            children: ['💰 Pricing']
+                        }
+                    }]
+                }
+            },
+            {
+                MenuItem: {
+                    children: [{
+                        MenuLink: {
+                            active: () => current.value === 'docs',
+                            onclick: () => { current.value = 'docs'; },
+                            children: ['📚 Docs']
+                        }
+                    }]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(menu);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -208,41 +462,3 @@ $('#example').content(menu);</code></pre>
 
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '200px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '80px'
-            });
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -35,13 +38,42 @@
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Static countdown values</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-const { default: Countdown } = await import('/components/data-display/countdown.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
 const { tags, $ } = Lightview;
 const { div, span } = tags;
 
@@ -54,6 +86,64 @@ const display = div({ class: 'flex gap-5' },
 );
 
 $('#example').content(display);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+const { $ } = Lightview;
+
+const display = {
+    tag: 'div',
+    attributes: { class: 'flex gap-5' },
+    children: [
+        { tag: Countdown, attributes: { value: 15, class: 'font-mono text-4xl' } },
+        { tag: 'span', attributes: { class: 'text-4xl' }, children: [':'] },
+        { tag: Countdown, attributes: { value: 30, class: 'font-mono text-4xl' } },
+        { tag: 'span', attributes: { class: 'text-4xl' }, children: [':'] },
+        { tag: Countdown, attributes: { value: 45, class: 'font-mono text-4xl' } }
+    ]
+};
+
+$('#example').content(display);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Countdown = Countdown;
+
+const display = {
+    div: {
+        class: 'flex gap-5',
+        children: [
+            { Countdown: { value: 15, class: 'font-mono text-4xl' } },
+            { span: { class: 'text-4xl', text: ':' } },
+            { Countdown: { value: 30, class: 'font-mono text-4xl' } },
+            { span: { class: 'text-4xl', text: ':' } },
+            { Countdown: { value: 45, class: 'font-mono text-4xl' } }
+        ]
+    }
+};
+
+$('#example').content(display);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -64,12 +154,42 @@ $('#example').content(display);</code></pre>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Reactive countdown with animated
                     transitions</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-const { default: Countdown } = await import('/components/data-display/countdown.js');
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 160
+                        });
+                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
@@ -114,6 +234,137 @@ const demo = div({ class: 'flex flex-col items-center gap-4' },
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 160
+                        });
+                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
+
+const seconds = signal(30);
+const running = signal(false);
+let interval = null;
+
+const toggle = () => {
+    if (running.value) {
+        clearInterval(interval);
+        running.value = false;
+    } else {
+        running.value = true;
+        interval = setInterval(() => {
+            if (seconds.value > 0) {
+                seconds.value--;
+            } else {
+                clearInterval(interval);
+                running.value = false;
+            }
+        }, 1000);
+    }
+};
+
+const reset = () => {
+    clearInterval(interval);
+    running.value = false;
+    seconds.value = 30;
+};
+
+const demo = {
+    tag: 'div',
+    attributes: { class: 'flex flex-col items-center gap-4' },
+    children: [
+        {
+            tag: Countdown,
+            attributes: { value: () => seconds.value, class: 'font-mono text-6xl' }
+        },
+        {
+            tag: 'div',
+            attributes: { class: 'flex gap-2' },
+            children: [
+                {
+                    tag: Button,
+                    attributes: { color: () => running.value ? 'error' : 'primary', onclick: toggle },
+                    children: [() => running.value ? 'Pause' : 'Start']
+                },
+                { tag: Button, attributes: { onclick: reset }, children: ['Reset'] }
+            ]
+        }
+    ]
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 160
+                        });
+                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Countdown = Countdown;
+tags.Button = Button;
+
+const seconds = signal(30);
+const running = signal(false);
+let interval = null;
+
+const toggle = () => {
+    if (running.value) {
+        clearInterval(interval);
+        running.value = false;
+    } else {
+        running.value = true;
+        interval = setInterval(() => {
+            if (seconds.value > 0) {
+                seconds.value--;
+            } else {
+                clearInterval(interval);
+                running.value = false;
+            }
+        }, 1000);
+    }
+};
+
+const reset = () => {
+    clearInterval(interval);
+    running.value = false;
+    seconds.value = 30;
+};
+
+const demo = {
+    div: {
+        class: 'flex flex-col items-center gap-4',
+        children: [
+            { Countdown: { value: () => seconds.value, class: 'font-mono text-6xl' } },
+            {
+                div: {
+                    class: 'flex gap-2',
+                    children: [
+                        { Button: { color: () => running.value ? 'error' : 'primary', onclick: toggle, text: () => running.value ? 'Pause' : 'Start' } },
+                        { Button: { onclick: reset, text: 'Reset' } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -178,40 +429,3 @@ $('#example').content(demo);</code></pre>
         const el = document.getElementById('cd-sec');
         if (el) el.style.setProperty('--value', sec);
     }, 1000);
-
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '80px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '160px'
-            });
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

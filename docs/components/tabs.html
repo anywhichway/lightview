@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -36,14 +39,42 @@
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Interactive tabs with content panels</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-
-const { default: Tabs } = await import('/components/navigation/tabs.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 150
+                        });
+                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
 const { signal, tags, $ } = Lightview;
 const { div } = tags;
 
@@ -65,6 +96,96 @@ const demo = div({ class: 'flex flex-col gap-4' },
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 150
+                        });
+                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
+const { signal, $ } = Lightview;
+
+const activeTab = signal(0);
+const tabLabels = ['Profile', 'Settings', 'Messages'];
+
+const demo = {
+    tag: 'div',
+    attributes: { class: 'flex flex-col gap-4' },
+    children: [
+        {
+            tag: Tabs,
+            attributes: { variant: 'bordered' },
+            children: tabLabels.map((label, i) => ({
+                tag: Tabs.Tab,
+                attributes: {
+                    active: () => activeTab.value === i,
+                    onclick: () => { activeTab.value = i; }
+                },
+                children: [label]
+            }))
+        },
+        {
+            tag: 'div',
+            attributes: { class: 'p-6 border rounded bg-base-100' },
+            children: [() => `Content for: ${tabLabels[activeTab.value]}`]
+        }
+    ]
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 150
+                        });
+                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Tabs = Tabs;
+tags['Tabs.Tab'] = Tabs.Tab;
+
+const activeTab = signal(0);
+const tabLabels = ['Profile', 'Settings', 'Messages'];
+
+const demo = {
+    div: {
+        class: 'flex flex-col gap-4',
+        children: [
+            {
+                Tabs: {
+                    variant: 'bordered',
+                    children: tabLabels.map((label, i) => ({
+                        'Tabs.Tab': {
+                            active: () => activeTab.value === i,
+                            onclick: () => { activeTab.value = i; },
+                            text: label
+                        }
+                    }))
+                }
+            },
+            {
+                div: {
+                    class: 'p-6 border rounded bg-base-100',
+                    text: () => `Content for: ${tabLabels[activeTab.value]}`
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -75,14 +196,42 @@ $('#example').content(demo);</code></pre>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Tabs with lifted style and connected
                     content</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-
-const { default: Tabs } = await import('/components/navigation/tabs.js');
-
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 180
+                        });
+                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
 const { signal, tags, $ } = Lightview;
 const { div, p, h3 } = tags;
 
@@ -110,6 +259,115 @@ const demo = Tabs({ variant: 'lifted' },
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 180
+                        });
+                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
+const { signal, $ } = Lightview;
+
+const active = signal(1);
+
+const contents = [
+    { title: 'Home', text: 'Welcome to your dashboard!' },
+    { title: 'Analytics', text: 'View your traffic stats here.' },
+    { title: 'Reports', text: 'Download detailed reports.' }
+];
+
+const demo = {
+    tag: Tabs,
+    attributes: { variant: 'lifted' },
+    children: [
+        ...contents.map((c, i) => ({
+            tag: Tabs.Tab,
+            attributes: {
+                active: () => active.value === i,
+                onclick: () => { active.value = i; }
+            },
+            children: [c.title]
+        })),
+        {
+            tag: Tabs.Content,
+            attributes: { class: 'rounded-b-box' },
+            children: [
+                () => ({
+                    tag: 'div',
+                    children: [
+                        { tag: 'h3', attributes: { class: 'font-bold text-lg mb-2' }, children: [contents[active.value].title] },
+                        { tag: 'p', children: [contents[active.value].text] }
+                    ]
+                })
+            ]
+        }
+    ]
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 180
+                        });
+                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Tabs = Tabs;
+tags['Tabs.Tab'] = Tabs.Tab;
+tags['Tabs.Content'] = Tabs.Content;
+
+const active = signal(1);
+
+const contents = [
+    { title: 'Home', text: 'Welcome to your dashboard!' },
+    { title: 'Analytics', text: 'View your traffic stats here.' },
+    { title: 'Reports', text: 'Download detailed reports.' }
+];
+
+const demo = {
+    Tabs: {
+        variant: 'lifted',
+        children: [
+            ...contents.map((c, i) => ({
+                'Tabs.Tab': {
+                    active: () => active.value === i,
+                    onclick: () => { active.value = i; },
+                    text: c.title
+                }
+            })),
+            {
+                'Tabs.Content': {
+                    class: 'rounded-b-box',
+                    children: [
+                        () => ({
+                            div: {
+                                children: [
+                                    { h3: { class: 'font-bold text-lg mb-2', text: contents[active.value].title } },
+                                    { p: { text: contents[active.value].text } }
+                                ]
+                            }
+                        })
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -212,41 +470,3 @@ $('#example').content(demo);</code></pre>
 
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '150px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '180px'
-            });
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

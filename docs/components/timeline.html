@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -35,13 +38,42 @@
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Horizontal timeline with events</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-const { default: Timeline } = await import('/components/data-display/timeline.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100
+                        });
+                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
 const { tags, $ } = Lightview;
 
 const events = [
@@ -63,22 +95,134 @@ const timeline = Timeline({},
 );
 
 $('#example').content(timeline);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100
+                        });
+                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+const { $ } = Lightview;
+
+const events = [
+    { date: '2020', title: 'Project Started', done: true },
+    { date: '2021', title: 'First Release', done: true },
+    { date: '2022', title: 'V2 Launch', done: true },
+    { date: '2023', title: 'Enterprise', done: false }
+];
+
+const timeline = {
+    tag: Timeline,
+    children: events.map((e, i) => ({
+        tag: Timeline.Item,
+        attributes: { first: i === 0, last: i === events.length - 1 },
+        children: [
+            { tag: Timeline.Start, children: [e.date] },
+            { tag: Timeline.Middle, attributes: { done: e.done } },
+            { tag: Timeline.End, attributes: { box: true }, children: [e.title] },
+            i < events.length - 1 ? { tag: Timeline.Hr, attributes: { done: e.done } } : null
+        ].filter(Boolean)
+    }))
+};
+
+$('#example').content(timeline);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100
+                        });
+                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Timeline = Timeline;
+tags['Timeline.Item'] = Timeline.Item;
+tags['Timeline.Start'] = Timeline.Start;
+tags['Timeline.Middle'] = Timeline.Middle;
+tags['Timeline.End'] = Timeline.End;
+tags['Timeline.Hr'] = Timeline.Hr;
+
+const events = [
+    { date: '2020', title: 'Project Started', done: true },
+    { date: '2021', title: 'First Release', done: true },
+    { date: '2022', title: 'V2 Launch', done: true },
+    { date: '2023', title: 'Enterprise', done: false }
+];
+
+const timeline = {
+    Timeline: {
+        children: events.map((e, i) => ({
+            'Timeline.Item': {
+                first: i === 0, 
+                last: i === events.length - 1,
+                children: [
+                    { 'Timeline.Start': { text: e.date } },
+                    { 'Timeline.Middle': { done: e.done } },
+                    { 'Timeline.End': { box: true, text: e.title } },
+                    i < events.length - 1 ? { 'Timeline.Hr': { done: e.done } } : null
+                ].filter(Boolean)
+            }
+        }))
+    }
+};
+
+$('#example').content(timeline);</code></pre>
+                </div>
             </div>
         </div>
 
-        <!-- Reactive Example -->
+        <!-- Reactive Example with Examplify -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Vertical Timeline</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Order tracking timeline</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-const { default: Timeline } = await import('/components/data-display/timeline.js');
-
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 280
+                        });
+                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
 const { tags, $ } = Lightview;
 
 const steps = [
@@ -100,6 +244,91 @@ const timeline = Timeline({ vertical: true },
 );
 
 $('#example').content(timeline);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 280
+                        });
+                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+const { $ } = Lightview;
+
+const steps = [
+    { title: 'Order Placed', desc: 'Dec 10, 2023', done: true },
+    { title: 'Processing', desc: 'Dec 11, 2023', done: true },
+    { title: 'Shipped', desc: 'Dec 12, 2023', done: true },
+    { title: 'Delivered', desc: 'Expected Dec 15', done: false }
+];
+
+const timeline = {
+    tag: Timeline,
+    attributes: { vertical: true },
+    children: steps.map((s, i) => ({
+        tag: Timeline.Item,
+        attributes: { first: i === 0, last: i === steps.length - 1 },
+        children: [
+            { tag: Timeline.Start, attributes: { box: true }, children: [s.title] },
+            { tag: Timeline.Middle, attributes: { done: s.done, color: s.done ? 'primary' : undefined } },
+            { tag: Timeline.End, children: [s.desc] },
+            i < steps.length - 1 ? { tag: Timeline.Hr, attributes: { done: steps[i+1].done, color: s.done ? 'primary' : undefined } } : null
+        ].filter(Boolean)
+    }))
+};
+
+$('#example').content(timeline);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 280
+                        });
+                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Timeline = Timeline;
+tags['Timeline.Item'] = Timeline.Item;
+tags['Timeline.Start'] = Timeline.Start;
+tags['Timeline.Middle'] = Timeline.Middle;
+tags['Timeline.End'] = Timeline.End;
+tags['Timeline.Hr'] = Timeline.Hr;
+
+const steps = [
+    { title: 'Order Placed', desc: 'Dec 10, 2023', done: true },
+    { title: 'Processing', desc: 'Dec 11, 2023', done: true },
+    { title: 'Shipped', desc: 'Dec 12, 2023', done: true },
+    { title: 'Delivered', desc: 'Expected Dec 15', done: false }
+];
+
+const timeline = {
+    Timeline: {
+        vertical: true,
+        children: steps.map((s, i) => ({
+            'Timeline.Item': {
+                first: i === 0,
+                last: i === steps.length - 1,
+                children: [
+                    { 'Timeline.Start': { box: true, text: s.title } },
+                    { 'Timeline.Middle': { done: s.done, color: s.done ? 'primary' : undefined } },
+                    { 'Timeline.End': { text: s.desc } },
+                    i < steps.length - 1 ? { 'Timeline.Hr': { done: steps[i+1].done, color: s.done ? 'primary' : undefined } } : null
+                ].filter(Boolean)
+            }
+        }))
+    }
+};
+
+$('#example').content(timeline);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -226,41 +455,3 @@ $('#example').content(timeline);</code></pre>
 
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '100px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '280px'
-            });
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

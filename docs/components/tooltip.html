@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -35,18 +38,49 @@
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Tooltips with different positions</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-const { default: Tooltip } = await import('/components/data-display/tooltip.js');
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100,
+                            html: '<div id="demo" class="p-8"></div>'
+                        });
+                    </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
 const { div } = tags;
 
-const tooltips = div({ class: 'flex flex-wrap gap-4 p-8' },
+const tooltips = div({ class: 'flex flex-wrap gap-4' },
     Tooltip({ tip: 'Tooltip on top', position: 'top' },
         Button({}, 'Top')
     ),
@@ -62,6 +96,83 @@ const tooltips = div({ class: 'flex flex-wrap gap-4 p-8' },
 );
 
 $('#example').content(tooltips);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100,
+                            html: '<div id="demo" class="p-8"></div>'
+                        });
+                    </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { $ } = Lightview;
+
+const tooltips = {
+    tag: 'div',
+    attributes: { class: 'flex flex-wrap gap-4' },
+    children: [
+        {
+            tag: Tooltip,
+            attributes: { tip: 'Tooltip on top', position: 'top' },
+            children: [{ tag: Button, children: ['Top'] }]
+        },
+        {
+            tag: Tooltip,
+            attributes: { tip: 'Tooltip on bottom', position: 'bottom' },
+            children: [{ tag: Button, children: ['Bottom'] }]
+        },
+        {
+            tag: Tooltip,
+            attributes: { tip: 'Tooltip on left', position: 'left' },
+            children: [{ tag: Button, children: ['Left'] }]
+        },
+        {
+            tag: Tooltip,
+            attributes: { tip: 'Tooltip on right', position: 'right' },
+            children: [{ tag: Button, children: ['Right'] }]
+        }
+    ]
+};
+
+$('#example').content(tooltips);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100,
+                            html: '<div id="demo" class="p-8"></div>'
+                        });
+                    </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Tooltip = Tooltip;
+tags.Button = Button;
+
+const tooltips = {
+    div: {
+        class: 'flex flex-wrap gap-4',
+        children: [
+            { Tooltip: { tip: 'Tooltip on top', position: 'top', children: [{ Button: { text: 'Top' } }] } },
+            { Tooltip: { tip: 'Tooltip on bottom', position: 'bottom', children: [{ Button: { text: 'Bottom' } }] } },
+            { Tooltip: { tip: 'Tooltip on left', position: 'left', children: [{ Button: { text: 'Left' } }] } },
+            { Tooltip: { tip: 'Tooltip on right', position: 'right', children: [{ Button: { text: 'Right' } }] } }
+        ]
+    }
+};
+
+$('#example').content(tooltips);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -71,12 +182,43 @@ $('#example').content(tooltips);</code></pre>
                 <h2 class="card-title">Colored Tooltips</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Tooltips with semantic colors</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-const { default: Tooltip } = await import('/components/data-display/tooltip.js');
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100,
+                            html: '<div id="demo" class="p-8"></div>'
+                        });
+                    </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
@@ -84,7 +226,7 @@ const { div } = tags;
 
 const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
 
-const tooltips = div({ class: 'flex flex-wrap gap-4 p-8' },
+const tooltips = div({ class: 'flex flex-wrap gap-4' },
     ...colors.map(color => 
         Tooltip({ tip: `${color.charAt(0).toUpperCase() + color.slice(1)} tooltip`, color },
             Button({ color, size: 'sm' }, color)
@@ -93,6 +235,73 @@ const tooltips = div({ class: 'flex flex-wrap gap-4 p-8' },
 );
 
 $('#example').content(tooltips);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100,
+                            html: '<div id="demo" class="p-8"></div>'
+                        });
+                    </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { $ } = Lightview;
+
+const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
+
+const tooltips = {
+    tag: 'div',
+    attributes: { class: 'flex flex-wrap gap-4' },
+    children: colors.map(color => ({
+        tag: Tooltip,
+        attributes: { tip: `${color.charAt(0).toUpperCase() + color.slice(1)} tooltip`, color },
+        children: [{ tag: Button, attributes: { color, size: 'sm' }, children: [color] }]
+    }))
+};
+
+$('#example').content(tooltips);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100,
+                            html: '<div id="demo" class="p-8"></div>'
+                        });
+                    </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Tooltip = Tooltip;
+tags.Button = Button;
+
+const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
+
+const tooltips = {
+    div: {
+        class: 'flex flex-wrap gap-4',
+        children: colors.map(color => ({
+            Tooltip: {
+                tip: `${color.charAt(0).toUpperCase() + color.slice(1)} tooltip`,
+                color,
+                children: [
+                    { Button: { color, size: 'sm', text: color } }
+                ]
+            }
+        }))
+    }
+};
+
+$('#example').content(tooltips);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -169,46 +378,3 @@ $('#example').content(tooltips);</code></pre>
 
     </div>
 </div>
-
-<script>
-    // Use examplify to run the code and show preview
-    (function () {
-        // Basic example
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '100px'
-            });
-
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        // Reactive example
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '100px'
-            });
-
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

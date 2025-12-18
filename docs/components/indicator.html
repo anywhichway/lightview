@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -35,13 +38,42 @@
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Notification badge on inbox</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-
-const { default: Indicator } = await import('/components/layout/indicator.js');
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100
+                        });
+                    </script><code contenteditable="true">const { default: Indicator } = await import('/components/layout/indicator.js');
 const { default: Badge } = await import('/components/data-display/badge.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -72,6 +104,142 @@ const demo = div({ class: 'flex gap-8' },
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100
+                        });
+                    </script><code contenteditable="true">const { default: Indicator } = await import('/components/layout/indicator.js');
+const { default: Badge } = await import('/components/data-display/badge.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
+
+const count = signal(3);
+
+const demo = {
+    tag: 'div',
+    attributes: { class: 'flex gap-8' },
+    children: [
+        {
+            tag: Indicator,
+            children: [
+                {
+                    tag: Indicator.Item,
+                    children: [{ tag: Badge, attributes: { color: 'primary' }, children: [() => count.value] }]
+                },
+                {
+                    tag: Button,
+                    attributes: { onclick: () => { count.value++; } },
+                    children: ['Messages']
+                }
+            ]
+        },
+        {
+            tag: Indicator,
+            children: [
+                {
+                    tag: Indicator.Item,
+                    attributes: { position: 'bottom-end' },
+                    children: [{ tag: Badge, attributes: { color: 'success', size: 'xs' } }]
+                },
+                {
+                    tag: 'div',
+                    attributes: { class: 'avatar' },
+                    children: [
+                        {
+                            tag: 'div',
+                            attributes: { class: 'w-12 rounded-full' },
+                            children: [{ tag: 'img', attributes: { src: 'https://i.pravatar.cc/100?img=5' } }]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 100
+                        });
+                    </script><code contenteditable="true">const { default: Indicator } = await import('/components/layout/indicator.js');
+const { default: Badge } = await import('/components/data-display/badge.js');
+const { default: Button } = await import('/components/actions/button.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Indicator = Indicator;
+tags.Badge = Badge;
+tags.Button = Button;
+tags['Indicator.Item'] = Indicator.Item;
+
+const count = signal(3);
+
+const demo = {
+    div: {
+        class: 'flex gap-8',
+        children: [
+            {
+                Indicator: {
+                    children: [
+                        {
+                            'Indicator.Item': {
+                                children: [{ Badge: { color: 'primary', text: () => count.value } }]
+                            }
+                        },
+                        {
+                            Button: {
+                                onclick: () => { count.value++; },
+                                text: 'Messages'
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                Indicator: {
+                    children: [
+                        {
+                            'Indicator.Item': {
+                                position: 'bottom-end',
+                                children: [{ Badge: { color: 'success', size: 'xs' } }]
+                            }
+                        },
+                        {
+                            div: {
+                                class: 'avatar',
+                                children: [
+                                    {
+                                        div: {
+                                            class: 'w-12 rounded-full',
+                                            children: [{ img: { src: 'https://i.pravatar.cc/100?img=5' } }]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -135,24 +303,3 @@ $('#example').content(demo);</code></pre>
 
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '100px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

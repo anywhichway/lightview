@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -37,14 +40,42 @@
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Rating components with various
                     configurations</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">// Dynamic import of the Rating component
-
-const { default: Rating } = await import('/components/data-input/rating.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 300
+                        });
+                    </script><code contenteditable="true">const { default: Rating } = await import('/components/data-input/rating.js');
 const { tags, $ } = Lightview;
 const { div, p } = tags;
 
@@ -80,6 +111,113 @@ const halfStars = Rating({
 $('#example').content(
     div({ class: 'space-y-6' }, basic, withLabel, hearts, halfStars)
 );</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 300
+                        });
+                    </script><code contenteditable="true">const { default: Rating } = await import('/components/data-input/rating.js');
+const { $ } = Lightview;
+
+const basic = {
+    tag: Rating,
+    attributes: { 
+        defaultValue: 3
+    }
+};
+
+const withLabel = {
+    tag: Rating,
+    attributes: { 
+        label: 'Rate this product',
+        defaultValue: 4,
+        max: 5
+    }
+};
+
+const hearts = {
+    tag: Rating,
+    attributes: { 
+        label: 'Love it?',
+        defaultValue: 3,
+        mask: 'heart',
+        color: 'red-500'
+    }
+};
+
+const halfStars = {
+    tag: Rating,
+    attributes: { 
+        label: 'Precise rating',
+        half: true,
+        defaultValue: 3.5,
+        hidden: true
+    }
+};
+
+$('#example').content({
+    tag: 'div',
+    attributes: { class: 'space-y-6' },
+    children: [basic, withLabel, hearts, halfStars]
+});</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 300
+                        });
+                    </script><code contenteditable="true">const { default: Rating } = await import('/components/data-input/rating.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Rating = Rating;
+
+$('#example').content({
+    div: {
+        class: 'space-y-6',
+        children: [
+            { 
+                Rating: { 
+                    defaultValue: 3
+                } 
+            },
+            { 
+                Rating: { 
+                    label: 'Rate this product',
+                    defaultValue: 4,
+                    max: 5
+                } 
+            },
+            { 
+                Rating: { 
+                    label: 'Love it?',
+                    defaultValue: 3,
+                    mask: 'heart',
+                    color: 'red-500'
+                } 
+            },
+            { 
+                Rating: { 
+                    label: 'Precise rating',
+                    half: true,
+                    defaultValue: 3.5,
+                    hidden: true
+                } 
+            }
+        ]
+    }
+});</code></pre>
+                </div>
             </div>
         </div>
 
@@ -89,13 +227,42 @@ $('#example').content(
                 <h2 class="card-title">Reactive Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-const { default: Rating } = await import('/components/data-input/rating.js');
-
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 220
+                        });
+                    </script><code contenteditable="true">const { default: Rating } = await import('/components/data-input/rating.js');
 const { signal, tags, $ } = Lightview;
 const { div, p, span } = tags;
 
@@ -130,6 +297,127 @@ const reactiveDemo = div({ class: 'space-y-4' },
 );
 
 $('#example').content(reactiveDemo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 220
+                        });
+                    </script><code contenteditable="true">const { default: Rating } = await import('/components/data-input/rating.js');
+const { signal, $ } = Lightview;
+
+const rating = signal(0);
+
+const reactiveDemo = {
+    tag: 'div',
+    attributes: { class: 'space-y-4' },
+    children: [
+        {
+            tag: Rating,
+            attributes: {
+                label: 'How was your experience?',
+                value: rating,
+                max: 5,
+                size: 'lg',
+                hidden: true,
+                helper: 'Click to rate'
+            }
+        },
+        { tag: 'div', attributes: { class: 'divider' } },
+        {
+            tag: 'p',
+            attributes: { class: 'text-lg font-semibold' },
+            children: [
+                () => {
+                    const val = rating.value;
+                    if (val === 0) return { tag: 'span', attributes: { class: 'opacity-50' }, children: ['No rating yet'] };
+                    if (val <= 1) return { tag: 'span', attributes: { class: 'text-error' }, children: ['😞 Poor'] };
+                    if (val <= 2) return { tag: 'span', attributes: { class: 'text-warning' }, children: ['😐 Fair'] };
+                    if (val <= 3) return { tag: 'span', attributes: { class: 'text-info' }, children: ['🙂 Good'] };
+                    if (val <= 4) return { tag: 'span', attributes: { class: 'text-success' }, children: ['😊 Great'] };
+                    return { tag: 'span', attributes: { class: 'text-primary' }, children: ['🤩 Excellent!'] };
+                }
+            ]
+        },
+        {
+            tag: 'p',
+            attributes: { class: 'text-sm font-mono opacity-70' },
+            children: [
+                () => `Rating value: ${rating.value} / 5`
+            ]
+        }
+    ]
+};
+
+$('#example').content(reactiveDemo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 220
+                        });
+                    </script><code contenteditable="true">const { default: Rating } = await import('/components/data-input/rating.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Rating = Rating;
+
+const rating = signal(0);
+
+const reactiveDemo = {
+    div: {
+        class: 'space-y-4',
+        children: [
+            {
+                Rating: {
+                    label: 'How was your experience?',
+                    value: rating,
+                    max: 5,
+                    size: 'lg',
+                    hidden: true,
+                    helper: 'Click to rate'
+                }
+            },
+            { div: { class: 'divider' } },
+            {
+                p: {
+                    class: 'text-lg font-semibold',
+                    children: [
+                        () => {
+                            const val = rating.value;
+                            if (val === 0) return { span: { class: 'opacity-50', children: ['No rating yet'] } };
+                            if (val <= 1) return { span: { class: 'text-error', children: ['😞 Poor'] } };
+                            if (val <= 2) return { span: { class: 'text-warning', children: ['😐 Fair'] } };
+                            if (val <= 3) return { span: { class: 'text-info', children: ['🙂 Good'] } };
+                            if (val <= 4) return { span: { class: 'text-success', children: ['😊 Great'] } };
+                            return { span: { class: 'text-primary', children: ['🤩 Excellent!'] } };
+                        }
+                    ]
+                }
+            },
+            {
+                p: {
+                    class: 'text-sm font-mono opacity-70',
+                    children: [
+                        () => `Rating value: ${rating.value} / 5`
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(reactiveDemo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -321,46 +609,3 @@ $('#example').content(reactiveDemo);</code></pre>
 
     </div>
 </div>
-
-<script>
-    // Use examplify to run the code and show preview
-    (function () {
-        // Basic example
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '300px'
-            });
-
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        // Reactive example
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '220px'
-            });
-
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -37,14 +40,42 @@
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple selects with various configurations
                 </p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">// Dynamic import of the Select component
-
-const { default: Select } = await import('/components/data-input/select.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 320
+                        });
+                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
@@ -80,6 +111,111 @@ const required = Select({
 $('#example').content(
     div({ class: 'space-y-4 max-w-md' }, basic, withLabel, required)
 );</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 320
+                        });
+                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+const { $ } = Lightview;
+
+const basic = {
+    tag: Select,
+    attributes: { 
+        placeholder: 'Pick a movie franchise',
+        options: ['Star Wars', 'Harry Potter', 'Lord of the Rings', 'Marvel']
+    }
+};
+
+const withLabel = {
+    tag: Select,
+    attributes: { 
+        label: 'Country',
+        placeholder: 'Select your country',
+        options: [
+            { value: 'us', label: 'United States' },
+            { value: 'uk', label: 'United Kingdom' },
+            { value: 'ca', label: 'Canada' },
+            { value: 'au', label: 'Australia' }
+        ],
+        helper: 'We use this for shipping calculations'
+    }
+};
+
+const required = {
+    tag: Select,
+    attributes: { 
+        label: 'Priority',
+        placeholder: 'Select priority...',
+        options: ['Low', 'Medium', 'High', 'Critical'],
+        color: 'primary',
+        required: true
+    }
+};
+
+$('#example').content({
+    tag: 'div',
+    attributes: { class: 'space-y-4 max-w-md' },
+    children: [basic, withLabel, required]
+});</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 320
+                        });
+                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Select = Select;
+
+$('#example').content({
+    div: {
+        class: 'space-y-4 max-w-md',
+        children: [
+            { 
+                Select: { 
+                    placeholder: 'Pick a movie franchise',
+                    options: ['Star Wars', 'Harry Potter', 'Lord of the Rings', 'Marvel']
+                } 
+            },
+            { 
+                Select: { 
+                    label: 'Country',
+                    placeholder: 'Select your country',
+                    options: [
+                        { value: 'us', label: 'United States' },
+                        { value: 'uk', label: 'United Kingdom' },
+                        { value: 'ca', label: 'Canada' },
+                        { value: 'au', label: 'Australia' }
+                    ],
+                    helper: 'We use this for shipping calculations'
+                } 
+            },
+            { 
+                Select: { 
+                    label: 'Priority',
+                    placeholder: 'Select priority...',
+                    options: ['Low', 'Medium', 'High', 'Critical'],
+                    color: 'primary',
+                    required: true
+                } 
+            }
+        ]
+    }
+});</code></pre>
+                </div>
             </div>
         </div>
 
@@ -90,13 +226,42 @@ $('#example').content(
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals and live
                     validation</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-const { default: Select } = await import('/components/data-input/select.js');
-
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 180
+                        });
+                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
 const { signal, tags, $ } = Lightview;
 const { div, p, span } = tags;
 
@@ -142,6 +307,136 @@ const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
 );
 
 $('#example').content(reactiveDemo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 180
+                        });
+                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+const { signal, $ } = Lightview;
+
+const selectedRole = signal('');
+
+const validateRole = (val) => {
+    if (!val) return 'Please select a role';
+    return null;
+};
+
+const roleDescriptions = {
+    admin: 'Full access to all features',
+    editor: 'Can edit and publish content',
+    viewer: 'Read-only access',
+    guest: 'Limited access to public content'
+};
+
+const reactiveDemo = {
+    tag: 'div',
+    attributes: { class: 'space-y-4 max-w-md' },
+    children: [
+        {
+            tag: Select,
+            attributes: {
+                label: 'User Role',
+                placeholder: 'Assign a role...',
+                value: selectedRole,
+                options: [
+                    { value: 'admin', label: 'Administrator' },
+                    { value: 'editor', label: 'Editor' },
+                    { value: 'viewer', label: 'Viewer' },
+                    { value: 'guest', label: 'Guest' }
+                ],
+                validate: validateRole,
+                required: true
+            }
+        },
+        {
+            tag: 'p',
+            attributes: { class: 'text-sm' },
+            children: [
+                () => {
+                    const role = selectedRole.value;
+                    if (!role) return { tag: 'span', attributes: { class: 'opacity-70' }, children: ['Select a role to see its description'] };
+                    return { tag: 'span', attributes: { class: 'text-primary' }, children: [roleDescriptions[role]] };
+                }
+            ]
+        }
+    ]
+};
+
+$('#example').content(reactiveDemo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 180
+                        });
+                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Select = Select;
+
+const selectedRole = signal('');
+
+const validateRole = (val) => {
+    if (!val) return 'Please select a role';
+    return null;
+};
+
+const roleDescriptions = {
+    admin: 'Full access to all features',
+    editor: 'Can edit and publish content',
+    viewer: 'Read-only access',
+    guest: 'Limited access to public content'
+};
+
+const reactiveDemo = {
+    div: {
+        class: 'space-y-4 max-w-md',
+        children: [
+            {
+                Select: {
+                    label: 'User Role',
+                    placeholder: 'Assign a role...',
+                    value: selectedRole,
+                    options: [
+                        { value: 'admin', label: 'Administrator' },
+                        { value: 'editor', label: 'Editor' },
+                        { value: 'viewer', label: 'Viewer' },
+                        { value: 'guest', label: 'Guest' }
+                    ],
+                    validate: validateRole,
+                    required: true
+                }
+            },
+            {
+                p: {
+                    class: 'text-sm',
+                    children: [
+                        () => {
+                            const role = selectedRole.value;
+                            if (!role) return { span: { class: 'opacity-70', children: ['Select a role to see its description'] } };
+                            return { span: { class: 'text-primary', children: [roleDescriptions[role]] } };
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(reactiveDemo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -316,46 +611,3 @@ $('#example').content(reactiveDemo);</code></pre>
 
     </div>
 </div>
-
-<script>
-    // Use examplify to run the code and show preview
-    (function () {
-        // Basic example
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '320px'
-            });
-
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        // Reactive example
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '180px'
-            });
-
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

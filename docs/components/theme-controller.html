@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -35,14 +38,42 @@
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Theme toggle with reactive state</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-
-const { default: ThemeController } = await import('/components/actions/theme-controller.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: ThemeController } = await import('/components/actions/theme-controller.js');
 const { signal, tags, $ } = Lightview;
 const { div, span } = tags;
 
@@ -60,23 +91,133 @@ const demo = div({ class: 'flex items-center gap-4' },
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: ThemeController } = await import('/components/actions/theme-controller.js');
+const { signal, $ } = Lightview;
+
+const isDark = signal(document.documentElement.getAttribute('data-theme') === 'dark');
+
+const demo = {
+    tag: 'div',
+    attributes: { class: 'flex items-center gap-4' },
+    children: [
+        {
+            tag: ThemeController,
+            attributes: {
+                toggle: true,
+                lightTheme: 'light',
+                darkTheme: 'dark',
+                checked: () => isDark.value,
+                onChange: (dark) => { isDark.value = dark; }
+            }
+        },
+        {
+            tag: 'span',
+            attributes: { class: 'text-sm' },
+            children: [() => isDark.value ? '🌙 Dark Mode' : '☀️ Light Mode']
+        }
+    ]
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: ThemeController } = await import('/components/actions/theme-controller.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.ThemeController = ThemeController;
+
+const isDark = signal(document.documentElement.getAttribute('data-theme') === 'dark');
+
+const demo = {
+    div: {
+        class: 'flex items-center gap-4',
+        children: [
+            {
+                ThemeController: {
+                    toggle: true,
+                    lightTheme: 'light',
+                    darkTheme: 'dark',
+                    checked: () => isDark.value,
+                    onChange: (dark) => { isDark.value = dark; }
+                }
+            },
+            {
+                span: {
+                    class: 'text-sm',
+                    text: () => isDark.value ? '🌙 Dark Mode' : '☀️ Light Mode'
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
 
-        <!-- Reactive Example -->
+        <!-- Reactive Example with Examplify -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Theme Selector</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Radio buttons for multiple themes</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-
-const { default: ThemeController } = await import('/components/actions/theme-controller.js');
-
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: ThemeController } = await import('/components/actions/theme-controller.js');
 const { signal, tags, $ } = Lightview;
 const { div } = tags;
 
@@ -97,8 +238,80 @@ const demo = div({ class: 'flex flex-wrap gap-2' },
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: ThemeController } = await import('/components/actions/theme-controller.js');
+const { signal, $ } = Lightview;
+
+const themes = ['light', 'dark', 'cupcake', 'cyberpunk', 'synthwave'];
+const current = signal('light');
+
+const demo = {
+    tag: 'div',
+    attributes: { class: 'flex flex-wrap gap-2' },
+    children: themes.map(theme => ({
+        tag: ThemeController,
+        attributes: {
+            radio: true,
+            name: 'theme-select',
+            theme: theme,
+            label: theme.charAt(0).toUpperCase() + theme.slice(1),
+            checked: () => current.value === theme,
+            onChange: () => { current.value = theme; }
+        }
+    }))
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 80
+                        });
+                    </script><code contenteditable="true">const { default: ThemeController } = await import('/components/actions/theme-controller.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.ThemeController = ThemeController;
+
+const themes = ['light', 'dark', 'cupcake', 'cyberpunk', 'synthwave'];
+const current = signal('light');
+
+const demo = {
+    div: {
+        class: 'flex flex-wrap gap-2',
+        children: themes.map(theme => ({
+            ThemeController: {
+                radio: true,
+                name: 'theme-select',
+                theme: theme,
+                label: theme.charAt(0).toUpperCase() + theme.slice(1),
+                checked: () => current.value === theme,
+                onChange: () => { current.value = theme; }
+            }
+        }))
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
+
 
         <!-- Props Table -->
         <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
@@ -186,41 +399,3 @@ $('#example').content(demo);</code></pre>
 
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '80px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '80px'
-            });
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

@@ -6,6 +6,9 @@
     }
 </script>
 
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
@@ -29,19 +32,48 @@
             Supports zebra striping, pinned rows/columns, and multiple sizes.
         </p>
 
-        <!-- Basic Example with Examplify -->
+        <!-- Basic Usage -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple table with zebra striping</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
-const { default: Table } = await import('/components/data-display/table.js');
-
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 180
+                        });
+                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
 const { tags, $ } = Lightview;
 
 const data = [
@@ -72,23 +104,169 @@ const table = Table({ zebra: true },
 );
 
 $('#example').content(table);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 180
+                        });
+                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+const { $ } = Lightview;
+
+const data = [
+    { id: 1, name: 'Alice Johnson', job: 'Engineer', company: 'TechCorp' },
+    { id: 2, name: 'Bob Smith', job: 'Designer', company: 'DesignCo' },
+    { id: 3, name: 'Charlie Brown', job: 'Manager', company: 'BizInc' }
+];
+
+const table = {
+    tag: Table,
+    attributes: { zebra: true },
+    children: [
+        {
+            tag: Table.Head,
+            children: [{
+                tag: Table.Row,
+                children: [
+                    { tag: Table.Th, children: ['#'] },
+                    { tag: Table.Th, children: ['Name'] },
+                    { tag: Table.Th, children: ['Job'] },
+                    { tag: Table.Th, children: ['Company'] }
+                ]
+            }]
+        },
+        {
+            tag: Table.Body,
+            children: data.map(row => ({
+                tag: Table.Row,
+                children: [
+                    { tag: Table.Th, children: [row.id] },
+                    { tag: Table.Td, children: [row.name] },
+                    { tag: Table.Td, children: [row.job] },
+                    { tag: Table.Td, children: [row.company] }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(table);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 180
+                        });
+                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Table = Table;
+tags.TableHead = Table.Head;
+tags.TableBody = Table.Body;
+tags.TableRow = Table.Row;
+tags.TableTh = Table.Th;
+tags.TableTd = Table.Td;
+
+const data = [
+    { id: 1, name: 'Alice Johnson', job: 'Engineer', company: 'TechCorp' },
+    { id: 2, name: 'Bob Smith', job: 'Designer', company: 'DesignCo' },
+    { id: 3, name: 'Charlie Brown', job: 'Manager', company: 'BizInc' }
+];
+
+const table = {
+    Table: {
+        zebra: true,
+        children: [
+            {
+                TableHead: {
+                    children: [{
+                        TableRow: {
+                            children: [
+                                { TableTh: { children: ['#'] } },
+                                { TableTh: { children: ['Name'] } },
+                                { TableTh: { children: ['Job'] } },
+                                { TableTh: { children: ['Company'] } }
+                            ]
+                        }
+                    }]
+                }
+            },
+            {
+                TableBody: {
+                    children: data.map(row => ({
+                        TableRow: {
+                            children: [
+                                { TableTh: { children: [row.id] } },
+                                { TableTd: { children: [row.name] } },
+                                { TableTd: { children: [row.job] } },
+                                { TableTd: { children: [row.company] } }
+                            ]
+                        }
+                    }))
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(table);</code></pre>
+                </div>
             </div>
         </div>
 
-        <!-- Reactive Example with Examplify -->
+        <!-- Interactive Table Example -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Interactive Table</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Table with row selection</p>
 
-                <!-- Preview container -->
-                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
 
-                <!-- Code display -->
-                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
-const { default: Table } = await import('/components/data-display/table.js');
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 200
+                        });
+                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
 const { default: Badge } = await import('/components/data-display/badge.js');
-
 const { signal, tags, $ } = Lightview;
 const { div, span } = tags;
 
@@ -136,6 +314,184 @@ const demo = div({},
 );
 
 $('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 200
+                        });
+                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+const { default: Badge } = await import('/components/data-display/badge.js');
+const { signal, $ } = Lightview;
+
+const selected = signal(null);
+const users = [
+    { id: 1, name: 'Alice', status: 'active' },
+    { id: 2, name: 'Bob', status: 'pending' },
+    { id: 3, name: 'Charlie', status: 'inactive' }
+];
+
+const demo = {
+    tag: 'div',
+    children: [
+        {
+            tag: Table,
+            attributes: { zebra: true, size: 'sm' },
+            children: [
+                {
+                    tag: Table.Head,
+                    children: [{
+                        tag: Table.Row,
+                        children: [
+                            { tag: Table.Th, children: ['Name'] },
+                            { tag: Table.Th, children: ['Status'] },
+                            { tag: Table.Th, children: ['Action'] }
+                        ]
+                    }]
+                },
+                {
+                    tag: Table.Body,
+                    children: users.map(user => ({
+                        tag: Table.Row,
+                        attributes: { 
+                            hover: true,
+                            active: () => selected.value === user.id,
+                            onclick: () => { selected.value = user.id; }
+                        },
+                        children: [
+                            { tag: Table.Td, children: [user.name] },
+                            { 
+                                tag: Table.Td, 
+                                children: [{
+                                    tag: Badge,
+                                    attributes: { 
+                                        color: user.status === 'active' ? 'success' : 
+                                               user.status === 'pending' ? 'warning' : 'error',
+                                        size: 'sm'
+                                    },
+                                    children: [user.status]
+                                }]
+                            },
+                            {
+                                tag: Table.Td,
+                                children: [{ tag: 'button', attributes: { class: 'btn btn-xs' }, children: ['Edit'] }]
+                            }
+                        ]
+                    }))
+                }
+            ]
+        },
+        {
+            tag: 'span',
+            attributes: { class: 'text-sm opacity-70 mt-2 block' },
+            children: [() => selected.value ? `Selected: User ${selected.value}` : 'Click a row to select']
+        }
+    ]
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            minHeight: 200
+                        });
+                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+const { default: Badge } = await import('/components/data-display/badge.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Table = Table;
+tags.TableHead = Table.Head;
+tags.TableBody = Table.Body;
+tags.TableRow = Table.Row;
+tags.TableTh = Table.Th;
+tags.TableTd = Table.Td;
+tags.Badge = Badge;
+
+const selected = signal(null);
+const users = [
+    { id: 1, name: 'Alice', status: 'active' },
+    { id: 2, name: 'Bob', status: 'pending' },
+    { id: 3, name: 'Charlie', status: 'inactive' }
+];
+
+const demo = {
+    div: {
+        children: [
+            {
+                Table: {
+                    zebra: true,
+                    size: 'sm',
+                    children: [
+                        {
+                            TableHead: {
+                                children: [{
+                                    TableRow: {
+                                        children: [
+                                            { TableTh: { children: ['Name'] } },
+                                            { TableTh: { children: ['Status'] } },
+                                            { TableTh: { children: ['Action'] } }
+                                        ]
+                                    }
+                                }]
+                            }
+                        },
+                        {
+                            TableBody: {
+                                children: users.map(user => ({
+                                    TableRow: {
+                                        hover: true,
+                                        active: () => selected.value === user.id,
+                                        onclick: () => { selected.value = user.id; },
+                                        children: [
+                                            { TableTd: { children: [user.name] } },
+                                            { 
+                                                TableTd: { 
+                                                    children: [{
+                                                        Badge: { 
+                                                            color: user.status === 'active' ? 'success' : 
+                                                                   user.status === 'pending' ? 'warning' : 'error',
+                                                            size: 'sm',
+                                                            children: [user.status]
+                                                        }
+                                                    }]
+                                                }
+                                            },
+                                            {
+                                                TableTd: {
+                                                    children: [{ button: { class: 'btn btn-xs', children: ['Edit'] } }]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }))
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                span: {
+                    class: 'text-sm opacity-70 mt-2 block',
+                    children: [() => selected.value ? `Selected: User ${selected.value}` : 'Click a row to select']
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(demo);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -281,41 +637,3 @@ $('#example').content(demo);</code></pre>
 
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '180px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-
-        const reactiveCodeEl = document.getElementById('reactive-code');
-        const reactivePreview = document.getElementById('reactive-preview');
-
-        if (typeof examplify !== 'undefined' && reactiveCodeEl) {
-            const result = examplify(reactiveCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '200px'
-            });
-            if (result && result.iframe) {
-                reactivePreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>
