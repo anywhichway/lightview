@@ -767,3 +767,62 @@
 .font-semibold {
     font-weight: 600;
 }
+
+/* ============= Syntax Tabs ============= */
+/* Distinct tab styling for code syntax selection */
+.syntax-tabs {
+    display: inline-flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    background: var(--gallery-bg-alt);
+    border-radius: var(--gallery-radius);
+    border: 1px solid var(--gallery-border);
+}
+
+.syntax-tab {
+    position: relative;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gallery-text-secondary);
+    background: transparent;
+    border: none;
+    border-radius: calc(var(--gallery-radius) - 2px);
+    cursor: pointer;
+    transition: all var(--gallery-transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.syntax-tab:hover:not(.syntax-tab-active) {
+    color: var(--gallery-text);
+    background: var(--gallery-surface);
+}
+
+.syntax-tab-active {
+    color: var(--gallery-text);
+    font-weight: 600;
+    background: var(--gallery-surface);
+    box-shadow: var(--gallery-shadow-sm);
+}
+
+/* Tab indicator dot for active state */
+.syntax-tab-active::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gallery-primary);
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .syntax-tabs {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: var(--gallery-border);
+}
+
+[data-theme="dark"] .syntax-tab-active {
+    background: var(--gallery-surface);
+}

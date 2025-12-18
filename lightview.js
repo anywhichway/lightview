@@ -172,9 +172,10 @@
     };
 
     const element = (tag, attributes = {}, children = []) => {
+        if (customTags[tag]) tag = customTags[tag];
         // If tag is a function (component), call it and process the result
         if (typeof tag === 'function') {
-            const result = tag({ ...attributes, children });
+            const result = tag({ ...attributes }, children);
             return processComponentResult(result);
         }
 
@@ -493,7 +494,18 @@
         Object.defineProperty(el, 'content', {
             value(child, location = 'inner') {
                 location = location.toLowerCase();
-                const array = Array.isArray(child) ? child : [child];
+                const tags = Lightview.tags;
+                const array = (Array.isArray(child) ? child : [child]).map(item => {
+                    // Allow extensions to transform children (e.g., Object DOM syntax)
+                    if (Lightview.hooks.processChild) {
+                        item = Lightview.hooks.processChild(item) ?? item;
+                    }
+                    if (item.tag && !item.domEl) {
+                        return element(item.tag, item.attributes || {}, item.children || []).domEl;
+                    } else {
+                        return item.domEl || item;
+                    }
+                });
 
                 if (location === 'shadow') {
                     let shadow = el.shadowRoot;
@@ -502,8 +514,7 @@
                     }
                     shadow.innerHTML = '';
                     array.forEach(item => {
-                        const childDom = item.domEl || item;
-                        shadow.appendChild(childDom);
+                        shadow.appendChild(item);
                     });
                     return el;
                 }
@@ -511,15 +522,13 @@
                 if (location === 'inner') {
                     el.innerHTML = '';
                     array.forEach(item => {
-                        const childDom = item.domEl || item;
-                        el.appendChild(childDom);
+                        el.appendChild(item);
                     });
                     return el;
                 }
 
                 if (location === 'outer') {
-                    const replacements = array.map(item => item.domEl || item);
-                    el.replaceWith(...replacements);
+                    el.replaceWith(...array);
                     return el;
                 }
 
@@ -527,8 +536,7 @@
                     array.reverse();
                 }
                 array.forEach(item => {
-                    const childDom = item.domEl || item;
-                    el.insertAdjacentElement(location, childDom);
+                    el.insertAdjacentElement(location, item);
                 });
                 return el;
             },

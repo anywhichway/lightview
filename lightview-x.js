@@ -1043,11 +1043,11 @@
 
         // Also process any existing elements with src attributes on non-standard tags
         if (document.body) {
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 const selector = '[src]:not(' + STANDARD_SRC_TAGS.join('):not(') + ')';
                 const nodes = document.querySelectorAll(selector);
                 nodes.forEach(node => processSrcOnNode(node, LV));
-            }, 250);
+            });
         } else {
             document.addEventListener('DOMContentLoaded', () => {
                 const selector = '[src]:not(' + STANDARD_SRC_TAGS.join('):not(') + ')';

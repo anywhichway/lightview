@@ -116,8 +116,8 @@ function examplify(target, options = {}) {
     ${scripts ? scripts.map(src => `<script src="${src}"><\/script>`).join('\n') : ''}
 </head>
 <body>
-${html ? html : '<div id="demo"></div>'}
-<script ${type ? `type="${type}"` : ''}>const render = (content) => { const target = document.querySelector('#demo'); target.innerHTML = ''; target.insertAdjacentElement('afterbegin', content.domEl || content)};setTimeout(async () => {${content}}, 250)<\/script>
+${html ? html : '<div id="example"></div>'}
+<script ${type ? `type="${type}"` : ''}>const render = (content) => { const target = document.querySelector('#example'); target.innerHTML = ''; target.insertAdjacentElement('afterbegin', content.domEl || content)};setTimeout(async () => {${content}}, 250)<\/script>
 ${autoResizeScript}
 </body>
 </html>`;

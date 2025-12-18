@@ -11,8 +11,6 @@
 
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
-        <!-- Breadcrumbs -->
-        <!-- Breadcrumbs -->
         <script>
             const breadcrumbs = Lightview.tags.Breadcrumbs({
                 id: 'page-breadcrumbs',
@@ -38,14 +36,43 @@
             <div class="card-body">
                 <h2 class="card-title">Basic Usage</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Standard buttons with default styling.</p>
-                <pre><script>
-                    examplify(document.currentScript.nextElementSibling, {
-                        at: document.currentScript.parentElement,
-                        scripts: ['/lightview.js', '/lightview-x.js'],
-                        type: 'module',
-                        height: '100px'
-                    });
-                </script><code id="basic-code" contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+
+                <!-- Tabs -->
+                <script>
+                    window.switchSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`tab-btn-${t}`);
+                            const contentEl = document.getElementById(`syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchSyntaxTab('tagged')">Tagged</button>
+                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchSyntaxTab('vdom')">vDOM</button>
+                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                        DOM</button>
+                </div>
+
+                <!-- Tagged Syntax -->
+                <div id="syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            height: '100px'
+                        });
+                    </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
@@ -55,7 +82,61 @@ const buttons = div({ style: 'display: flex; gap: 0.5rem;' },
     Button({ color: 'secondary' }, 'Secondary')
 );
 
-$('#demo').content(buttons);</code></pre>
+$('#example').content(buttons);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            height: '100px'
+                        });
+                    </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+const { $ } = Lightview;
+
+const buttons = {
+    tag: 'div',
+    attributes: { style: 'display: flex; gap: 0.5rem;' },
+    children: [
+        { tag: Button, children: ['Default'] },
+        { tag: Button, attributes: { color: 'primary' }, children: ['Primary'] },
+        { tag: Button, attributes: { color: 'secondary' }, children: ['Secondary'] }
+    ]
+};
+
+$('#example').content(buttons);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            height: '100px'
+                        });
+                    </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+const { tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Button = Button;
+
+const buttons = {
+    div: {
+        style: 'display: flex; gap: 0.5rem;',
+        children: [
+            { Button: { children: ['Default'] } },
+            { Button: { color: 'primary', children: ['Primary'] } },
+            { Button: { color: 'secondary', children: ['Secondary'] } }
+        ]
+    }
+};
+
+$('#example').content(buttons);</code></pre>
+                </div>
             </div>
         </div>
 
@@ -65,14 +146,43 @@ $('#demo').content(buttons);</code></pre>
                 <h2 class="card-title">Reactive State</h2>
                 <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Buttons with built-in loading and state
                     handling.</p>
-                <pre><script>
-                    examplify(document.currentScript.nextElementSibling, {
-                        at: document.currentScript.parentElement,
-                        scripts: ['/lightview.js', '/lightview-x.js'],
-                        type: 'module',
-                        height: '80px'
-                    });
-                </script><code id="reactive-code" contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+
+                <!-- Tabs -->
+                <script>
+                    window.switchReactiveSyntaxTab = (tabId) => {
+                        const tabs = ['tagged', 'vdom', 'object'];
+                        tabs.forEach(t => {
+                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                            if (t === tabId) {
+                                tabEl.classList.add('syntax-tab-active');
+                                contentEl.style.display = 'block';
+                            } else {
+                                tabEl.classList.remove('syntax-tab-active');
+                                contentEl.style.display = 'none';
+                            }
+                        });
+                    };
+                </script>
+                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                </div>
+
+                <!-- Tagged Syntax -->
+                <div id="reactive-syntax-tagged">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            height: '80px'
+                        });
+                    </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 const { div, span } = tags;
 
@@ -93,7 +203,95 @@ const button = div({ style: 'display: flex; gap: 1rem; align-items: center;' },
     )
 );
 
-$('#demo').content(button);</code></pre>
+$('#example').content(button);</code></pre>
+                </div>
+
+                <!-- vDOM Syntax -->
+                <div id="reactive-syntax-vdom" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            height: '80px'
+                        });
+                    </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
+
+const isLoading = signal(false);
+
+const button = {
+    tag: 'div',
+    attributes: { style: 'display: flex; gap: 1rem; align-items: center;' },
+    children: [
+        { 
+            tag: Button, 
+            attributes: { 
+                color: 'primary',
+                loading: () => isLoading.value,
+                onclick: async () => {
+                    isLoading.value = true;
+                    await new Promise(r => setTimeout(r, 2000));
+                    isLoading.value = false;
+                }
+            }, 
+            children: ['Save Changes'] 
+        },
+        { 
+            tag: 'span', 
+            attributes: { style: 'opacity: 0.7;' }, 
+            children: [() => isLoading.value ? '⏳ Saving...' : 'Click to test'] 
+        }
+    ]
+};
+
+$('#example').content(button);</code></pre>
+                </div>
+
+                <!-- Object DOM Syntax -->
+                <div id="reactive-syntax-object" style="display: none;">
+                    <pre><script>
+                        examplify(document.currentScript.nextElementSibling, {
+                            at: document.currentScript.parentElement,
+                            scripts: ['/lightview.js', '/lightview-x.js'],
+                            type: 'module',
+                            height: '80px'
+                        });
+                    </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+const { signal, tags, $ } = Lightview;
+LightviewX.useObjectDOMSyntax();
+tags.Button = Button;
+
+const isLoading = signal(false);
+
+const button = {
+    div: {
+        style: 'display: flex; gap: 1rem; align-items: center;',
+        children: [
+            { 
+                Button: { 
+                    color: 'primary',
+                    loading: () => isLoading.value,
+                    onclick: async () => {
+                        isLoading.value = true;
+                        await new Promise(r => setTimeout(r, 2000));
+                        isLoading.value = false;
+                    },
+                    children: ['Save Changes'] 
+                } 
+            },
+            { 
+                span: { 
+                    style: 'opacity: 0.7;', 
+                    children: [() => isLoading.value ? '⏳ Saving...' : 'Click to test'] 
+                } 
+            }
+        ]
+    }
+};
+
+$('#example').content(button);</code></pre>
+                </div>
             </div>
         </div>
 
