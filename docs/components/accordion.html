@@ -9,37 +9,37 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Accordion' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Accordion</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Accordion is used for showing and hiding content in collapsible sections.
             Only one section can be open at a time.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">FAQ-style accordion</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">FAQ-style accordion</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Accordion } = await import('/components/data-display/accordion.js');
 
 const { tags, $ } = Lightview;
@@ -59,21 +59,21 @@ const accordion = Accordion({},
     )
 );
 
-$('#demo').insert(accordion);</code></pre>
+$('#demo').content(accordion);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Plus/Minus Icon</h2>
-                <p class="text-sm opacity-70 mb-4">Accordion with plus/minus toggle icon</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Accordion with plus/minus toggle icon</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Accordion } = await import('/components/data-display/accordion.js');
 
 const { tags, $ } = Lightview;
@@ -93,13 +93,13 @@ const accordion = Accordion({ join: true },
     )
 );
 
-$('#demo').insert(accordion);</code></pre>
+$('#demo').content(accordion);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -121,8 +121,8 @@ $('#demo').insert(accordion);</code></pre>
         </div>
 
         <!-- Accordion.Item Props -->
-        <h2 class="text-xl font-bold mb-4">Accordion.Item Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Accordion.Item Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -162,8 +162,8 @@ $('#demo').insert(accordion);</code></pre>
         </div>
 
         <!-- Static Examples -->
-        <h2 class="text-xl font-bold mb-4">Arrow Icon (Default)</h2>
-        <div class="space-y-2 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Arrow Icon (Default)</h2>
+        <div class="example-stack-sm" style="margin-bottom: 2rem;">
             <div class="collapse collapse-arrow bg-base-100 border border-base-300">
                 <input type="radio" name="accordion-demo" checked="checked" />
                 <div class="collapse-title font-semibold">Click to open this one</div>
@@ -176,14 +176,14 @@ $('#demo').insert(accordion);</code></pre>
             </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">Plus/Minus Icon</h2>
-        <div class="collapse collapse-plus bg-base-100 border border-base-300 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Plus/Minus Icon</h2>
+        <div class="collapse collapse-plus bg-base-100 border border-base-300" style="margin-bottom: 2rem;">
             <input type="checkbox" />
             <div class="collapse-title font-semibold">Click me to show/hide</div>
             <div class="collapse-content text-sm">Hidden content revealed!</div>
         </div>
 
-        
+
     </div>
 </div>
 

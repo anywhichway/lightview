@@ -9,19 +9,19 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Toast' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Toast</h1>
         <p class="text-lg opacity-70 mb-6">
@@ -30,16 +30,17 @@
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Toast with alert at different positions</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Toast with alert at different positions
+                </p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Toast } = await import('/components/data-display/toast.js');
 const { default: Alert } = await import('/components/data-display/alert.js');
 
@@ -53,21 +54,21 @@ const toast = Toast({ position: 'end', vertical: 'bottom' },
     )
 );
 
-$('#demo').insert(toast);</code></pre>
+$('#demo').content(toast);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Notification System</h2>
-                <p class="text-sm opacity-70 mb-4">Dynamic toasts with auto-dismiss</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Dynamic toasts with auto-dismiss</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Toast } = await import('/components/data-display/toast.js');
 const { default: Alert } = await import('/components/data-display/alert.js');
 const { default: Button } = await import('/components/actions/button.js');
@@ -107,13 +108,13 @@ const demo = div({},
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -141,9 +142,9 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Positions Demo -->
-        <h2 class="text-xl font-bold mb-4">Positions</h2>
-        <p class="opacity-70 mb-4">Click to see toast position (shown for 3 seconds):</p>
-        <div class="flex flex-wrap gap-2 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
+        <p style="opacity: 0.7; margin-bottom: 1rem;">Click to see toast position (shown for 3 seconds):</p>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <button class="btn btn-sm" onclick="showToast('top', 'start')">Top Start</button>
             <button class="btn btn-sm" onclick="showToast('top', 'center')">Top Center</button>
             <button class="btn btn-sm" onclick="showToast('top', 'end')">Top End</button>
@@ -154,7 +155,7 @@ $('#demo').insert(demo);</code></pre>
 
         <div id="toast-container"></div>
 
-        
+
     </div>
 </div>
 

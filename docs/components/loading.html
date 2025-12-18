@@ -9,7 +9,7 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
@@ -21,26 +21,26 @@
                 ]
             });
 
-            $('#page-breadcrumbs').insert(breadcrumbs);
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Loading</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Loading shows an animated indicator for loading states.
             Multiple types and sizes available.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Different loading types and sizes</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Different loading types and sizes</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Loading } = await import('/components/data-display/loading.js');
 
 const { tags, $ } = Lightview;
@@ -57,21 +57,21 @@ const loaders = div({ class: 'flex flex-wrap gap-8' },
     )
 );
 
-$('#demo').insert(loaders);</code></pre>
+$('#demo').content(loaders);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Loading Button</h2>
-                <p class="text-sm opacity-70 mb-4">Button with reactive loading state</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Button with reactive loading state</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Loading } = await import('/components/data-display/loading.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -98,13 +98,13 @@ const demo = div({ class: 'flex gap-4 items-center' },
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -138,8 +138,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Types -->
-        <h2 class="text-xl font-bold mb-4">Types</h2>
-        <div class="flex flex-wrap gap-8 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Types</h2>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <div class="text-center">
                 <span class="loading loading-spinner loading-lg"></span>
                 <p class="text-sm mt-2 opacity-50">spinner</p>
@@ -167,8 +167,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Sizes -->
-        <h2 class="text-xl font-bold mb-4">Sizes</h2>
-        <div class="flex items-center gap-6 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+        <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
             <div class="text-center">
                 <span class="loading loading-spinner loading-xs"></span>
                 <p class="text-xs mt-1 opacity-50">xs</p>
@@ -188,8 +188,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Colors -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="flex gap-6 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem;">
             <span class="loading loading-spinner loading-lg text-primary"></span>
             <span class="loading loading-spinner loading-lg text-secondary"></span>
             <span class="loading loading-spinner loading-lg text-accent"></span>
@@ -200,8 +200,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- In Button -->
-        <h2 class="text-xl font-bold mb-4">In Button</h2>
-        <div class="flex gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">In Button</h2>
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
             <button class="btn btn-square">
                 <span class="loading loading-spinner"></span>
             </button>

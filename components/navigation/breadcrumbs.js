@@ -84,8 +84,6 @@ Breadcrumbs.Item = (props = {}, ...children) => {
     return tags.li({ class: className, ...rest }, ...children);
 };
 
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Breadcrumbs', Breadcrumbs);
-}
 
+window.Lightview.tags.Breadcrumbs = Breadcrumbs;
 export default Breadcrumbs;

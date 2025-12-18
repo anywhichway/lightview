@@ -227,6 +227,9 @@
         if (typeof name !== 'string' || name.length === 0 || name === 'children') {
             return false;
         }
+        if (Lightview.tags._customTags[name]) {
+            return true;
+        }
         if (strict) {
             // Strict mode: use browser validation (rejects unknown tags like 'foo')
             return isKnownHTMLTag(name);
@@ -255,9 +258,6 @@
             const tag = keys[0];
             const value = obj[tag];
             if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
-
-            // Check if it's a registered component first (before HTML tag validation)
-            if (getComponent(tag)) return true;
 
             // Otherwise check if it's a valid tag name
             return isValidTagName(tag);
@@ -297,7 +297,7 @@
             const content = obj[tagKey];
 
             // Check if tagKey is a registered component
-            const component = getComponent(tagKey);
+            const component = Lightview.tags._customTags[tagKey];
             const tag = component || tagKey; // Use function if found, otherwise string
 
             // Extract children and attributes
@@ -507,43 +507,6 @@
 
         stateCache.set(obj, proxy);
         return proxy;
-    };
-
-    // ============= COMPONENT REGISTRY =============
-    const componentRegistry = new Map();
-    let allowGlobalComponents = false;
-
-    /**
-     * Register a component for use in Object DOM syntax
-     * @param {string} name - Component name (use '*' to enable global scope fallback)
-     * @param {Function} [component] - Component function (omit when using '*')
-     */
-    const registerComponent = (name, component) => {
-        if (name === '*') {
-            allowGlobalComponents = true;
-            return;
-        }
-        if (typeof component !== 'function') {
-            throw new Error(`registerComponent: component must be a function`);
-        }
-        componentRegistry.set(name, component);
-    };
-
-    /**
-     * Look up a component by name
-     * @param {string} name - Component name to look up
-     * @returns {Function|null} - Component function or null if not found
-     */
-    const getComponent = (name) => {
-        // Check registry first
-        if (componentRegistry.has(name)) {
-            return componentRegistry.get(name);
-        }
-        // Check global scope if allowed
-        if (allowGlobalComponents && typeof window !== 'undefined' && typeof window[name] === 'function') {
-            return window[name];
-        }
-        return null;
     };
 
     // Template literal processing: converts "${...}" strings to reactive functions
@@ -1121,9 +1084,7 @@
     // Export for module usage
     const LightviewX = {
         state,
-        registerComponent,
         registerStyleSheet,
-        getComponent,
         useObjectDOMSyntax,
         convertObjectDOM,
         // Component initialization

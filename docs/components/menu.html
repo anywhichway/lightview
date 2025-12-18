@@ -9,37 +9,37 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Menu' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Menu</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Menu is used to display a list of links vertically or horizontally.
             Supports icons, submenus, and collapsible sections.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Vertical menu with active state</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Vertical menu with active state</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 
 const { default: Menu } = await import('/components/navigation/menu.js');
 
@@ -59,21 +59,21 @@ const menu = Menu({ class: 'bg-base-200 rounded-box w-56' },
     )
 );
 
-$('#demo').insert(menu);</code></pre>
+$('#demo').content(menu);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Horizontal Menu</h2>
-                <p class="text-sm opacity-70 mb-4">Navigation bar style menu</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navigation bar style menu</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 
 const { default: Menu } = await import('/components/navigation/menu.js');
 
@@ -102,13 +102,13 @@ const menu = Menu({ horizontal: true, class: 'bg-base-200 rounded-box' },
     )
 );
 
-$('#demo').insert(menu);</code></pre>
+$('#demo').content(menu);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -136,8 +136,8 @@ $('#demo').insert(menu);</code></pre>
         </div>
 
         <!-- Sub-components -->
-        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -172,16 +172,16 @@ $('#demo').insert(menu);</code></pre>
         </div>
 
         <!-- Static Examples -->
-        <h2 class="text-xl font-bold mb-4">With Title</h2>
-        <ul class="menu bg-base-200 rounded-box w-56 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Title</h2>
+        <ul class="menu bg-base-200 rounded-box w-56" style="margin-bottom: 2rem;">
             <li class="menu-title">Title</li>
             <li><a>Item 1</a></li>
             <li><a>Item 2</a></li>
             <li><a>Item 3</a></li>
         </ul>
 
-        <h2 class="text-xl font-bold mb-4">With Submenu</h2>
-        <ul class="menu bg-base-200 rounded-box w-56 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Submenu</h2>
+        <ul class="menu bg-base-200 rounded-box w-56" style="margin-bottom: 2rem;">
             <li><a>Item 1</a></li>
             <li>
                 <details open>
@@ -195,8 +195,8 @@ $('#demo').insert(menu);</code></pre>
             <li><a>Item 3</a></li>
         </ul>
 
-        <h2 class="text-xl font-bold mb-4">Sizes</h2>
-        <div class="flex flex-wrap gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <ul class="menu menu-xs bg-base-200 rounded-box w-40">
                 <li><a>xs Item</a></li>
             </ul>
@@ -205,7 +205,7 @@ $('#demo').insert(menu);</code></pre>
             </ul>
         </div>
 
-        
+
     </div>
 </div>
 

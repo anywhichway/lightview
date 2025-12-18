@@ -133,9 +133,7 @@ const Button = (props = {}, ...children) => {
     return buttonEl;
 };
 
-// Auto-register with LightviewX if available
-if (typeof window !== 'undefined' && window.LightviewX) {
-    window.LightviewX.registerComponent('Button', Button);
-}
+
+window.Lightview.tags.Button = Button;
 
 export default Button;

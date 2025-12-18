@@ -9,19 +9,19 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Steps' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Steps</h1>
         <p class="text-lg opacity-70 mb-6">
@@ -30,16 +30,16 @@
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Interactive checkout steps</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Interactive checkout steps</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 
 const { default: Steps } = await import('/components/navigation/steps.js');
 const { default: Button } = await import('/components/actions/button.js');
@@ -73,13 +73,13 @@ const demo = div({ class: 'flex flex-col gap-4' },
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -101,8 +101,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Steps.Step Props -->
-        <h2 class="text-xl font-bold mb-4">Steps.Step Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Steps.Step Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -130,8 +130,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Colors -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <ul class="steps mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <ul class="steps" style="margin-bottom: 2rem;">
             <li class="step step-primary">Primary</li>
             <li class="step step-secondary">Secondary</li>
             <li class="step step-accent">Accent</li>
@@ -142,8 +142,8 @@ $('#demo').insert(demo);</code></pre>
         </ul>
 
         <!-- With Icons -->
-        <h2 class="text-xl font-bold mb-4">With Icons</h2>
-        <ul class="steps mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Icons</h2>
+        <ul class="steps" style="margin-bottom: 2rem;">
             <li class="step step-info" data-content="?">Step 1</li>
             <li class="step step-info" data-content="!">Step 2</li>
             <li class="step step-info" data-content="✓">Step 3</li>
@@ -152,15 +152,15 @@ $('#demo').insert(demo);</code></pre>
         </ul>
 
         <!-- Vertical -->
-        <h2 class="text-xl font-bold mb-4">Vertical</h2>
-        <ul class="steps steps-vertical mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical</h2>
+        <ul class="steps steps-vertical" style="margin-bottom: 2rem;">
             <li class="step step-primary">Register</li>
             <li class="step step-primary">Choose plan</li>
             <li class="step">Purchase</li>
             <li class="step">Receive Product</li>
         </ul>
 
-        
+
     </div>
 </div>
 

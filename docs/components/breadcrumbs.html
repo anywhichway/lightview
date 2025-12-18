@@ -9,38 +9,38 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
-        <script type="module">
-            const { $ } = Lightview;
-            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
-            const breadcrumbs = Breadcrumbs({
+        <script>
+            const breadcrumbs = Lightview.tags.Breadcrumbs({
+                id: 'page-breadcrumbs',
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Breadcrumbs' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+            document.currentScript.replaceWith(breadcrumbs.domEl);
         </script>
         <h1>Breadcrumbs</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Breadcrumbs shows hierarchy and navigational path to the current page.
             Supports icons and custom separators.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Navigation breadcrumb trail</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navigation breadcrumb trail</p>
 
-                <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
 
+                <pre><script>
+                    examplify(document.currentScript.nextElementSibling, {
+                        at: document.currentScript.parentElement,
+                        scripts: ['/lightview.js', '/lightview-x.js'],
+                        type: 'module'
+                    });
+                </script><code id="basic-code" contenteditable="true">
 const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
 
 const { tags, $ } = Lightview;
@@ -52,21 +52,22 @@ const path = [
     { label: 'Phones' } // Current page (no href)
 ];
 
-const breadcrumbs = Breadcrumbs({ class: 'text-sm' },
+const breadcrumbs = Breadcrumbs({ style: 'font-size: .75rem' },
     ...path.map(item => 
         item.href 
             ? Breadcrumbs.Item({ href: item.href }, item.label)
             : Breadcrumbs.Item({}, item.label)
     )
 );
+$('#demo').content(breadcrumbs);</code>
+</pre>
 
-$('#demo').insert(breadcrumbs);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -88,8 +89,8 @@ $('#demo').insert(breadcrumbs);</code></pre>
         </div>
 
         <!-- Sub-components -->
-        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -109,13 +110,13 @@ $('#demo').insert(breadcrumbs);</code></pre>
         </div>
 
         <!-- With Icons -->
-        <h2 class="text-xl font-bold mb-4">With Icons</h2>
-        <div class="breadcrumbs text-sm mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Icons</h2>
+        <div class="breadcrumbs text-sm" style="margin-bottom: 2rem;">
             <ul>
                 <li>
                     <a>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            class="h-4 w-4 stroke-current">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current"
+                            style="width: 1rem; height: 1rem;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
                         </svg>
@@ -124,8 +125,8 @@ $('#demo').insert(breadcrumbs);</code></pre>
                 </li>
                 <li>
                     <a>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            class="h-4 w-4 stroke-current">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current"
+                            style="width: 1rem; height: 1rem;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
                         </svg>
@@ -136,27 +137,6 @@ $('#demo').insert(breadcrumbs);</code></pre>
             </ul>
         </div>
 
-        
+
     </div>
 </div>
-
-<script>
-    (function () {
-        const basicCodeEl = document.getElementById('basic-code');
-        const basicPreview = document.getElementById('basic-preview');
-
-        if (typeof examplify !== 'undefined' && basicCodeEl) {
-            const result = examplify(basicCodeEl, {
-                scripts: ['/lightview.js', '/lightview-x.js'],
-                type: 'module',
-                html: '<div id="demo"></div>',
-                height: '60px'
-            });
-            if (result && result.iframe) {
-                basicPreview.appendChild(result.iframe);
-                result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                result.iframe.style.borderRadius = '0.5rem';
-            }
-        }
-    })();
-</script>

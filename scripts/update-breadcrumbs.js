@@ -37,7 +37,7 @@ ${indent}            { label: '${componentName}' }
 ${indent}        ]
 ${indent}    });
 ${indent}    
-${indent}    $('#page-breadcrumbs').insert(breadcrumbs);
+${indent}    $('#page-breadcrumbs').content(breadcrumbs);
 ${indent}</script>`;
 }
 

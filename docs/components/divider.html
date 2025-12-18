@@ -9,37 +9,37 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Divider' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Divider</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Divider separates content with a horizontal or vertical line.
             Supports text labels and colors.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Divider with text and colors</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Divider with text and colors</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 
 const { default: Divider } = await import('/components/layout/divider.js');
 
@@ -54,13 +54,13 @@ const demo = div({ class: 'flex flex-col w-full' },
     div({ class: 'card bg-base-300 p-4 rounded-box' }, 'More content')
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -88,22 +88,22 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Static Examples -->
-        <h2 class="text-xl font-bold mb-4">Without Text</h2>
-        <div class="flex w-full flex-col mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Without Text</h2>
+        <div style="display: flex; width: 100%; flex-direction: column; margin-bottom: 2rem;">
             <div class="card bg-base-300 rounded-box p-4">Content</div>
             <div class="divider"></div>
             <div class="card bg-base-300 rounded-box p-4">Content</div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">Vertical</h2>
-        <div class="flex w-full mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical</h2>
+        <div style="display: flex; width: 100%; margin-bottom: 2rem;">
             <div class="card bg-base-300 rounded-box p-4 flex-grow">Left</div>
             <div class="divider divider-horizontal">OR</div>
             <div class="card bg-base-300 rounded-box p-4 flex-grow">Right</div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="flex w-full flex-col gap-2 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div style="display: flex; width: 100%; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
             <div class="divider divider-primary">Primary</div>
             <div class="divider divider-secondary">Secondary</div>
             <div class="divider divider-accent">Accent</div>
@@ -112,7 +112,7 @@ $('#demo').insert(demo);</code></pre>
             <div class="divider divider-error">Error</div>
         </div>
 
-        
+
     </div>
 </div>
 

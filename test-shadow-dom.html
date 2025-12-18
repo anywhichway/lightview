@@ -104,7 +104,7 @@
         console.log('LightviewX.initComponents() complete!');
 
         // ============= Light DOM Control (no shadow) =============
-        $('#light-dom-control').insert(
+        $('#light-dom-control').content(
             tags.div({},
                 tags.h2({}, 'H2 in Light DOM'),
                 tags.p({}, 'Paragraph in Light DOM'),
@@ -113,7 +113,7 @@
         );
 
         // ============= Tags Syntax Test =============
-        $('#tags-test').insert(
+        $('#tags-test').content(
             tags.div({ class: 'shadow-host' },
                 tags.shadowDOM({ mode: 'open' },
                     tags.style({}, `
@@ -131,7 +131,7 @@
         );
 
         // ============= DaisyUI Shadow DOM Test =============
-        $('#daisy-test').insert(
+        $('#daisy-test').content(
             tags.div({ class: 'daisy-host' },
                 tags.shadowDOM({
                     mode: 'open',
@@ -163,7 +163,7 @@
         // ============= Input with Shadow DOM (default behavior) =============
         const inputValue = signal('');
 
-        $('#input-shadow-test').insert(
+        $('#input-shadow-test').content(
             Input({
                 // useShadow not specified - uses global default (true)
                 label: 'Shadow DOM Input (default)',
@@ -175,7 +175,7 @@
         );
 
         // ============= Input with useShadow=false (Light DOM) =============
-        $('#input-light-test').insert(
+        $('#input-light-test').content(
             Input({
                 useShadow: false,  // Explicitly disable shadow DOM
                 label: 'Light DOM Input',

@@ -70,7 +70,7 @@ const app = div({ style: 'text-align: center; padding: 2rem;' },
     )
 );
 
-$('#playground-preview').insert(app);</code></pre>
+$('#playground-preview').content(app);</code></pre>
             </div>
 
             <!-- Preview -->
@@ -179,7 +179,7 @@ const app = div({ style: 'text-align: center; padding: 2rem;' },
     )
 );
 
-$('#playground-preview').insert(app);`,
+$('#playground-preview').content(app);`,
 
             todo: `// Todo List with State
 const { state, signal, tags, $ } = Lightview;
@@ -231,7 +231,7 @@ const app = div({ style: 'padding: 1.5rem; max-width: 400px;' },
     )
 );
 
-$('#playground-preview').insert(app);`,
+$('#playground-preview').content(app);`,
 
             form: `// Form Validation with Computed
 const { signal, computed, tags, $ } = Lightview;
@@ -273,7 +273,7 @@ const app = div({ style: 'padding: 1.5rem; max-width: 350px;' },
     }, 'Create Account')
 );
 
-$('#playground-preview').insert(app);`,
+$('#playground-preview').content(app);`,
 
             fetch: `// Fetch Data Example
 const { signal, tags, $ } = Lightview;
@@ -305,7 +305,7 @@ const app = div({ style: 'padding: 1.5rem;' },
     )
 );
 
-$('#playground-preview').insert(app);`,
+$('#playground-preview').content(app);`,
 
             tabs: `// Tabs Example
 const { signal, tags, $ } = Lightview;
@@ -334,7 +334,7 @@ const app = div({ style: 'padding: 1.5rem;' },
     )
 );
 
-$('#playground-preview').insert(app);`,
+$('#playground-preview').content(app);`,
 
             theme: `// Theme Toggle
 const { signal, tags, $ } = Lightview;
@@ -354,7 +354,7 @@ const app = div({
     }, () => isDark.value ? 'Switch to Light' : 'Switch to Dark')
 );
 
-$('#playground-preview').insert(app);`
+$('#playground-preview').content(app);`
         };
 
         let currentExamplify = null;

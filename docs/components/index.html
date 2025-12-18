@@ -104,7 +104,7 @@
     const linksContainer = $('#sidebar-links');
     sidebarLinks.forEach(name => {
         const slug = name.toLowerCase().replace(/\s+/g, '-');
-        linksContainer.insert(li({}, a({ href: `/docs/components/${slug}` }, name)));
+        linksContainer.content(li({}, a({ href: `/docs/components/${slug}` }, name)), "beforeend");
     });
 
     // Info icon helper (shared via window)
@@ -153,7 +153,7 @@ Button({
         )
     );
 
-    $('#usage-section').insert(content);
+    $('#usage-section').content(content);
 </script>
 
 <!-- Buttons Section -->
@@ -206,7 +206,7 @@ Button({
         )
     );
 
-    $('#buttons-section').insert(content);
+    $('#buttons-section').content(content);
 </script>
 
 <!-- Inputs Section -->
@@ -304,7 +304,7 @@ Button({
         )
     );
 
-    $('#inputs-section').insert(content);
+    $('#inputs-section').content(content);
 </script>
 
 <!-- Cards Section -->
@@ -347,7 +347,7 @@ Button({
         )
     );
 
-    $('#cards-section').insert(content);
+    $('#cards-section').content(content);
 </script>
 
 <!-- Alerts Section -->
@@ -367,7 +367,7 @@ Button({
         )
     );
 
-    $('#alerts-section').insert(content);
+    $('#alerts-section').content(content);
 </script>
 
 <!-- Badges & Avatars Section -->
@@ -412,7 +412,7 @@ Button({
         )
     );
 
-    $('#badges-section').insert(content);
+    $('#badges-section').content(content);
 </script>
 
 <!-- Stats Section -->
@@ -440,7 +440,7 @@ Button({
         )
     );
 
-    $('#stats-section').insert(content);
+    $('#stats-section').content(content);
 </script>
 
 <!-- Charts Section -->
@@ -479,7 +479,7 @@ Button({
         )
     );
 
-    $('#charts-section').insert(content);
+    $('#charts-section').content(content);
 </script>
 
 <!-- Progress Section -->
@@ -522,7 +522,7 @@ Button({
         )
     );
 
-    $('#progress-section').insert(content);
+    $('#progress-section').content(content);
 </script>
 
 <!-- Steps Section -->
@@ -546,7 +546,7 @@ Button({
         )
     );
 
-    $('#steps-section').insert(content);
+    $('#steps-section').content(content);
 </script>
 
 <!-- Chat Section -->
@@ -585,7 +585,7 @@ Button({
         )
     );
 
-    $('#chat-section').insert(content);
+    $('#chat-section').content(content);
 </script>
 
 <!-- Timeline Section -->
@@ -627,7 +627,7 @@ Button({
         )
     );
 
-    $('#timeline-section').insert(content);
+    $('#timeline-section').content(content);
 </script>
 
 <!-- Table Section -->
@@ -653,5 +653,5 @@ Button({
         )
     );
 
-    $('#table-section').insert(content);
+    $('#table-section').content(content);
 </script>

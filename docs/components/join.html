@@ -9,37 +9,37 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Join' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Join</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Join groups elements together with shared borders.
             Perfect for button groups, input groups, and pagination.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Button group and input group</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Button group and input group</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 
 const { default: Join } = await import('/components/layout/join.js');
 const { default: Button } = await import('/components/actions/button.js');
@@ -69,13 +69,13 @@ const demo = div({ class: 'flex flex-col gap-4' },
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -97,21 +97,21 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Static Examples -->
-        <h2 class="text-xl font-bold mb-4">Vertical</h2>
-        <div class="join join-vertical mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical</h2>
+        <div class="join join-vertical" style="margin-bottom: 2rem;">
             <button class="btn join-item">Button 1</button>
             <button class="btn join-item">Button 2</button>
             <button class="btn join-item">Button 3</button>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">Radio Group</h2>
-        <div class="join mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Radio Group</h2>
+        <div class="join" style="margin-bottom: 2rem;">
             <input class="join-item btn" type="radio" name="options" aria-label="Radio 1" />
             <input class="join-item btn" type="radio" name="options" aria-label="Radio 2" checked />
             <input class="join-item btn" type="radio" name="options" aria-label="Radio 3" />
         </div>
 
-        
+
     </div>
 </div>
 

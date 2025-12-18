@@ -9,7 +9,7 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
@@ -21,26 +21,27 @@
                 ]
             });
 
-            $('#page-breadcrumbs').insert(breadcrumbs);
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Textarea</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Textarea allows users to enter multi-line text.
             Supports labels, validation, character count, and reactive state binding.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Examples</h2>
-                <p class="text-sm opacity-70 mb-4">Simple textareas with various configurations</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple textareas with various
+                    configurations</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Textarea component
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">// Dynamic import of the Textarea component
 
 const { default: Textarea } = await import('/components/data-input/textarea.js');
 
@@ -71,23 +72,24 @@ const withCount = Textarea({
 });
 
 // Insert all examples
-$('#demo').insert(
+$('#demo').content(
     div({ class: 'space-y-4' }, basic, withLabel, withCount)
 );</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Reactive Example</h2>
-                <p class="text-sm opacity-70 mb-4">Two-way binding with signals and live validation</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals and live
+                    validation</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Textarea } = await import('/components/data-input/textarea.js');
 
 const { signal, tags, $ } = Lightview;
@@ -126,13 +128,13 @@ const reactiveDemo = div({ class: 'space-y-4' },
     )
 );
 
-$('#demo').insert(reactiveDemo);</code></pre>
+$('#demo').content(reactiveDemo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -256,8 +258,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Sizes Example -->
-        <h2 class="text-xl font-bold mb-4">Sizes</h2>
-        <div class="flex flex-col gap-4 mb-8 max-w-md">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+        <div class="example-stack" style="margin-bottom: 2rem; max-width: 28rem;">
             <textarea class="textarea textarea-xs" placeholder="Extra small"></textarea>
             <textarea class="textarea textarea-sm" placeholder="Small"></textarea>
             <textarea class="textarea" placeholder="Medium"></textarea>
@@ -265,8 +267,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Colors Example -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 max-w-2xl">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="margin-bottom: 2rem; max-width: 42rem;">
             <textarea class="textarea textarea-primary" placeholder="Primary"></textarea>
             <textarea class="textarea textarea-secondary" placeholder="Secondary"></textarea>
             <textarea class="textarea textarea-accent" placeholder="Accent"></textarea>
@@ -278,8 +280,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- With Fieldset -->
-        <h2 class="text-xl font-bold mb-4">With Label (Fieldset Pattern)</h2>
-        <div class="max-w-md mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label (Fieldset Pattern)</h2>
+        <div class="max-w-md" style="margin-bottom: 2rem;">
             <fieldset class="fieldset">
                 <legend class="fieldset-legend">Bio</legend>
                 <textarea class="textarea w-full" rows="4" placeholder="Tell us about yourself..."></textarea>

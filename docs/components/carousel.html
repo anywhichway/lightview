@@ -9,37 +9,37 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Carousel' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Carousel</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Carousel shows images or content in a scrollable horizontal view.
             Supports snap points, vertical layout, and full-width items.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Image carousel with center snap</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Image carousel with center snap</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Carousel } = await import('/components/data-display/carousel.js');
 
 const { tags, $ } = Lightview;
@@ -57,21 +57,21 @@ const carousel = Carousel({ snap: 'center', class: 'rounded-box bg-neutral p-4 g
     )
 );
 
-$('#demo').insert(carousel);</code></pre>
+$('#demo').content(carousel);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Full Width with Indicators</h2>
-                <p class="text-sm opacity-70 mb-4">Navigable carousel with buttons</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navigable carousel with buttons</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Carousel } = await import('/components/data-display/carousel.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -103,13 +103,13 @@ const demo = div({},
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -143,8 +143,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Sub-components -->
-        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -164,8 +164,9 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Static Examples -->
-        <h2 class="text-xl font-bold mb-4">Centered Carousel</h2>
-        <div class="carousel carousel-center bg-neutral rounded-box space-x-4 p-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Centered Carousel</h2>
+        <div class="carousel carousel-center bg-neutral rounded-box"
+            style="margin-right: 1rem; padding: 1rem; margin-bottom: 2rem;">
             <div class="carousel-item"><img src="https://picsum.photos/300/200?random=5" class="rounded-box"
                     alt="Slide" /></div>
             <div class="carousel-item"><img src="https://picsum.photos/300/200?random=6" class="rounded-box"
@@ -174,7 +175,7 @@ $('#demo').insert(demo);</code></pre>
                     alt="Slide" /></div>
         </div>
 
-        
+
     </div>
 </div>
 

@@ -13,15 +13,15 @@
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Chart' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Chart</h1>
@@ -73,7 +73,7 @@ const chart = Chart({
     )
 );
 
-$('#demo').insert(chart);</code></pre>
+$('#demo').content(chart);</code></pre>
             </div>
         </div>
 

@@ -9,7 +9,7 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
@@ -21,26 +21,26 @@
                 ]
             });
 
-            $('#page-breadcrumbs').insert(breadcrumbs);
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Tabs</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Tabs allow showing and hiding content to organize information.
             Supports boxed, bordered, and lifted variants.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Interactive tabs with content panels</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Interactive tabs with content panels</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 
 const { default: Tabs } = await import('/components/navigation/tabs.js');
 
@@ -64,21 +64,22 @@ const demo = div({ class: 'flex flex-col gap-4' },
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Lifted Tabs</h2>
-                <p class="text-sm opacity-70 mb-4">Tabs with lifted style and connected content</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Tabs with lifted style and connected
+                    content</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 
 const { default: Tabs } = await import('/components/navigation/tabs.js');
 
@@ -108,13 +109,13 @@ const demo = Tabs({ variant: 'lifted' },
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props (Tabs)</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props (Tabs)</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -142,8 +143,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Sub-components -->
-        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -168,8 +169,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Variants -->
-        <h2 class="text-xl font-bold mb-4">Variants</h2>
-        <div class="flex flex-col gap-8 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
+        <div class="example-stack-lg" style="margin-bottom: 2rem;">
             <div>
                 <h3 class="font-bold mb-2">Bordered</h3>
                 <div role="tablist" class="tabs tabs-bordered">
@@ -197,8 +198,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Sizes -->
-        <h2 class="text-xl font-bold mb-4">Sizes</h2>
-        <div class="flex flex-col gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+        <div class="example-stack" style="margin-bottom: 2rem;">
             <div role="tablist" class="tabs tabs-bordered tabs-xs">
                 <a role="tab" class="tab tab-active">xs</a>
                 <a role="tab" class="tab">xs</a>

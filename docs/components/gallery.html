@@ -9,19 +9,19 @@
 <div class="section">
     <div class="section-content" style="max-width: 1400px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Gallery' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Component Gallery</h1>
@@ -30,7 +30,7 @@
         </p>
 
         <!-- Theme Selector -->
-        <div class="mb-8 flex flex-wrap gap-2 items-center">
+        <div style="margin-bottom: 2rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
             <span class="font-semibold">Theme:</span>
             <select class="select select-bordered select-sm"
                 onchange="document.documentElement.setAttribute('data-theme', this.value)">
@@ -46,14 +46,14 @@
         </div>
 
         <!-- Buttons -->
-        <section class="mb-12">
+        <section style="margin-bottom: 3rem;">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <span class="badge badge-primary">Buttons</span>
             </h2>
             <div class="card bg-base-200">
                 <div class="card-body">
-                    <h3 class="font-semibold mb-2">Colors</h3>
-                    <div class="flex flex-wrap gap-2 mb-4">
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Colors</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
                         <button class="btn">Default</button>
                         <button class="btn btn-neutral">Neutral</button>
                         <button class="btn btn-primary">Primary</button>
@@ -65,24 +65,25 @@
                         <button class="btn btn-error">Error</button>
                     </div>
 
-                    <h3 class="font-semibold mb-2">Variants</h3>
-                    <div class="flex flex-wrap gap-2 mb-4">
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Variants</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
                         <button class="btn btn-outline btn-primary">Outline</button>
                         <button class="btn btn-soft btn-primary">Soft</button>
                         <button class="btn btn-ghost">Ghost</button>
                         <button class="btn btn-link">Link</button>
                     </div>
 
-                    <h3 class="font-semibold mb-2">Sizes</h3>
-                    <div class="flex flex-wrap items-end gap-2 mb-4">
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Sizes</h3>
+                    <div
+                        style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
                         <button class="btn btn-xs">Extra Small</button>
                         <button class="btn btn-sm">Small</button>
                         <button class="btn btn-md">Medium</button>
                         <button class="btn btn-lg">Large</button>
                     </div>
 
-                    <h3 class="font-semibold mb-2">States</h3>
-                    <div class="flex flex-wrap gap-2">
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">States</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                         <button class="btn btn-primary">Normal</button>
                         <button class="btn btn-primary btn-active">Active</button>
                         <button class="btn btn-primary" disabled>Disabled</button>
@@ -96,19 +97,19 @@
         </section>
 
         <!-- Inputs -->
-        <section class="mb-12">
+        <section style="margin-bottom: 3rem;">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <span class="badge badge-accent">Inputs</span>
             </h2>
             <div class="card bg-base-200">
                 <div class="card-body">
-                    <div class="grid md:grid-cols-2 gap-6">
+                    <div class="grid md:grid-cols-2" style="gap: 1.5rem;">
                         <div>
-                            <h3 class="font-semibold mb-2">Text Input</h3>
+                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Text Input</h3>
                             <input type="text" placeholder="Type here" class="input input-bordered w-full" />
                         </div>
                         <div>
-                            <h3 class="font-semibold mb-2">Select</h3>
+                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Select</h3>
                             <select class="select select-bordered w-full">
                                 <option disabled selected>Pick one</option>
                                 <option>Option 1</option>
@@ -116,20 +117,20 @@
                             </select>
                         </div>
                         <div>
-                            <h3 class="font-semibold mb-2">Textarea</h3>
+                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Textarea</h3>
                             <textarea class="textarea textarea-bordered w-full"
                                 placeholder="Your message..."></textarea>
                         </div>
                         <div>
-                            <h3 class="font-semibold mb-2">File Input</h3>
+                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">File Input</h3>
                             <input type="file" class="file-input file-input-bordered w-full" />
                         </div>
                         <div>
-                            <h3 class="font-semibold mb-2">Range</h3>
+                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Range</h3>
                             <input type="range" min="0" max="100" value="40" class="range range-primary" />
                         </div>
                         <div>
-                            <h3 class="font-semibold mb-2">Rating</h3>
+                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Rating</h3>
                             <div class="rating">
                                 <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
                                 <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400"
@@ -143,8 +144,8 @@
 
                     <div class="divider"></div>
 
-                    <h3 class="font-semibold mb-2">Checkboxes & Toggles</h3>
-                    <div class="flex flex-wrap gap-6">
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Checkboxes & Toggles</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" class="checkbox checkbox-primary" checked />
                             <span>Primary</span>
@@ -167,11 +168,11 @@
         </section>
 
         <!-- Cards -->
-        <section class="mb-12">
+        <section style="margin-bottom: 3rem;">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <span class="badge badge-secondary">Cards</span>
             </h2>
-            <div class="grid md:grid-cols-3 gap-4">
+            <div class="grid md:grid-cols-3" style="gap: 1rem;">
                 <div class="card bg-base-100 shadow-xl">
                     <figure><img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=200&fit=crop"
                             alt="Shoes" /></figure>
@@ -212,11 +213,11 @@
         </section>
 
         <!-- Alerts -->
-        <section class="mb-12">
+        <section style="margin-bottom: 3rem;">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <span class="badge badge-info">Alerts</span>
             </h2>
-            <div class="space-y-4">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
                 <div role="alert" class="alert alert-info">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                         class="h-6 w-6 shrink-0 stroke-current">
@@ -253,13 +254,13 @@
         </section>
 
         <!-- Badges & Indicators -->
-        <section class="mb-12">
+        <section style="margin-bottom: 3rem;">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <span class="badge badge-success">Badges</span>
             </h2>
             <div class="card bg-base-200">
                 <div class="card-body">
-                    <div class="flex flex-wrap gap-2 mb-4">
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
                         <span class="badge">default</span>
                         <span class="badge badge-neutral">neutral</span>
                         <span class="badge badge-primary">primary</span>
@@ -267,13 +268,13 @@
                         <span class="badge badge-accent">accent</span>
                         <span class="badge badge-ghost">ghost</span>
                     </div>
-                    <div class="flex flex-wrap gap-2 mb-4">
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
                         <span class="badge badge-info">info</span>
                         <span class="badge badge-success">success</span>
                         <span class="badge badge-warning">warning</span>
                         <span class="badge badge-error">error</span>
                     </div>
-                    <div class="flex flex-wrap gap-2">
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                         <span class="badge badge-outline">outline</span>
                         <span class="badge badge-outline badge-primary">outline primary</span>
                         <span class="badge badge-lg">large</span>
@@ -286,22 +287,22 @@
         </section>
 
         <!-- Progress & Loading -->
-        <section class="mb-12">
+        <section style="margin-bottom: 3rem;">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <span class="badge badge-warning">Progress</span>
             </h2>
             <div class="card bg-base-200">
                 <div class="card-body">
-                    <h3 class="font-semibold mb-2">Progress Bars</h3>
-                    <div class="space-y-2 mb-6">
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Progress Bars</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;">
                         <progress class="progress progress-primary w-full" value="25" max="100"></progress>
                         <progress class="progress progress-secondary w-full" value="50" max="100"></progress>
                         <progress class="progress progress-accent w-full" value="75" max="100"></progress>
                         <progress class="progress progress-success w-full" value="100" max="100"></progress>
                     </div>
 
-                    <h3 class="font-semibold mb-2">Loading Spinners</h3>
-                    <div class="flex flex-wrap gap-4">
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Loading Spinners</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
                         <span class="loading loading-spinner loading-lg"></span>
                         <span class="loading loading-dots loading-lg"></span>
                         <span class="loading loading-ring loading-lg"></span>
@@ -314,13 +315,13 @@
         </section>
 
         <!-- Avatars -->
-        <section class="mb-12">
+        <section style="margin-bottom: 3rem;">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <span class="badge badge-error">Avatars</span>
             </h2>
             <div class="card bg-base-200">
                 <div class="card-body">
-                    <div class="flex flex-wrap gap-4 items-end">
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
                         <div class="avatar">
                             <div class="w-12 rounded-full">
                                 <img src="https://i.pravatar.cc/100?img=1" alt="Avatar" />
@@ -350,7 +351,7 @@
 
                     <div class="divider"></div>
 
-                    <h3 class="font-semibold mb-2">Avatar Group</h3>
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Avatar Group</h3>
                     <div class="avatar-group -space-x-6 rtl:space-x-reverse">
                         <div class="avatar">
                             <div class="w-12">
@@ -378,28 +379,28 @@
         </section>
 
         <!-- Tabs & Steps -->
-        <section class="mb-12">
+        <section style="margin-bottom: 3rem;">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <span class="badge badge-neutral">Navigation</span>
             </h2>
             <div class="card bg-base-200">
                 <div class="card-body">
-                    <h3 class="font-semibold mb-2">Tabs</h3>
-                    <div role="tablist" class="tabs tabs-boxed mb-6">
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Tabs</h3>
+                    <div role="tablist" class="tabs tabs-boxed" style="margin-bottom: 1.5rem;">
                         <a role="tab" class="tab tab-active">Tab 1</a>
                         <a role="tab" class="tab">Tab 2</a>
                         <a role="tab" class="tab">Tab 3</a>
                     </div>
 
-                    <h3 class="font-semibold mb-2">Steps</h3>
-                    <ul class="steps mb-6">
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Steps</h3>
+                    <ul class="steps" style="margin-bottom: 1.5rem;">
                         <li class="step step-primary">Register</li>
                         <li class="step step-primary">Choose plan</li>
                         <li class="step">Purchase</li>
                         <li class="step">Receive Product</li>
                     </ul>
 
-                    <h3 class="font-semibold mb-2">Breadcrumbs</h3>
+                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Breadcrumbs</h3>
                     <div class="breadcrumbs text-sm">
                         <ul>
                             <li><a>Home</a></li>
@@ -412,7 +413,7 @@
         </section>
 
         <!-- Stats -->
-        <section class="mb-12">
+        <section style="margin-bottom: 3rem;">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <span class="badge">Stats</span>
             </h2>

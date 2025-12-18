@@ -9,7 +9,7 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
@@ -21,26 +21,27 @@
                 ]
             });
 
-            $('#page-breadcrumbs').insert(breadcrumbs);
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>File Input</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             File Input allows users to select and upload files.
             Supports labels, validation, helper text, and multiple file selection.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Examples</h2>
-                <p class="text-sm opacity-70 mb-4">File inputs with various configurations</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">File inputs with various configurations
+                </p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the FileInput component
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">// Dynamic import of the FileInput component
 
 const { default: FileInput } = await import('/components/data-input/file-input.js');
 
@@ -74,23 +75,23 @@ const required = FileInput({
 });
 
 // Insert all examples
-$('#demo').insert(
+$('#demo').content(
     div({ class: 'space-y-4 max-w-md' }, basic, withLabel, multiple, required)
 );</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Reactive Example</h2>
-                <p class="text-sm opacity-70 mb-4">File validation and state display</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">File validation and state display</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: FileInput } = await import('/components/data-input/file-input.js');
 
 const { signal, tags, $ } = Lightview;
@@ -143,13 +144,13 @@ const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
     }
 );
 
-$('#demo').insert(reactiveDemo);</code></pre>
+$('#demo').content(reactiveDemo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -243,8 +244,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Colors -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div class="example-grid-responsive" style="margin-bottom: 2rem;">
             <input type="file" class="file-input file-input-primary w-full max-w-xs" />
             <input type="file" class="file-input file-input-secondary w-full max-w-xs" />
             <input type="file" class="file-input file-input-accent w-full max-w-xs" />
@@ -255,8 +256,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Sizes -->
-        <h2 class="text-xl font-bold mb-4">Sizes</h2>
-        <div class="flex flex-col gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+        <div class="example-stack" style="margin-bottom: 2rem;">
             <input type="file" class="file-input file-input-xs w-full max-w-xs" />
             <input type="file" class="file-input file-input-sm w-full max-w-xs" />
             <input type="file" class="file-input file-input-md w-full max-w-xs" />
@@ -264,21 +265,21 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Variants -->
-        <h2 class="text-xl font-bold mb-4">Variants</h2>
-        <div class="flex flex-col gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
+        <div class="example-stack" style="margin-bottom: 2rem;">
             <div>
-                <p class="text-sm opacity-70 mb-1">Ghost</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 0.25rem;">Ghost</p>
                 <input type="file" class="file-input file-input-ghost w-full max-w-xs" />
             </div>
             <div>
-                <p class="text-sm opacity-70 mb-1">Disabled</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 0.25rem;">Disabled</p>
                 <input type="file" class="file-input w-full max-w-xs" disabled />
             </div>
         </div>
 
         <!-- With Fieldset -->
-        <h2 class="text-xl font-bold mb-4">With Label (Fieldset Pattern)</h2>
-        <div class="max-w-md mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label (Fieldset Pattern)</h2>
+        <div style="max-width: 28rem; margin-bottom: 2rem;">
             <fieldset class="fieldset">
                 <legend class="fieldset-legend">Upload Avatar</legend>
                 <input type="file" class="file-input w-full" accept="image/*" />

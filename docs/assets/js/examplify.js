@@ -2,46 +2,45 @@
 let examplifyIdCounter = 0;
 
 function examplify(target, options = {}) {
-    const { scripts, styles, modules, html, location = 'beforeEnd', type, height, allowSameOrigin = false } = options;
+    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, maxHeight = Infinity, allowSameOrigin = false } = options;
     const originalContent = target.textContent;
     const autoResize = !height; // Auto-resize if no explicit height is provided
     const iframeId = `examplify-${++examplifyIdCounter}`;
 
     // 2. Create controls above the target
-    let controls;
-    if (target.getAttribute('contenteditable') == 'true') {
-        controls = document.createElement('div');
-        controls.className = 'examplify-controls';
-        controls.innerHTML = `
-            <button class="examplify-btn examplify-run" title="Run">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z"/>
-                </svg>
-                <span>Run</span>
-            </button>
-            <button class="examplify-btn examplify-copy" title="Copy">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                </svg>
-                <span>Copy</span>
-            </button>
-            <button class="examplify-btn examplify-reset" title="Reset">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                    <path d="M3 3v5h5"/>
-                </svg>
-                <span>Reset</span>
-            </button>
-        `;
+    const controls = document.createElement('div');
+    const editable = target.getAttribute('contenteditable') == 'true';
+    controls.className = 'examplify-controls';
+    controls.innerHTML = `
+        ${editable ? `<button class="examplify-btn examplify-run" title="Run">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            <span>Run</span>
+        </button>` : ''}
+        <button class="examplify-btn examplify-copy" title="Copy">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span>Copy</span>
+        </button>
+        ${editable ? `<button class="examplify-btn examplify-reset" title="Reset">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+            </svg>
+            <span>Reset</span>
+        </button>` : ''}
+    `;
 
-    }
+
 
     // Set up message listener for auto-resize
     if (autoResize) {
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'examplify-resize' && event.data.id === iframeId) {
-                iframe.style.height = event.data.height + 'px';
+                iframe.style.height = Math.min(event.data.height + 2, maxHeight) + 'px';
             }
         });
     }
@@ -51,7 +50,10 @@ function examplify(target, options = {}) {
     if (height) {
         iframe.style.height = height;
     }
-    target.insertAdjacentElement(location, iframe);
+    if (maxHeight && maxHeight !== Infinity) {
+        iframe.style.maxHeight = maxHeight;
+    }
+    (at || target).insertAdjacentElement(location, iframe);
     if (controls) {
         if (target.parentElement && target.parentElement.tagName === 'PRE') {
             target.parentElement.insertAdjacentElement('beforebegin', controls);
@@ -114,8 +116,8 @@ function examplify(target, options = {}) {
     ${scripts ? scripts.map(src => `<script src="${src}"><\/script>`).join('\n') : ''}
 </head>
 <body>
-${html ? html : ''}
-<script ${type ? `type="${type}"` : ''}>setTimeout(async () => {${content}}, 250)<\/script>
+${html ? html : '<div id="demo"></div>'}
+<script ${type ? `type="${type}"` : ''}>const render = (content) => { const target = document.querySelector('#demo'); target.innerHTML = ''; target.insertAdjacentElement('afterbegin', content.domEl || content)};setTimeout(async () => {${content}}, 250)<\/script>
 ${autoResizeScript}
 </body>
 </html>`;

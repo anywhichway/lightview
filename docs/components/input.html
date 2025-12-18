@@ -9,7 +9,7 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
@@ -21,26 +21,27 @@
                 ]
             });
 
-            $('#page-breadcrumbs').insert(breadcrumbs);
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Input</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Text input allows users to enter and edit text.
             Supports labels, validation, helper text, and reactive state binding.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Examples</h2>
-                <p class="text-sm opacity-70 mb-4">Simple inputs with various configurations</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple inputs with various configurations
+                </p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Input component
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">// Dynamic import of the Input component
 
 const { default: Input } = await import('/components/data-input/input.js');
 
@@ -75,23 +76,24 @@ const requiredInput = Input({
 });
 
 // Insert all examples
-$('#demo').insert(
+$('#demo').content(
     div({ class: 'space-y-4' }, basic, withLabel, withColor, requiredInput)
 );</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Reactive Example</h2>
-                <p class="text-sm opacity-70 mb-4">Two-way binding with signals and live validation</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals and live
+                    validation</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Input } = await import('/components/data-input/input.js');
 
 const { signal, tags, $ } = Lightview;
@@ -131,13 +133,13 @@ const reactiveDemo = div({ class: 'space-y-4' },
     )
 );
 
-$('#demo').insert(reactiveDemo);</code></pre>
+$('#demo').content(reactiveDemo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -249,8 +251,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Sizes Example -->
-        <h2 class="text-xl font-bold mb-4">Sizes</h2>
-        <div class="flex flex-wrap items-end gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+        <div class="example-flex" style="align-items: flex-end; margin-bottom: 2rem;">
             <input type="text" placeholder="Extra small" class="input input-xs" />
             <input type="text" placeholder="Small" class="input input-sm" />
             <input type="text" placeholder="Medium" class="input" />
@@ -258,8 +260,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Colors Example -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div class="example-grid-responsive" style="margin-bottom: 2rem;">
             <input type="text" placeholder="Primary" class="input input-primary" />
             <input type="text" placeholder="Secondary" class="input input-secondary" />
             <input type="text" placeholder="Accent" class="input input-accent" />
@@ -271,8 +273,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- With Fieldset -->
-        <h2 class="text-xl font-bold mb-4">With Label (Fieldset Pattern)</h2>
-        <div class="max-w-md mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label (Fieldset Pattern)</h2>
+        <div style="max-width: 28rem; margin-bottom: 2rem;">
             <fieldset class="fieldset">
                 <legend class="fieldset-legend">Email Address</legend>
                 <input type="email" class="input w-full" placeholder="you@example.com" />

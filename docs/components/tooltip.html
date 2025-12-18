@@ -9,19 +9,19 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Tooltip' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Tooltip</h1>
         <p class="text-lg opacity-70 mb-6">
@@ -30,16 +30,16 @@
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Tooltips with different positions</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Tooltips with different positions</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Tooltip } = await import('/components/data-display/tooltip.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -61,21 +61,21 @@ const tooltips = div({ class: 'flex flex-wrap gap-4 p-8' },
     )
 );
 
-$('#demo').insert(tooltips);</code></pre>
+$('#demo').content(tooltips);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Colored Tooltips</h2>
-                <p class="text-sm opacity-70 mb-4">Tooltips with semantic colors</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Tooltips with semantic colors</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Tooltip } = await import('/components/data-display/tooltip.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -92,13 +92,13 @@ const tooltips = div({ class: 'flex flex-wrap gap-4 p-8' },
     )
 );
 
-$('#demo').insert(tooltips);</code></pre>
+$('#demo').content(tooltips);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -138,8 +138,8 @@ $('#demo').insert(tooltips);</code></pre>
         </div>
 
         <!-- Positions -->
-        <h2 class="text-xl font-bold mb-4">Positions</h2>
-        <div class="flex flex-wrap gap-4 p-8 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
+        <div class="flex flex-wrap gap-4 p-8" style="margin-bottom: 2rem;">
             <div class="tooltip tooltip-top" data-tip="Top"><button class="btn">Top</button></div>
             <div class="tooltip tooltip-bottom" data-tip="Bottom"><button class="btn">Bottom</button></div>
             <div class="tooltip tooltip-left" data-tip="Left"><button class="btn">Left</button></div>
@@ -147,8 +147,8 @@ $('#demo').insert(tooltips);</code></pre>
         </div>
 
         <!-- Colors -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="flex flex-wrap gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <div class="tooltip tooltip-primary" data-tip="Primary"><button class="btn">Primary</button></div>
             <div class="tooltip tooltip-secondary" data-tip="Secondary"><button class="btn">Secondary</button></div>
             <div class="tooltip tooltip-accent" data-tip="Accent"><button class="btn">Accent</button></div>
@@ -159,14 +159,14 @@ $('#demo').insert(tooltips);</code></pre>
         </div>
 
         <!-- Force Open -->
-        <h2 class="text-xl font-bold mb-4">Force Open</h2>
-        <div class="mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Force Open</h2>
+        <div style="margin-bottom: 2rem;">
             <div class="tooltip tooltip-open tooltip-primary" data-tip="Always visible">
                 <button class="btn btn-primary">Always Open</button>
             </div>
         </div>
 
-        
+
     </div>
 </div>
 

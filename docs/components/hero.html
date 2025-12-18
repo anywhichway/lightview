@@ -9,37 +9,37 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Hero' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Hero</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Hero is a large banner section with centered content.
             Perfect for landing pages and feature highlights.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Centered hero with call-to-action</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Centered hero with call-to-action</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 
 const { default: Hero } = await import('/components/layout/hero.js');
 const { default: Button } = await import('/components/actions/button.js');
@@ -57,13 +57,13 @@ const hero = Hero({ class: 'bg-base-200 min-h-64 rounded-box' },
     )
 );
 
-$('#demo').insert(hero);</code></pre>
+$('#demo').content(hero);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -88,8 +88,8 @@ $('#demo').insert(hero);</code></pre>
         </div>
 
         <!-- Static Examples -->
-        <h2 class="text-xl font-bold mb-4">With Figure</h2>
-        <div class="hero bg-base-200 min-h-64 rounded-box mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Figure</h2>
+        <div class="hero bg-base-200 min-h-64 rounded-box" style="margin-bottom: 2rem;">
             <div class="hero-content flex-col lg:flex-row">
                 <img src="https://picsum.photos/300/200" class="max-w-sm rounded-lg shadow-2xl" alt="Hero" />
                 <div>
@@ -100,8 +100,9 @@ $('#demo').insert(hero);</code></pre>
             </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">With Overlay</h2>
-        <div class="hero min-h-64 rounded-box mb-8" style="background-image: url(https://picsum.photos/800/400);">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Overlay</h2>
+        <div class="hero min-h-64 rounded-box"
+            style="background-image: url(https://picsum.photos/800/400); margin-bottom: 2rem;">
             <div class="hero-overlay bg-opacity-60 rounded-box"></div>
             <div class="hero-content text-neutral-content text-center">
                 <div class="max-w-md">
@@ -112,7 +113,7 @@ $('#demo').insert(hero);</code></pre>
             </div>
         </div>
 
-        
+
     </div>
 </div>
 

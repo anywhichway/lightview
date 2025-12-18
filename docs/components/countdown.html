@@ -9,37 +9,37 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Countdown' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Countdown</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Countdown displays a numeric value with smooth transition animation.
             Supports reactive values for live countdowns.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Static countdown values</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Static countdown values</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Countdown } = await import('/components/data-display/countdown.js');
 
 const { tags, $ } = Lightview;
@@ -53,21 +53,22 @@ const display = div({ class: 'flex gap-5' },
     Countdown({ value: 45, class: 'font-mono text-4xl' })
 );
 
-$('#demo').insert(display);</code></pre>
+$('#demo').content(display);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Live Timer</h2>
-                <p class="text-sm opacity-70 mb-4">Reactive countdown with animated transitions</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Reactive countdown with animated
+                    transitions</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Countdown } = await import('/components/data-display/countdown.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -112,13 +113,13 @@ const demo = div({ class: 'flex flex-col items-center gap-4' },
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -140,27 +141,32 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Static Examples -->
-        <h2 class="text-xl font-bold mb-4">With Labels</h2>
-        <div class="grid grid-flow-col gap-5 text-center auto-cols-max mb-8">
-            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Labels</h2>
+        <div
+            style="display: grid; grid-auto-flow: column; grid-auto-columns: max-content; gap: 1.25rem; text-align: center; margin-bottom: 2rem;">
+            <div style="display: flex; flex-direction: column; padding: 0.5rem;"
+                class="bg-neutral rounded-box text-neutral-content">
                 <span class="countdown font-mono text-5xl"><span id="cd-days" style="--value:15;"></span></span>
                 days
             </div>
-            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+            <div style="display: flex; flex-direction: column; padding: 0.5rem;"
+                class="bg-neutral rounded-box text-neutral-content">
                 <span class="countdown font-mono text-5xl"><span id="cd-hours" style="--value:10;"></span></span>
                 hours
             </div>
-            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+            <div style="display: flex; flex-direction: column; padding: 0.5rem;"
+                class="bg-neutral rounded-box text-neutral-content">
                 <span class="countdown font-mono text-5xl"><span id="cd-min" style="--value:24;"></span></span>
                 min
             </div>
-            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+            <div style="display: flex; flex-direction: column; padding: 0.5rem;"
+                class="bg-neutral rounded-box text-neutral-content">
                 <span class="countdown font-mono text-5xl"><span id="cd-sec" style="--value:59;"></span></span>
                 sec
             </div>
         </div>
 
-        
+
     </div>
 </div>
 

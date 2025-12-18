@@ -302,23 +302,27 @@ const Badge = (props) => {
 };
 ```
 
-**Component Registry (lightview-x):**
+**Registering Components:**
 
-For Object DOM syntax, you can register components so they can be referenced by name (string):
+If you add a component to Ligtvhiew.tags, then you can treate it ligke any other tag. It will even work with Object DOM syntax.
 
 ```javascript
 // Register individual components
-LightviewX.registerComponent('Card', Card);
-LightviewX.registerComponent('Badge', Badge);
+Lightview.tags['Badge'] = Badge;
+```
 
-// Enable global scope fallback (checks window.ComponentName if not in registry)
-LightviewX.registerComponent('*');
+```javascript
+const { div, Badge } = tags;
+const app = div(
+    Badge({ text: 'New' })
+);
+```
 
+```javascript
 // Now use by name in Object DOM syntax
 LightviewX.useObjectDOMSyntax();
 
-const app = div(
-    { Card: { title: 'Hello', description: 'Works!' } },
+const app2 = div(
     { Badge: { text: 'New' } }
 );
 ```
@@ -335,7 +339,6 @@ window.Alert = (props) => ({
 });
 
 // Enable global lookup
-LightviewX.registerComponent('*');
 LightviewX.useObjectDOMSyntax();
 
 // Use directly

@@ -9,37 +9,37 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Radial Progress' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Radial Progress</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Radial progress shows a circular progress indicator.
             Supports custom colors, sizes, and thickness.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Static radial progress indicators</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Static radial progress indicators</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 
 const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
 
@@ -54,21 +54,21 @@ const demo = div({ class: 'flex gap-4' },
     RadialProgress({ value: 100, color: 'success' }, '100%')
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Animated Progress</h2>
-                <p class="text-sm opacity-70 mb-4">Live updating progress indicator</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Live updating progress indicator</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 
 const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
 const { default: Button } = await import('/components/actions/button.js');
@@ -104,13 +104,13 @@ const demo = div({ class: 'flex flex-col items-center gap-4' },
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -150,8 +150,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Colors -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="flex gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
             <div class="radial-progress text-primary" style="--value:70;" role="progressbar">70%</div>
             <div class="radial-progress text-secondary" style="--value:70;" role="progressbar">70%</div>
             <div class="radial-progress text-accent" style="--value:70;" role="progressbar">70%</div>
@@ -159,14 +159,14 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Custom Size & Thickness -->
-        <h2 class="text-xl font-bold mb-4">Custom Size & Thickness</h2>
-        <div class="flex gap-4 items-center mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Custom Size & Thickness</h2>
+        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
             <div class="radial-progress" style="--value:70; --size:8rem;" role="progressbar">70%</div>
             <div class="radial-progress" style="--value:70; --size:8rem; --thickness:2px;" role="progressbar">70%</div>
             <div class="radial-progress" style="--value:70; --size:8rem; --thickness:1rem;" role="progressbar">70%</div>
         </div>
 
-        
+
     </div>
 </div>
 

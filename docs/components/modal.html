@@ -9,38 +9,39 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Modal' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Modal</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Modal is used to show a dialog or a box when you click a button.
             Uses the native HTML <code>&lt;dialog&gt;</code> element for accessibility.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Simple modal with open/close functionality</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple modal with open/close functionality
+                </p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Modal } = await import('/components/actions/modal.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -67,21 +68,21 @@ const trigger = Button({
     onclick: () => Modal.open(modalId)
 }, 'Open Modal');
 
-$('#demo').insert(trigger, modal);</code></pre>
+$('#demo').content(trigger, modal);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Confirmation Dialog</h2>
-                <p class="text-sm opacity-70 mb-4">Modal with confirm/cancel actions</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Modal with confirm/cancel actions</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Modal } = await import('/components/actions/modal.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -123,13 +124,13 @@ const demo = div({ class: 'flex items-center gap-4' },
     confirmModal
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -169,8 +170,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Static Methods -->
-        <h2 class="text-xl font-bold mb-4">Static Methods</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Static Methods</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -192,8 +193,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Sub-components -->
-        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -219,8 +220,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Positions -->
-        <h2 class="text-xl font-bold mb-4">Positions</h2>
-        <div class="flex flex-wrap gap-2 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <button class="btn" onclick="document.getElementById('modal_top').showModal()">Top</button>
             <button class="btn" onclick="document.getElementById('modal_middle').showModal()">Middle (default)</button>
             <button class="btn" onclick="document.getElementById('modal_bottom').showModal()">Bottom</button>
@@ -260,9 +261,10 @@ $('#demo').insert(demo);</code></pre>
         </dialog>
 
         <!-- Responsive -->
-        <h2 class="text-xl font-bold mb-4">Responsive Modal</h2>
-        <p class="opacity-70 mb-4">Full-screen on mobile, centered on desktop.</p>
-        <button class="btn btn-primary mb-8" onclick="document.getElementById('modal_responsive').showModal()">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Responsive Modal</h2>
+        <p style="opacity: 0.7; margin-bottom: 1rem;">Full-screen on mobile, centered on desktop.</p>
+        <button class="btn btn-primary" style="margin-bottom: 2rem;"
+            onclick="document.getElementById('modal_responsive').showModal()">
             Open Responsive Modal
         </button>
 
@@ -281,7 +283,7 @@ $('#demo').insert(demo);</code></pre>
             </form>
         </dialog>
 
-        
+
     </div>
 </div>
 

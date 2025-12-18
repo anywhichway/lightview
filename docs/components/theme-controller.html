@@ -9,19 +9,19 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Theme Controller' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Theme Controller</h1>
         <p class="text-lg opacity-70 mb-6">
@@ -30,16 +30,16 @@
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Theme toggle with reactive state</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Theme toggle with reactive state</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 
 const { default: ThemeController } = await import('/components/actions/theme-controller.js');
 
@@ -59,21 +59,21 @@ const demo = div({ class: 'flex items-center gap-4' },
     span({ class: 'text-sm' }, () => isDark.value ? '🌙 Dark Mode' : '☀️ Light Mode')
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Theme Selector</h2>
-                <p class="text-sm opacity-70 mb-4">Radio buttons for multiple themes</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Radio buttons for multiple themes</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 
 const { default: ThemeController } = await import('/components/actions/theme-controller.js');
 
@@ -96,13 +96,13 @@ const demo = div({ class: 'flex flex-wrap gap-2' },
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -160,8 +160,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Static Examples -->
-        <h2 class="text-xl font-bold mb-4">Toggle (Light/Dark)</h2>
-        <label class="swap swap-rotate mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Toggle (Light/Dark)</h2>
+        <label class="swap swap-rotate" style="margin-bottom: 2rem;">
             <input type="checkbox" class="theme-controller" value="dark" />
             <svg class="swap-off h-10 w-10 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
@@ -173,8 +173,8 @@ $('#demo').insert(demo);</code></pre>
             </svg>
         </label>
 
-        <h2 class="text-xl font-bold mb-4">Radio Buttons</h2>
-        <div class="flex flex-wrap gap-2 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Radio Buttons</h2>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <input type="radio" name="theme-buttons" class="btn theme-controller" aria-label="Light" value="light" />
             <input type="radio" name="theme-buttons" class="btn theme-controller" aria-label="Dark" value="dark" />
             <input type="radio" name="theme-buttons" class="btn theme-controller" aria-label="Cupcake"
@@ -183,7 +183,7 @@ $('#demo').insert(demo);</code></pre>
                 value="cyberpunk" />
         </div>
 
-        
+
     </div>
 </div>
 

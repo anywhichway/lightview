@@ -9,37 +9,37 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Diff' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Diff</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Diff component shows a side-by-side or before/after comparison.
             Perfect for image comparisons and visual changes.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Image comparison with drag resizer</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Image comparison with drag resizer</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Diff } = await import('/components/data-display/diff.js');
 
 const { tags, $ } = Lightview;
@@ -50,13 +50,13 @@ const diff = Diff({ class: 'aspect-16/9', style: 'max-width: 500px;' },
     Diff.Resizer({})
 );
 
-$('#demo').insert(diff);</code></pre>
+$('#demo').content(diff);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -78,8 +78,8 @@ $('#demo').insert(diff);</code></pre>
         </div>
 
         <!-- Sub-components -->
-        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -109,15 +109,15 @@ $('#demo').insert(diff);</code></pre>
         </div>
 
         <!-- Static Example -->
-        <h2 class="text-xl font-bold mb-4">Interactive Demo</h2>
-        <p class="text-sm opacity-70 mb-2">Drag the divider to compare images:</p>
-        <div class="diff aspect-16/9 mb-8" style="max-width: 600px;">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Interactive Demo</h2>
+        <p class="text-sm" style="opacity: 0.7; margin-bottom: 0.5rem;">Drag the divider to compare images:</p>
+        <div class="diff aspect-16/9" style="max-width: 600px; margin-bottom: 2rem;">
             <div class="diff-item-1"><img src="https://picsum.photos/600/400?grayscale" alt="Before" /></div>
             <div class="diff-item-2"><img src="https://picsum.photos/600/400" alt="After" /></div>
             <div class="diff-resizer"></div>
         </div>
 
-        
+
     </div>
 </div>
 

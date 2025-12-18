@@ -9,36 +9,36 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Dropdown' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
         <h1>Dropdown</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Dropdown can open a menu or any other element when clicking or hovering.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Dropdown with menu items</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Dropdown with menu items</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Dropdown } = await import('/components/actions/dropdown.js');
 
 const { tags, $ } = Lightview;
@@ -54,21 +54,21 @@ const dropdown = Dropdown({},
     )
 );
 
-$('#demo').insert(div({ class: 'h-40' }, dropdown));</code></pre>
+$('#demo').content(div({ class: 'h-40' }, dropdown));</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Dynamic Menu</h2>
-                <p class="text-sm opacity-70 mb-4">Dropdown with reactive menu items</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Dropdown with reactive menu items</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Dropdown } = await import('/components/actions/dropdown.js');
 
 const { signal, tags, $ } = Lightview;
@@ -97,13 +97,13 @@ const demo = div({ class: 'flex gap-4 items-center h-48' },
     )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -137,8 +137,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Sub-components -->
-        <h2 class="text-xl font-bold mb-4">Sub-components</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -164,8 +164,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Positions -->
-        <h2 class="text-xl font-bold mb-4">Positions</h2>
-        <div class="flex flex-wrap gap-2 mb-8 py-32">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
+        <div class="example-flex" style="margin-bottom: 2rem; padding-top: 8rem; padding-bottom: 8rem;">
             <div class="dropdown dropdown-bottom">
                 <div tabindex="0" role="button" class="btn">Bottom</div>
                 <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
@@ -193,8 +193,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Hover -->
-        <h2 class="text-xl font-bold mb-4">Hover</h2>
-        <div class="dropdown dropdown-hover mb-8 h-32">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Hover</h2>
+        <div class="dropdown dropdown-hover" style="margin-bottom: 2rem; height: 8rem;">
             <div tabindex="0" role="button" class="btn m-1">Hover me</div>
             <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                 <li><a>Item 1</a></li>
@@ -202,7 +202,7 @@ $('#demo').insert(demo);</code></pre>
             </ul>
         </div>
 
-        
+
     </div>
 </div>
 

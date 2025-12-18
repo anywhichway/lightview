@@ -9,7 +9,7 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
@@ -21,26 +21,27 @@
                 ]
             });
 
-            $('#page-breadcrumbs').insert(breadcrumbs);
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Badge</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Badges are used to inform the user of the status of specific data.
             Perfect for notifications, labels, and status indicators.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Badges with different colors and variants</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Badges with different colors and variants
+                </p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Badge } = await import('/components/data-display/badge.js');
 
 const { tags, $ } = Lightview;
@@ -66,21 +67,22 @@ const badges = div({ class: 'space-y-4' },
     )
 );
 
-$('#demo').insert(badges);</code></pre>
+$('#demo').content(badges);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Notification Counter</h2>
-                <p class="text-sm opacity-70 mb-4">Reactive badge showing notification count</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Reactive badge showing notification count
+                </p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Badge } = await import('/components/data-display/badge.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -110,13 +112,13 @@ const demo = div({ class: 'flex items-center gap-8' },
     }, 'Clear')
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -151,8 +153,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Colors -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="flex flex-wrap gap-2 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <span class="badge">Default</span>
             <span class="badge badge-neutral">Neutral</span>
             <span class="badge badge-primary">Primary</span>
@@ -166,16 +168,16 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Variants -->
-        <h2 class="text-xl font-bold mb-4">Variants</h2>
-        <div class="flex flex-wrap gap-2 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <span class="badge badge-outline">Outline</span>
             <span class="badge badge-soft badge-primary">Soft</span>
             <span class="badge badge-dash badge-secondary">Dash</span>
         </div>
 
         <!-- Sizes -->
-        <h2 class="text-xl font-bold mb-4">Sizes</h2>
-        <div class="flex items-center gap-2 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+        <div class="example-flex-centered" style="margin-bottom: 2rem;">
             <span class="badge badge-xs">xs</span>
             <span class="badge badge-sm">sm</span>
             <span class="badge badge-md">md</span>
@@ -183,8 +185,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- In Button -->
-        <h2 class="text-xl font-bold mb-4">In Button</h2>
-        <div class="flex gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">In Button</h2>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <button class="btn">
                 Inbox
                 <div class="badge">99+</div>

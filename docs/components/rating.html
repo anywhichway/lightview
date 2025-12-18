@@ -9,7 +9,7 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
@@ -21,26 +21,27 @@
                 ]
             });
 
-            $('#page-breadcrumbs').insert(breadcrumbs);
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Rating</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Rating allows users to rate items with stars or other shapes.
             Supports labels, half stars, different masks, and reactive state binding.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Examples</h2>
-                <p class="text-sm opacity-70 mb-4">Rating components with various configurations</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Rating components with various
+                    configurations</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Rating component
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">// Dynamic import of the Rating component
 
 const { default: Rating } = await import('/components/data-input/rating.js');
 
@@ -76,23 +77,23 @@ const halfStars = Rating({
 });
 
 // Insert all examples
-$('#demo').insert(
+$('#demo').content(
     div({ class: 'space-y-6' }, basic, withLabel, hearts, halfStars)
 );</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Reactive Example</h2>
-                <p class="text-sm opacity-70 mb-4">Two-way binding with signals</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Rating } = await import('/components/data-input/rating.js');
 
 const { signal, tags, $ } = Lightview;
@@ -128,13 +129,13 @@ const reactiveDemo = div({ class: 'space-y-4' },
     )
 );
 
-$('#demo').insert(reactiveDemo);</code></pre>
+$('#demo').content(reactiveDemo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -234,8 +235,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Sizes Example -->
-        <h2 class="text-xl font-bold mb-4">Sizes</h2>
-        <div class="flex flex-col gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+        <div class="example-stack" style="margin-bottom: 2rem;">
             <div class="rating rating-xs">
                 <input type="radio" name="rating-xs" class="mask mask-star-2 bg-orange-400" />
                 <input type="radio" name="rating-xs" class="mask mask-star-2 bg-orange-400" />
@@ -267,8 +268,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Half Stars Example -->
-        <h2 class="text-xl font-bold mb-4">Half Stars</h2>
-        <div class="rating rating-lg rating-half mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Half Stars</h2>
+        <div class="rating rating-lg rating-half" style="margin-bottom: 2rem;">
             <input type="radio" name="rating-half" class="rating-hidden" />
             <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-1 bg-green-500" />
             <input type="radio" name="rating-half" class="mask mask-star-2 mask-half-2 bg-green-500" />
@@ -283,8 +284,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Different Masks -->
-        <h2 class="text-xl font-bold mb-4">Different Shapes</h2>
-        <div class="flex flex-col gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Different Shapes</h2>
+        <div class="example-stack" style="margin-bottom: 2rem;">
             <div>
                 <p class="text-sm opacity-70 mb-1">Hearts</p>
                 <div class="rating">

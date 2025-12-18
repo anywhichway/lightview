@@ -9,7 +9,7 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
@@ -21,26 +21,27 @@
                 ]
             });
 
-            $('#page-breadcrumbs').insert(breadcrumbs);
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Toggle</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Toggle is a checkbox styled as a switch.
             Used for binary choices or switching settings on/off.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Examples</h2>
-                <p class="text-sm opacity-70 mb-4">Toggle switches with various configurations</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Toggle switches with various
+                    configurations</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">// Dynamic import of the Toggle component
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">// Dynamic import of the Toggle component
 
 const { default: Toggle } = await import('/components/data-input/toggle.js');
 
@@ -76,23 +77,23 @@ const disabled = Toggle({
 });
 
 // Insert all examples
-$('#demo').insert(
+$('#demo').content(
     div({ class: 'space-y-4' }, basic, withDesc, labelRight, disabled)
 );</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Reactive Example</h2>
-                <p class="text-sm opacity-70 mb-4">Two-way binding with signals</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Toggle } = await import('/components/data-input/toggle.js');
 
 const { signal, tags, $ } = Lightview;
@@ -129,13 +130,13 @@ const reactiveDemo = div({ class: 'space-y-4 max-w-sm' },
     )
 );
 
-$('#demo').insert(reactiveDemo);</code></pre>
+$('#demo').content(reactiveDemo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -211,8 +212,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Colors Example -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="flex flex-wrap gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <input type="checkbox" class="toggle" checked />
             <input type="checkbox" class="toggle toggle-primary" checked />
             <input type="checkbox" class="toggle toggle-secondary" checked />
@@ -224,8 +225,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- Sizes Example -->
-        <h2 class="text-xl font-bold mb-4">Sizes</h2>
-        <div class="flex items-center gap-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+        <div class="example-flex" style="margin-bottom: 2rem;">
             <input type="checkbox" class="toggle toggle-xs" checked />
             <input type="checkbox" class="toggle toggle-sm" checked />
             <input type="checkbox" class="toggle toggle-md" checked />
@@ -233,8 +234,8 @@ $('#demo').insert(reactiveDemo);</code></pre>
         </div>
 
         <!-- With Label -->
-        <h2 class="text-xl font-bold mb-4">With Label</h2>
-        <div class="form-control w-52 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label</h2>
+        <div class="form-control w-52" style="margin-bottom: 2rem;">
             <label class="label cursor-pointer">
                 <span class="label-text">Remember me</span>
                 <input type="checkbox" class="toggle toggle-primary" checked />

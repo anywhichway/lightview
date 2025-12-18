@@ -145,13 +145,13 @@ const App = div({ class: 'product-card' },
 );
 
 // The $ function selects a DOM element and returns a Lightview-enhanced wrapper
-// .insert() adds our reactive App as a child of #app
-$('#app').insert(App);
+// .content() adds our reactive App as a child of #app
+$('#app').content(App);
 
 // ---------------------------------------------------------------
 // STYLES: Normally loaded first, shown here to keep focus on Lightview code
 // ---------------------------------------------------------------
-$('#app').insert(style({},
+$('#app').content(style({},
 \`.product-card { width: 280px; font-family: system-ui, sans-serif; }
 .product-image { width: 100%; border-radius: 8px; margin-bottom: 1rem; }
 .product-title { margin: 0 0 0.25rem; font-size: 1.1rem; }
@@ -170,7 +170,7 @@ $('#app').insert(style({},
                     <li style="margin-bottom: 0.75rem;"><code>signal(value)</code> — Creates a reactive container. When you change <code>quantity.value</code>, the UI updates automatically.</li>
                     <li style="margin-bottom: 0.75rem;"><code>computed(() => ...)</code> — Creates a derived value. <code>total</code> recalculates whenever <code>price</code> or <code>quantity</code> changes.</li>
                     <li style="margin-bottom: 0.75rem;"><code>tags</code> — Build HTML elements with pure JavaScript. No JSX needed.</li>
-                    <li style="margin-bottom: 0.75rem;"><code>$('#app')</code> — The <code>$</code> function queries the DOM and returns a Lightview-enhanced element. Use <code>.insert()</code> to add children. An optional second argument can say where, e.g. 'beforebegin', 'afterbegin', 'beforeend', 'afterend'.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>$('#app')</code> — The <code>$</code> function queries the DOM and returns a Lightview-enhanced element. Use <code>.content()</code> to add children. An optional second argument can say where, e.g. 'beforebegin', 'afterbegin', 'beforeend', 'afterend'.</li>
                 </ul>
                 <p><strong>Try it:</strong> Click the + and − buttons to see the total update!</p>
             `
@@ -247,7 +247,7 @@ const App = element('div', { class: 'shop-container' }, [
     ]}
 ]);
 
-$('#app').insert(App);`,
+$('#app').content(App);`,
                 concepts: `
                 <h3 style="margin-top: 0; color: var(--site-primary);">Step 2: vDOM Syntax + State</h3>
                 <p>This step uses <strong>vDOM syntax</strong> — an alternate way to define elements using plain objects.</p>
@@ -337,7 +337,7 @@ const App = element('div', { class: 'reviews-container' }, [
     ]}}
 ]);
 
-$('#app').insert(App);`,
+$('#app').content(App);`,
                 concepts: `
                 <h3 style="margin-top: 0; color: var(--site-primary);">Step 3: Hypermedia + Multiple Formats</h3>
                 <p>Lightview's <strong>hypermedia</strong> feature can load content from HTML, VDOM JSON, or Object DOM JSON files.</p>
@@ -417,7 +417,7 @@ const App = Card({ class: 'w-[320px] bg-base-100 shadow-xl' },
     )
 );
 
-$('#app').insert(App);`,
+$('#app').content(App);`,
                 concepts: `
                 <h3 style="margin-top: 0; color: var(--site-primary);">Step 4: Components</h3>
                 <p>Use the <strong>Lightview Component Library</strong> for polished, accessible UI elements.</p>

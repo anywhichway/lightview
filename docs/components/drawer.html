@@ -9,37 +9,37 @@
 <div class="section">
   <div class="section-content" style="max-width: 1000px;">
     <!-- Breadcrumbs -->
-    <div id="page-breadcrumbs" class="mb-4"></div>
+    <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
     <script type="module">
-        const { $ } = Lightview;
-        const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-        
-        const breadcrumbs = Breadcrumbs({
-            items: [
-                { label: 'Components', href: '/docs/components' },
-                { label: 'Drawer' }
-            ]
-        });
-        
-        $('#page-breadcrumbs').insert(breadcrumbs);
+      const { $ } = Lightview;
+      const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+
+      const breadcrumbs = Breadcrumbs({
+        items: [
+          { label: 'Components', href: '/docs/components' },
+          { label: 'Drawer' }
+        ]
+      });
+
+      $('#page-breadcrumbs').content(breadcrumbs);
     </script>
     <h1>Drawer</h1>
-    <p class="text-lg opacity-70 mb-6">
+    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
       Drawer is a sidebar that can be opened from the left or right side.
       Perfect for navigation menus and side panels.
     </p>
 
     <!-- Basic Example with Examplify -->
-    <div class="card bg-base-200 mb-8">
+    <div class="card bg-base-200" style="margin-bottom: 2rem;">
       <div class="card-body">
         <h2 class="card-title">Basic Example</h2>
-        <p class="text-sm opacity-70 mb-4">Drawer with toggle button and menu</p>
+        <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Drawer with toggle button and menu</p>
 
         <!-- Preview container -->
-        <div id="basic-preview" class="mb-4"></div>
+        <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
         <!-- Code display -->
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+        <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Drawer } = await import('/components/layout/drawer.js');
 
 const { tags, $ } = Lightview;
@@ -63,21 +63,21 @@ const drawer = Drawer({ id: drawerId },
     )
 );
 
-$('#demo').insert(drawer);</code></pre>
+$('#demo').content(drawer);</code></pre>
       </div>
     </div>
 
     <!-- Reactive Example with Examplify -->
-    <div class="card bg-base-200 mb-8">
+    <div class="card bg-base-200" style="margin-bottom: 2rem;">
       <div class="card-body">
         <h2 class="card-title">Right Side Drawer</h2>
-        <p class="text-sm opacity-70 mb-4">Drawer opening from the right</p>
+        <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Drawer opening from the right</p>
 
         <!-- Preview container -->
-        <div id="reactive-preview" class="mb-4"></div>
+        <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
         <!-- Code display -->
-        <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+        <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Drawer } = await import('/components/layout/drawer.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -103,13 +103,13 @@ const drawer = Drawer({ id: drawerId, end: true },
     )
 );
 
-$('#demo').insert(drawer);</code></pre>
+$('#demo').content(drawer);</code></pre>
       </div>
     </div>
 
     <!-- Props Table -->
-    <h2 class="text-xl font-bold mb-4">Props</h2>
-    <div class="overflow-x-auto mb-8">
+    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+    <div style="overflow-x: auto; margin-bottom: 2rem;">
       <table class="table table-zebra">
         <thead>
           <tr>
@@ -143,8 +143,8 @@ $('#demo').insert(drawer);</code></pre>
     </div>
 
     <!-- Sub-components -->
-    <h2 class="text-xl font-bold mb-4">Sub-components</h2>
-    <div class="overflow-x-auto mb-8">
+    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+    <div style="overflow-x: auto; margin-bottom: 2rem;">
       <table class="table table-zebra">
         <thead>
           <tr>
@@ -174,8 +174,8 @@ $('#demo').insert(drawer);</code></pre>
     </div>
 
     <!-- Static Example -->
-    <h2 class="text-xl font-bold mb-4">Interactive Demo</h2>
-    <div class="drawer mb-8 h-48 rounded-lg overflow-hidden border border-base-300">
+    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Interactive Demo</h2>
+    <div class="drawer rounded-lg border border-base-300" style="margin-bottom: 2rem; height: 12rem; overflow: hidden;">
       <input id="demo-drawer" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content flex flex-col items-center justify-center">
         <label for="demo-drawer" class="btn btn-primary drawer-button">Open drawer</label>
@@ -190,7 +190,7 @@ $('#demo').insert(drawer);</code></pre>
       </div>
     </div>
 
-    
+
   </div>
 </div>
 

@@ -198,7 +198,7 @@
 
 const { $ } = Lightview;
 
-$('#app').insert(
+$('#app').content(
     Card({ shadow: 'md' },
         Card.Body({},
             Badge({ color: 'success' }, 'New'),
@@ -216,7 +216,7 @@ $('#app').insert(
                         <pre class="bg-base-300 p-3 rounded-lg text-sm overflow-x-auto"><code>const { tags, $ } = Lightview;
 const { div, button, span } = tags;
 
-$('#app').insert(
+$('#app').content(
     div({ class: 'card shadow-md' },
         div({ class: 'card-body' },
             span({ class: 'badge badge-success' }, 'New'),
@@ -257,7 +257,7 @@ $('#app').insert(
 */
 
 // 2. Pass the URL to the component
-$('#app').insert(
+$('#app').content(
     Card({ 
         useShadow: true,
         // LightviewX handles fetching and caching automatically

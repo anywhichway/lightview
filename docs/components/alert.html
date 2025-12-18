@@ -9,38 +9,38 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
+        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
         <script type="module">
             const { $ } = Lightview;
             const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-            
+
             const breadcrumbs = Breadcrumbs({
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Alert' }
                 ]
             });
-            
-            $('#page-breadcrumbs').insert(breadcrumbs);
+
+            $('#page-breadcrumbs').content(breadcrumbs);
         </script>
 
         <h1>Alert</h1>
-        <p class="text-lg opacity-70 mb-6">
+        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
             Alert informs users about important events or status messages.
             Supports multiple colors, variants, and optional icons.
         </p>
 
         <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm opacity-70 mb-4">Alerts with different colors and icons</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Alerts with different colors and icons</p>
 
                 <!-- Preview container -->
-                <div id="basic-preview" class="mb-4"></div>
+                <div id="basic-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="basic-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="basic-code">
 const { default: Alert } = await import('/components/data-display/alert.js');
 
 const { tags, $ } = Lightview;
@@ -61,21 +61,21 @@ const alerts = div({ class: 'space-y-4' },
     )
 );
 
-$('#demo').insert(alerts);</code></pre>
+$('#demo').content(alerts);</code></pre>
             </div>
         </div>
 
         <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200 mb-8">
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
             <div class="card-body">
                 <h2 class="card-title">Dismissible Alert</h2>
-                <p class="text-sm opacity-70 mb-4">Alert with close button using signals</p>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Alert with close button using signals</p>
 
                 <!-- Preview container -->
-                <div id="reactive-preview" class="mb-4"></div>
+                <div id="reactive-preview" style="margin-bottom: 1rem;"></div>
 
                 <!-- Code display -->
-                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="reactive-code">
+                <pre class="bg-base-300 rounded-lg text-sm" style="padding: 1rem; overflow-x: auto;"><code id="reactive-code">
 const { default: Alert } = await import('/components/data-display/alert.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -104,13 +104,13 @@ const demo = div({},
         )
 );
 
-$('#demo').insert(demo);</code></pre>
+$('#demo').content(demo);</code></pre>
             </div>
         </div>
 
         <!-- Props Table -->
-        <h2 class="text-xl font-bold mb-4">Props</h2>
-        <div class="overflow-x-auto mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table class="table table-zebra">
                 <thead>
                     <tr>
@@ -156,43 +156,38 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Colors -->
-        <h2 class="text-xl font-bold mb-4">Colors</h2>
-        <div class="space-y-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+        <div class="example-stack" style="margin-bottom: 2rem;">
             <div role="alert" class="alert">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    class="stroke-info h-6 w-6 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info icon-sm">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <span>Default alert — neutral information message.</span>
             </div>
             <div role="alert" class="alert alert-info">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    class="h-6 w-6 shrink-0 stroke-current">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="icon-sm stroke-current">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <span>Info alert — informational message.</span>
             </div>
             <div role="alert" class="alert alert-success">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                    viewBox="0 0 24 24">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>Success alert — operation completed successfully.</span>
             </div>
             <div role="alert" class="alert alert-warning">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                    viewBox="0 0 24 24">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <span>Warning alert — caution is advised.</span>
             </div>
             <div role="alert" class="alert alert-error">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                    viewBox="0 0 24 24">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -201,8 +196,8 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- Variants -->
-        <h2 class="text-xl font-bold mb-4">Variants</h2>
-        <div class="space-y-4 mb-8">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
+        <div class="example-stack" style="margin-bottom: 2rem;">
             <div role="alert" class="alert alert-soft alert-info">
                 <span>Soft variant — lighter background.</span>
             </div>
@@ -215,10 +210,9 @@ $('#demo').insert(demo);</code></pre>
         </div>
 
         <!-- With Actions -->
-        <h2 class="text-xl font-bold mb-4">With Actions</h2>
-        <div role="alert" class="alert mb-8">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                class="stroke-info h-6 w-6 shrink-0">
+        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Actions</h2>
+        <div role="alert" class="alert" style="margin-bottom: 2rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info icon-sm">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
@@ -229,7 +223,7 @@ $('#demo').insert(demo);</code></pre>
             </div>
         </div>
 
-        
+
     </div>
 </div>
 

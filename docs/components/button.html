@@ -12,19 +12,16 @@
 <div class="section">
     <div class="section-content" style="max-width: 1000px;">
         <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs"></div>
-        <script type="module">
-            const { $ } = Lightview;
-            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-
-            const breadcrumbs = Breadcrumbs({
+        <!-- Breadcrumbs -->
+        <script>
+            const breadcrumbs = Lightview.tags.Breadcrumbs({
+                id: 'page-breadcrumbs',
                 items: [
                     { label: 'Components', href: '/docs/components' },
                     { label: 'Button' }
                 ]
             });
-
-            $('#page-breadcrumbs').insert(breadcrumbs);
+            document.currentScript.replaceWith(breadcrumbs.domEl);
         </script>
 
         <h1>Button</h1>
@@ -34,65 +31,21 @@
         </p>
 
         <!-- Interactive Examples -->
-        <div id="basic-example-card"></div>
-        <div id="reactive-example-card"></div>
+        <!-- Interactive Examples -->
 
-        <script type="module">
-            const { default: Card } = await import('/components/data-display/card.js');
-            const { tags, $ } = Lightview;
-            const { h2, p, pre, code, div } = tags;
-
-            // Helper to generate Card with Examplify setup
-            const createExampleCard = (title, description, codeContent, idPrefix, height = '100px') => {
-                const card = Card({
-                    styleSheets: ['/docs/components/index.css'],
-                    useShadow: true // Explicitly enable shadow DOM to ensure consistent behavior
-                },
-                    Card.Body({},
-                        h2({ class: "card-title" }, title),
-                        p({ class: "text-sm", style: "opacity: 0.7; margin-bottom: 1rem;" }, description),
-                        div({ id: `${idPrefix}-preview`, style: "margin-bottom: 1rem;" }),
-                        pre({ class: "code-block" },
-                            code({ id: `${idPrefix}-code`, contenteditable: true }, codeContent)
-                        )
-                    )
-                );
-                return card;
-            };
-
-            const runExamplify = (containerId, idPrefix, height) => {
-                if (typeof examplify !== 'undefined') {
-                    const container = document.getElementById(containerId);
-                    if (!container) return;
-
-                    // Look for shadow root on the first child of the container (the Card host)
-                    let searchRoot = document;
-                    const cardHost = container.firstElementChild;
-                    if (cardHost && cardHost.shadowRoot) {
-                        searchRoot = cardHost.shadowRoot;
-                    }
-
-                    const codeEl = searchRoot.getElementById(`${idPrefix}-code`);
-                    const previewEl = searchRoot.getElementById(`${idPrefix}-preview`);
-
-                    if (codeEl && previewEl) {
-                        const result = examplify(codeEl, {
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            html: '<div id="demo"></div>',
-                            height: height
-                        });
-                        if (result && result.iframe) {
-                            previewEl.appendChild(result.iframe);
-                            result.iframe.style.border = '1px solid oklch(var(--bc) / 0.2)';
-                            result.iframe.style.borderRadius = '0.5rem';
-                        }
-                    }
-                }
-            };
-
-            // 1. Basic Example Code
-            const basicCode = `const { default: Button } = await import('/components/actions/button.js');
+        <!-- Basic Usage -->
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
+            <div class="card-body">
+                <h2 class="card-title">Basic Usage</h2>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Standard buttons with default styling.</p>
+                <pre><script>
+                    examplify(document.currentScript.nextElementSibling, {
+                        at: document.currentScript.parentElement,
+                        scripts: ['/lightview.js', '/lightview-x.js'],
+                        type: 'module',
+                        height: '100px'
+                    });
+                </script><code id="basic-code" contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
@@ -102,16 +55,30 @@ const buttons = div({ style: 'display: flex; gap: 0.5rem;' },
     Button({ color: 'secondary' }, 'Secondary')
 );
 
-$('#demo').insert(buttons);`;
+$('#demo').content(buttons);</code></pre>
+            </div>
+        </div>
 
-            // 2. Reactive Example Code
-            const reactiveCode = `const { default: Button } = await import('/components/actions/button.js');
+        <!-- Reactive State -->
+        <div class="card bg-base-200" style="margin-bottom: 2rem;">
+            <div class="card-body">
+                <h2 class="card-title">Reactive State</h2>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Buttons with built-in loading and state
+                    handling.</p>
+                <pre><script>
+                    examplify(document.currentScript.nextElementSibling, {
+                        at: document.currentScript.parentElement,
+                        scripts: ['/lightview.js', '/lightview-x.js'],
+                        type: 'module',
+                        height: '80px'
+                    });
+                </script><code id="reactive-code" contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 const { div, span } = tags;
 
 const isLoading = signal(false);
 
-const demo = div({ style: 'display: flex; gap: 1rem; align-items: center;' },
+const button = div({ style: 'display: flex; gap: 1rem; align-items: center;' },
     Button({ 
         color: 'primary',
         loading: () => isLoading.value,
@@ -126,16 +93,9 @@ const demo = div({ style: 'display: flex; gap: 1rem; align-items: center;' },
     )
 );
 
-$('#demo').insert(demo);`;
-
-            // Insert Cards
-            $('#basic-example-card').insert(createExampleCard('Basic Usage', 'Standard buttons with default styling.', basicCode, 'basic', '100px'));
-            $('#reactive-example-card').insert(createExampleCard('Reactive State', 'Buttons with built-in loading and state handling.', reactiveCode, 'reactive', '80px'));
-
-            // Run Examplify
-            runExamplify('basic-example-card', 'basic');
-            runExamplify('reactive-example-card', 'reactive');
-        </script>
+$('#demo').content(button);</code></pre>
+            </div>
+        </div>
 
         <!-- Props Table -->
         <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
@@ -238,7 +198,7 @@ $('#demo').insert(demo);`;
             );
 
             // Colors Demo
-            $('#colors-demo').insert([
+            $('#colors-demo').content([
                 Button({ useShadow: true }, "Default"),
                 Button({ color: "neutral" }, "Neutral"),
                 Button({ color: "primary" }, "Primary"),
@@ -251,7 +211,7 @@ $('#demo').insert(demo);`;
             ]);
 
             // Variants Demo
-            $('#variants-demo').insert([
+            $('#variants-demo').content([
                 div({ style: "margin-bottom: 1rem;" },
                     h3({ class: "font-semibold", style: "margin-bottom: 0.5rem;" }, "Outline"),
                     div({ style: "display: flex; flex-wrap: wrap; gap: 0.5rem;" },
@@ -280,7 +240,7 @@ $('#demo').insert(demo);`;
             ]);
 
             // Sizes Demo
-            $('#sizes-demo').insert([
+            $('#sizes-demo').content([
                 Button({ color: "primary", size: "xs" }, "Extra Small"),
                 Button({ color: "primary", size: "sm" }, "Small"),
                 Button({ color: "primary" }, "Medium"),
@@ -288,7 +248,7 @@ $('#demo').insert(demo);`;
             ]);
 
             // States Demo
-            $('#states-demo').insert([
+            $('#states-demo').content([
                 Button({ color: "primary" }, "Normal"),
                 Button({ color: "primary", active: true }, "Active"),
                 Button({ color: "primary", disabled: true }, "Disabled"),
@@ -296,7 +256,7 @@ $('#demo').insert(demo);`;
             ]);
 
             // Special Shapes Demo
-            $('#shapes-demo').insert([
+            $('#shapes-demo').content([
                 Button({ variant: "wide" }, "Wide"),
                 Button({ variant: "block" }, "Block (Full Width)"),
                 Button({ variant: "square" }, XIcon()),

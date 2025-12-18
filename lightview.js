@@ -490,8 +490,9 @@
     const $ = (cssSelector, startingDomEl = document.body) => {
         const el = startingDomEl.querySelector(cssSelector);
         if (!el) return null;
-        Object.defineProperty(el, 'insert', {
-            value(child, location = 'beforeend') {
+        Object.defineProperty(el, 'content', {
+            value(child, location = 'inner') {
+                location = location.toLowerCase();
                 const array = Array.isArray(child) ? child : [child];
 
                 if (location === 'shadow') {
@@ -507,7 +508,7 @@
                     return el;
                 }
 
-                if (location === 'innerHTML') {
+                if (location === 'inner') {
                     el.innerHTML = '';
                     array.forEach(item => {
                         const childDom = item.domEl || item;
@@ -516,7 +517,7 @@
                     return el;
                 }
 
-                if (location === 'outerHTML') {
+                if (location === 'outer') {
                     const replacements = array.map(item => item.domEl || item);
                     el.replaceWith(...replacements);
                     return el;
@@ -537,8 +538,10 @@
         return el;
     };
 
+    const customTags = {}
     const tags = new Proxy({}, {
         get(_, tag) {
+            if (tag === "_customTags") return { ...customTags };
             return (...args) => {
                 let attributes = {};
                 let children = args;
@@ -547,8 +550,12 @@
                     attributes = arg0;
                     children = args.slice(1);
                 }
-                return element(tag, attributes, children.flat());
+                return element(customTags[tag] || tag, attributes, children.flat());
             };
+        },
+        set(_, tag, value) {
+            customTags[tag] = value;
+            return true;
         }
     });
 
