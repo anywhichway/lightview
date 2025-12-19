@@ -143,7 +143,6 @@ $('#example').content(demo);</code></pre>
                         });
                     </script><code contenteditable="true">const { default: ThemeController } = await import('/components/actions/theme-controller.js');
 const { signal, tags, $ } = Lightview;
-LightviewX.useObjectDOMSyntax();
 tags.ThemeController = ThemeController;
 
 const isDark = signal(document.documentElement.getAttribute('data-theme') === 'dark');
@@ -285,7 +284,6 @@ $('#example').content(demo);</code></pre>
                         });
                     </script><code contenteditable="true">const { default: ThemeController } = await import('/components/actions/theme-controller.js');
 const { signal, tags, $ } = Lightview;
-LightviewX.useObjectDOMSyntax();
 tags.ThemeController = ThemeController;
 
 const themes = ['light', 'dark', 'cupcake', 'cyberpunk', 'synthwave'];

@@ -133,7 +133,6 @@ $('#example').content(loaders);</code></pre>
                         });
                     </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
 const { tags, $ } = Lightview;
-LightviewX.useObjectDOMSyntax();
 tags.Loading = Loading;
 
 const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
@@ -290,7 +289,6 @@ $('#example').content(demo);</code></pre>
                     </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-LightviewX.useObjectDOMSyntax();
 tags.Loading = Loading;
 tags.Button = Button;
 

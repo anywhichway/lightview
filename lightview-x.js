@@ -177,152 +177,6 @@
         }
     };
 
-    // ============= OBJECT DOM SYNTAX =============
-    // Converts { div: { class: "foo", children: [...] } } to { tagName: "div", attributes: {...}, children: [...] }
-
-    // Valid HTML tag name pattern: starts with letter, can contain letters, digits, hyphens (for custom elements)
-    const HTML_TAG_PATTERN = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/i;
-
-    // Cache for browser-validated tag names
-    const tagValidationCache = new Map();
-
-    /**
-     * Check if a tag name is a known HTML tag (standard or valid custom element)
-     * Uses the browser's own parser - unknown tags return HTMLUnknownElement
-     * @param {string} tagName 
-     * @returns {boolean}
-     */
-    const isKnownHTMLTag = (tagName) => {
-        if (typeof document === 'undefined') {
-            // Fallback for non-browser environments: use pattern matching
-            return HTML_TAG_PATTERN.test(tagName);
-        }
-
-        // Check cache first
-        if (tagValidationCache.has(tagName)) {
-            return tagValidationCache.get(tagName);
-        }
-
-        // Ask the browser by creating an element
-        const el = document.createElement(tagName);
-        // HTMLUnknownElement means it's not a valid/known tag
-        // Custom elements (with hyphen) return HTMLElement, which is valid
-        const isValid = !(el instanceof HTMLUnknownElement);
-
-        // Cache the result
-        tagValidationCache.set(tagName, isValid);
-        return isValid;
-    };
-
-    let objectDOMEnabled = false;
-    let objectDOMStrict = false;
-
-    /**
-     * Check if a string is a valid HTML tag name
-     * @param {string} name - The tag name to check
-     * @param {boolean} strict - If true, validates using browser's HTML parser
-     * @returns {boolean}
-     */
-    const isValidTagName = (name, strict = objectDOMStrict) => {
-        if (typeof name !== 'string' || name.length === 0 || name === 'children') {
-            return false;
-        }
-        if (Lightview.tags._customTags[name]) {
-            return true;
-        }
-        if (strict) {
-            // Strict mode: use browser validation (rejects unknown tags like 'foo')
-            return isKnownHTMLTag(name);
-        }
-        // Non-strict mode: accept anything that looks reasonable
-        return true;
-    };
-
-    /**
-     * Check if an object is in Object DOM syntax
-     * Object DOM: { div: { class: "foo", children: [...] } }
-     * vDOM: { tag: "div", attributes: {...}, children: [...] }
-     * @param {any} obj 
-     * @returns {boolean}
-     */
-    const isObjectDOM = (obj) => {
-        if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) return false;
-        if (obj.tag || obj.domEl) return false; // Already vDOM or live element
-
-        const keys = Object.keys(obj);
-        if (keys.length === 0) return false;
-
-        // Object DOM has exactly one key (the tag name or component name) whose value is an object
-        // That object may contain attributes and optionally a 'children' property
-        if (keys.length === 1) {
-            const tag = keys[0];
-            const value = obj[tag];
-            if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
-
-            // Otherwise check if it's a valid tag name
-            return isValidTagName(tag);
-        }
-
-        return false;
-    };
-
-    /**
-     * Convert Object DOM syntax to vDOM syntax (recursive)
-     * @param {any} obj - Object in Object DOM format or any child
-     * @returns {any} - Converted to vDOM format
-     */
-    const convertObjectDOM = (obj) => {
-        // Not an object or array - return as-is (strings, numbers, functions, etc.)
-        if (typeof obj !== 'object' || obj === null) return obj;
-
-        // Array - recursively convert children
-        if (Array.isArray(obj)) {
-            return obj.map(convertObjectDOM);
-        }
-
-        // Already vDOM format - recurse into children only
-        if (obj.tag) {
-            return {
-                ...obj,
-                children: obj.children ? convertObjectDOM(obj.children) : []
-            };
-        }
-
-        // Live element - pass through
-        if (obj.domEl) return obj;
-
-        // Check for Object DOM syntax
-        if (isObjectDOM(obj)) {
-            const tagKey = Object.keys(obj)[0];
-            const content = obj[tagKey];
-
-            // Check if tagKey is a registered component
-            const component = Lightview.tags._customTags[tagKey];
-            const tag = component || tagKey; // Use function if found, otherwise string
-
-            // Extract children and attributes
-            const { children, ...attributes } = content;
-
-            return {
-                tag,
-                attributes,
-                children: children ? convertObjectDOM(children) : []
-            };
-        }
-
-        // Unknown object format - return as-is
-        return obj;
-    };
-
-    /**
-     * Enable Object DOM syntax support
-     * @param {boolean} strict - If true, validates tag names against HTML spec
-     */
-    const useObjectDOMSyntax = (strict = false) => {
-        objectDOMEnabled = true;
-        objectDOMStrict = strict;
-    };
-
     // Named registries for state (used by template literals)
     const stateRegistry = new Map();
 
@@ -1057,11 +911,12 @@
             });
         };
 
-        // Register template literal processor (and Object DOM converter)
+        // Extend template literal processor to existing processChild hook
+        const existingProcessChild = LV.hooks.processChild;
         LV.hooks.processChild = (child) => {
-            // First, convert Object DOM syntax if enabled
-            if (objectDOMEnabled && typeof child === 'object' && child !== null && !Array.isArray(child)) {
-                child = convertObjectDOM(child);
+            // First, use the existing hook (Object DOM conversion from lightview.js)
+            if (existingProcessChild) {
+                child = existingProcessChild(child) ?? child;
             }
 
             // Then process template literals
@@ -1078,8 +933,6 @@
     const LightviewX = {
         state,
         registerStyleSheet,
-        useObjectDOMSyntax,
-        convertObjectDOM,
         // Component initialization
         initComponents,
         componentConfig,

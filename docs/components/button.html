@@ -121,7 +121,6 @@ $('#example').content(buttons);</code></pre>
                         });
                     </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
-LightviewX.useObjectDOMSyntax();
 tags.Button = Button;
 
 const buttons = {
@@ -259,7 +258,6 @@ $('#example').content(button);</code></pre>
                         });
                     </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-LightviewX.useObjectDOMSyntax();
 tags.Button = Button;
 
 const isLoading = signal(false);

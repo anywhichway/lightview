@@ -39,8 +39,8 @@
                 </tr>
                 <tr>
                     <td><strong>Object DOM</strong></td>
-                    <td>Compact JSON, clean templates, but harder to validate</td>
-                    <td>Requires lightview-x</td>
+                    <td>Compact JSON, clean templates</td>
+                    <td>Harder to validate than explicit vDOM</td>
                 </tr>
             </tbody>
         </table>
@@ -117,9 +117,7 @@ $('#example').content(app);</code></pre>
                     type: 'module',
                     minHeight: 120
                 });
-            </script><code contenteditable="true">// Enable Object DOM first
-LightviewX.useObjectDOMSyntax();
-const { signal, tags, $ } = Lightview;
+            </script><code contenteditable="true">const { signal, tags, $ } = Lightview;
 const { div } = tags;
 const count = signal(0);
 const app = { div: { class: 'container', children: [
