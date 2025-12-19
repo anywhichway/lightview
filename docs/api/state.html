@@ -29,7 +29,7 @@ items.value.push(4);           // ❌ Won't trigger updates!
 items.value = [...items.value, 4];  // ✅ Works, but tedious</code></pre>
 
         <h2>State to the Rescue</h2>
-        <pre><code>const { state } = Lightview;
+        <pre><code>const { state } = LightviewX;
 
 // Deep reactivity - mutations work!
 const user = state({ name: 'Alice', age: 25 });
@@ -102,16 +102,22 @@ items.sort();          // Sort in place
 items.reverse();       // Reverse in place
 items.fill(0);         // Fill with value</code></pre>
 
-        <h2>Named State (lightview-x)</h2>
-        <p>Like signals, state can be named for global access:</p>
-        <pre><code>// Register named state
-const appState = state({ count: 0, user: null }, 'app');
+        <h2>Named State</h2>
+        <p>
+            Like signals, you can name state objects for global access. This is especially useful for
+            shared application state:
+        </p>
+        <pre><code>// Create named state
+const appState = state({ 
+    user: 'Guest', 
+    theme: 'dark' 
+}, 'app');
 
-// Retrieve elsewhere
-const sameState = state.get('app');
+// Retrieve it anywhere
+const globalState = state.get('app');
 
-// Get or create with default
-const settings = state.get('settings', { theme: 'light' });</code></pre>
+// Get or create
+const settings = state.get('settings', { notifications: true });</code></pre>
 
         <h2>Signal vs State</h2>
         <table class="api-table">
@@ -147,8 +153,8 @@ const settings = state.get('settings', { theme: 'light' });</code></pre>
         </p>
         <pre><code>const isLoading = signal(false);      // Simple boolean → signal
 const error = signal(null);           // Simple value → signal
-const items = state([]);              // Array to mutate → state
-const formData = state({              // Object to mutate → state
+const items = state([]);              // Array to mutate → state (from LightviewX)
+const formData = state({              // Object to mutate → state (from LightviewX)
     name: '',
     email: '',
     message: ''
@@ -158,7 +164,8 @@ const formData = state({              // Object to mutate → state
 
 <script>
     (function () {
-        const { state, tags } = Lightview;
+        const { tags } = Lightview;
+        const { state } = LightviewX;
         const { div, ul, li, input, span, button } = tags;
 
         const todos = state([

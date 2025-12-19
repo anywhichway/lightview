@@ -16,7 +16,9 @@
     const nodeState = new WeakMap();
     const nodeStateFactory = () => ({ effects: [], onmount: null, onunmount: null });
 
-    const signal = (initialValue) => {
+    const signalRegistry = new Map();
+
+    const signal = (initialValue, name) => {
         let value = initialValue;
         const subscribers = new Set();
 
@@ -42,7 +44,18 @@
             }
         });
 
+        if (name) {
+            signalRegistry.set(name, f);
+        }
+
         return f;
+    };
+
+    signal.get = (name, defaultValue) => {
+        if (!signalRegistry.has(name) && defaultValue !== undefined) {
+            return signal(defaultValue, name);
+        }
+        return signalRegistry.get(name);
     };
 
     const effect = (fn) => {
@@ -241,12 +254,6 @@
         }
 
         return null;
-    };
-
-    const getParent = (elementJSON) => {
-        const parentDOM = elementJSON.domEl.parentElement;
-        if (!parentDOM) return null;
-        return domToElement.get(parentDOM) || null;
     };
 
     const makeReactive = (el) => {
@@ -488,8 +495,8 @@
         return el;
     };
 
-    const $ = (cssSelector, startingDomEl = document.body) => {
-        const el = startingDomEl.querySelector(cssSelector);
+    const $ = (cssSelectorOrElement, startingDomEl = document.body) => {
+        const el = typeof cssSelectorOrElement === 'string' ? startingDomEl.querySelector(cssSelectorOrElement) : cssSelectorOrElement;
         if (!el) return null;
         Object.defineProperty(el, 'content', {
             value(child, location = 'inner') {
@@ -568,7 +575,7 @@
     });
 
     const Lightview = {
-        signal, computed, effect, element, enhance, getParent, tags, $,
+        signal, computed, effect, element, enhance, tags, $,
         // Extension hooks
         hooks: {
             onNonStandardHref: null,

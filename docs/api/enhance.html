@@ -1,0 +1,225 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="../../../lightview-router.js"></script>
+<script>
+    if (window.LightviewRouter) {
+        LightviewRouter.base('../../index.html');
+    }
+</script>
+
+<link rel="stylesheet" href="../components/index.css">
+
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="./nav.html"></aside>
+
+    <main class="docs-content">
+        <h1>Enhance</h1>
+        <p>
+            The <code>enhance()</code> function lets you add Lightview's reactivity to existing HTML elements.
+            Perfect for progressive enhancement - start with plain HTML and add interactivity where needed.
+        </p>
+
+        <h2>Why Enhance?</h2>
+        <p>
+            Sometimes you have existing HTML - maybe from a CMS, a server-rendered template, or just plain HTML.
+            Rather than rebuilding everything with Lightview elements, <code>enhance()</code> lets you
+            incrementally add reactivity to what's already there.
+        </p>
+
+        <h2>Basic Usage</h2>
+        <pre><code>const { signal, enhance } = Lightview;
+
+// Select an existing element and make it reactive
+const counter = signal(0);
+enhance('#my-element', {
+    innerText: () => `Count: ${counter.value}`
+});
+
+// Now when counter changes, the element updates automatically!</code></pre>
+
+        <h2>Syntax</h2>
+        <pre><code>enhance(selectorOrNode, options)
+
+// selectorOrNode: CSS selector string or DOM element
+// options: { innerText?, innerHTML?, ...attributes }
+
+// Returns: Lightview element wrapper (or null if not found)</code></pre>
+
+        <h2>Live Example: Basic Enhancement</h2>
+        <pre><script>
+            examplify(document.currentScript.nextElementSibling, {
+                at: document.currentScript.parentElement,
+                scripts: ['/lightview.js'],
+                type: 'module',
+                minHeight: 180,
+                html: `<!-- This HTML exists in the page before enhancement -->
+<div id="greeting-card" style="padding: 1rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+    <h3 id="greeting-title">Welcome!</h3>
+    <p id="greeting-message">Enter your name below</p>
+    <input id="name-input" type="text" placeholder="Your name..." style="width: 100%; padding: 0.5rem; margin: 0.5rem 0; border: 1px solid #ccc; border-radius: 4px;">
+    <button id="reset-btn" style="padding: 0.5rem 1rem; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Reset</button>
+</div>`
+            });
+        </script><code contenteditable="true">const { signal, enhance } = Lightview;
+
+const name = signal('');
+
+// Enhance the input field
+enhance('#name-input', {
+    oninput: (e) => name.value = e.target.value,
+    value: () => name.value
+});
+
+// Enhance the greeting title
+enhance('#greeting-title', {
+    innerText: () => name.value ? `Hello, ${name.value}!` : 'Welcome!'
+});
+
+// Enhance the greeting message
+enhance('#greeting-message', {
+    innerText: () => name.value 
+        ? `Nice to meet you, ${name.value}!` 
+        : 'Enter your name below',
+    style: () => name.value 
+        ? 'color: #28a745; font-weight: 500;'
+        : 'color: #6c757d;'
+});
+
+// Enhance the reset button
+enhance('#reset-btn', {
+    onclick: () => name.value = '',
+    disabled: () => !name.value,
+    style: () => `padding: 0.5rem 1rem; background: ${name.value ? '#dc3545' : '#6c757d'}; color: white; border: none; border-radius: 4px; cursor: ${name.value ? 'pointer' : 'not-allowed'}; opacity: ${name.value ? 1 : 0.5};`
+});</code></pre>
+
+        <h2>Options</h2>
+
+        <h3>innerText</h3>
+        <p>Replace the text content of an element. Can be static or reactive:</p>
+        <pre><code>// Static text
+enhance('#greeting', { innerText: 'Hello World' });
+
+// Reactive text - updates when signal changes
+const name = signal('Alice');
+enhance('#greeting', { innerText: () => `Hello ${name.value}` });</code></pre>
+
+        <h3>innerHTML</h3>
+        <p>Replace the HTML content. Use with caution - only with trusted content:</p>
+        <pre><code>const html = signal('<strong>Bold text</strong>');
+enhance('#content', { innerHTML: () => html.value });</code></pre>
+
+        <h3>Attributes</h3>
+        <p>Any other properties in options are treated as attributes. These can also be reactive:</p>
+        <pre><code>const isDisabled = signal(false);
+const theme = signal('light');
+
+enhance('#my-button', {
+    disabled: () => isDisabled.value,
+    class: () => `btn btn-${theme.value}`,
+    'data-active': () => !isDisabled.value
+});</code></pre>
+
+        <h2>Live Example: Reactive Attributes</h2>
+        <pre><script>
+            examplify(document.currentScript.nextElementSibling, {
+                at: document.currentScript.parentElement,
+                scripts: ['/lightview.js', '/lightview-x.js'],
+                type: 'module',
+                maxHeight: 50,
+                html: `
+<span id="attr-demo">
+    <button id="toggle-btn">Enable/Disable</button>
+    <button id="target-btn">Target Button</button>
+</span>`
+            });
+        </script><code contenteditable="true">const { signal, enhance, tags } = Lightview;
+const { div } = tags;
+
+const disabled = signal(false);
+
+enhance('#toggle-btn', {
+    onclick: () => disabled.value = !disabled.value,
+    innerText: () => disabled.value ? 'Enable' : 'Disable'
+});
+
+enhance('#target-btn', {
+    disabled: () => disabled.value,
+    style: () => `opacity: ${disabled.value ? 0.5 : 1}; cursor: ${disabled.value ? 'not-allowed' : 'pointer'};`
+});</code></pre>
+
+        <h2>Progressive Enhancement Pattern</h2>
+        <p>
+            Start with semantic HTML that works without JavaScript, then enhance with Lightview:
+        </p>
+        <pre><code><!-- server-rendered HTML -->
+&lt;div id="user-info"&gt;
+    &lt;h2&gt;Guest&lt;/h2&gt;
+    &lt;p&gt;Please log in&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    // Enhancement kicks in when JS loads
+    const { signal, enhance } = Lightview;
+    const user = signal(null);
+
+    // Fetch user data
+    fetch('/api/user').then(r => r.json()).then(data => {
+        user.value = data;
+    });
+
+    // Enhance the existing markup
+    enhance('#user-info h2', {
+        innerText: () => user.value?.name ?? 'Guest'
+    });
+
+    enhance('#user-info p', {
+        innerText: () => user.value
+            ? `Welcome back, ${user.value.name}!`
+            : 'Please log in'
+    });
+</script></code></pre>
+
+        <h2>Return Value</h2>
+        <p>
+            <code>enhance()</code> returns a Lightview element wrapper with a <code>domEl</code> property
+            pointing to the actual DOM node. This lets you further manipulate it:
+        </p>
+        <pre><code>const el = enhance('#my-div', { class: 'enhanced' });
+
+// Access the wrapped element
+if (el) {
+    console.log(el.domEl);  // The actual DOM node
+    el.attributes.id = 'new-id';  // Update attributes reactively
+}</code></pre>
+
+        <h2>Tips & Patterns</h2>
+
+        <h3>Enhance Multiple Elements</h3>
+        <pre><code>// Enhance a list of elements
+document.querySelectorAll('.counter').forEach(el => {
+    const count = signal(0);
+    enhance(el, {
+        innerText: () => count.value,
+        onclick: () => count.value++
+    });
+});</code></pre>
+
+        <h3>Reusing Elements</h3>
+        <p>If you call <code>enhance()</code> on an already-enhanced element, it merges the new options:</p>
+        <pre><code>// First enhancement
+enhance('#btn', { innerText: 'Click me' });
+
+// Second enhancement - adds to the first
+enhance('#btn', { onclick: "alert('clicked')" });
+
+// Result: &lt;button onclick="alert('clicked')">Click me</button&gt;</code></pre>
+
+        <h3>When to Use</h3>
+        <ul>
+            <li><strong>Use enhance():</strong> When you have existing HTML (server-rendered, CMS, etc.)</li>
+            <li><strong>Use element/tags:</strong> When building new UI from scratch in JavaScript</li>
+            <li><strong>Mix both:</strong> Enhance static structure, build dynamic parts with tags</li>
+        </ul>
+
+
+    </main>
+</div>

@@ -173,11 +173,11 @@ const app = div({ class: 'app' },
 const count = signal(0);
 
 // Enhance existing elements
-LightviewX.enhance('#my-btn', {
+Lightview.enhance('#my-btn', {
     onclick: () => count.value++
 });
 
-LightviewX.enhance('#output', {
+Lightview.enhance('#output', {
     innerText: () => `Clicked ${count.value} times`
 });</code></pre>
 

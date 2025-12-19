@@ -66,18 +66,19 @@ div(
             </div>
         </div>
 
-        <h2>Named Signals (lightview-x)</h2>
+        <h2>Named Signals</h2>
         <p>
-            With the hypermedia extension, you can name signals for use in templates:
+            You can give signals a name for easy access across your application:
         </p>
-        <pre><code>// Register a named signal
+        <pre><code>// Create a named signal
 const count = signal(0, 'count');
 
-// Retrieve it elsewhere
+// Retrieve it elsewhere (even in another file)
 const sameCount = signal.get('count');
 
-// Get or create with default
-const score = signal.get('score', 100);  // Creates if doesn't exist</code></pre>
+// Get or create with default value
+// If 'score' exists, returns it. If not, creates it with 100.
+const score = signal.get('score', 100);</code></pre>
 
         <h2>Tips & Patterns</h2>
 

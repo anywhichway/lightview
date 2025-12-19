@@ -361,7 +361,6 @@ Creates a Lightview instance with:
 - `effect(fn)` - Run side effects
 - `state(obj)` - Create deep reactive store
 - `element(tag, attrs, children)` - Create elements
-- `getParent(elementJSON)` - Get parent element
 - `tags` - Proxy for creating elements: `tags.div()`, `tags.button()`, etc.
 
 ### Signals
@@ -910,21 +909,6 @@ const chart = div({ class: 'chart' },
 
 document.body.appendChild(chart.domEl);
 ```
-
-## Parent Traversal
-```javascript
-// Style 1: Tagged API
-const { getParent, tags } = new Lightview();
-const { div, span } = tags;
-
-const child = span('Child');
-const parent = div(child);
-
-const parentEl = getParent(child);
-console.log(parentEl === parent); // true
-```
-
-The `getParent()` function allows you to traverse up the reactive tree. It returns the Lightview element wrapper for the parent. If the parent element was not created by Lightview (or isn't tracked), it returns `null`.
 
 ## Hypermedia
 

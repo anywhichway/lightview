@@ -27,8 +27,9 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><code>signal(value)</code></td>
-                    <td>Create reactive state that triggers updates when changed</td>
+                    <td><code>signal(value, name?)</code><br><code>signal.get(name)</code></td>
+                    <td>Create reactive state that triggers updates when changed. Optional name allows global access.
+                    </td>
                 </tr>
                 <tr>
                     <td><code>computed(fn)</code></td>
@@ -53,6 +54,11 @@
                         take
                         both real and virtual nodes as an argument.</td>
                 </tr>
+                <tr>
+                    <td><code>enhance(selector, options)</code></td>
+                    <td>Add reactivity to existing DOM elements. Perfect for progressive enhancement of traditional HTML
+                        pages.</td>
+                </tr>
             </tbody>
         </table>
 
@@ -71,33 +77,25 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><code>state(obj)</code></td>
-                    <td>Create deep reactive state for complex objects/arrays. Uses Proxy for automatic change tracking.
-                    </td>
+                    <td><code>state(obj, name?)</code><br><code>state.get(name)</code></td>
+                    <td>Create deep reactive state for complex objects/arrays. Optional name allows global access.</td>
                 </tr>
                 <tr>
                     <td><code>src="..."</code></td>
-                    <td>Attribute to automatically fetch HTML or JSON content and inject it into the element.</td>
+                    <td>Attribute to automatically fetch HTML or JSON representing HTML and inject it into the element.
+                    </td>
                 </tr>
                 <tr>
                     <td><code>href="..."</code></td>
-                    <td>Attribute for SPA navigation on any element. Supports targeting other elements via CSS
-                        selectors.</td>
+                    <td>Attribute for SPA navigation and src injection on any element. Supports targeting content
+                        before, at the start of, and the end of or after other elements via CSS selectors.</td>
                 </tr>
                 <tr>
                     <td>
-                        <code>${signal.get('count').value}</code><code>${state.get('user').name}</code>
+                        <code>&lt;div&gt;${signal.get('count').value}&lt;/div&gt;</code><br><code>&lt;span&gt;${state.get('user').name}&lt;/span&gt;</code>
                     </td>
-                    <td>Syntax support for using signals and state directly inside string templates.</td>
-                </tr>
-                <tr>
-                    <td><code>enhance(el, opts)</code></td>
-                    <td>Manually enhance an existing DOM element with Lightview reactivity.</td>
-                </tr>
-
-                <tr>
-                    <td><code>registerComponent(name, fn)</code></td>
-                    <td>Register components for use within Object DOM structures.</td>
+                    <td>Syntax support for using signals and state directly inside string templates in HTML or JSON
+                        representation of HTML.</td>
                 </tr>
                 <tr>
                     <td><code>useObjectDOMSyntax(strict)</code></td>
@@ -114,8 +112,8 @@
 &lt;script src="lightview.js"&gt;&lt;/script&gt;
 &lt;script src="lightview-x.js"&gt;&lt;/script&gt;</code></pre>
         <pre><code>// Destructure what you need from the global instances
-const { signal, computed, effect, element, tags, $ } = Lightview;
-const { state, enhance, registerComponent } = LightviewX; // Deep state + extras</code></pre>
+const { signal, computed, effect, element, tags, $, enhance } = Lightview;
+const { state } = LightviewX; // Deep state (lightview-x)</code></pre>
 
 
 
@@ -143,13 +141,13 @@ const { state, enhance, registerComponent } = LightviewX; // Deep state + extras
             <a href="./elements" class="feature-card" style="text-decoration: none; color: inherit;">
                 <h3 class="feature-title">Elements</h3>
                 <p class="feature-description">
-                    Four ways to build UI. Pick your favorite.
+                    Three ways to build UI, tag functions, vDOM, and Object DOM. Pick your favorite.
                 </p>
             </a>
-            <a href="./elements" class="feature-card" style="text-decoration: none; color: inherit;">
-                <h3 class="feature-title">Elements</h3>
+            <a href="./enhance" class="feature-card" style="text-decoration: none; color: inherit;">
+                <h3 class="feature-title">Enhance</h3>
                 <p class="feature-description">
-                    Four ways to build UI. Pick your favorite.
+                    Add reactivity to existing HTML. Progressive enhancement made easy.
                 </p>
             </a>
             <a href="./hypermedia.html" class="feature-card" style="text-decoration: none; color: inherit;">

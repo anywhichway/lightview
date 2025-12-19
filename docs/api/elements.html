@@ -6,85 +6,17 @@
     }
 </script>
 
+<link rel="stylesheet" href="../components/index.css">
+
 <div class="docs-layout">
     <aside class="docs-sidebar" src="./nav.html"></aside>
 
     <main class="docs-content">
         <h1>Creating Elements</h1>
         <p>
-            Lightview gives you four ways to build UI. Pick your favorite—or mix and match.
+            Lightview gives you three ways to build UI. Pick your favorite - or mix and match.
             They all use the same reactive system under the hood.
         </p>
-
-        <h2>Style 1: Tagged API</h2>
-        <p>
-            The most concise way. Destructure tag functions and compose naturally:
-        </p>
-        <pre><code>const { signal, tags } = Lightview;
-const { div, h1, p, button } = tags;
-
-const count = signal(0);
-
-const app = div({ class: 'container' },
-    h1('Hello Lightview'),
-    p(() => `Count: ${count.value}`),
-    button({ onclick: () => count.value++ }, 'Click me')
-);
-
-document.body.appendChild(app.domEl);</code></pre>
-
-        <h2>Style 2: Element Function</h2>
-        <p>
-            More explicit. Good when you need dynamic tag names:
-        </p>
-        <pre><code>const { signal, element } = Lightview;
-
-const count = signal(0);
-
-const app = element('div', { class: 'container' }, [
-    element('h1', {}, ['Hello Lightview']),
-    element('p', {}, [() => `Count: ${count.value}`]),
-    element('button', { onclick: () => count.value++ }, ['Click me'])
-]);
-
-document.body.appendChild(app.domEl);</code></pre>
-
-        <h2>Style 3: vDOM Syntax</h2>
-        <p>
-            Plain JSON objects. Great for storing in databases or generating programmatically:
-        </p>
-        <pre><code>const { signal, element } = Lightview;
-
-const count = signal(0);
-
-const app = element('div', { class: 'container' }, [
-    { tag: 'h1', attributes: {}, children: ['Hello Lightview'] },
-    { tag: 'p', attributes: {}, children: [() => `Count: ${count.value}`] },
-    { tag: 'button', attributes: { onclick: () => count.value++ }, children: ['Click me'] }
-]);
-
-document.body.appendChild(app.domEl);</code></pre>
-
-        <h2>Style 4: Object DOM (lightview-x)</h2>
-        <p>
-            Compact JSON format. Requires the hypermedia extension:
-        </p>
-        <pre><code>// Enable Object DOM first
-LightviewX.useObjectDOMSyntax();
-
-const { signal, tags } = Lightview;
-const { div } = tags;
-
-const count = signal(0);
-
-const app = div({ class: 'container' },
-    { h1: { children: ['Hello Lightview'] } },
-    { p: { children: [() => `Count: ${count.value}`] } },
-    { button: { onclick: () => count.value++, children: ['Click me'] } }
-);
-
-document.body.appendChild(app.domEl);</code></pre>
-
         <h2>Comparison</h2>
         <table class="api-table">
             <thead>
@@ -101,22 +33,102 @@ document.body.appendChild(app.domEl);</code></pre>
                     <td>Requires destructuring</td>
                 </tr>
                 <tr>
-                    <td><strong>Element Function</strong></td>
-                    <td>Explicit, dynamic tag names</td>
-                    <td>More verbose</td>
-                </tr>
-                <tr>
                     <td><strong>vDOM</strong></td>
                     <td>JSON serializable, easy to validate</td>
                     <td>Most verbose</td>
                 </tr>
                 <tr>
                     <td><strong>Object DOM</strong></td>
-                    <td>Compact JSON, clean templates</td>
+                    <td>Compact JSON, clean templates, but harder to validate</td>
                     <td>Requires lightview-x</td>
                 </tr>
             </tbody>
         </table>
+        <!-- Tabs -->
+        <script>
+            window.switchSyntaxTab = (tabId) => {
+                const tabs = ['tagged', 'vdom', 'object'];
+                tabs.forEach(t => {
+                    const tabEl = document.getElementById(`tab-btn-${t}`);
+                    const contentEl = document.getElementById(`syntax-${t}`);
+                    if (t === tabId) {
+                        tabEl.classList.add('syntax-tab-active');
+                        contentEl.style.display = 'block';
+                    } else {
+                        tabEl.classList.remove('syntax-tab-active');
+                        contentEl.style.display = 'none';
+                    }
+                });
+            };
+        </script>
+        <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+            <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                onclick="switchSyntaxTab('tagged')">Tagged API</button>
+            <button id="tab-btn-vdom" role="tab" class="syntax-tab" onclick="switchSyntaxTab('vdom')">vDOM</button>
+            <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                DOM</button>
+        </div>
+
+        <!-- Tagged Syntax -->
+        <div id="syntax-tagged">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js'],
+                    type: 'module',
+                    minHeight: 120
+                });
+            </script><code contenteditable="true">const { signal, tags, $ } = Lightview;
+const { div, h1, p, button } = tags;
+const count = signal(0);
+const app = div({ class: 'container' },
+    h1('Hello Lightview'),
+    p(() => `Count: ${count.value}`),
+    button({ onclick: () => count.value++ }, 'Click me')
+);
+$('#example').content(app);</code></pre>
+        </div>
+
+        <!-- vDOM Syntax -->
+        <div id="syntax-vdom" style="display: none;">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js'],
+                    type: 'module',
+                    minHeight: 120
+                });
+            </script><code contenteditable="true">const { signal, element, $ } = Lightview;
+const count = signal(0);
+const app = { tag:'div', attributes: { class: 'container' }, children: [
+    { tag: 'h1', attributes: {}, children: ['Hello Lightview'] },
+    { tag: 'p', attributes: {}, children: [() => `Count: ${count.value}`] },
+    { tag: 'button', attributes: { onclick: () => count.value++ }, children: ['Click me'] }
+]};
+$('#example').content(app);</code></pre>
+        </div>
+
+        <!-- Object DOM Syntax -->
+        <div id="syntax-object" style="display: none;">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js'],
+                    type: 'module',
+                    minHeight: 120
+                });
+            </script><code contenteditable="true">// Enable Object DOM first
+LightviewX.useObjectDOMSyntax();
+const { signal, tags, $ } = Lightview;
+const { div } = tags;
+const count = signal(0);
+const app = { div: { class: 'container', children: [
+    { h1: { children: ['Hello Lightview'] } },
+    { p: { children: [() => `Count: ${count.value}`] } },
+    { button: { onclick: () => count.value++, children: ['Click me'] } }
+]}};
+$('#example').content(app);</code></pre>
+        </div>
 
         <h2>Attributes & Events</h2>
         <p>
@@ -168,49 +180,3 @@ document.body.appendChild(myDiv.domEl);
 
 // You can also manipulate it directly
 myDiv.domEl.classList.add('another-class');</code></pre>
-
-        <div class="code-example">
-            <div class="code-example-preview" id="elements-demo"></div>
-            <div class="code-example-code">
-                <pre><code>const { signal, tags } = Lightview;
-const { div, input, p } = tags;
-
-const name = signal('World');
-
-const app = div(
-    input({ 
-        type: 'text',
-        value: name.value,
-        oninput: (e) => name.value = e.target.value
-    }),
-    p(() => `Hello, ${name.value}!`)
-);</code></pre>
-            </div>
-        </div>
-    </main>
-</div>
-
-<script>
-    (function () {
-        const { signal, tags } = Lightview;
-        const { div, input, p, label } = tags;
-
-        const name = signal('World');
-
-        const demo = div({ style: 'padding: 0.5rem;' },
-            div({ style: 'margin-bottom: 1rem;' },
-                label({ style: 'display: block; margin-bottom: 0.25rem; font-size: 0.875rem; color: var(--site-text-secondary);' }, 'Enter your name:'),
-                input({
-                    type: 'text',
-                    value: name.value,
-                    oninput: (e) => name.value = e.target.value,
-                    style: 'padding: 0.5rem; border: 1px solid var(--site-border); border-radius: 4px; width: 200px;'
-                })
-            ),
-            p({ style: 'font-size: 1.25rem; margin: 0;' }, () => `Hello, ${name.value}!`)
-        );
-
-        const container = document.getElementById('elements-demo');
-        if (container) container.appendChild(demo.domEl);
-    })();
-</script>

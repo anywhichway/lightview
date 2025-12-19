@@ -323,8 +323,7 @@
         objectDOMStrict = strict;
     };
 
-    // Named registries for signals and state (used by template literals)
-    const signalRegistry = new Map();
+    // Named registries for state (used by template literals)
     const stateRegistry = new Map();
 
     // ============= STATE (Deep Reactivity) =============
@@ -479,34 +478,49 @@
      * @param {Object|Array} obj - The object to make reactive
      * @returns {Proxy} - A reactive proxy
      */
-    const state = (obj) => {
+    const state = (obj, name) => {
         if (typeof obj !== 'object' || obj === null) return obj;
-        if (stateCache.has(obj)) return stateCache.get(obj);
 
-        // Don't proxy objects with internal slots (RegExp, Map, Set, etc.)
-        const isSpecialObject = obj instanceof RegExp ||
-            obj instanceof Map || obj instanceof Set ||
-            obj instanceof WeakMap || obj instanceof WeakSet;
+        let proxy;
+        if (stateCache.has(obj)) {
+            proxy = stateCache.get(obj);
+        } else {
+            // Don't proxy objects with internal slots (RegExp, Map, Set, etc.)
+            const isSpecialObject = obj instanceof RegExp ||
+                obj instanceof Map || obj instanceof Set ||
+                obj instanceof WeakMap || obj instanceof WeakSet;
 
-        if (isSpecialObject) return obj;
+            if (isSpecialObject) return obj;
 
-        const isArray = Array.isArray(obj);
-        const isDate = obj instanceof Date;
-        const monitor = isArray ? "length" : isDate ? "getTime" : null;
+            const isArray = Array.isArray(obj);
+            const isDate = obj instanceof Date;
+            const monitor = isArray ? "length" : isDate ? "getTime" : null;
 
-        const proxy = isArray || isDate ? createSpecialProxy(obj, monitor) : new Proxy(obj, {
-            get(target, prop, receiver) {
-                const signals = getOrSet(stateSignals, target, () => new Map());
-                return proxyGet(target, prop, receiver, signals);
-            },
-            set(target, prop, value, receiver) {
-                const signals = getOrSet(stateSignals, target, () => new Map());
-                return proxySet(target, prop, value, receiver, signals);
-            }
-        });
+            proxy = isArray || isDate ? createSpecialProxy(obj, monitor) : new Proxy(obj, {
+                get(target, prop, receiver) {
+                    const signals = getOrSet(stateSignals, target, () => new Map());
+                    return proxyGet(target, prop, receiver, signals);
+                },
+                set(target, prop, value, receiver) {
+                    const signals = getOrSet(stateSignals, target, () => new Map());
+                    return proxySet(target, prop, value, receiver, signals);
+                }
+            });
 
-        stateCache.set(obj, proxy);
+            stateCache.set(obj, proxy);
+        }
+
+        if (name) {
+            stateRegistry.set(name, proxy);
+        }
         return proxy;
+    };
+
+    state.get = (name, defaultValue) => {
+        if (!stateRegistry.has(name) && defaultValue !== undefined) {
+            return state(defaultValue, name);
+        }
+        return stateRegistry.get(name);
     };
 
     // Template literal processing: converts "${...}" strings to reactive functions
@@ -1007,32 +1021,11 @@
     if (typeof window !== 'undefined' && window.Lightview) {
         const LV = window.Lightview;
 
-        // Extend signal with named registry support
-        const originalSignal = LV.signal;
-        LV.signal = (initialValue, name) => {
-            const sig = originalSignal(initialValue);
-            if (name) signalRegistry.set(name, sig);
-            return sig;
-        };
-        LV.signal.get = (name, defaultValue) => {
-            if (!signalRegistry.has(name) && defaultValue !== undefined) {
-                return LV.signal(defaultValue, name);
-            }
-            return signalRegistry.get(name);
-        };
+        // Extend Lightview with simple named signal getter/setter if needed (already in Core now)
+        // But for template literals we use processTemplateChild which needs access to registries
+        // We can just rely on LV.signal.get if it exists, or fall back
 
-        // Create named-registry-aware state wrapper
-        const stateWithRegistry = (obj, name) => {
-            const st = state(obj);
-            if (name) stateRegistry.set(name, st);
-            return st;
-        };
-        stateWithRegistry.get = (name, defaultValue) => {
-            if (!stateRegistry.has(name) && defaultValue !== undefined) {
-                return stateWithRegistry(defaultValue, name);
-            }
-            return stateRegistry.get(name);
-        };
+        // Setup DOM observer for src attributes on added nodes
 
         // Setup DOM observer for src attributes on added nodes
         if (document.readyState === 'loading') {
@@ -1073,7 +1066,7 @@
 
             // Then process template literals
             return processTemplateChild(child, {
-                state: stateWithRegistry,
+                state: state,
                 signal: LV.signal
             });
         };
