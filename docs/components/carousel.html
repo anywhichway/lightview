@@ -9,71 +9,102 @@
 <!-- Load the page-specific stylesheet -->
 <link rel="stylesheet" href="./index.css">
 
-<div class="section">
-    <div class="section-content" style="max-width: 1000px;">
-        <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
-        <script type="module">
-            const { $ } = Lightview;
-            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+<!-- Gallery Structure -->
+<div class="gallery-page">
+    <div class="gallery-layout">
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-            const breadcrumbs = Breadcrumbs({
-                items: [
-                    { label: 'Components', href: '/docs/components' },
-                    { label: 'Carousel' }
-                ]
-            });
+        <!-- Sidebar -->
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
 
-            $('#page-breadcrumbs').content(breadcrumbs);
-        </script>
-        <h1>Carousel</h1>
-        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
-            Carousel shows images or content in a scrollable horizontal view.
-            Supports snap points, vertical layout, and full-width items.
-        </p>
-
-        <!-- Basic Usage -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Image carousel with center snap</p>
-
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
+        <!-- Main Content -->
+        <div id="gallery-main" class="gallery-main">
+            <!-- Header Container -->
+            <div
+                style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
+                <!-- Breadcrumbs Row -->
+                <div style="padding: 0.75rem 1.5rem 0;">
+                    <script>
+                        (() => {
+                            const { Breadcrumbs } = Lightview.tags;
+                            const breadcrumbs = Breadcrumbs({
+                                id: 'page-breadcrumbs',
+                                items: [
+                                    { label: 'Components', href: '/docs/components' },
+                                    { label: 'Carousel' }
+                                ]
+                            });
+                            document.currentScript.replaceWith(breadcrumbs.domEl);
+                        })();
+                    </script>
                 </div>
+                <!-- Title Row -->
+                <div class="gallery-header"
+                    style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                    <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+                            style="stroke: currentColor; stroke-width: 2;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="gallery-title">Carousel</h1>
+                </div>
+            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 260
-                        });
-                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
+            <!-- Content -->
+            <div class="gallery-content">
+                <div class="section-content" style="max-width: 1000px;">
+                    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Carousel shows images or content in a scrollable horizontal view.
+                        Supports snap points, vertical layout, and full-width items.
+                    </p>
+
+                    <!-- Basic Usage -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Image carousel with center
+                                snap</p>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
+
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 260
+                                    });
+                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
 const { tags, $ } = Lightview;
 
 const images = [
@@ -90,18 +121,18 @@ const carousel = Carousel({ snap: 'center', class: 'rounded-box bg-neutral p-4 g
 );
 
 $('#example').content(carousel);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 260
-                        });
-                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 260
+                                    });
+                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
 const { $ } = Lightview;
 
 const images = [
@@ -121,18 +152,18 @@ const carousel = {
 };
 
 $('#example').content(carousel);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 260
-                        });
-                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 260
+                                    });
+                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
 const { tags, $ } = Lightview;
 tags.Carousel = Carousel;
 tags.CarouselItem = Carousel.Item;
@@ -159,52 +190,53 @@ const carousel = {
 };
 
 $('#example').content(carousel);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Full Width with Indicators</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navigable carousel with buttons</p>
+                    <!-- Reactive Example -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Full Width with Indicators</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navigable carousel with
+                                buttons</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 340
-                        });
-                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 340
+                                    });
+                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 const { div, a } = tags;
@@ -235,18 +267,18 @@ const demo = div({},
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 340
-                        });
-                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 340
+                                    });
+                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { $ } = Lightview;
 
@@ -291,18 +323,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 340
-                        });
-                    </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 340
+                                    });
+                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
 tags.Carousel = Carousel;
@@ -353,78 +385,78 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>snap</code></td>
+                                    <td>string</td>
+                                    <td>'start'</td>
+                                    <td>'start' | 'center' | 'end'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>vertical</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Vertical layout</td>
+                                </tr>
+                                <tr>
+                                    <td><code>full</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Full width container</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Sub-components -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Props</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Carousel.Item</code></td>
+                                    <td>id, src, alt</td>
+                                    <td>Individual slide item</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Static Examples -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Centered Carousel</h2>
+                    <div class="carousel carousel-center bg-neutral rounded-box"
+                        style="margin-right: 1rem; padding: 1rem; margin-bottom: 2rem;">
+                        <div class="carousel-item"><img src="https://picsum.photos/300/200?random=5" class="rounded-box"
+                                alt="Slide" /></div>
+                        <div class="carousel-item"><img src="https://picsum.photos/300/200?random=6" class="rounded-box"
+                                alt="Slide" /></div>
+                        <div class="carousel-item"><img src="https://picsum.photos/300/200?random=7" class="rounded-box"
+                                alt="Slide" /></div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>snap</code></td>
-                        <td>string</td>
-                        <td>'start'</td>
-                        <td>'start' | 'center' | 'end'</td>
-                    </tr>
-                    <tr>
-                        <td><code>vertical</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Vertical layout</td>
-                    </tr>
-                    <tr>
-                        <td><code>full</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Full width container</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Sub-components -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Props</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>Carousel.Item</code></td>
-                        <td>id, src, alt</td>
-                        <td>Individual slide item</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Static Examples -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Centered Carousel</h2>
-        <div class="carousel carousel-center bg-neutral rounded-box"
-            style="margin-right: 1rem; padding: 1rem; margin-bottom: 2rem;">
-            <div class="carousel-item"><img src="https://picsum.photos/300/200?random=5" class="rounded-box"
-                    alt="Slide" /></div>
-            <div class="carousel-item"><img src="https://picsum.photos/300/200?random=6" class="rounded-box"
-                    alt="Slide" /></div>
-            <div class="carousel-item"><img src="https://picsum.photos/300/200?random=7" class="rounded-box"
-                    alt="Slide" /></div>
-        </div>
-
-
     </div>
-</div>

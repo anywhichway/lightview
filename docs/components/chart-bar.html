@@ -6,56 +6,86 @@
     }
 </script>
 
-<div class="section">
-    <div class="section-content" style="max-width: 1000px;">
-        <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
-        <script type="module">
-            const { $ } = Lightview;
-            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
 
-            const breadcrumbs = Breadcrumbs({
-                items: [
-                    { label: 'Components', href: '/docs/components' },
-                    { label: 'Chart', href: '/docs/components/chart' },
-                    { label: 'Bar Chart' }
-                ]
-            });
+<!-- Gallery Structure -->
+<div class="gallery-page">
+    <div class="gallery-layout">
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-            $('#page-breadcrumbs').content(breadcrumbs);
-        </script>
+        <!-- Sidebar -->
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
 
-        <h1>Bar Chart</h1>
-        <p class="text-lg opacity-70 mb-6">
-            Bar charts display data as horizontal bars. The bar length represents the data value.
-        </p>
-
-        <!-- Basic Usage -->
-        <h2 class="text-xl font-bold mb-4">Usage</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">To visualize data with a bar chart, use <code>type: 'bar'</code>:</p>
-                <div id="basic-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                    <table class="charts-css bar show-labels">
-                        <caption>Basic Bar Chart</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> Item 1 </th>
-                                <td style="--size: 0.4;"> <span class="data"> 40% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Item 2 </th>
-                                <td style="--size: 0.6;"> <span class="data"> 60% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Item 3 </th>
-                                <td style="--size: 0.8;"> <span class="data"> 80% </span> </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <!-- Main Content -->
+        <div id="gallery-main" class="gallery-main">
+            <!-- Header Container -->
+            <div
+                style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
+                <!-- Breadcrumbs Row -->
+                <div style="padding: 0.75rem 1.5rem 0;">
+                    <script>
+                        (() => {
+                            const { Breadcrumbs } = Lightview.tags;
+                            const breadcrumbs = Breadcrumbs({
+                                id: 'page-breadcrumbs',
+                                items: [
+                                    { label: 'Components', href: '/docs/components' },
+                                    { label: 'Chart Bar' }
+                                ]
+                            });
+                            document.currentScript.replaceWith(breadcrumbs.domEl);
+                        })();
+                    </script>
                 </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true },
+                <!-- Title Row -->
+                <div class="gallery-header"
+                    style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                    <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+                            style="stroke: currentColor; stroke-width: 2;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="gallery-title">Chart Bar</h1>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="gallery-content">
+                <div class="section-content" style="max-width: 1000px;">
+                    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Bar charts display data as horizontal bars. The bar length represents the data value.
+                    </p>
+
+                    <!-- Basic Usage -->
+                    <h2 class="text-xl font-bold mb-4">Usage</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">To visualize data with a bar chart, use <code>type: 'bar'</code>:</p>
+                            <div id="basic-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                                <table class="charts-css bar show-labels">
+                                    <caption>Basic Bar Chart</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> Item 1 </th>
+                                            <td style="--size: 0.4;"> <span class="data"> 40% </span> </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Item 2 </th>
+                                            <td style="--size: 0.6;"> <span class="data"> 60% </span> </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Item 3 </th>
+                                            <td style="--size: 0.8;"> <span class="data"> 80% </span> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Item 1'),
@@ -71,44 +101,53 @@
         )
     )
 )</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Multiple Datasets -->
-        <h2 class="text-xl font-bold mb-4">Multiple Datasets</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Add multiple <code>Chart.Data</code> elements per row and set
-                    <code>multiple: true</code>:
-                </p>
-                <div id="multiple-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                    <table class="charts-css bar multiple show-labels show-primary-axis data-spacing-5">
-                        <caption>Quarterly Sales by Region</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> Q1 </th>
-                                <td style="--size: 0.3; --color: #4CAF50;"> <span class="data"> East </span> </td>
-                                <td style="--size: 0.5; --color: #2196F3;"> <span class="data"> West </span> </td>
-                                <td style="--size: 0.4; --color: #FF9800;"> <span class="data"> North </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Q2 </th>
-                                <td style="--size: 0.5; --color: #4CAF50;"> <span class="data"> East </span> </td>
-                                <td style="--size: 0.6; --color: #2196F3;"> <span class="data"> West </span> </td>
-                                <td style="--size: 0.7; --color: #FF9800;"> <span class="data"> North </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Q3 </th>
-                                <td style="--size: 0.7; --color: #4CAF50;"> <span class="data"> East </span> </td>
-                                <td style="--size: 0.8; --color: #2196F3;"> <span class="data"> West </span> </td>
-                                <td style="--size: 0.5; --color: #FF9800;"> <span class="data"> North </span> </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', multiple: true, labels: true, primaryAxis: true, spacing: 5 },
+                    <!-- Multiple Datasets -->
+                    <h2 class="text-xl font-bold mb-4">Multiple Datasets</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Add multiple <code>Chart.Data</code> elements per row and set
+                                <code>multiple: true</code>:
+                            </p>
+                            <div id="multiple-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                                <table class="charts-css bar multiple show-labels show-primary-axis data-spacing-5">
+                                    <caption>Quarterly Sales by Region</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> Q1 </th>
+                                            <td style="--size: 0.3; --color: #4CAF50;"> <span class="data"> East </span>
+                                            </td>
+                                            <td style="--size: 0.5; --color: #2196F3;"> <span class="data"> West </span>
+                                            </td>
+                                            <td style="--size: 0.4; --color: #FF9800;"> <span class="data"> North
+                                                </span> </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Q2 </th>
+                                            <td style="--size: 0.5; --color: #4CAF50;"> <span class="data"> East </span>
+                                            </td>
+                                            <td style="--size: 0.6; --color: #2196F3;"> <span class="data"> West </span>
+                                            </td>
+                                            <td style="--size: 0.7; --color: #FF9800;"> <span class="data"> North
+                                                </span> </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Q3 </th>
+                                            <td style="--size: 0.7; --color: #4CAF50;"> <span class="data"> East </span>
+                                            </td>
+                                            <td style="--size: 0.8; --color: #2196F3;"> <span class="data"> West </span>
+                                            </td>
+                                            <td style="--size: 0.5; --color: #FF9800;"> <span class="data"> North
+                                                </span> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', multiple: true, labels: true, primaryAxis: true, spacing: 5 },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Q1'),
@@ -130,41 +169,42 @@
         )
     )
 )</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Axes -->
-        <h2 class="text-xl font-bold mb-4">Axes</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Control axis visibility with <code>primaryAxis</code> and <code>secondaryAxis</code>:
-                </p>
-                <div id="axes-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                    <table class="charts-css bar show-labels show-primary-axis show-4-secondary-axes">
-                        <caption>With Primary and Secondary Axes</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> Jan </th>
-                                <td style="--size: 0.25;"> <span class="data"> 25% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Feb </th>
-                                <td style="--size: 0.5;"> <span class="data"> 50% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Mar </th>
-                                <td style="--size: 0.75;"> <span class="data"> 75% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Apr </th>
-                                <td style="--size: 1.0;"> <span class="data"> 100% </span> </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true, primaryAxis: true, secondaryAxis: 'show-4-secondary-axes' },
+                    <!-- Axes -->
+                    <h2 class="text-xl font-bold mb-4">Axes</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Control axis visibility with <code>primaryAxis</code> and
+                                <code>secondaryAxis</code>:
+                            </p>
+                            <div id="axes-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                                <table class="charts-css bar show-labels show-primary-axis show-4-secondary-axes">
+                                    <caption>With Primary and Secondary Axes</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> Jan </th>
+                                            <td style="--size: 0.25;"> <span class="data"> 25% </span> </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Feb </th>
+                                            <td style="--size: 0.5;"> <span class="data"> 50% </span> </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Mar </th>
+                                            <td style="--size: 0.75;"> <span class="data"> 75% </span> </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Apr </th>
+                                            <td style="--size: 1.0;"> <span class="data"> 100% </span> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true, primaryAxis: true, secondaryAxis: 'show-4-secondary-axes' },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Jan'),
@@ -184,88 +224,88 @@
         )
     )
 )</code></pre>
-                </div>
-            </div>
-        </div>
-
-        <!-- Spacing -->
-        <h2 class="text-xl font-bold mb-4">Spacing</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Control the gap between bars with the <code>spacing</code> prop (1-20):</p>
-                <div class="grid md:grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-sm font-bold mb-2">spacing: 2</p>
-                        <div style="height: 150px;">
-                            <table class="charts-css bar show-labels data-spacing-2">
-                                <tbody>
-                                    <tr>
-                                        <th scope="row"> A </th>
-                                        <td style="--size: 0.6;"></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"> B </th>
-                                        <td style="--size: 0.8;"></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"> C </th>
-                                        <td style="--size: 0.5;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-bold mb-2">spacing: 15</p>
-                        <div style="height: 150px;">
-                            <table class="charts-css bar show-labels data-spacing-15">
-                                <tbody>
-                                    <tr>
-                                        <th scope="row"> A </th>
-                                        <td style="--size: 0.6;"></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"> B </th>
-                                        <td style="--size: 0.8;"></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"> C </th>
-                                        <td style="--size: 0.5;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+
+                    <!-- Spacing -->
+                    <h2 class="text-xl font-bold mb-4">Spacing</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Control the gap between bars with the <code>spacing</code> prop (1-20):</p>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm font-bold mb-2">spacing: 2</p>
+                                    <div style="height: 150px;">
+                                        <table class="charts-css bar show-labels data-spacing-2">
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row"> A </th>
+                                                    <td style="--size: 0.6;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"> B </th>
+                                                    <td style="--size: 0.8;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"> C </th>
+                                                    <td style="--size: 0.5;"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold mb-2">spacing: 15</p>
+                                    <div style="height: 150px;">
+                                        <table class="charts-css bar show-labels data-spacing-15">
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row"> A </th>
+                                                    <td style="--size: 0.6;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"> B </th>
+                                                    <td style="--size: 0.8;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"> C </th>
+                                                    <td style="--size: 0.5;"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Orientation -->
-        <h2 class="text-xl font-bold mb-4">Orientation</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Use <code>reverse: true</code> to reverse the chart orientation:</p>
-                <div id="reverse-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                    <table class="charts-css bar show-labels reverse">
-                        <caption>Reversed Bar Chart</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> First </th>
-                                <td style="--size: 0.3;"> <span class="data"> 30% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Second </th>
-                                <td style="--size: 0.6;"> <span class="data"> 60% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Third </th>
-                                <td style="--size: 0.9;"> <span class="data"> 90% </span> </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true, reverse: true },
+                    <!-- Orientation -->
+                    <h2 class="text-xl font-bold mb-4">Orientation</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Use <code>reverse: true</code> to reverse the chart orientation:</p>
+                            <div id="reverse-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                                <table class="charts-css bar show-labels reverse">
+                                    <caption>Reversed Bar Chart</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> First </th>
+                                            <td style="--size: 0.3;"> <span class="data"> 30% </span> </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Second </th>
+                                            <td style="--size: 0.6;"> <span class="data"> 60% </span> </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Third </th>
+                                            <td style="--size: 0.9;"> <span class="data"> 90% </span> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true, reverse: true },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'First'),
@@ -281,44 +321,44 @@
         )
     )
 )</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Stacked Bars -->
-        <h2 class="text-xl font-bold mb-4">Stacked Bars</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Create stacked bars by setting <code>stacked: true</code> (or using
-                    <code>.stacked</code> class):
-                </p>
-                <div id="stacked-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                    <table class="charts-css bar multiple stacked show-labels">
-                        <caption>Stacked Bar Chart</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> 2021 </th>
-                                <td style="--size: 0.2; --color: #4CAF50;"></td>
-                                <td style="--size: 0.3; --color: #2196F3;"></td>
-                                <td style="--size: 0.1; --color: #FF9800;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> 2022 </th>
-                                <td style="--size: 0.3; --color: #4CAF50;"></td>
-                                <td style="--size: 0.25; --color: #2196F3;"></td>
-                                <td style="--size: 0.15; --color: #FF9800;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> 2023 </th>
-                                <td style="--size: 0.25; --color: #4CAF50;"></td>
-                                <td style="--size: 0.35; --color: #2196F3;"></td>
-                                <td style="--size: 0.2; --color: #FF9800;"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', multiple: true, stacked: true, labels: true },
+                    <!-- Stacked Bars -->
+                    <h2 class="text-xl font-bold mb-4">Stacked Bars</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Create stacked bars by setting <code>stacked: true</code> (or using
+                                <code>.stacked</code> class):
+                            </p>
+                            <div id="stacked-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                                <table class="charts-css bar multiple stacked show-labels">
+                                    <caption>Stacked Bar Chart</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> 2021 </th>
+                                            <td style="--size: 0.2; --color: #4CAF50;"></td>
+                                            <td style="--size: 0.3; --color: #2196F3;"></td>
+                                            <td style="--size: 0.1; --color: #FF9800;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> 2022 </th>
+                                            <td style="--size: 0.3; --color: #4CAF50;"></td>
+                                            <td style="--size: 0.25; --color: #2196F3;"></td>
+                                            <td style="--size: 0.15; --color: #FF9800;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> 2023 </th>
+                                            <td style="--size: 0.25; --color: #4CAF50;"></td>
+                                            <td style="--size: 0.35; --color: #2196F3;"></td>
+                                            <td style="--size: 0.2; --color: #FF9800;"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', multiple: true, stacked: true, labels: true },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, '2021'),
@@ -329,13 +369,16 @@
         // ... more rows
     )
 )</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between mt-8" style="display: none;">
+                        <a href="/docs/components/chart" class="btn btn-outline">← Back to Charts</a>
+                        <a href="/docs/components/chart-column" class="btn btn-primary">Column Chart →</a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="flex justify-between mt-8">
-            <a href="/docs/components/chart" class="btn btn-outline">← Back to Charts</a>
-            <a href="/docs/components/chart-column" class="btn btn-primary">Column Chart →</a>
         </div>
     </div>
 </div>

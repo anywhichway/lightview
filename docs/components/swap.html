@@ -9,28 +9,57 @@
 <!-- Load the page-specific stylesheet -->
 <link rel="stylesheet" href="./index.css">
 
-<div class="section">
-    <div class="section-content" style="max-width: 1000px;">
-        <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
-        <script type="module">
-            const { $ } = Lightview;
-            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+<!-- Gallery Structure -->
+<div class="gallery-page">
+    <div class="gallery-layout">
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-            const breadcrumbs = Breadcrumbs({
-                items: [
-                    { label: 'Components', href: '/docs/components' },
-                    { label: 'Swap' }
-                ]
-            });
+        <!-- Sidebar -->
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
 
-            $('#page-breadcrumbs').content(breadcrumbs);
-        </script>
-        <h1>Swap</h1>
-        <p class="text-lg opacity-70 mb-6">
-            Swap toggles the visibility of two elements with a smooth transition.
+        <!-- Main Content -->
+        <div id="gallery-main" class="gallery-main">
+            <!-- Header Container -->
+            <div
+                style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
+                <!-- Breadcrumbs Row -->
+                <div style="padding: 0.75rem 1.5rem 0;">
+                    <script>
+                        (() => {
+                            const { Breadcrumbs } = Lightview.tags;
+                            const breadcrumbs = Breadcrumbs({
+                                id: 'page-breadcrumbs',
+                                items: [
+                                    { label: 'Components', href: '/docs/components' },
+                                    { label: 'Swap' }
+                                ]
+                            });
+                            document.currentScript.replaceWith(breadcrumbs.domEl);
+                        })();
+                    </script>
+                </div>
+                <!-- Title Row -->
+                <div class="gallery-header"
+                    style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                    <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+                            style="stroke: currentColor; stroke-width: 2;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="gallery-title">Swap</h1>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="gallery-content">
+                <div class="section-content" style="max-width: 1000px;">
+                    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Swap toggles the visibility of two elements with a smooth transition.
             Perfect for toggle buttons, theme switchers, and animated icons.
-        </p>
+                    </p>
 
         <!-- Basic Example with Examplify -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
@@ -472,8 +501,8 @@ $('#example').content(demo);</code></pre>
                 <path
                     d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
             </svg>
-        </label>
-
-
+        </label>                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -9,71 +9,101 @@
 <!-- Load the page-specific stylesheet -->
 <link rel="stylesheet" href="./index.css">
 
-<div class="section">
-    <div class="section-content" style="max-width: 1000px;">
-        <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
-        <script type="module">
-            const { $ } = Lightview;
-            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+<!-- Gallery Structure -->
+<div class="gallery-page">
+    <div class="gallery-layout">
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-            const breadcrumbs = Breadcrumbs({
-                items: [
-                    { label: 'Components', href: '/docs/components' },
-                    { label: 'Accordion' }
-                ]
-            });
+        <!-- Sidebar -->
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
 
-            $('#page-breadcrumbs').content(breadcrumbs);
-        </script>
-        <h1>Accordion</h1>
-        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
-            Accordion is used for showing and hiding content in collapsible sections.
-            Only one section can be open at a time.
-        </p>
-
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">FAQ-style accordion</p>
-
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
+        <!-- Main Content -->
+        <div id="gallery-main" class="gallery-main">
+            <!-- Header Container -->
+            <div
+                style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
+                <!-- Breadcrumbs Row -->
+                <div style="padding: 0.75rem 1.5rem 0;">
+                    <script>
+                        (() => {
+                            const { Breadcrumbs } = Lightview.tags;
+                            const breadcrumbs = Breadcrumbs({
+                                id: 'page-breadcrumbs',
+                                items: [
+                                    { label: 'Components', href: '/docs/components' },
+                                    { label: 'Accordion' }
+                                ]
+                            });
+                            document.currentScript.replaceWith(breadcrumbs.domEl);
+                        })();
+                    </script>
                 </div>
+                <!-- Title Row -->
+                <div class="gallery-header"
+                    style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                    <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+                            style="stroke: currentColor; stroke-width: 2;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="gallery-title">Accordion</h1>
+                </div>
+            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
+            <!-- Content -->
+            <div class="gallery-content">
+                <div class="section-content" style="max-width: 1000px;">
+                    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Accordion is used for showing and hiding content in collapsible sections.
+                        Only one section can be open at a time.
+                    </p>
+
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">FAQ-style accordion</p>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
+
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
 const { tags, $ } = Lightview;
 
 const faq = [
@@ -92,18 +122,18 @@ const accordion = Accordion({},
 );
 
 $('#example').content(accordion);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
 const { $ } = Lightview;
 
 const faq = [
@@ -125,18 +155,18 @@ const accordion = {
 };
 
 $('#example').content(accordion);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
 const { tags, $ } = Lightview;
 tags.Accordion = Accordion;
 tags.AccordionItem = Accordion.Item;
@@ -165,52 +195,53 @@ const accordion = {
 };
 
 $('#example').content(accordion);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Plus/Minus Icon</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Accordion with plus/minus toggle icon</p>
+                    <!-- Reactive Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Plus/Minus Icon</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Accordion with plus/minus
+                                toggle icon</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
 const { tags, $ } = Lightview;
 
 const sections = [
@@ -229,18 +260,18 @@ const accordion = Accordion({ join: true },
 );
 
 $('#example').content(accordion);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
 const { $ } = Lightview;
 
 const sections = [
@@ -263,18 +294,18 @@ const accordion = {
 };
 
 $('#example').content(accordion);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
 const { tags, $ } = Lightview;
 tags.Accordion = Accordion;
 tags.AccordionItem = Accordion.Item;
@@ -306,97 +337,97 @@ const accordion = {
 };
 
 $('#example').content(accordion);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>join</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Use connected/joined style</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Accordion.Item Props -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Accordion.Item Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>name</code></td>
+                                    <td>string</td>
+                                    <td>'accordion'</td>
+                                    <td>Radio group name (only one opens at a time)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>icon</code></td>
+                                    <td>string</td>
+                                    <td>'arrow'</td>
+                                    <td>'arrow' | 'plus'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>checked</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Initially open</td>
+                                </tr>
+                                <tr>
+                                    <td><code>join</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Use joined styling</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Static Examples -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Arrow Icon (Default)</h2>
+                    <div class="example-stack-sm" style="margin-bottom: 2rem;">
+                        <div class="collapse collapse-arrow bg-base-100 border border-base-300">
+                            <input type="radio" name="accordion-demo" checked="checked" />
+                            <div class="collapse-title font-semibold">Click to open this one</div>
+                            <div class="collapse-content text-sm">Content for section one.</div>
+                        </div>
+                        <div class="collapse collapse-arrow bg-base-100 border border-base-300">
+                            <input type="radio" name="accordion-demo" />
+                            <div class="collapse-title font-semibold">Click to open this one</div>
+                            <div class="collapse-content text-sm">Content for section two.</div>
+                        </div>
+                    </div>
+
+                    <!-- Plus/Minus Icon -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Plus/Minus Icon</h2>
+                    <div class="collapse collapse-plus bg-base-100 border border-base-300" style="margin-bottom: 2rem;">
+                        <input type="checkbox" />
+                        <div class="collapse-title font-semibold">Click me to show/hide</div>
+                        <div class="collapse-content text-sm">Hidden content revealed!</div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>join</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Use connected/joined style</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Accordion.Item Props -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Accordion.Item Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>name</code></td>
-                        <td>string</td>
-                        <td>'accordion'</td>
-                        <td>Radio group name (only one opens at a time)</td>
-                    </tr>
-                    <tr>
-                        <td><code>icon</code></td>
-                        <td>string</td>
-                        <td>'arrow'</td>
-                        <td>'arrow' | 'plus'</td>
-                    </tr>
-                    <tr>
-                        <td><code>checked</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Initially open</td>
-                    </tr>
-                    <tr>
-                        <td><code>join</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Use joined styling</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Static Examples -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Arrow Icon (Default)</h2>
-        <div class="example-stack-sm" style="margin-bottom: 2rem;">
-            <div class="collapse collapse-arrow bg-base-100 border border-base-300">
-                <input type="radio" name="accordion-demo" checked="checked" />
-                <div class="collapse-title font-semibold">Click to open this one</div>
-                <div class="collapse-content text-sm">Content for section one.</div>
-            </div>
-            <div class="collapse collapse-arrow bg-base-100 border border-base-300">
-                <input type="radio" name="accordion-demo" />
-                <div class="collapse-title font-semibold">Click to open this one</div>
-                <div class="collapse-content text-sm">Content for section two.</div>
-            </div>
-        </div>
-
-        <!-- Plus/Minus Icon -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Plus/Minus Icon</h2>
-        <div class="collapse collapse-plus bg-base-100 border border-base-300" style="margin-bottom: 2rem;">
-            <input type="checkbox" />
-            <div class="collapse-title font-semibold">Click me to show/hide</div>
-            <div class="collapse-content text-sm">Hidden content revealed!</div>
-        </div>
-
-
     </div>
-</div>

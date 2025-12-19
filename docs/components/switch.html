@@ -8,8 +8,60 @@
     }
 </script>
 
-<div class="section">
-    <div class="section-content">
-        <p>Redirecting to <a href="/docs/components/toggle">Toggle</a>...</p>
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
+
+<!-- Gallery Structure -->
+<div class="gallery-page">
+    <div class="gallery-layout">
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+        <!-- Sidebar -->
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
+
+        <!-- Main Content -->
+        <div id="gallery-main" class="gallery-main">
+            <!-- Header Container -->
+            <div
+                style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
+                <!-- Breadcrumbs Row -->
+                <div style="padding: 0.75rem 1.5rem 0;">
+                    <script>
+                        (() => {
+                            const { Breadcrumbs } = Lightview.tags;
+                            const breadcrumbs = Breadcrumbs({
+                                id: 'page-breadcrumbs',
+                                items: [
+                                    { label: 'Components', href: '/docs/components' },
+                                    { label: 'Switch' }
+                                ]
+                            });
+                            document.currentScript.replaceWith(breadcrumbs.domEl);
+                        })();
+                    </script>
+                </div>
+                <!-- Title Row -->
+                <div class="gallery-header"
+                    style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                    <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+                            style="stroke: currentColor; stroke-width: 2;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="gallery-title">Switch</h1>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="gallery-content">
+                <div class="section-content" style="max-width: 1000px;">
+                    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Redirecting to <a href="/docs/components/toggle">Toggle</a>...
+                    </p>                </div>
+            </div>
+        </div>
     </div>
 </div>

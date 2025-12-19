@@ -290,7 +290,7 @@
         const domNode = isSvg
             ? document.createElementNS('http://www.w3.org/2000/svg', tag)
             : document.createElement(tag);
-        const proxy = wrapDomElement(domNode, tag);
+        const proxy = wrapDomElement(domNode, tag, attributes, children);
         proxy.attributes = attributes;
         proxy.children = children;
         return proxy;
@@ -458,9 +458,15 @@
         }
         const childElements = [];
 
+        // Check if we're processing children of script or style elements
+        // These need raw text content preserved, not reactive transformations
+        const isSpecialElement = targetNode.tagName &&
+            (targetNode.tagName.toLowerCase() === 'script' || targetNode.tagName.toLowerCase() === 'style');
+
         for (let child of children) {
             // Allow extensions to transform children (e.g., template literals)
-            if (Lightview.hooks.processChild) {
+            // BUT skip for script/style elements which need raw content
+            if (Lightview.hooks.processChild && !isSpecialElement) {
                 child = Lightview.hooks.processChild(child) ?? child;
             }
 
@@ -591,9 +597,15 @@
             value(child, location = 'inner') {
                 location = location.toLowerCase();
                 const tags = Lightview.tags;
+
+                // Check if target element is script or style
+                const isSpecialElement = el.tagName &&
+                    (el.tagName.toLowerCase() === 'script' || el.tagName.toLowerCase() === 'style');
+
                 const array = (Array.isArray(child) ? child : [child]).map(item => {
                     // Allow extensions to transform children (e.g., Object DOM syntax)
-                    if (Lightview.hooks.processChild) {
+                    // BUT skip for script/style elements which need raw content
+                    if (Lightview.hooks.processChild && !isSpecialElement) {
                         item = Lightview.hooks.processChild(item) ?? item;
                     }
                     if (item.tag && !item.domEl) {

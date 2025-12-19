@@ -9,28 +9,57 @@
 <!-- Load the page-specific stylesheet -->
 <link rel="stylesheet" href="./index.css">
 
-<div class="section">
-    <div class="section-content" style="max-width: 1000px;">
-        <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
-        <script type="module">
-            const { $ } = Lightview;
-            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+<!-- Gallery Structure -->
+<div class="gallery-page">
+    <div class="gallery-layout">
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-            const breadcrumbs = Breadcrumbs({
-                items: [
-                    { label: 'Components', href: '/docs/components' },
-                    { label: 'Hero' }
-                ]
-            });
+        <!-- Sidebar -->
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
 
-            $('#page-breadcrumbs').content(breadcrumbs);
-        </script>
-        <h1>Hero</h1>
-        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
-            Hero is a large banner section with centered content.
+        <!-- Main Content -->
+        <div id="gallery-main" class="gallery-main">
+            <!-- Header Container -->
+            <div
+                style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
+                <!-- Breadcrumbs Row -->
+                <div style="padding: 0.75rem 1.5rem 0;">
+                    <script>
+                        (() => {
+                            const { Breadcrumbs } = Lightview.tags;
+                            const breadcrumbs = Breadcrumbs({
+                                id: 'page-breadcrumbs',
+                                items: [
+                                    { label: 'Components', href: '/docs/components' },
+                                    { label: 'Hero' }
+                                ]
+                            });
+                            document.currentScript.replaceWith(breadcrumbs.domEl);
+                        })();
+                    </script>
+                </div>
+                <!-- Title Row -->
+                <div class="gallery-header"
+                    style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                    <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+                            style="stroke: currentColor; stroke-width: 2;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="gallery-title">Hero</h1>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="gallery-content">
+                <div class="section-content" style="max-width: 1000px;">
+                    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Hero is a large banner section with centered content.
             Perfect for landing pages and feature highlights.
-        </p>
+                    </p>
 
         <!-- Basic Example with Examplify -->
         <div class="card bg-base-200" style="margin-bottom: 2rem;">
@@ -216,9 +245,8 @@ $('#example').content(hero);</code></pre>
                     <p class="mb-5">Provident cupiditate voluptatem et in.</p>
                     <button class="btn btn-primary">Get Started</button>
                 </div>
+            </div>                </div>
             </div>
         </div>
-
-
     </div>
 </div>

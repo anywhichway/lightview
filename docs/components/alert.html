@@ -9,73 +9,103 @@
 <!-- Load the page-specific stylesheet -->
 <link rel="stylesheet" href="./index.css">
 
-<div class="section">
-    <div class="section-content" style="max-width: 1000px;">
-        <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" style="margin-bottom: 1rem;"></div>
-        <script type="module">
-            const { $ } = Lightview;
-            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+<!-- Gallery Structure -->
+<div class="gallery-page">
+    <div class="gallery-layout">
+        <!--Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-            const breadcrumbs = Breadcrumbs({
-                items: [
-                    { label: 'Components', href: '/docs/components' },
-                    { label: 'Alert' }
-                ]
-            });
+        <!-- Sidebar -->
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
 
-            $('#page-breadcrumbs').content(breadcrumbs);
-        </script>
-
-        <h1>Alert</h1>
-        <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
-            Alert informs users about important events or status messages.
-            Supports multiple colors, variants, and optional icons.
-        </p>
-
-        <!-- Basic Usage -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Usage</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Alerts with different colors and icons.
-                </p>
-
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
+        <!-- Main Content -->
+        <div id="gallery-main" class="gallery-main">
+            <!-- Header Container -->
+            <div
+                style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
+                <!-- Breadcrumbs Row -->
+                <div style="padding: 0.75rem 1.5rem 0;">
+                    <script>
+                        (() => {
+                            const { Breadcrumbs } = Lightview.tags;
+                            const breadcrumbs = Breadcrumbs({
+                                id: 'page-breadcrumbs',
+                                items: [
+                                    { label: 'Components', href: '/docs/components' },
+                                    { label: 'Alert' }
+                                ]
+                            });
+                            document.currentScript.replaceWith(breadcrumbs.domEl);
+                        })();
+                    </script>
                 </div>
+                <!-- Title Row -->
+                <div class="gallery-header"
+                    style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                    <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+                            style="stroke: currentColor; stroke-width: 2;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="gallery-title">Alert</h1>
+                </div>
+            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 280
-                        });
-                    </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
+            <!-- Content -->
+            <div class="gallery-content">
+                <div class="section-content" style="max-width: 1000px;">
+                    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Alert informs users about important events or status messages.
+                        Supports multiple colors, variants, and optional icons.
+                    </p>
+
+                    <!-- Basic Usage -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Usage</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Alerts with different colors
+                                and icons.
+                            </p>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
+
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
 const { tags, $ } = Lightview;
 const { div, span } = tags;
 
@@ -95,18 +125,18 @@ const alerts = div({ class: 'space-y-4' },
 );
 
 $('#example').content(alerts);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 280
-                        });
-                    </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
 const { $ } = Lightview;
 
 const alerts = {
@@ -137,18 +167,18 @@ const alerts = {
 };
 
 $('#example').content(alerts);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 280
-                        });
-                    </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
 const { tags, $ } = Lightview;
 tags.Alert = Alert;
 
@@ -165,52 +195,53 @@ const alerts = {
 };
 
 $('#example').content(alerts);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Dismissible Alert</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Alert with close button using signals.</p>
+                    <!-- Reactive Example -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Dismissible Alert</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Alert with close button using
+                                signals.</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 const { div, span } = tags;
@@ -238,18 +269,18 @@ const demo = div({},
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, $ } = Lightview;
 
@@ -287,18 +318,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 tags.Alert = Alert;
@@ -334,125 +365,131 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>'info' | 'success' | 'warning' | 'error'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>icon</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Auto-icon: 'info' | 'success' | 'warning' | 'error'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>soft</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Use soft/light background variant</td>
+                                </tr>
+                                <tr>
+                                    <td><code>outline</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Use outlined border style</td>
+                                </tr>
+                                <tr>
+                                    <td><code>dash</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Use dashed border style</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Colors -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <div class="example-stack" style="margin-bottom: 2rem;">
+                        <div role="alert" class="alert">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                class="stroke-info icon-sm">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Default alert — neutral information message.</span>
+                        </div>
+                        <div role="alert" class="alert alert-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                class="icon-sm stroke-current">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Info alert — informational message.</span>
+                        </div>
+                        <div role="alert" class="alert alert-success">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Success alert — operation completed successfully.</span>
+                        </div>
+                        <div role="alert" class="alert alert-warning">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <span>Warning alert — caution is advised.</span>
+                        </div>
+                        <div role="alert" class="alert alert-error">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Error alert — something went wrong!</span>
+                        </div>
+                    </div>
+
+                    <!-- Variants -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
+                    <div class="example-stack" style="margin-bottom: 2rem;">
+                        <div role="alert" class="alert alert-soft alert-info">
+                            <span>Soft variant — lighter background.</span>
+                        </div>
+                        <div role="alert" class="alert alert-outline alert-success">
+                            <span>Outline variant — bordered style.</span>
+                        </div>
+                        <div role="alert" class="alert alert-dash alert-warning">
+                            <span>Dash variant — dashed border.</span>
+                        </div>
+                    </div>
+
+                    <!-- With Actions -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Actions</h2>
+                    <div role="alert" class="alert" style="margin-bottom: 2rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            class="stroke-info icon-sm">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>We have sent an email with a confirmation link.</span>
+                        <div>
+                            <button class="btn btn-sm">Dismiss</button>
+                            <button class="btn btn-sm btn-primary">See</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>color</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>'info' | 'success' | 'warning' | 'error'</td>
-                    </tr>
-                    <tr>
-                        <td><code>icon</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Auto-icon: 'info' | 'success' | 'warning' | 'error'</td>
-                    </tr>
-                    <tr>
-                        <td><code>soft</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Use soft/light background variant</td>
-                    </tr>
-                    <tr>
-                        <td><code>outline</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Use outlined border style</td>
-                    </tr>
-                    <tr>
-                        <td><code>dash</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Use dashed border style</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Colors -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-        <div class="example-stack" style="margin-bottom: 2rem;">
-            <div role="alert" class="alert">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info icon-sm">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span>Default alert — neutral information message.</span>
-            </div>
-            <div role="alert" class="alert alert-info">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="icon-sm stroke-current">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span>Info alert — informational message.</span>
-            </div>
-            <div role="alert" class="alert alert-success">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Success alert — operation completed successfully.</span>
-            </div>
-            <div role="alert" class="alert alert-warning">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-                <span>Warning alert — caution is advised.</span>
-            </div>
-            <div role="alert" class="alert alert-error">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Error alert — something went wrong!</span>
-            </div>
-        </div>
-
-        <!-- Variants -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
-        <div class="example-stack" style="margin-bottom: 2rem;">
-            <div role="alert" class="alert alert-soft alert-info">
-                <span>Soft variant — lighter background.</span>
-            </div>
-            <div role="alert" class="alert alert-outline alert-success">
-                <span>Outline variant — bordered style.</span>
-            </div>
-            <div role="alert" class="alert alert-dash alert-warning">
-                <span>Dash variant — dashed border.</span>
-            </div>
-        </div>
-
-        <!-- With Actions -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Actions</h2>
-        <div role="alert" class="alert" style="margin-bottom: 2rem;">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info icon-sm">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <span>We have sent an email with a confirmation link.</span>
-            <div>
-                <button class="btn btn-sm">Dismiss</button>
-                <button class="btn btn-sm btn-primary">See</button>
-            </div>
-        </div>
-
-
     </div>
-</div>

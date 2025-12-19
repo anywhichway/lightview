@@ -6,71 +6,87 @@
     }
 </script>
 
-<div class="section">
-    <div class="section-content" style="max-width: 1000px;">
-        <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
-        <script type="module">
-            const { $ } = Lightview;
-            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
 
-            const breadcrumbs = Breadcrumbs({
-                items: [
-                    { label: 'Components', href: '/docs/components' },
-                    { label: 'Chart', href: '/docs/components/chart' },
-                    { label: 'Pie Chart' }
-                ]
-            });
+<!-- Gallery Structure -->
+<div class="gallery-page">
+    <div class="gallery-layout">
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-            $('#page-breadcrumbs').content(breadcrumbs);
-        </script>
+        <!-- Sidebar -->
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
 
-        <h1>Pie Chart</h1>
-        <p class="text-lg opacity-70 mb-6">
-            Pie charts display data as slices of a circular pie, ideal for showing proportions
-            and percentages that add up to 100%.
-        </p>
-
-        <!-- Important Note -->
-        <div class="alert alert-info mb-8">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                class="stroke-current shrink-0 h-6 w-6">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <div>
-                <strong>Important:</strong> Pie charts use <code>--start</code> and <code>--end</code> instead of
-                <code>--size</code>.
-                Each segment's <code>--start</code> should equal the previous segment's <code>--end</code>.
-                Values range from 0.0 to 1.0 (representing 0% to 100%).
-            </div>
-        </div>
-
-        <!-- Basic Usage -->
-        <h2 class="text-xl font-bold mb-4">Usage</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">To create a pie chart, use <code>type: 'pie'</code> and specify <code>start</code> and
-                    <code>end</code> for each segment:
-                </p>
-                <div id="basic-pie" style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;">
-                    <table class="charts-css pie">
-                        <caption>Basic Pie Chart</caption>
-                        <tbody>
-                            <tr>
-                                <td style="--start: 0.0; --end: 0.5; --color: #4CAF50;"></td>
-                            </tr>
-                            <tr>
-                                <td style="--start: 0.5; --end: 0.8; --color: #2196F3;"></td>
-                            </tr>
-                            <tr>
-                                <td style="--start: 0.8; --end: 1.0; --color: #FF9800;"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <!-- Main Content -->
+        <div id="gallery-main" class="gallery-main">
+            <!-- Header Container -->
+            <div
+                style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
+                <!-- Breadcrumbs Row -->
+                <div style="padding: 0.75rem 1.5rem 0;">
+                    <script>
+                        (() => {
+                            const { Breadcrumbs } = Lightview.tags;
+                            const breadcrumbs = Breadcrumbs({
+                                id: 'page-breadcrumbs',
+                                items: [
+                                    { label: 'Components', href: '/docs/components' },
+                                    { label: 'Chart Pie' }
+                                ]
+                            });
+                            document.currentScript.replaceWith(breadcrumbs.domEl);
+                        })();
+                    </script>
                 </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie' },
+                <!-- Title Row -->
+                <div class="gallery-header"
+                    style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                    <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+                            style="stroke: currentColor; stroke-width: 2;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="gallery-title">Chart Pie</h1>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="gallery-content">
+                <div class="section-content" style="max-width: 1000px;">
+                    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Pie charts display data as slices of a circular pie, ideal for showing proportions
+                        and percentages that add up to 100%.
+                    </p>
+
+                    <!-- Basic Usage -->
+                    <h2 class="text-xl font-bold mb-4">Usage</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">To create a pie chart, use <code>type: 'pie'</code> and specify
+                                <code>start</code> and
+                                <code>end</code> for each segment:
+                            </p>
+                            <div id="basic-pie" style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;">
+                                <table class="charts-css pie">
+                                    <caption>Basic Pie Chart</caption>
+                                    <tbody>
+                                        <tr>
+                                            <td style="--start: 0.0; --end: 0.5; --color: #4CAF50;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="--start: 0.5; --end: 0.8; --color: #2196F3;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="--start: 0.8; --end: 1.0; --color: #FF9800;"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie' },
     Chart.Body({},
         Chart.Row({},
             Chart.Data({ start: 0.0, end: 0.5, color: '#4CAF50' }) // 50%
@@ -83,44 +99,45 @@
         )
     )
 )</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- With Labels -->
-        <h2 class="text-xl font-bold mb-4">With Labels</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Add data labels with <code>labels: true</code> and include a
-                    <code>&lt;span class="data"&gt;</code>:
-                </p>
-                <div id="labeled-pie" style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;">
-                    <table class="charts-css pie show-labels">
-                        <caption>Browser Market Share</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> Chrome </th>
-                                <td style="--start: 0.0; --end: 0.6; --color: #4CAF50;">
-                                    <span class="data"> 60% </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Firefox </th>
-                                <td style="--start: 0.6; --end: 0.85; --color: #F44336;">
-                                    <span class="data"> 25% </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Safari </th>
-                                <td style="--start: 0.85; --end: 1.0; --color: #2196F3;">
-                                    <span class="data"> 15% </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie', labels: true },
+                    <!-- With Labels -->
+                    <h2 class="text-xl font-bold mb-4">With Labels</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Add data labels with <code>labels: true</code> and include a
+                                <code>&lt;span class="data"&gt;</code>:
+                            </p>
+                            <div id="labeled-pie"
+                                style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;">
+                                <table class="charts-css pie show-labels">
+                                    <caption>Browser Market Share</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> Chrome </th>
+                                            <td style="--start: 0.0; --end: 0.6; --color: #4CAF50;">
+                                                <span class="data"> 60% </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Firefox </th>
+                                            <td style="--start: 0.6; --end: 0.85; --color: #F44336;">
+                                                <span class="data"> 25% </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Safari </th>
+                                            <td style="--start: 0.85; --end: 1.0; --color: #2196F3;">
+                                                <span class="data"> 15% </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie', labels: true },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Chrome'),
@@ -139,94 +156,95 @@
         )
     )
 )</code></pre>
-                </div>
-            </div>
-        </div>
-
-        <!-- Spacing -->
-        <h2 class="text-xl font-bold mb-4">Spacing</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Add gaps between slices with the <code>spacing</code> prop:</p>
-                <div class="grid md:grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-sm font-bold mb-2">No spacing</p>
-                        <div style="max-width: 200px; margin: 0 auto; aspect-ratio: 1;">
-                            <table class="charts-css pie">
-                                <tbody>
-                                    <tr>
-                                        <td style="--start: 0.0; --end: 0.4; --color: #E91E63;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="--start: 0.4; --end: 0.7; --color: #9C27B0;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="--start: 0.7; --end: 1.0; --color: #673AB7;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-bold mb-2">spacing: 5</p>
-                        <div style="max-width: 200px; margin: 0 auto; aspect-ratio: 1;">
-                            <table class="charts-css pie data-spacing-5">
-                                <tbody>
-                                    <tr>
-                                        <td style="--start: 0.0; --end: 0.4; --color: #E91E63;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="--start: 0.4; --end: 0.7; --color: #9C27B0;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="--start: 0.7; --end: 1.0; --color: #673AB7;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+
+                    <!-- Spacing -->
+                    <h2 class="text-xl font-bold mb-4">Spacing</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Add gaps between slices with the <code>spacing</code> prop:</p>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm font-bold mb-2">No spacing</p>
+                                    <div style="max-width: 200px; margin: 0 auto; aspect-ratio: 1;">
+                                        <table class="charts-css pie">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="--start: 0.0; --end: 0.4; --color: #E91E63;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="--start: 0.4; --end: 0.7; --color: #9C27B0;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="--start: 0.7; --end: 1.0; --color: #673AB7;"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold mb-2">spacing: 5</p>
+                                    <div style="max-width: 200px; margin: 0 auto; aspect-ratio: 1;">
+                                        <table class="charts-css pie data-spacing-5">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="--start: 0.0; --end: 0.4; --color: #E91E63;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="--start: 0.4; --end: 0.7; --color: #9C27B0;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="--start: 0.7; --end: 1.0; --color: #673AB7;"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Color Schemes -->
-        <h2 class="text-xl font-bold mb-4">Color Schemes</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Use custom colors for each slice via the <code>color</code> prop:</p>
-                <div id="colored-pie" style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;">
-                    <table class="charts-css pie show-labels data-spacing-2">
-                        <caption>Device Usage</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> Desktop </th>
-                                <td style="--start: 0.0; --end: 0.45; --color: #00BCD4;">
-                                    <span class="data"> 45% </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Mobile </th>
-                                <td style="--start: 0.45; --end: 0.80; --color: #8BC34A;">
-                                    <span class="data"> 35% </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Tablet </th>
-                                <td style="--start: 0.80; --end: 0.95; --color: #FFC107;">
-                                    <span class="data"> 15% </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Other </th>
-                                <td style="--start: 0.95; --end: 1.0; --color: #607D8B;">
-                                    <span class="data"> 5% </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie', labels: true, spacing: 2 },
+                    <!-- Color Schemes -->
+                    <h2 class="text-xl font-bold mb-4">Color Schemes</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Use custom colors for each slice via the <code>color</code> prop:</p>
+                            <div id="colored-pie"
+                                style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;">
+                                <table class="charts-css pie show-labels data-spacing-2">
+                                    <caption>Device Usage</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> Desktop </th>
+                                            <td style="--start: 0.0; --end: 0.45; --color: #00BCD4;">
+                                                <span class="data"> 45% </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Mobile </th>
+                                            <td style="--start: 0.45; --end: 0.80; --color: #8BC34A;">
+                                                <span class="data"> 35% </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Tablet </th>
+                                            <td style="--start: 0.80; --end: 0.95; --color: #FFC107;">
+                                                <span class="data"> 15% </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Other </th>
+                                            <td style="--start: 0.95; --end: 1.0; --color: #607D8B;">
+                                                <span class="data"> 5% </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie', labels: true, spacing: 2 },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Desktop'),
@@ -250,50 +268,51 @@
         )
     )
 )</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Calculating Values -->
-        <h2 class="text-xl font-bold mb-4">Calculating Values</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Here's how to calculate <code>--start</code> and <code>--end</code> from percentages:
-                </p>
-                <div class="overflow-x-auto">
-                    <table class="table table-zebra">
-                        <thead>
-                            <tr>
-                                <th>Segment</th>
-                                <th>Percentage</th>
-                                <th>--start</th>
-                                <th>--end</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>First</td>
-                                <td>50%</td>
-                                <td>0.0</td>
-                                <td>0.5 (0 + 0.5)</td>
-                            </tr>
-                            <tr>
-                                <td>Second</td>
-                                <td>30%</td>
-                                <td>0.5 (prev end)</td>
-                                <td>0.8 (0.5 + 0.3)</td>
-                            </tr>
-                            <tr>
-                                <td>Third</td>
-                                <td>20%</td>
-                                <td>0.8 (prev end)</td>
-                                <td>1.0 (0.8 + 0.2)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>// Helper function to convert percentages to pie chart values
+                    <!-- Calculating Values -->
+                    <h2 class="text-xl font-bold mb-4">Calculating Values</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Here's how to calculate <code>--start</code> and <code>--end</code> from
+                                percentages:
+                            </p>
+                            <div class="overflow-x-auto">
+                                <table class="table table-zebra">
+                                    <thead>
+                                        <tr>
+                                            <th>Segment</th>
+                                            <th>Percentage</th>
+                                            <th>--start</th>
+                                            <th>--end</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>First</td>
+                                            <td>50%</td>
+                                            <td>0.0</td>
+                                            <td>0.5 (0 + 0.5)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Second</td>
+                                            <td>30%</td>
+                                            <td>0.5 (prev end)</td>
+                                            <td>0.8 (0.5 + 0.3)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Third</td>
+                                            <td>20%</td>
+                                            <td>0.8 (prev end)</td>
+                                            <td>1.0 (0.8 + 0.2)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>// Helper function to convert percentages to pie chart values
 function percentagesToPie(percentages) {
     let cumulative = 0;
     return percentages.map(pct => {
@@ -310,13 +329,13 @@ const slices = percentagesToPie([50, 30, 20]);
 //   { start: 0.5, end: 0.8 },
 //   { start: 0.8, end: 1.0 }
 // ]</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
-        </div>
-
-        <div class="flex justify-between mt-8">
-            <a href="/docs/components/chart-area" class="btn btn-outline">← Area Chart</a>
-            <a href="/docs/components/chart" class="btn btn-primary">All Charts →</a>
         </div>
     </div>
 </div>

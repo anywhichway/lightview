@@ -1,0 +1,36 @@
+<!-- Component Navigation Sidebar -->
+<div class="sidebar-header">
+    <h2 class="sidebar-title">Components</h2>
+    <p class="sidebar-subtitle">Over 50 components</p>
+</div>
+<ul class="sidebar-nav" style="max-height: calc(100vh - 120px); overflow-y: auto;" id="sidebar-links"></ul>
+
+<script>
+    (() => {
+        const { tags, $ } = Lightview;
+        const { li, a } = tags;
+
+        // Populate sidebar links
+        const sidebarLinks = [
+            'Accordion', 'Alert', 'Avatar', 'Badge', 'Breadcrumbs', 'Button', 'Card',
+            'Carousel', 'Chart', 'Chart Area', 'Chart Bar', 'Chart Column', 'Chart Line', 'Chart Pie',
+            'Chat', 'Checkbox', 'Collapse', 'Countdown', 'Diff',
+            'Divider', 'Dock', 'Drawer', 'Dropdown', 'File Input', 'Footer', 'Hero',
+            'Indicator', 'Input', 'Join', 'Kbd', 'Loading', 'Menu', 'Modal', 'Navbar',
+            'Pagination', 'Progress', 'Radial Progress', 'Radio', 'Range', 'Rating',
+            'Select', 'Skeleton', 'Stats', 'Steps', 'Swap', 'Table', 'Tabs', 'Textarea',
+            'Theme Controller', 'Timeline', 'Toast', 'Toggle', 'Tooltip'
+        ];
+
+        const linksContainer = $('#sidebar-links');
+        sidebarLinks.forEach(name => {
+            const slug = name.toLowerCase().replace(/\s+/g, '-');
+            linksContainer.content(li({}, a({ href: `/docs/components/${slug}` }, name)), "beforeend");
+        });
+    })();
+</script>
+
+<script type="module">
+    import { initSidebar } from './sidebar-setup.js';
+    initSidebar();
+</script>

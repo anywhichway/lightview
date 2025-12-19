@@ -6,66 +6,102 @@
     }
 </script>
 
-<div class="section">
-    <div class="section-content" style="max-width: 1000px;">
-        <!-- Breadcrumbs -->
-        <div id="page-breadcrumbs" class="mb-4"></div>
-        <script type="module">
-            const { $ } = Lightview;
-            const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+<!-- Load the page-specific stylesheet -->
+<link rel="stylesheet" href="./index.css">
 
-            const breadcrumbs = Breadcrumbs({
-                items: [
-                    { label: 'Components', href: '/docs/components' },
-                    { label: 'Chart', href: '/docs/components/chart' },
-                    { label: 'Line Chart' }
-                ]
-            });
+<!-- Gallery Structure -->
+<div class="gallery-page">
+    <div class="gallery-layout">
+        <!-- Sidebar Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-            $('#page-breadcrumbs').content(breadcrumbs);
-        </script>
+        <!-- Sidebar -->
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
 
-        <h1>Line Chart</h1>
-        <p class="text-lg opacity-70 mb-6">
-            Line charts display data as points connected by lines, ideal for showing trends over time.
-        </p>
-
-        <!-- Basic Usage -->
-        <h2 class="text-xl font-bold mb-4">Usage</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">To visualize data with a line chart, use <code>type: 'line'</code>.
-                    Line charts require both <code>--start</code> and <code>--size</code> to draw the line between
-                    points:</p>
-                <div id="basic-line" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
-                    <table class="charts-css line show-labels show-primary-axis">
-                        <caption>Basic Line Chart</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> Jan </th>
-                                <td style="--start: 0.2; --size: 0.4;"> <span class="data"> 40% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Feb </th>
-                                <td style="--start: 0.4; --size: 0.6;"> <span class="data"> 60% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Mar </th>
-                                <td style="--start: 0.6; --size: 0.5;"> <span class="data"> 50% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Apr </th>
-                                <td style="--start: 0.5; --size: 0.8;"> <span class="data"> 80% </span> </td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> May </th>
-                                <td style="--start: 0.8; --size: 0.7;"> <span class="data"> 70% </span> </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <!-- Main Content -->
+        <div id="gallery-main" class="gallery-main">
+            <!-- Header Container -->
+            <div
+                style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
+                <!-- Breadcrumbs Row -->
+                <div style="padding: 0.75rem 1.5rem 0;">
+                    <script>
+                        (() => {
+                            const { Breadcrumbs } = Lightview.tags;
+                            const breadcrumbs = Breadcrumbs({
+                                id: 'page-breadcrumbs',
+                                items: [
+                                    { label: 'Components', href: '/docs/components' },
+                                    { label: 'Chart Line' }
+                                ]
+                            });
+                            document.currentScript.replaceWith(breadcrumbs.domEl);
+                        })();
+                    </script>
                 </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', labels: true, primaryAxis: true },
+                <!-- Title Row -->
+                <div class="gallery-header"
+                    style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+                    <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+                            style="stroke: currentColor; stroke-width: 2;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="gallery-title">Chart Line</h1>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="gallery-content">
+                <div class="section-content" style="max-width: 1000px;">
+                    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Line charts display data as points connected by lines, ideal for showing trends over time.
+                    </p>
+
+                    <!-- Basic Usage -->
+                    <h2 class="text-xl font-bold mb-4">Usage</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">To visualize data with a line chart, use <code>type: 'line'</code>.
+                                Line charts require both <code>--start</code> and <code>--size</code> to draw the line
+                                between
+                                points:</p>
+                            <div id="basic-line" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
+                                <table class="charts-css line show-labels show-primary-axis">
+                                    <caption>Basic Line Chart</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> Jan </th>
+                                            <td style="--start: 0.2; --size: 0.4;"> <span class="data"> 40% </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Feb </th>
+                                            <td style="--start: 0.4; --size: 0.6;"> <span class="data"> 60% </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Mar </th>
+                                            <td style="--start: 0.6; --size: 0.5;"> <span class="data"> 50% </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Apr </th>
+                                            <td style="--start: 0.5; --size: 0.8;"> <span class="data"> 80% </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> May </th>
+                                            <td style="--start: 0.8; --size: 0.7;"> <span class="data"> 70% </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', labels: true, primaryAxis: true },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Jan'),
@@ -82,51 +118,52 @@
         // ... more rows
     )
 )</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Multiple Datasets -->
-        <h2 class="text-xl font-bold mb-4">Multiple Datasets</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Add multiple lines by using multiple <code>Chart.Data</code> elements with
-                    <code>multiple: true</code>:
-                </p>
-                <div id="multiple-line" style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
-                    <table class="charts-css line multiple show-labels show-primary-axis"
-                        style="--color-1: #4CAF50; --color-2: #2196F3; --color-3: #FF9800;">
-                        <caption>Multi-Line Chart</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> Q1 </th>
-                                <td style="--start: 0.2; --size: 0.4;"></td>
-                                <td style="--start: 0.3; --size: 0.5;"></td>
-                                <td style="--start: 0.1; --size: 0.3;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Q2 </th>
-                                <td style="--start: 0.4; --size: 0.5;"></td>
-                                <td style="--start: 0.5; --size: 0.6;"></td>
-                                <td style="--start: 0.3; --size: 0.5;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Q3 </th>
-                                <td style="--start: 0.5; --size: 0.7;"></td>
-                                <td style="--start: 0.6; --size: 0.4;"></td>
-                                <td style="--start: 0.5; --size: 0.6;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Q4 </th>
-                                <td style="--start: 0.7; --size: 0.9;"></td>
-                                <td style="--start: 0.4; --size: 0.7;"></td>
-                                <td style="--start: 0.6; --size: 0.8;"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', multiple: true, labels: true, primaryAxis: true },
+                    <!-- Multiple Datasets -->
+                    <h2 class="text-xl font-bold mb-4">Multiple Datasets</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Add multiple lines by using multiple <code>Chart.Data</code> elements with
+                                <code>multiple: true</code>:
+                            </p>
+                            <div id="multiple-line"
+                                style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
+                                <table class="charts-css line multiple show-labels show-primary-axis"
+                                    style="--color-1: #4CAF50; --color-2: #2196F3; --color-3: #FF9800;">
+                                    <caption>Multi-Line Chart</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> Q1 </th>
+                                            <td style="--start: 0.2; --size: 0.4;"></td>
+                                            <td style="--start: 0.3; --size: 0.5;"></td>
+                                            <td style="--start: 0.1; --size: 0.3;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Q2 </th>
+                                            <td style="--start: 0.4; --size: 0.5;"></td>
+                                            <td style="--start: 0.5; --size: 0.6;"></td>
+                                            <td style="--start: 0.3; --size: 0.5;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Q3 </th>
+                                            <td style="--start: 0.5; --size: 0.7;"></td>
+                                            <td style="--start: 0.6; --size: 0.4;"></td>
+                                            <td style="--start: 0.5; --size: 0.6;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Q4 </th>
+                                            <td style="--start: 0.7; --size: 0.9;"></td>
+                                            <td style="--start: 0.4; --size: 0.7;"></td>
+                                            <td style="--start: 0.6; --size: 0.8;"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', multiple: true, labels: true, primaryAxis: true },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Q1'),
@@ -137,48 +174,48 @@
         // ... more rows
     )
 )</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Axes and Grid -->
-        <h2 class="text-xl font-bold mb-4">Axes and Grid</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Add grid lines with <code>secondaryAxis</code>:</p>
-                <div id="axes-line" style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
-                    <table class="charts-css line show-labels show-primary-axis show-10-secondary-axes">
-                        <caption>With 10 Grid Lines</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> 1 </th>
-                                <td style="--start: 0.1; --size: 0.3;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> 2 </th>
-                                <td style="--start: 0.3; --size: 0.5;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> 3 </th>
-                                <td style="--start: 0.5; --size: 0.4;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> 4 </th>
-                                <td style="--start: 0.4; --size: 0.7;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> 5 </th>
-                                <td style="--start: 0.7; --size: 0.6;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> 6 </th>
-                                <td style="--start: 0.6; --size: 0.9;"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', labels: true, primaryAxis: true, secondaryAxis: true },
+                    <!-- Axes and Grid -->
+                    <h2 class="text-xl font-bold mb-4">Axes and Grid</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Add grid lines with <code>secondaryAxis</code>:</p>
+                            <div id="axes-line" style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
+                                <table class="charts-css line show-labels show-primary-axis show-10-secondary-axes">
+                                    <caption>With 10 Grid Lines</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> 1 </th>
+                                            <td style="--start: 0.1; --size: 0.3;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> 2 </th>
+                                            <td style="--start: 0.3; --size: 0.5;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> 3 </th>
+                                            <td style="--start: 0.5; --size: 0.4;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> 4 </th>
+                                            <td style="--start: 0.4; --size: 0.7;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> 5 </th>
+                                            <td style="--start: 0.7; --size: 0.6;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> 6 </th>
+                                            <td style="--start: 0.6; --size: 0.9;"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', labels: true, primaryAxis: true, secondaryAxis: true },
     Chart.Body({},
         // Data rows...
     )
@@ -186,44 +223,44 @@
 
 // Or with custom number of grid lines:
 Chart({ type: 'line', secondaryAxis: 'show-4-secondary-axes' }, ...)</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Line Styling -->
-        <h2 class="text-xl font-bold mb-4">Line Styling</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Customize line appearance with CSS custom properties:</p>
-                <div id="styled-line" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
-                    <table class="charts-css line show-labels" style="--color: #7480ff; --line-size: 3px;">
-                        <caption>Styled Line (thicker, custom color)</caption>
-                        <tbody>
-                            <tr>
-                                <th scope="row"> Jan </th>
-                                <td style="--start: 0.3; --size: 0.5;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Feb </th>
-                                <td style="--start: 0.5; --size: 0.7;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Mar </th>
-                                <td style="--start: 0.7; --size: 0.6;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> Apr </th>
-                                <td style="--start: 0.6; --size: 0.9;"></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"> May </th>
-                                <td style="--start: 0.9; --size: 0.8;"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ 
+                    <!-- Line Styling -->
+                    <h2 class="text-xl font-bold mb-4">Line Styling</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Customize line appearance with CSS custom properties:</p>
+                            <div id="styled-line" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
+                                <table class="charts-css line show-labels" style="--color: #7480ff; --line-size: 3px;">
+                                    <caption>Styled Line (thicker, custom color)</caption>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row"> Jan </th>
+                                            <td style="--start: 0.3; --size: 0.5;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Feb </th>
+                                            <td style="--start: 0.5; --size: 0.7;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Mar </th>
+                                            <td style="--start: 0.7; --size: 0.6;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> Apr </th>
+                                            <td style="--start: 0.6; --size: 0.9;"></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"> May </th>
+                                            <td style="--start: 0.9; --size: 0.8;"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4">
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ 
     type: 'line', 
     labels: true,
     style: '--color: #7480ff; --line-size: 3px;'
@@ -232,65 +269,68 @@ Chart({ type: 'line', secondaryAxis: 'show-4-secondary-axes' }, ...)</code></pre
         // Data rows...
     )
 )</code></pre>
-                </div>
-            </div>
-        </div>
-
-        <!-- Reverse Orientation -->
-        <h2 class="text-xl font-bold mb-4">Orientation</h2>
-        <div class="card bg-base-100 shadow-sm mb-8">
-            <div class="card-body">
-                <p class="mb-4">Reverse the chart with <code>reverse: true</code>:</p>
-                <div class="grid md:grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-sm font-bold mb-2">Normal</p>
-                        <div style="height: 180px;">
-                            <table class="charts-css line show-labels">
-                                <tbody>
-                                    <tr>
-                                        <th scope="row"> A </th>
-                                        <td style="--start: 0.2; --size: 0.5;"></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"> B </th>
-                                        <td style="--start: 0.5; --size: 0.8;"></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"> C </th>
-                                        <td style="--start: 0.8; --size: 0.6;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-bold mb-2">Reversed</p>
-                        <div style="height: 180px;">
-                            <table class="charts-css line show-labels reverse">
-                                <tbody>
-                                    <tr>
-                                        <th scope="row"> A </th>
-                                        <td style="--start: 0.2; --size: 0.5;"></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"> B </th>
-                                        <td style="--start: 0.5; --size: 0.8;"></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"> C </th>
-                                        <td style="--start: 0.8; --size: 0.6;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+
+                    <!-- Reverse Orientation -->
+                    <h2 class="text-xl font-bold mb-4">Orientation</h2>
+                    <div class="card bg-base-100 shadow-sm mb-8">
+                        <div class="card-body">
+                            <p class="mb-4">Reverse the chart with <code>reverse: true</code>:</p>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm font-bold mb-2">Normal</p>
+                                    <div style="height: 180px;">
+                                        <table class="charts-css line show-labels">
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row"> A </th>
+                                                    <td style="--start: 0.2; --size: 0.5;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"> B </th>
+                                                    <td style="--start: 0.5; --size: 0.8;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"> C </th>
+                                                    <td style="--start: 0.8; --size: 0.6;"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold mb-2">Reversed</p>
+                                    <div style="height: 180px;">
+                                        <table class="charts-css line show-labels reverse">
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row"> A </th>
+                                                    <td style="--start: 0.2; --size: 0.5;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"> B </th>
+                                                    <td style="--start: 0.5; --size: 0.8;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"> C </th>
+                                                    <td style="--start: 0.8; --size: 0.6;"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="flex justify-between mt-8" style="display: none;">
+                        <a href="/docs/components/chart-column" class="btn btn-outline">← Column Chart</a>
+                        <a href="/docs/components/chart-area" class="btn btn-primary">Area Chart →</a>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="flex justify-between mt-8">
-            <a href="/docs/components/chart-column" class="btn btn-outline">← Column Chart</a>
-            <a href="/docs/components/chart-area" class="btn btn-primary">Area Chart →</a>
         </div>
     </div>
 </div>

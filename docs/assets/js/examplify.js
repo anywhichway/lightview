@@ -129,20 +129,30 @@ ${autoResizeScript}
     }
 
     // Event handlers
+    // Event handlers
     if (controls) {
-        controls.querySelector('.examplify-run').addEventListener('click', () => {
-            const newIframe = createIframe(target.textContent);
-            iframe.parentNode.replaceChild(newIframe, iframe);
-            iframe = newIframe;
-        });
+        const runBtn = controls.querySelector('.examplify-run');
+        if (runBtn) {
+            runBtn.addEventListener('click', () => {
+                const newIframe = createIframe(target.textContent);
+                iframe.parentNode.replaceChild(newIframe, iframe);
+                iframe = newIframe;
+            });
+        }
 
-        controls.querySelector('.examplify-copy').addEventListener('click', () => {
-            navigator.clipboard.writeText(target.textContent);
-        });
+        const copyBtn = controls.querySelector('.examplify-copy');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(target.textContent);
+            });
+        }
 
-        controls.querySelector('.examplify-reset').addEventListener('click', () => {
-            target.textContent = originalContent;
-        });
+        const resetBtn = controls.querySelector('.examplify-reset');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                target.textContent = originalContent;
+            });
+        }
     }
 
     // Add styles

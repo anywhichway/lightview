@@ -429,6 +429,43 @@
         return document.createComment(`lv-src-${isEnd ? 'end' : 'start'}:${id}`);
     };
 
+
+    /**
+     * Execute scripts in a container element
+     * Scripts created via DOMParser or innerHTML don't execute automatically,
+     * so we need to replace them with new script elements to trigger execution
+     * @param {HTMLElement|DocumentFragment} container - Container to search for scripts
+     */
+    const executeScripts = (container) => {
+        if (!container) return;
+
+        // Find all script tags in the container
+        const scripts = container.querySelectorAll('script');
+
+        scripts.forEach(oldScript => {
+            // Create a new script element
+            const newScript = document.createElement('script');
+
+            // Copy all attributes from old to new
+            Array.from(oldScript.attributes).forEach(attr => {
+                newScript.setAttribute(attr.name, attr.value);
+            });
+
+            // Copy the script content
+            if (oldScript.src) {
+                // External script - src attribute already copied
+                newScript.src = oldScript.src;
+            } else {
+                // Inline script - copy text content
+                newScript.textContent = oldScript.textContent;
+            }
+
+            // Replace the old script with the new one
+            // This causes the browser to execute it
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+    };
+
     // Find and remove previously inserted content between markers
     const removeInsertedContent = (parentEl, markerId) => {
         const startMarker = `lv-src-start:${markerId}`;
@@ -567,6 +604,7 @@
                 el.domEl.attachShadow({ mode: 'open' });
             }
             setupChildren(elements, el.domEl.shadowRoot);
+            executeScripts(el.domEl.shadowRoot);
             return;
         }
 
@@ -607,6 +645,8 @@
                 } else {
                     el.domEl.parentElement.insertBefore(fragment, el.domEl.nextSibling);
                 }
+                // Execute scripts after insertion
+                executeScripts(parent);
                 break;
             }
 
@@ -632,6 +672,8 @@
 
                 fragment.appendChild(createMarker(markerId, true));
                 el.domEl.insertBefore(fragment, el.domEl.firstChild);
+                // Execute scripts after insertion
+                executeScripts(el.domEl);
                 break;
             }
 
@@ -655,6 +697,8 @@
                 });
 
                 el.domEl.appendChild(createMarker(markerId, true));
+                // Execute scripts after insertion
+                executeScripts(el.domEl);
                 break;
             }
 
@@ -686,6 +730,8 @@
 
                 fragment.appendChild(createMarker(markerId, true));
                 parent.replaceChild(fragment, el.domEl);
+                // Execute scripts after insertion
+                executeScripts(parent);
                 break;
             }
 
@@ -693,6 +739,8 @@
             default: {
                 // Replace all children (original behavior)
                 el.children = elements;
+                // Execute scripts after children are set
+                executeScripts(el.domEl);
                 break;
             }
         }

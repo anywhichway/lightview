@@ -16,13 +16,7 @@
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
         <!-- Sidebar -->
-        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden">
-            <div class="sidebar-header">
-                <h2 class="sidebar-title">Components</h2>
-                <p class="sidebar-subtitle">Over 50 components</p>
-            </div>
-            <ul class="sidebar-nav" style="max-height: calc(100vh - 120px); overflow-y: auto;" id="sidebar-links"></ul>
-        </div>
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
 
         <!-- Main Content -->
         <div id="gallery-main" class="gallery-main">
@@ -32,6 +26,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
                         style="stroke: currentColor; stroke-width: 2;">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
                     </svg>
                 </button>
                 <h1 class="gallery-title">Components Gallery</h1>
@@ -171,7 +166,7 @@ $('#example').content(app);</code></pre>
 <!-- Shared helpers and sidebar setup -->
 <script type="module">
     const { tags, signal, $ } = Lightview;
-    const { div, section, h2, h3, p, a, button, span, ul, li, svg, path, pre, code } = tags;
+    const { div, section, h2, h3, p, button, span, ul, svg, path, pre, code } = tags;
 
     // Sidebar state
     const sidebarOpen = signal(false);
@@ -200,23 +195,6 @@ $('#example').content(app);</code></pre>
 
     // Mark layout as ready - enables sidebar visibility after initial state is set
     document.querySelector('.gallery-layout').classList.add('js-ready');
-
-    // Populate sidebar links
-    const sidebarLinks = [
-        'Accordion', 'Alert', 'Avatar', 'Badge', 'Breadcrumbs', 'Button', 'Card',
-        'Carousel', 'Chart', 'Chat', 'Checkbox', 'Collapse', 'Countdown', 'Diff',
-        'Divider', 'Dock', 'Drawer', 'Dropdown', 'File Input', 'Footer', 'Hero',
-        'Indicator', 'Input', 'Join', 'Kbd', 'Loading', 'Menu', 'Modal', 'Navbar',
-        'Pagination', 'Progress', 'Radial Progress', 'Radio', 'Range', 'Rating',
-        'Select', 'Skeleton', 'Stats', 'Steps', 'Swap', 'Table', 'Tabs', 'Textarea',
-        'Theme Controller', 'Timeline', 'Toast', 'Toggle', 'Tooltip'
-    ];
-
-    const linksContainer = $('#sidebar-links');
-    sidebarLinks.forEach(name => {
-        const slug = name.toLowerCase().replace(/\s+/g, '-');
-        linksContainer.content(li({}, a({ href: `/docs/components/${slug}` }, name)), "beforeend");
-    });
 
     // Info icon helper (shared via window)
     window.InfoIcon = () => svg(
