@@ -27,6 +27,8 @@
             <li>Route parameters <code>/user/:id</code></li>
             <li>Wildcard support <code>/api/*</code></li>
             <li>Async handler support</li>
+            <li>Locale prefix handling</li>
+            <li>Markdown rendering</li>
         </ul>
 
         <h2>Basic Usage</h2>
@@ -139,6 +141,35 @@ const loadPage = async (ctx) => {
         </ul>
 
         <h2>Built-in Middleware</h2>
+
+        <h3><code>localeHandler(ctx)</code></h3>
+        <p>
+            Extracts locale prefixes (e.g., <code>/en/about</code>) from the path. It modifies the context
+            by stripping the prefix (<code>/about</code>) and adding a <code>locale</code> property.
+        </p>
+        <p><strong>Usage:</strong> Add it early in your chain so subsequent handlers see the clean path.</p>
+        <div class="code-block">
+            <pre><code>import { localeHandler } from '/middleware/locale.js';
+
+appRouter.use('/*', localeHandler);
+
+// If user visits /en/about:
+// 1. localeHandler strips /en/, sets ctx.locale = 'en'
+// 2. Next handlers see ctx.path = '/about'</code></pre>
+        </div>
+
+        <h3><code>markdownHandler(ctx)</code></h3>
+        <p>
+            Intercepts requests for <code>.md</code> files, fetches the content, parses it using <code>marked.js</code>
+            (loaded on demand), and renders the resulting HTML.
+        </p>
+        <p><strong>Returns:</strong> A <code>Response</code> object (stops the route chain).</p>
+        <div class="code-block">
+            <pre><code>import { markdownHandler } from '/middleware/markdown.js';
+
+// Handle all markdown files
+appRouter.use('/*.md', markdownHandler);</code></pre>
+        </div>
 
         <h3><code>notFound(options)</code></h3>
         <p>A final middleware that handles 404 errors when no other route matches.</p>
