@@ -1,5 +1,6 @@
 // Unique ID counter for iframe identification
-let examplifyIdCounter = 0;
+var examplifyIdCounter = window.examplifyIdCounter || 0;
+window.examplifyIdCounter = examplifyIdCounter;
 
 function examplify(target, options = {}) {
     const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false } = options;
@@ -120,7 +121,7 @@ function examplify(target, options = {}) {
 </head>
 <body>
 ${html ? html : '<div id="example"></div>'}
-<script ${type ? `type="${type}"` : ''}>const render = (content) => { const target = document.querySelector('#example'); target.innerHTML = ''; target.insertAdjacentElement('afterbegin', content.domEl || content)};setTimeout(async () => {${content}}, 250)<\/script>
+<script ${type ? `type="${type}"` : ''}>const render = (content) => { const target = document.querySelector('#example'); target.innerHTML = ''; target.insertAdjacentElement('afterbegin', content.domEl || content)};${type === 'module' ? content : `window.addEventListener('load', async () => {${content}})`}<\/script>
 ${autoResizeScript}
 </body>
 </html>`;

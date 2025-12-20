@@ -507,18 +507,26 @@
         // Skip standard src tags
         if (STANDARD_SRC_TAGS.includes(tagName)) return;
 
-        const isPath = (s) => /^(https?:|\.|\/|\w)/.test(s) || /\.(html|json)$/.test(s);
+        const isPath = (s) => /^(https?:|\.|\/|\w)/.test(s) || /\.(html|json|vdom|odom)$/.test(s);
 
         let content = null;
         let isJson = false;
+        let isHtml = false;
         let rawContent = '';
 
         if (isPath(src)) {
             try {
-                const res = await fetch(new URL(src, document.baseURI).href);
+                const url = new URL(src, document.baseURI);
+                const res = await fetch(url.href);
                 if (res.ok) {
-                    const contentType = res.headers.get('content-type');
-                    isJson = contentType && contentType.includes('application/json');
+                    const ext = url.pathname.split('.').pop().toLowerCase();
+
+                    if (ext === 'vdom' || ext === 'odom') {
+                        isJson = true;
+                    } else if (ext === 'html') {
+                        isHtml = true;
+                    }
+
                     if (isJson) {
                         content = await res.json();
                         rawContent = JSON.stringify(content);
@@ -536,24 +544,25 @@
         if (content !== null) {
             if (isJson) {
                 elements = Array.isArray(content) ? content : [content];
-            } else {
+            } else if (isHtml) {
                 // Check if escape attribute is set - if so, add as escaped text instead of parsing
                 const shouldEscape = el.domEl.getAttribute('escape') === 'true';
                 if (shouldEscape) {
-                    // Add the raw HTML as escaped text content
-                    el.domEl.textContent = content;
-                    return;
+                    elements = [content];
+                } else {
+                    const parser = new DOMParser();
+                    // Remove explicit <head> content to prevent collecting metadata
+                    // while preserving nodes that the parser auto-moves to head (e.g. styles outside head)
+                    const contentWithoutHead = content.replace(/<head[^>]*>[\s\S]*?<\/head>/i, '');
+                    const doc = parser.parseFromString(contentWithoutHead, 'text/html');
+
+                    // Collect all resulting nodes (auto-moved head nodes + body nodes)
+                    const allNodes = [...Array.from(doc.head.childNodes), ...Array.from(doc.body.childNodes)];
+                    elements = domToElements(allNodes, element);
                 }
-
-                const parser = new DOMParser();
-                // Remove explicit <head> content to prevent collecting metadata
-                // while preserving nodes that the parser auto-moves to head (e.g. styles outside head)
-                const contentWithoutHead = content.replace(/<head[^>]*>[\s\S]*?<\/head>/i, '');
-                const doc = parser.parseFromString(contentWithoutHead, 'text/html');
-
-                // Collect all resulting nodes (auto-moved head nodes + body nodes)
-                const allNodes = [...Array.from(doc.head.childNodes), ...Array.from(doc.body.childNodes)];
-                elements = domToElements(allNodes, element);
+            } else {
+                // Treat as text
+                elements = [content];
             }
         } else {
             try {
@@ -630,10 +639,17 @@
                     } else if (childEl instanceof Node) {
                         fragment.appendChild(childEl);
                     } else {
-                        // It's a vDOM object, create it
-                        const created = element(childEl.tag, childEl.attributes || {}, childEl.children || []);
-                        if (created && created.domEl) {
-                            fragment.appendChild(created.domEl);
+                        // Convert Object DOM to vDOM if needed
+                        let vdom = childEl;
+                        if (typeof window !== 'undefined' && window.Lightview && window.Lightview.hooks.processChild) {
+                            vdom = window.Lightview.hooks.processChild(childEl) || childEl;
+                        }
+
+                        if (vdom.tag) {
+                            const created = element(vdom.tag, vdom.attributes || {}, vdom.children || []);
+                            if (created && created.domEl) {
+                                fragment.appendChild(created.domEl);
+                            }
                         }
                     }
                 });
@@ -663,9 +679,17 @@
                     } else if (childEl instanceof Node) {
                         fragment.appendChild(childEl);
                     } else {
-                        const created = element(childEl.tag, childEl.attributes || {}, childEl.children || []);
-                        if (created && created.domEl) {
-                            fragment.appendChild(created.domEl);
+                        // Convert Object DOM to vDOM if needed
+                        let vdom = childEl;
+                        if (typeof window !== 'undefined' && window.Lightview && window.Lightview.hooks.processChild) {
+                            vdom = window.Lightview.hooks.processChild(childEl) || childEl;
+                        }
+
+                        if (vdom.tag) {
+                            const created = element(vdom.tag, vdom.attributes || {}, vdom.children || []);
+                            if (created && created.domEl) {
+                                fragment.appendChild(created.domEl);
+                            }
                         }
                     }
                 });
@@ -689,9 +713,17 @@
                     } else if (childEl instanceof Node) {
                         el.domEl.appendChild(childEl);
                     } else {
-                        const created = element(childEl.tag, childEl.attributes || {}, childEl.children || []);
-                        if (created && created.domEl) {
-                            el.domEl.appendChild(created.domEl);
+                        // Convert Object DOM to vDOM if needed
+                        let vdom = childEl;
+                        if (typeof window !== 'undefined' && window.Lightview && window.Lightview.hooks.processChild) {
+                            vdom = window.Lightview.hooks.processChild(childEl) || childEl;
+                        }
+
+                        if (vdom.tag) {
+                            const created = element(vdom.tag, vdom.attributes || {}, vdom.children || []);
+                            if (created && created.domEl) {
+                                el.domEl.appendChild(created.domEl);
+                            }
                         }
                     }
                 });
@@ -721,9 +753,17 @@
                     } else if (childEl instanceof Node) {
                         fragment.appendChild(childEl);
                     } else {
-                        const created = element(childEl.tag, childEl.attributes || {}, childEl.children || []);
-                        if (created && created.domEl) {
-                            fragment.appendChild(created.domEl);
+                        // Convert Object DOM to vDOM if needed
+                        let vdom = childEl;
+                        if (typeof window !== 'undefined' && window.Lightview && window.Lightview.hooks.processChild) {
+                            vdom = window.Lightview.hooks.processChild(childEl) || childEl;
+                        }
+
+                        if (vdom.tag) {
+                            const created = element(vdom.tag, vdom.attributes || {}, vdom.children || []);
+                            if (created && created.domEl) {
+                                fragment.appendChild(created.domEl);
+                            }
                         }
                     }
                 });

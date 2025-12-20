@@ -9,46 +9,9 @@
 <!-- Hero Section -->
 <section class="hero">
     <div class="hero-content">
-        <svg class="hero-logo" width="512" height="512" viewBox="0 0 512 512" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="bladeGradient" x1="100" y1="100" x2="400" y2="400" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#0ea5e9" />
-                    <stop offset="50%" stop-color="#8b5cf6" />
-                    <stop offset="100%" stop-color="#ec4899" />
-                </linearGradient>
-                <filter id="centerGlow" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="15" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-            </defs>
-            <g transform="translate(256 256)">
-                <g class="aperture-panels" stroke="none">
-                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
-                        transform="rotate(0)" />
-                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
-                        transform="rotate(45)" />
-                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
-                        transform="rotate(90)" />
-                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
-                        transform="rotate(135)" />
-                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
-                        transform="rotate(180)" />
-                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
-                        transform="rotate(225)" />
-                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
-                        transform="rotate(270)" />
-                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
-                        transform="rotate(315)" />
-                </g>
-            </g>
-            <g class="hero-pupil">
-                <circle cx="256" cy="256" r="60" fill="url(#bladeGradient)" opacity="0.3" filter="url(#centerGlow)" />
-                <circle cx="256" cy="256" r="24" fill="url(#bladeGradient)" />
-            </g>
-        </svg>
+        <img src="/docs/assets/images/logo.svg" class="hero-logo" alt="Lightview Logo" width="512" height="512">
         <h1>Lightview</h1>
-        <p class="hero-tagline">Why be heavy when you can be light?</p>
+        <p class="hero-tagline">Reactive UI's done light</p>
         <p class="hero-description">
             All the power. None of the weight.
         </p>
@@ -69,6 +32,10 @@
                 <div class="hero-stat-value">3</div>
                 <div class="hero-stat-label">Ways to Build</div>
             </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">40+</div>
+                <div class="hero-stat-label">Components</div>
+            </div>
         </div>
     </div>
 </section>
@@ -83,7 +50,7 @@
             </p>
         </div>
         <div class="feature-grid">
-            <div class="feature-card">
+            <a href="./api/signals.html" class="feature-card" style="text-decoration: none; color: inherit;">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10" />
@@ -94,8 +61,8 @@
                 <p class="feature-description">
                     Fine-grained reactivity with signals. Updates propagate automatically—no virtual DOM diffing needed.
                 </p>
-            </div>
-            <div class="feature-card">
+            </a>
+            <a href="./api/elements.html" class="feature-card" style="text-decoration: none; color: inherit;">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -106,8 +73,8 @@
                 <p class="feature-description">
                     Tagged API, vDOM, or Object DOM. Pick your style—they all work together.
                 </p>
-            </div>
-            <div class="feature-card">
+            </a>
+            <a href="./api/hypermedia.html" class="feature-card" style="text-decoration: none; color: inherit;">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <path
@@ -116,10 +83,11 @@
                 </div>
                 <h3 class="feature-title">Hypermedia Ready</h3>
                 <p class="feature-description">
-                    Fetch HTML or JSON with the <code>src</code> attribute. HTMX-like patterns built right in.
+                    Fetch HTML, vDOM, or Object DOM with the <code>src</code> attribute. HTMX-like patterns built right
+                    in.
                 </p>
-            </div>
-            <div class="feature-card">
+            </a>
+            <a href="./components/index.html" class="feature-card" style="text-decoration: none; color: inherit;">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
@@ -129,8 +97,8 @@
                 <p class="feature-description">
                     Beautiful, accessible components ready to use. Buttons, modals, forms, and more.
                 </p>
-            </div>
-            <div class="feature-card">
+            </a>
+            <a href="./getting-started/index.html" class="feature-card" style="text-decoration: none; color: inherit;">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <path
@@ -141,8 +109,9 @@
                 <p class="feature-description">
                     No bundler required. Drop in a script tag and start building. Works everywhere.
                 </p>
-            </div>
-            <div class="feature-card">
+            </a>
+            <a href="./components/theme-controller.html" class="feature-card"
+                style="text-decoration: none; color: inherit;">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="5" />
@@ -154,7 +123,7 @@
                 <p class="feature-description">
                     Theme switching built in. CSS variables make customization a breeze.
                 </p>
-            </div>
+            </a>
         </div>
     </div>
 </section>

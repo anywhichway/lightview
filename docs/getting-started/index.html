@@ -9,17 +9,13 @@
 <div class="section">
     <div class="section-content" style="max-width: 1200px;">
         <h1>Getting Started</h1>
-        <p class="text-secondary" style="font-size: 1.125rem; max-width: 800px; margin-bottom: 2rem;">
-            Build a fully interactive <strong>Product Card</strong> in 5 simple steps.
-            From basic reactivity to professional components.
-        </p>
 
         <!-- Step Navigation -->
         <div class="tutorial-steps" style="display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
-            <button class="btn btn-primary step-btn active" onclick="loadStep(1)">1. Signals</button>
-            <button class="btn btn-secondary step-btn" onclick="loadStep(2)">2. State</button>
-            <button class="btn btn-secondary step-btn" onclick="loadStep(3)">3. Hypermedia</button>
-            <button class="btn btn-secondary step-btn" onclick="loadStep(4)">4. Components</button>
+            <button class="btn btn-primary step-btn active" onclick="switchStep(1)">1. Signals</button>
+            <button class="btn btn-secondary step-btn" onclick="switchStep(2)">2. State</button>
+            <button class="btn btn-secondary step-btn" onclick="switchStep(3)">3. Hypermedia</button>
+            <button class="btn btn-secondary step-btn" onclick="switchStep(4)">4. Components</button>
         </div>
 
         <!-- Tutorial Layout: Preview on top, Code & Concepts below -->
@@ -29,7 +25,7 @@
             <!-- Preview Area -->
             <div id="tutorial-preview"
                 style="min-height: 350px; background: var(--site-bg); border-bottom: 1px solid var(--site-border);">
-                <!-- Iframe injected by examplify -->
+                <!-- Iframes injected here -->
             </div>
 
             <!-- Split: Code | Resizer | Concepts -->
@@ -43,8 +39,7 @@
                         <span
                             style="font-weight: 600; color: var(--site-text-secondary); font-size: 0.875rem;">CODE</span>
                     </div>
-                    <pre
-                        style="flex: 1; margin: 0; overflow: auto;"><code id="tutorial-code" contenteditable="true" style="display: block; padding: 1rem; min-height: 100%; outline: none;"></code></pre>
+                    <!-- Code blocks injected here -->
                 </div>
 
                 <!-- Resizer Handle -->
@@ -60,7 +55,9 @@
                         <span
                             style="font-weight: 600; color: var(--site-text-secondary); font-size: 0.875rem;">CONCEPTS</span>
                     </div>
-                    <div id="tutorial-concepts" style="padding: 1.5rem; overflow-y: auto; flex: 1;"></div>
+                    <div id="tutorial-concepts" style="padding: 1.5rem; overflow-y: auto; flex: 1;">
+                        <!-- Concept blocks injected here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,6 +80,31 @@
         background: var(--site-primary);
     }
 
+    /* Step content visibility */
+    .step-content {
+        display: none;
+        height: 100%;
+    }
+
+    .step-content.active {
+        display: block;
+    }
+
+    /* Code column specific layout for active step */
+    #code-column .step-content.active {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: auto;
+    }
+
+    /* Ensure pre tags fill space */
+    #code-column pre {
+        flex: 1;
+        margin: 0;
+        outline: none;
+    }
+
     @media (max-width: 900px) {
         #tutorial-split {
             flex-direction: column !important;
@@ -99,14 +121,13 @@
     }
 </style>
 
+<script src="../assets/js/examplify.js"></script>
 <script>
     (function () {
-        const codeEl = document.getElementById('tutorial-code');
-        const previewEl = document.getElementById('tutorial-preview');
-        const conceptsEl = document.getElementById('tutorial-concepts');
+        const previewContainer = document.getElementById('tutorial-preview');
+        const codeContainer = document.getElementById('code-column');
+        const conceptsContainer = document.getElementById('tutorial-concepts');
         const stepBtns = document.querySelectorAll('.step-btn');
-
-        let currentStep = 1;
 
         // Tutorial data for each step
         const tutorialData = {
@@ -294,14 +315,14 @@ const App = element('div', { class: 'reviews-container' }, [
             }},
             { button: {
                 class: 'format-btn vdom',
-                href: './reviews-vdom.json',
+                href: './reviews.vdom',
                 target: '#reviews-box',
                 onclick: () => { currentFormat.value = 'VDOM'; reviewCount.value = 3; },
                 children: ['🔷 VDOM']
             }},
             { button: {
                 class: 'format-btn odom',
-                href: './reviews-odom.json',
+                href: './reviews.odom',
                 target: '#reviews-box',
                 onclick: () => { currentFormat.value = 'ODOM'; reviewCount.value = 3; },
                 children: ['🔶 Object DOM']
@@ -345,8 +366,8 @@ $('#app').content(App);`,
                     <li style="margin-bottom: 0.75rem;"><code>href</code> on non-links — Clicking sets <code>src</code> on target element.</li>
                     <li style="margin-bottom: 0.75rem;"><code>src</code> — Fetches URL and injects content as children.</li>
                     <li style="margin-bottom: 0.75rem;"><strong>HTML</strong> — Standard HTML files loaded directly.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>VDOM</strong> — JSON with <code>{ tag, attributes, children }</code> structure.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>Object DOM</strong> — Compact JSON: <code>{ div: { class: 'x', children: [...] } }</code>.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>VDOM (.vdom)</strong> — JSON with <code>{ tag, attributes, children }</code> structure.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Object DOM (.odom)</strong> — Compact JSON: <code>{ div: { class: 'x', children: [...] } }</code>.</li>
                 </ul>
                 <p><strong>Try it:</strong> Click each button to load the same reviews in different formats!</p>
                 
@@ -355,10 +376,10 @@ $('#app').content(App);`,
                 <h4>📄 reviews.html (HTML)</h4>
                 <pre style="background: #f8f9fa; color: #24292e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; overflow-x: auto; max-height: 180px; border: 1px solid #e1e4e8;"><code id="source-html">Loading...</code></pre>
 
-                <h4 style="margin-top: 1rem;">🔷 reviews-vdom.json (VDOM)</h4>
+                <h4 style="margin-top: 1rem;">🔶 reviews.vdom (VDOM)</h4>
                 <pre style="background: #f8f9fa; color: #24292e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; overflow-x: auto; max-height: 180px; border: 1px solid #e1e4e8;"><code id="source-vdom">Loading...</code></pre>
 
-                <h4 style="margin-top: 1rem;">🔶 reviews-odom.json (Object DOM)</h4>
+                <h4 style="margin-top: 1rem;">🔶 reviews.odom (Object DOM)</h4>
                 <pre style="background: #f8f9fa; color: #24292e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; overflow-x: auto; max-height: 180px; border: 1px solid #e1e4e8;"><code id="source-odom">Loading...</code></pre>
             `,
                 onLoad: function () {
@@ -367,11 +388,11 @@ $('#app').content(App);`,
                         const el = document.getElementById('source-html');
                         if (el) el.textContent = text;
                     });
-                    fetch('./reviews-vdom.json').then(r => r.text()).then(text => {
+                    fetch('./reviews.vdom').then(r => r.text()).then(text => {
                         const el = document.getElementById('source-vdom');
                         if (el) el.textContent = text;
                     });
-                    fetch('./reviews-odom.json').then(r => r.text()).then(text => {
+                    fetch('./reviews.odom').then(r => r.text()).then(text => {
                         const el = document.getElementById('source-odom');
                         if (el) el.textContent = text;
                     });
@@ -431,57 +452,100 @@ $('#app').content(App);`,
             }
         };
 
-        let currentExamplify = null;
-
-        window.loadStep = function (step) {
-            currentStep = step;
-
-            // Update button styles
-            stepBtns.forEach((btn, i) => {
-                btn.classList.remove('active', 'btn-primary');
-                btn.classList.add('btn-secondary');
-            });
-            stepBtns[step - 1].classList.remove('btn-secondary');
-            stepBtns[step - 1].classList.add('active', 'btn-primary');
-
-            // Set code
+        // Initialize Steps
+        Object.keys(tutorialData).forEach(step => {
             const data = tutorialData[step];
+
+            // 1. Create Preview Container
+            const previewEl = document.createElement('div');
+            previewEl.id = `preview-${step}`;
+            previewEl.className = 'step-content';
+            previewContainer.appendChild(previewEl);
+
+            // 2. Create Code Container
+            const codeWrapper = document.createElement('div');
+            codeWrapper.id = `code-container-${step}`;
+            codeWrapper.className = 'step-content';
+
+            const preEl = document.createElement('pre');
+            preEl.style.flex = '1';
+            preEl.style.margin = '0';
+            preEl.style.overflow = 'auto';
+
+            const codeEl = document.createElement('code');
+            codeEl.id = `code-${step}`;
+            codeEl.contentEditable = "true";
+            codeEl.style.display = 'block';
+            codeEl.style.padding = '1rem';
+            codeEl.style.minHeight = '100%';
+            codeEl.style.outline = 'none';
             codeEl.textContent = data.code;
+
+            preEl.appendChild(codeEl);
+            codeWrapper.appendChild(preEl);
+            codeContainer.appendChild(codeWrapper);
+
+            // 3. Create Concepts Container
+            const conceptsEl = document.createElement('div');
+            conceptsEl.id = `concepts-${step}`;
+            conceptsEl.className = 'step-content';
             conceptsEl.innerHTML = data.concepts;
+            conceptsContainer.appendChild(conceptsEl);
 
-            // Call onLoad if defined (e.g., to fetch source files)
-            if (data.onLoad) data.onLoad();
+            // 4. Initialize Examplify
+            // Check if step uses modules (looking for import statement)
+            const isModule = data.code.includes('import ');
 
-            // Clear and recreate preview
-            previewEl.innerHTML = '';
-
-            // Build scripts array - step 5 needs component imports via module
-            const isModuleStep = step === 5;
-
-            // Use examplify to render the code
-            currentExamplify = examplify(codeEl, {
+            const exResult = examplify(codeEl, {
                 scripts: ['../../../lightview.js', '../../../lightview-x.js'],
                 html: '<div id="app" style="padding: 1rem;"></div>',
                 location: 'afterEnd',
-                height: '350px',
-                type: isModuleStep ? 'module' : 'text/javascript',
+                type: isModule ? 'module' : 'text/javascript',
                 ...data.options || {}
             });
 
-            // Move iframe into preview container
-            if (currentExamplify && currentExamplify.iframe) {
-                previewEl.appendChild(currentExamplify.iframe);
-                currentExamplify.iframe.style.width = '100%';
-                currentExamplify.iframe.style.border = 'none';
+            // Move iframe to preview container
+            if (exResult && exResult.iframe) {
+                previewEl.appendChild(exResult.iframe);
+                exResult.iframe.style.width = '100%';
+                exResult.iframe.style.border = 'none';
+                exResult.iframe.style.height = '100%';
             }
+        });
+
+        // Step switching logic
+        window.switchStep = function (step) {
+            // Update buttons
+            stepBtns.forEach((btn, i) => {
+                const btnStep = i + 1;
+                if (btnStep === step) {
+                    btn.classList.add('active', 'btn-primary');
+                    btn.classList.remove('btn-secondary');
+                } else {
+                    btn.classList.remove('active', 'btn-primary');
+                    btn.classList.add('btn-secondary');
+                }
+            });
+
+            // Toggle Content
+            ['preview', 'code-container', 'concepts'].forEach(prefix => {
+                document.querySelectorAll(`[id^="${prefix}-"]`).forEach(el => {
+                    if (el.id === `${prefix}-${step}`) {
+                        el.classList.add('active');
+                    } else {
+                        el.classList.remove('active');
+                    }
+                });
+            });
+
+            // Trigger onLoad for the step if it exists (e.g. fetching files)
+            const data = tutorialData[step];
+            if (data && data.onLoad) data.onLoad();
         };
 
         // ---- Resizable columns ----
         const resizer = document.getElementById('tutorial-resizer');
-        const codeColumn = document.getElementById('code-column');
-        const conceptsColumn = document.getElementById('concepts-column');
         const splitContainer = document.getElementById('tutorial-split');
-
         let isResizing = false;
 
         resizer.addEventListener('mousedown', (e) => {
@@ -496,17 +560,17 @@ $('#app').content(App);`,
             if (!isResizing) return;
 
             const containerRect = splitContainer.getBoundingClientRect();
-            const containerWidth = containerRect.width - 6; // minus resizer width
+            // const containerWidth = containerRect.width - 6; 
             const offsetX = e.clientX - containerRect.left;
 
             // Calculate percentages with min/max constraints
             let codePercent = (offsetX / containerRect.width) * 100;
-            codePercent = Math.max(20, Math.min(80, codePercent)); // 20-80% range
+            codePercent = Math.max(20, Math.min(80, codePercent));
 
-            codeColumn.style.flex = 'none';
-            codeColumn.style.width = codePercent + '%';
-            conceptsColumn.style.flex = 'none';
-            conceptsColumn.style.width = (100 - codePercent - 1) + '%'; // -1 for resizer
+            codeContainer.style.flex = 'none';
+            codeContainer.style.width = codePercent + '%';
+            conceptsContainer.style.flex = 'none';
+            conceptsContainer.style.width = (100 - codePercent - 1) + '%';
         });
 
         document.addEventListener('mouseup', () => {
@@ -519,7 +583,7 @@ $('#app').content(App);`,
         });
 
         // Initial load
-        loadStep(1);
+        switchStep(1);
 
     })();
 </script>

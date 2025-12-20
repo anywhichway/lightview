@@ -484,35 +484,41 @@
 
             const type = typeof child;
             if (type === 'function') {
-                // Check if function returns an element or text
                 const result = child();
-                if (result && typeof result === 'object' && result.domEl) {
-                    // Reactive element
+                // Determine if the result implies complex content (DOM/vDOM/Array)
+                // Treat as complex if it's an object (including arrays) but not null
+                const isComplex = result && (typeof result === 'object' || Array.isArray(result));
+
+                if (isComplex) {
+                    // Reactive element, vDOM object, or list of items
                     // Use a stable wrapper div to hold the reactive content
                     const wrapper = document.createElement('span');
-                    wrapper.style.display = 'contents'; // Doesn't affect layout
+                    wrapper.style.display = 'contents';
                     targetNode.appendChild(wrapper);
 
-                    const runner = effect(() => {
-                        const newResult = child();
-                        // Check if wrapper is still in the DOM
-                        if (!wrapper.parentNode) {
+                    let runner;
+                    const update = () => {
+                        const val = child();
+                        // Check if wrapper is still in the DOM (skip check on first run)
+                        if (runner && !wrapper.parentNode) {
                             runner.stop();
                             return;
                         }
-                        // Clear and replace content
-                        wrapper.innerHTML = '';
-                        wrapper.appendChild(newResult.domEl);
-                    });
-                    // Track effect on the stable wrapper element
+                        const childrenToProcess = Array.isArray(val) ? val : [val];
+                        // processChildren handles clearing existing content via 3rd arg=true
+                        processChildren(childrenToProcess, wrapper, true);
+                    };
+
+                    runner = effect(update);
                     trackEffect(wrapper, runner);
                     childElements.push(child);
                 } else {
-                    // Reactive text node
+                    // Reactive text node for primitives
                     const textNode = document.createTextNode('');
                     targetNode.appendChild(textNode);
                     const runner = effect(() => {
-                        textNode.textContent = child();
+                        const val = child();
+                        textNode.textContent = val !== undefined ? val : '';
                     });
                     trackEffect(textNode, runner);
                     childElements.push(child);

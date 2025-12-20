@@ -22,6 +22,18 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  * @param {string} props.class - Additional classes
  */
+const CHARTS_CSS_URL = 'https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css';
+
+// Auto-load charts.css for Global/Light DOM usage
+if (typeof document !== 'undefined') {
+    if (!document.querySelector(`link[href^="https://cdn.jsdelivr.net/npm/charts.css"]`)) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = CHARTS_CSS_URL;
+        document.head.appendChild(link);
+    }
+}
+
 const Chart = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
     const LVX = window.LightviewX || {};
@@ -79,12 +91,15 @@ const Chart = (props = {}, ...children) => {
     }
 
     if (usesShadow) {
-        const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
+        const rawSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets(null, [CHARTS_CSS_URL]) : [];
+        // Separate CSSStyleSheet objects from URL string fallbacks
+        const adoptedStyleSheets = rawSheets.filter(s => typeof s !== 'string');
+        const styles = rawSheets.filter(s => typeof s === 'string');
 
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
 
         return div({ class: 'contents' },
-            shadowDOM({ mode: 'open', adoptedStyleSheets },
+            shadowDOM({ mode: 'open', adoptedStyleSheets, styles },
                 div({ 'data-theme': currentTheme },
                     chartEl
                 )

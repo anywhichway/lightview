@@ -12,7 +12,8 @@
     <main class="docs-content">
         <h1>Hypermedia</h1>
         <p>
-            HTMX vibes, built right in. Load HTML fragments, fetch JSON, clone templates—all with the <code>src</code>
+            HTMX vibes, built right in. Load HTML fragments, fetch vDOM/Object DOM, clone templates - all with the
+            <code>src</code>
             attribute.
             <em>Requires lightview-x.js</em>
         </p>
@@ -32,18 +33,18 @@ const app = div(
 
 // The HTML is fetched, parsed, and made reactive automatically!</code></pre>
 
-        <h2>Fetching JSON</h2>
+        <h2>Fetching vDOM & Object DOM</h2>
         <p>
-            JSON files are converted to vDOM elements:
+            Files with <code>.vdom</code> or <code>.odom</code> extensions are parsed as JSON and converted to elements:
         </p>
-        <pre><code>// /api/cards.json
+        <pre><code>// /api/cards.vdom
 [
     { "tag": "div", "attributes": { "class": "card" }, "children": ["Card 1"] },
     { "tag": "div", "attributes": { "class": "card" }, "children": ["Card 2"] }
 ]
 
-// Load JSON as elements
-div({ src: '/api/cards.json' })</code></pre>
+// Load vDOM
+div({ src: '/api/cards.vdom' })</code></pre>
 
         <h2>Cloning DOM Elements</h2>
         <p>

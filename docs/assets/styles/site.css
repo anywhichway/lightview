@@ -527,56 +527,7 @@ img {
     margin-bottom: 1.5rem;
 }
 
-/* Occasional blink/spin of the aperture iris */
-.hero-logo .aperture-panels {
-    transform-origin: 0 0;
-    /* Center of the translate(256 256) group */
-    animation: aperture-blink 5s ease-in-out infinite;
-}
 
-@keyframes aperture-blink {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    10% {
-        transform: rotate(360deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-.hero-logo .hero-pupil {
-    transform-origin: 256px 256px;
-    /* Center of the circle coordinates */
-    animation: pupil-blink 5s ease-in-out infinite;
-}
-
-@keyframes pupil-blink {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    5% {
-        transform: scale(0.1);
-        /* Disappear */
-        opacity: 0;
-    }
-
-    8% {
-        transform: scale(1);
-        /* Reappear */
-        opacity: 1;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
 
 .hero h1 {
     font-size: 3.5rem;

@@ -14,34 +14,8 @@
     </filter>
   </defs>
 
-  <style>
-    .aperture-panels {
-      transform-origin: 0 0;
-      animation: aperture-spin 5s ease-in-out infinite;
-    }
-
-    @keyframes aperture-spin {
-      0% { transform: rotate(0deg); }
-      5% { transform: rotate(-45deg); }
-      8% { transform: rotate(0deg); }
-      100% { transform: rotate(0deg); }
-    }
-
-    .hero-pupil {
-      transform-origin: 256px 256px;
-      animation: pupil-blink 5s ease-in-out infinite;
-    }
-
-    @keyframes pupil-blink {
-      0% { transform: scale(1); opacity: 1; }
-      5% { transform: scale(0.1); opacity: 0; }
-      8% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-  </style>
-
-  <!-- Group centered -->
-  <g transform="translate(256 256)">
+  <!-- Group centered and scaled up by 25% -->
+  <g transform="translate(256 256) scale(1.25)">
     
     <!-- 8-blade Geometric Aperture -->
     <g class="aperture-panels" stroke="none"> 
@@ -57,10 +31,12 @@
     
   </g>
   
-  <!-- Central Pupil -->
-  <g class="hero-pupil">
-    <circle cx="256" cy="256" r="60" fill="url(#bladeGradient)" opacity="0.3" filter="url(#centerGlow)" />
-    <circle cx="256" cy="256" r="24" fill="url(#bladeGradient)" />
+  <!-- Central Pupil (needs to be grouped/transformed similarly or manually adjusted) -->
+  <!-- Since the pupil is defined by absolute coordinates cx=256 cy=256, we can just wrap it in a group with the same transform relative to the center -->
+  <g transform="translate(256 256) scale(1.25)">
+     <!-- Circle coordinates must be 0,0 relative to the group for the scale to work from center -->
+     <circle cx="0" cy="0" r="60" fill="url(#bladeGradient)" opacity="0.3" filter="url(#centerGlow)" />
+     <circle cx="0" cy="0" r="24" fill="url(#bladeGradient)" />
   </g>
   
 </svg>
