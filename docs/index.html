@@ -9,7 +9,44 @@
 <!-- Hero Section -->
 <section class="hero">
     <div class="hero-content">
-        <img src="./assets/images/logo.svg" alt="Lightview" class="hero-logo">
+        <svg class="hero-logo" width="512" height="512" viewBox="0 0 512 512" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="bladeGradient" x1="100" y1="100" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#0ea5e9" />
+                    <stop offset="50%" stop-color="#8b5cf6" />
+                    <stop offset="100%" stop-color="#ec4899" />
+                </linearGradient>
+                <filter id="centerGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="15" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+            </defs>
+            <g transform="translate(256 256)">
+                <g class="aperture-panels" stroke="none">
+                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
+                        transform="rotate(0)" />
+                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
+                        transform="rotate(45)" />
+                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
+                        transform="rotate(90)" />
+                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
+                        transform="rotate(135)" />
+                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
+                        transform="rotate(180)" />
+                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
+                        transform="rotate(225)" />
+                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
+                        transform="rotate(270)" />
+                    <path d="M0,-60 L130,-160 L180,-40 Z" fill="url(#bladeGradient)" opacity="0.9"
+                        transform="rotate(315)" />
+                </g>
+            </g>
+            <g class="hero-pupil">
+                <circle cx="256" cy="256" r="60" fill="url(#bladeGradient)" opacity="0.3" filter="url(#centerGlow)" />
+                <circle cx="256" cy="256" r="24" fill="url(#bladeGradient)" />
+            </g>
+        </svg>
         <h1>Lightview</h1>
         <p class="hero-tagline">Why be heavy when you can be light?</p>
         <p class="hero-description">
@@ -40,7 +77,7 @@
 <section class="section">
     <div class="section-content">
         <div class="section-header">
-            <h2 class="section-title">Heavy? That's Not Our Thing.</h2>
+            <h2 class="section-title">Heavy? Not Our Thing.</h2>
             <p class="section-subtitle">
                 Have fun, stay light.
             </p>
