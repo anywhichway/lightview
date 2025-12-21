@@ -5,6 +5,7 @@ const rootDir = __dirname;
 const distDir = path.join(rootDir, 'dist');
 const docsDir = path.join(rootDir, 'docs');
 const componentsDir = path.join(rootDir, 'components');
+const middlewareDir = path.join(rootDir, 'middleware');
 
 // Configuration
 // Files in root that should be copied
@@ -56,6 +57,14 @@ if (fs.existsSync(componentsDir)) {
     console.log('Copied: components directory');
 } else {
     console.warn('Warning: components directory not found.');
+}
+
+// 5. Copy Middleware Directory
+if (fs.existsSync(middlewareDir)) {
+    fs.cpSync(middlewareDir, path.join(distDir, 'middleware'), { recursive: true });
+    console.log('Copied: middleware directory');
+} else {
+    console.warn('Warning: middleware directory not found.');
 }
 
 console.log('Build complete! Assets are ready in ./dist');
