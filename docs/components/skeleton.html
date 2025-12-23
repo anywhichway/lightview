@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,52 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Skeleton is used as placeholder while content is loading.
-            Provides visual feedback during data fetching.
+                        Provides visual feedback during data fetching.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Card skeleton layout</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Card skeleton layout</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 200
-                        });
-                    </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
@@ -114,18 +115,18 @@ const cardSkeleton = div({ class: 'flex flex-col gap-4 w-52' },
 );
 
 $('#example').content(cardSkeleton);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 200
-                        });
-                    </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
 const { $ } = Lightview;
 
 const cardSkeleton = {
@@ -140,18 +141,18 @@ const cardSkeleton = {
 };
 
 $('#example').content(cardSkeleton);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 200
-                        });
-                    </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
 const { tags, $ } = Lightview;
 tags.Skeleton = Skeleton;
 
@@ -166,52 +167,53 @@ $('#example').content({
         ]
     }
 });</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Loading State</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Toggle between skeleton and content</p>
+                    <!-- Reactive Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Loading State</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Toggle between skeleton and
+                                content</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 380
-                        });
-                    </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 380
+                                    });
+                                </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { default: Card } = await import('/components/data-display/card.js');
 
@@ -250,18 +252,18 @@ const demo = div({ class: 'w-64' },
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 380
-                        });
-                    </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 380
+                                    });
+                                </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { default: Card } = await import('/components/data-display/card.js');
 const { signal, $ } = Lightview;
@@ -318,18 +320,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 380
-                        });
-                    </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 380
+                                    });
+                                </script><code contenteditable="true">const { default: Skeleton } = await import('/components/data-display/skeleton.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { default: Card } = await import('/components/data-display/card.js');
 const { signal, tags, $ } = Lightview;
@@ -391,52 +393,54 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>class</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Width/height classes (h-32 w-full, rounded-full, etc.)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Examples -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Card Skeleton</h2>
+                    <div class="flex w-52 flex-col gap-4" style="margin-bottom: 2rem;">
+                        <div class="skeleton h-32 w-full"></div>
+                        <div class="skeleton h-4 w-28"></div>
+                        <div class="skeleton h-4 w-full"></div>
+                        <div class="skeleton h-4 w-full"></div>
+                    </div>
+
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Avatar</h2>
+                    <div class="flex items-center gap-4" style="margin-bottom: 2rem;">
+                        <div class="skeleton h-16 w-16 shrink-0 rounded-full"></div>
+                        <div class="flex flex-col gap-4">
+                            <div class="skeleton h-4 w-20"></div>
+                            <div class="skeleton h-4 w-28"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>class</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Width/height classes (h-32 w-full, rounded-full, etc.)</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Examples -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Card Skeleton</h2>
-        <div class="flex w-52 flex-col gap-4" style="margin-bottom: 2rem;">
-            <div class="skeleton h-32 w-full"></div>
-            <div class="skeleton h-4 w-28"></div>
-            <div class="skeleton h-4 w-full"></div>
-            <div class="skeleton h-4 w-full"></div>
-        </div>
-
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Avatar</h2>
-        <div class="flex items-center gap-4" style="margin-bottom: 2rem;">
-            <div class="skeleton h-16 w-16 shrink-0 rounded-full"></div>
-            <div class="flex flex-col gap-4">
-                <div class="skeleton h-4 w-20"></div>
-                <div class="skeleton h-4 w-28"></div>
-            </div>                </div>
-            </div>
-        </div>                </div>
-            </div>
-        </div>
     </div>
+</div>
+</div>
 </div>

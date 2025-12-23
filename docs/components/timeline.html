@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Timeline displays events in chronological order.
-            Supports horizontal, vertical, and colored connectors.
+                        Supports horizontal, vertical, and colored connectors.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Horizontal timeline with events</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Horizontal timeline with
+                                events</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
 const { tags, $ } = Lightview;
 
 const events = [
@@ -124,18 +126,18 @@ const timeline = Timeline({},
 );
 
 $('#example').content(timeline);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
 const { $ } = Lightview;
 
 const events = [
@@ -160,18 +162,18 @@ const timeline = {
 };
 
 $('#example').content(timeline);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
 const { tags, $ } = Lightview;
 tags.Timeline = Timeline;
 tags['Timeline.Item'] = Timeline.Item;
@@ -205,52 +207,52 @@ const timeline = {
 };
 
 $('#example').content(timeline);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Vertical Timeline</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Order tracking timeline</p>
+                    <!-- Reactive Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Vertical Timeline</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Order tracking timeline</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 280
-                        });
-                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
 const { tags, $ } = Lightview;
 
 const steps = [
@@ -272,18 +274,18 @@ const timeline = Timeline({ vertical: true },
 );
 
 $('#example').content(timeline);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 280
-                        });
-                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
 const { $ } = Lightview;
 
 const steps = [
@@ -309,18 +311,18 @@ const timeline = {
 };
 
 $('#example').content(timeline);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 280
-                        });
-                    </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
 const { tags, $ } = Lightview;
 tags.Timeline = Timeline;
 tags['Timeline.Item'] = Timeline.Item;
@@ -355,129 +357,131 @@ const timeline = {
 };
 
 $('#example').content(timeline);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Props Tables -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Timeline Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>vertical</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Vertical layout</td>
-                    </tr>
-                    <tr>
-                        <td><code>snap</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Snap to items</td>
-                    </tr>
-                    <tr>
-                        <td><code>compact</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Compact layout</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                    <!-- Props Tables -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Timeline Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>vertical</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Vertical layout</td>
+                                </tr>
+                                <tr>
+                                    <td><code>snap</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Snap to items</td>
+                                </tr>
+                                <tr>
+                                    <td><code>compact</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Compact layout</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-        <!-- Sub-components -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Props</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>Timeline.Item</code></td>
-                        <td>first, last</td>
-                        <td>Individual timeline event</td>
-                    </tr>
-                    <tr>
-                        <td><code>Timeline.Start</code></td>
-                        <td>box</td>
-                        <td>Left/top content</td>
-                    </tr>
-                    <tr>
-                        <td><code>Timeline.Middle</code></td>
-                        <td>done, color</td>
-                        <td>Center icon/indicator</td>
-                    </tr>
-                    <tr>
-                        <td><code>Timeline.End</code></td>
-                        <td>box</td>
-                        <td>Right/bottom content</td>
-                    </tr>
-                    <tr>
-                        <td><code>Timeline.Hr</code></td>
-                        <td>done, color</td>
-                        <td>Connector line</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                    <!-- Sub-components -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Props</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Timeline.Item</code></td>
+                                    <td>first, last</td>
+                                    <td>Individual timeline event</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Timeline.Start</code></td>
+                                    <td>box</td>
+                                    <td>Left/top content</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Timeline.Middle</code></td>
+                                    <td>done, color</td>
+                                    <td>Center icon/indicator</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Timeline.End</code></td>
+                                    <td>box</td>
+                                    <td>Right/bottom content</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Timeline.Hr</code></td>
+                                    <td>done, color</td>
+                                    <td>Connector line</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-        <!-- Static Example -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Interactive Demo</h2>
-        <ul class="timeline" style="margin-bottom: 2rem;">
-            <li>
-                <div class="timeline-start">1984</div>
-                <div class="timeline-middle">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        class="h-5 w-5 text-primary">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <!-- Static Example -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Interactive Demo</h2>
+                    <ul class="timeline" style="margin-bottom: 2rem;">
+                        <li>
+                            <div class="timeline-start">1984</div>
+                            <div class="timeline-middle">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="h-5 w-5 text-primary">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="timeline-end timeline-box">First Macintosh</div>
+                            <hr class="bg-primary" />
+                        </li>
+                        <li>
+                            <hr class="bg-primary" />
+                            <div class="timeline-start">1998</div>
+                            <div class="timeline-middle">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="h-5 w-5 text-primary">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="timeline-end timeline-box">iMac</div>
+                            <hr />
+                        </li>
+                        <li>
+                            <hr />
+                            <div class="timeline-start">2007</div>
+                            <div class="timeline-middle">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="h-5 w-5">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="timeline-end timeline-box">iPhone</div>
+                        </li>
+                    </ul>
                 </div>
-                <div class="timeline-end timeline-box">First Macintosh</div>
-                <hr class="bg-primary" />
-            </li>
-            <li>
-                <hr class="bg-primary" />
-                <div class="timeline-start">1998</div>
-                <div class="timeline-middle">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        class="h-5 w-5 text-primary">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="timeline-end timeline-box">iMac</div>
-                <hr />
-            </li>
-            <li>
-                <hr />
-                <div class="timeline-start">2007</div>
-                <div class="timeline-middle">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="timeline-end timeline-box">iPhone</div>
-            </li>
-        </ul>                </div>
             </div>
         </div>
     </div>

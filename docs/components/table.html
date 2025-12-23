@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Table can be used to show data in a tabular format.
-            Supports zebra striping, pinned rows/columns, and multiple sizes.
+                        Supports zebra striping, pinned rows/columns, and multiple sizes.
                     </p>
 
-        <!-- Basic Usage -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple table with zebra striping</p>
+                    <!-- Basic Usage -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple table with zebra
+                                striping</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
 const { tags, $ } = Lightview;
 
 const data = [
@@ -133,18 +135,18 @@ const table = Table({ zebra: true },
 );
 
 $('#example').content(table);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
 const { $ } = Lightview;
 
 const data = [
@@ -185,18 +187,18 @@ const table = {
 };
 
 $('#example').content(table);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
 const { tags, $ } = Lightview;
 tags.Table = Table;
 tags.TableHead = Table.Head;
@@ -248,52 +250,52 @@ const table = {
 };
 
 $('#example').content(table);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Interactive Table Example -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Interactive Table</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Table with row selection</p>
+                    <!-- Interactive Table Example -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Interactive Table</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Table with row selection</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 200
-                        });
-                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
 const { default: Badge } = await import('/components/data-display/badge.js');
 const { signal, tags, $ } = Lightview;
 const { div, span } = tags;
@@ -342,18 +344,18 @@ const demo = div({},
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 200
-                        });
-                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
 const { default: Badge } = await import('/components/data-display/badge.js');
 const { signal, $ } = Lightview;
 
@@ -423,18 +425,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 200
-                        });
-                    </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
 const { default: Badge } = await import('/components/data-display/badge.js');
 const { signal, tags, $ } = Lightview;
 tags.Table = Table;
@@ -518,150 +520,152 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>zebra</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Alternating row colors</td>
+                                </tr>
+                                <tr>
+                                    <td><code>pinRows</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Pin header row on scroll</td>
+                                </tr>
+                                <tr>
+                                    <td><code>pinCols</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Pin first column on scroll</td>
+                                </tr>
+                                <tr>
+                                    <td><code>size</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Sub-components -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Table.Head</code></td>
+                                    <td>Table header (thead)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Table.Body</code></td>
+                                    <td>Table body (tbody)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Table.Foot</code></td>
+                                    <td>Table footer (tfoot)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Table.Row</code></td>
+                                    <td>Table row with hover/active props</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Table.Th</code></td>
+                                    <td>Table header cell</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Table.Td</code></td>
+                                    <td>Table data cell</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Sizes -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <div class="example-stack" style="margin-bottom: 2rem;">
+                        <div class="overflow-x-auto">
+                            <table class="table table-xs">
+                                <thead>
+                                    <tr>
+                                        <th>XS</th>
+                                        <th>Name</th>
+                                        <th>Job</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>1</th>
+                                        <td>Alice</td>
+                                        <td>Engineer</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>SM</th>
+                                        <th>Name</th>
+                                        <th>Job</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>1</th>
+                                        <td>Alice</td>
+                                        <td>Engineer</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="table table-lg">
+                                <thead>
+                                    <tr>
+                                        <th>LG</th>
+                                        <th>Name</th>
+                                        <th>Job</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>1</th>
+                                        <td>Alice</td>
+                                        <td>Engineer</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>zebra</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Alternating row colors</td>
-                    </tr>
-                    <tr>
-                        <td><code>pinRows</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Pin header row on scroll</td>
-                    </tr>
-                    <tr>
-                        <td><code>pinCols</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Pin first column on scroll</td>
-                    </tr>
-                    <tr>
-                        <td><code>size</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Sub-components -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>Table.Head</code></td>
-                        <td>Table header (thead)</td>
-                    </tr>
-                    <tr>
-                        <td><code>Table.Body</code></td>
-                        <td>Table body (tbody)</td>
-                    </tr>
-                    <tr>
-                        <td><code>Table.Foot</code></td>
-                        <td>Table footer (tfoot)</td>
-                    </tr>
-                    <tr>
-                        <td><code>Table.Row</code></td>
-                        <td>Table row with hover/active props</td>
-                    </tr>
-                    <tr>
-                        <td><code>Table.Th</code></td>
-                        <td>Table header cell</td>
-                    </tr>
-                    <tr>
-                        <td><code>Table.Td</code></td>
-                        <td>Table data cell</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Sizes -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-        <div class="example-stack" style="margin-bottom: 2rem;">
-            <div class="overflow-x-auto">
-                <table class="table table-xs">
-                    <thead>
-                        <tr>
-                            <th>XS</th>
-                            <th>Name</th>
-                            <th>Job</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>1</th>
-                            <td>Alice</td>
-                            <td>Engineer</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>SM</th>
-                            <th>Name</th>
-                            <th>Job</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>1</th>
-                            <td>Alice</td>
-                            <td>Engineer</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="table table-lg">
-                    <thead>
-                        <tr>
-                            <th>LG</th>
-                            <th>Name</th>
-                            <th>Job</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>1</th>
-                            <td>Alice</td>
-                            <td>Engineer</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>                </div>
-            </div>
-        </div>                </div>
-            </div>
-        </div>
     </div>
+</div>
+</div>
 </div>

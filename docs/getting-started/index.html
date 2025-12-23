@@ -1,9 +1,11 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
-    // If loaded directly (not in shell), redirect to shell with load parameter
-    LightviewRouter.base('../../index.html');
+    if (window.LightviewRouter) {
+        LightviewRouter.base('/index.html');
+    }
 </script>
+
 
 
 <div class="section">

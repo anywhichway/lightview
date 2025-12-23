@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Navbar is a horizontal navigation bar at the top of the page.
-            Supports start, center, and end sections.
+                        Supports start, center, and end sections.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navbar with brand and menu items</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navbar with brand and menu
+                                items</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 80
-                        });
-                    </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 80
+                                    });
+                                </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { default: Menu } = await import('/components/navigation/menu.js');
 
@@ -125,18 +127,18 @@ const navbar = Navbar({ class: 'bg-base-100 rounded-box' },
 );
 
 $('#example').content(navbar);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 80
-                        });
-                    </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 80
+                                    });
+                                </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { default: Menu } = await import('/components/navigation/menu.js');
 const { $ } = Lightview;
@@ -172,18 +174,18 @@ const navbar = {
 };
 
 $('#example').content(navbar);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 80
-                        });
-                    </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 80
+                                    });
+                                </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { default: Menu } = await import('/components/navigation/menu.js');
 const { tags, $ } = Lightview;
@@ -232,87 +234,88 @@ const navbar = {
 };
 
 $('#example').content(navbar);</code></pre>
-                </div>
-            </div>
-        </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>Navbar.Start</code></td>
-                        <td>Left section (flex-1)</td>
-                    </tr>
-                    <tr>
-                        <td><code>Navbar.Center</code></td>
-                        <td>Center section</td>
-                    </tr>
-                    <tr>
-                        <td><code>Navbar.End</code></td>
-                        <td>Right section</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Static Examples -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Dropdown</h2>
-        <div class="navbar bg-base-100 rounded-box" style="margin-bottom: 2rem;">
-            <div class="flex-none">
-                <div class="dropdown">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h7" />
-                        </svg>
+                            </div>
+                        </div>
                     </div>
-                    <ul tabindex="0"
-                        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                        <li><a>Homepage</a></li>
-                        <li><a>Portfolio</a></li>
-                        <li><a>About</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="flex-1">
-                <a class="btn btn-ghost text-xl">daisyUI</a>
-            </div>
-            <div class="flex-none">
-                <button class="btn btn-ghost btn-circle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button>
-            </div>
-        </div>
 
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Background Color</h2>
-        <div class="navbar bg-neutral text-neutral-content rounded-box" style="margin-bottom: 2rem;">
-            <div class="navbar-start">
-                <a class="btn btn-ghost text-xl">daisyUI</a>
-            </div>
-            <div class="navbar-center hidden lg:flex">
-                <ul class="menu menu-horizontal px-1">
-                    <li><a>Item 1</a></li>
-                    <li><a>Item 2</a></li>
-                    <li><a>Item 3</a></li>
-                </ul>
-            </div>
-            <div class="navbar-end">
-                <a class="btn">Button</a>
-            </div>                </div>
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Navbar.Start</code></td>
+                                    <td>Left section (flex-1)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Navbar.Center</code></td>
+                                    <td>Center section</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Navbar.End</code></td>
+                                    <td>Right section</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Static Examples -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Dropdown</h2>
+                    <div class="navbar bg-base-100 rounded-box" style="margin-bottom: 2rem;">
+                        <div class="flex-none">
+                            <div class="dropdown">
+                                <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 6h16M4 12h16M4 18h7" />
+                                    </svg>
+                                </div>
+                                <ul tabindex="0"
+                                    class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                                    <li><a>Homepage</a></li>
+                                    <li><a>Portfolio</a></li>
+                                    <li><a>About</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <a class="btn btn-ghost text-xl">daisyUI</a>
+                        </div>
+                        <div class="flex-none">
+                            <button class="btn btn-ghost btn-circle">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Background Color</h2>
+                    <div class="navbar bg-neutral text-neutral-content rounded-box" style="margin-bottom: 2rem;">
+                        <div class="navbar-start">
+                            <a class="btn btn-ghost text-xl">daisyUI</a>
+                        </div>
+                        <div class="navbar-center hidden lg:flex">
+                            <ul class="menu menu-horizontal px-1">
+                                <li><a>Item 1</a></li>
+                                <li><a>Item 2</a></li>
+                                <li><a>Item 3</a></li>
+                            </ul>
+                        </div>
+                        <div class="navbar-end">
+                            <a class="btn">Button</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>

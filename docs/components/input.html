@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,52 +58,54 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Text input allows users to enter and edit text.
-            Supports labels, validation, helper text, and reactive state binding.
+                        Supports labels, validation, helper text, and reactive state binding.
                     </p>
 
-        <!-- Basic Examples -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Examples</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple inputs with various configurations
-                </p>
+                    <!-- Basic Examples -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Examples</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple inputs with various
+                                configurations
+                            </p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 320
-                        });
-                    </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 320
+                                    });
+                                </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
@@ -138,18 +140,18 @@ const requiredInput = Input({
 $('#example').content(
     div({ class: 'space-y-4' }, basic, withLabel, withColor, requiredInput)
 );</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 320
-                        });
-                    </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 320
+                                    });
+                                </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
 const { $ } = Lightview;
 
 const basic = {
@@ -190,18 +192,18 @@ $('#example').content({
     attributes: { class: 'space-y-4' },
     children: [basic, withLabel, withColor, requiredInput]
 });</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 320
-                        });
-                    </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 320
+                                    });
+                                </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
 const { tags, $ } = Lightview;
 tags.Input = Input;
 
@@ -235,53 +237,54 @@ $('#example').content({
         ]
     }
 });</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Reactive Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals and live
-                    validation</p>
+                    <!-- Reactive Example -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Reactive Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals
+                                and live
+                                validation</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 220
-                        });
-                    </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 220
+                                    });
+                                </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
 const { signal, tags, $ } = Lightview;
 const { div, p, span } = tags;
 
@@ -320,18 +323,18 @@ const reactiveDemo = div({ class: 'space-y-4' },
 );
 
 $('#example').content(reactiveDemo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 220
-                        });
-                    </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 220
+                                    });
+                                </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
 const { signal, $ } = Lightview;
 
 const username = signal('');
@@ -381,18 +384,18 @@ const reactiveDemo = {
 };
 
 $('#example').content(reactiveDemo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 220
-                        });
-                    </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 220
+                                    });
+                                </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
 const { signal, tags, $ } = Lightview;
 tags.Input = Input;
 
@@ -445,154 +448,156 @@ const reactiveDemo = {
 };
 
 $('#example').content(reactiveDemo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>type</code></td>
+                                    <td>string</td>
+                                    <td>'text'</td>
+                                    <td>Input type (text, password, email, number, etc.)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>value</code></td>
+                                    <td>string | signal</td>
+                                    <td>-</td>
+                                    <td>Input value (reactive with signals)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>defaultValue</code></td>
+                                    <td>string</td>
+                                    <td>''</td>
+                                    <td>Default value for uncontrolled mode</td>
+                                </tr>
+                                <tr>
+                                    <td><code>placeholder</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Placeholder text</td>
+                                </tr>
+                                <tr>
+                                    <td><code>label</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Label text displayed above input</td>
+                                </tr>
+                                <tr>
+                                    <td><code>helper</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Helper text displayed below the input</td>
+                                </tr>
+                                <tr>
+                                    <td><code>error</code></td>
+                                    <td>string | function</td>
+                                    <td>-</td>
+                                    <td>Error message or reactive error function</td>
+                                </tr>
+                                <tr>
+                                    <td><code>validate</code></td>
+                                    <td>function</td>
+                                    <td>-</td>
+                                    <td>Validation function: <code>(value) => errorMessage | null</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>size</code></td>
+                                    <td>string</td>
+                                    <td>'md'</td>
+                                    <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>ghost</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Ghost style (no background)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>disabled</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Disable the input</td>
+                                </tr>
+                                <tr>
+                                    <td><code>required</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Mark as required field (shows asterisk)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onChange</code></td>
+                                    <td>function</td>
+                                    <td>-</td>
+                                    <td>Callback when value changes: <code>(value, event) => void</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>onBlur</code></td>
+                                    <td>function</td>
+                                    <td>-</td>
+                                    <td>Callback when input loses focus</td>
+                                </tr>
+                                <tr>
+                                    <td><code>useShadow</code></td>
+                                    <td>boolean</td>
+                                    <td>*</td>
+                                    <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Sizes Example -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <div class="example-flex" style="align-items: flex-end; margin-bottom: 2rem;">
+                        <input type="text" placeholder="Extra small" class="input input-xs" />
+                        <input type="text" placeholder="Small" class="input input-sm" />
+                        <input type="text" placeholder="Medium" class="input" />
+                        <input type="text" placeholder="Large" class="input input-lg" />
+                    </div>
+
+                    <!-- Colors Example -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <div class="example-grid-responsive" style="margin-bottom: 2rem;">
+                        <input type="text" placeholder="Primary" class="input input-primary" />
+                        <input type="text" placeholder="Secondary" class="input input-secondary" />
+                        <input type="text" placeholder="Accent" class="input input-accent" />
+                        <input type="text" placeholder="Info" class="input input-info" />
+                        <input type="text" placeholder="Success" class="input input-success" />
+                        <input type="text" placeholder="Warning" class="input input-warning" />
+                        <input type="text" placeholder="Error" class="input input-error" />
+                        <input type="text" placeholder="Ghost" class="input input-ghost" />
+                    </div>
+
+                    <!-- With Fieldset -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label (Fieldset Pattern)</h2>
+                    <div style="max-width: 28rem; margin-bottom: 2rem;">
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Email Address</legend>
+                            <input type="email" class="input w-full" placeholder="you@example.com" />
+                            <p class="label">We'll never share your email.</p>
+                        </fieldset>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>type</code></td>
-                        <td>string</td>
-                        <td>'text'</td>
-                        <td>Input type (text, password, email, number, etc.)</td>
-                    </tr>
-                    <tr>
-                        <td><code>value</code></td>
-                        <td>string | signal</td>
-                        <td>-</td>
-                        <td>Input value (reactive with signals)</td>
-                    </tr>
-                    <tr>
-                        <td><code>defaultValue</code></td>
-                        <td>string</td>
-                        <td>''</td>
-                        <td>Default value for uncontrolled mode</td>
-                    </tr>
-                    <tr>
-                        <td><code>placeholder</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Placeholder text</td>
-                    </tr>
-                    <tr>
-                        <td><code>label</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Label text displayed above input</td>
-                    </tr>
-                    <tr>
-                        <td><code>helper</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Helper text displayed below the input</td>
-                    </tr>
-                    <tr>
-                        <td><code>error</code></td>
-                        <td>string | function</td>
-                        <td>-</td>
-                        <td>Error message or reactive error function</td>
-                    </tr>
-                    <tr>
-                        <td><code>validate</code></td>
-                        <td>function</td>
-                        <td>-</td>
-                        <td>Validation function: <code>(value) => errorMessage | null</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>color</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
-                    </tr>
-                    <tr>
-                        <td><code>size</code></td>
-                        <td>string</td>
-                        <td>'md'</td>
-                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
-                    </tr>
-                    <tr>
-                        <td><code>ghost</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Ghost style (no background)</td>
-                    </tr>
-                    <tr>
-                        <td><code>disabled</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Disable the input</td>
-                    </tr>
-                    <tr>
-                        <td><code>required</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Mark as required field (shows asterisk)</td>
-                    </tr>
-                    <tr>
-                        <td><code>onChange</code></td>
-                        <td>function</td>
-                        <td>-</td>
-                        <td>Callback when value changes: <code>(value, event) => void</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>onBlur</code></td>
-                        <td>function</td>
-                        <td>-</td>
-                        <td>Callback when input loses focus</td>
-                    </tr>
-                    <tr>
-                        <td><code>useShadow</code></td>
-                        <td>boolean</td>
-                        <td>*</td>
-                        <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Sizes Example -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-        <div class="example-flex" style="align-items: flex-end; margin-bottom: 2rem;">
-            <input type="text" placeholder="Extra small" class="input input-xs" />
-            <input type="text" placeholder="Small" class="input input-sm" />
-            <input type="text" placeholder="Medium" class="input" />
-            <input type="text" placeholder="Large" class="input input-lg" />
-        </div>
-
-        <!-- Colors Example -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-        <div class="example-grid-responsive" style="margin-bottom: 2rem;">
-            <input type="text" placeholder="Primary" class="input input-primary" />
-            <input type="text" placeholder="Secondary" class="input input-secondary" />
-            <input type="text" placeholder="Accent" class="input input-accent" />
-            <input type="text" placeholder="Info" class="input input-info" />
-            <input type="text" placeholder="Success" class="input input-success" />
-            <input type="text" placeholder="Warning" class="input input-warning" />
-            <input type="text" placeholder="Error" class="input input-error" />
-            <input type="text" placeholder="Ghost" class="input input-ghost" />
-        </div>
-
-        <!-- With Fieldset -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label (Fieldset Pattern)</h2>
-        <div style="max-width: 28rem; margin-bottom: 2rem;">
-            <fieldset class="fieldset">
-                <legend class="fieldset-legend">Email Address</legend>
-                <input type="email" class="input w-full" placeholder="you@example.com" />
-                <p class="label">We'll never share your email.</p>
-            </fieldset>                </div>
-            </div>
-        </div>
     </div>
-</div>

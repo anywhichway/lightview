@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
   if (window.LightviewRouter) {
-    LightviewRouter.base('../../index.html');
+    LightviewRouter.base('/index.html');
   }
 </script>
 
@@ -11,98 +11,98 @@
 
 <!-- Gallery Structure -->
 <div class="gallery-page">
-    <div class="gallery-layout">
-        <!-- Sidebar Overlay -->
-        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+  <div class="gallery-layout">
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-        <!-- Sidebar -->
-        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
+    <!-- Sidebar -->
+    <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
 
-        <!-- Main Content -->
-        <div id="gallery-main" class="gallery-main">
-            <!-- Header Container -->
-            <div
-                style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
-                <!-- Breadcrumbs Row -->
-                <div style="padding: 0.75rem 1.5rem 0;">
-                    <script>
-                        (() => {
-                            const { Breadcrumbs } = Lightview.tags;
-                            const breadcrumbs = Breadcrumbs({
-                                id: 'page-breadcrumbs',
-                                items: [
-                                    { label: 'Components', href: '/docs/components' },
-                                    { label: 'Drawer' }
-                                ]
-                            });
-                            document.currentScript.replaceWith(breadcrumbs.domEl);
-                        })();
-                    </script>
-                </div>
-                <!-- Title Row -->
-                <div class="gallery-header"
-                    style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
-                    <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
-                            style="stroke: currentColor; stroke-width: 2;">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <h1 class="gallery-title">Drawer</h1>
-                </div>
-            </div>
-
-            <!-- Content -->
-            <div class="gallery-content">
-                <div class="section-content" style="max-width: 1000px;">
-                    <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
-                        Drawer is a sidebar that can be opened from the left or right side.
-      Perfect for navigation menus and side panels.
-                    </p>
-
-    <!-- Basic Example with Examplify -->
-    <div class="card bg-base-200" style="margin-bottom: 2rem;">
-      <div class="card-body">
-        <h2 class="card-title">Basic Example</h2>
-        <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Drawer with toggle button and menu</p>
-
-        <!-- Tabs -->
-        <script>
-          window.switchSyntaxTab = (tabId) => {
-            const tabs = ['tagged', 'vdom', 'object'];
-            tabs.forEach(t => {
-              const tabEl = document.getElementById(`tab-btn-${t}`);
-              const contentEl = document.getElementById(`syntax-${t}`);
-              if (t === tabId) {
-                tabEl.classList.add('syntax-tab-active');
-                contentEl.style.display = 'block';
-              } else {
-                tabEl.classList.remove('syntax-tab-active');
-                contentEl.style.display = 'none';
-              }
-            });
-          };
-        </script>
-        <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-          <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-            onclick="switchSyntaxTab('tagged')">Tagged</button>
-          <button id="tab-btn-vdom" role="tab" class="syntax-tab" onclick="switchSyntaxTab('vdom')">vDOM</button>
-          <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-            DOM</button>
+    <!-- Main Content -->
+    <div id="gallery-main" class="gallery-main">
+      <!-- Header Container -->
+      <div
+        style="position: sticky; top: 0; z-index: 30; background: var(--gallery-surface); border-bottom: 1px solid var(--gallery-border); backdrop-filter: blur(8px);">
+        <!-- Breadcrumbs Row -->
+        <div style="padding: 0.75rem 1.5rem 0;">
+          <script>
+            (() => {
+              const { Breadcrumbs } = Lightview.tags;
+              const breadcrumbs = Breadcrumbs({
+                id: 'page-breadcrumbs',
+                items: [
+                  { label: 'Components', href: '/docs/components' },
+                  { label: 'Drawer' }
+                ]
+              });
+              document.currentScript.replaceWith(breadcrumbs.domEl);
+            })();
+          </script>
         </div>
+        <!-- Title Row -->
+        <div class="gallery-header"
+          style="border-bottom: none; height: auto; padding-top: 0.5rem; padding-bottom: 0.75rem;">
+          <button id="toggle-btn" class="toggle-btn" aria-label="Toggle Sidebar">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="toggle-icon"
+              style="stroke: currentColor; stroke-width: 2;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 class="gallery-title">Drawer</h1>
+        </div>
+      </div>
 
-        <!-- Tagged Syntax -->
-        <div id="syntax-tagged">
-          <pre><script>
-            examplify(document.currentScript.nextElementSibling, {
-              at: document.currentScript.parentElement,
-              scripts: ['/lightview.js', '/lightview-x.js'],
-              type: 'module',
-              minHeight: 220,
-              html: '<div id="demo" style="height: 200px;"></div>'
-            });
-          </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
+      <!-- Content -->
+      <div class="gallery-content">
+        <div class="section-content" style="max-width: 1000px;">
+          <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
+            Drawer is a sidebar that can be opened from the left or right side.
+            Perfect for navigation menus and side panels.
+          </p>
+
+          <!-- Basic Example with Examplify -->
+          <div class="card bg-base-200" style="margin-bottom: 2rem;">
+            <div class="card-body">
+              <h2 class="card-title">Basic Example</h2>
+              <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Drawer with toggle button and menu</p>
+
+              <!-- Tabs -->
+              <script>
+                window.switchSyntaxTab = (tabId) => {
+                  const tabs = ['tagged', 'vdom', 'object'];
+                  tabs.forEach(t => {
+                    const tabEl = document.getElementById(`tab-btn-${t}`);
+                    const contentEl = document.getElementById(`syntax-${t}`);
+                    if (t === tabId) {
+                      tabEl.classList.add('syntax-tab-active');
+                      contentEl.style.display = 'block';
+                    } else {
+                      tabEl.classList.remove('syntax-tab-active');
+                      contentEl.style.display = 'none';
+                    }
+                  });
+                };
+              </script>
+              <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                  onclick="switchSyntaxTab('tagged')">Tagged</button>
+                <button id="tab-btn-vdom" role="tab" class="syntax-tab" onclick="switchSyntaxTab('vdom')">vDOM</button>
+                <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
+                  DOM</button>
+              </div>
+
+              <!-- Tagged Syntax -->
+              <div id="syntax-tagged">
+                <pre><script>
+                  examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js'],
+                    type: 'module',
+                    minHeight: 220,
+                    html: '<div id="demo" style="height: 200px;"></div>'
+                  });
+                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
 
 const { tags, $ } = Lightview;
 const { ul, li, a, p } = tags;
@@ -126,19 +126,19 @@ const drawer = Drawer({ id: drawerId },
 );
 
 $('#example').content(drawer);</code></pre>
-        </div>
+              </div>
 
-        <!-- vDOM Syntax -->
-        <div id="syntax-vdom" style="display: none;">
-          <pre><script>
-            examplify(document.currentScript.nextElementSibling, {
-              at: document.currentScript.parentElement,
-              scripts: ['/lightview.js', '/lightview-x.js'],
-              type: 'module',
-              minHeight: 220,
-              html: '<div id="demo" style="height: 200px;"></div>'
-            });
-          </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
+              <!-- vDOM Syntax -->
+              <div id="syntax-vdom" style="display: none;">
+                <pre><script>
+                  examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js'],
+                    type: 'module',
+                    minHeight: 220,
+                    html: '<div id="demo" style="height: 200px;"></div>'
+                  });
+                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
 const { $ } = Lightview;
 
 const drawerId = 'my-drawer';
@@ -175,19 +175,19 @@ const drawer = {
 };
 
 $('#example').content(drawer);</code></pre>
-        </div>
+              </div>
 
-        <!-- Object DOM Syntax -->
-        <div id="syntax-object" style="display: none;">
-          <pre><script>
-            examplify(document.currentScript.nextElementSibling, {
-              at: document.currentScript.parentElement,
-              scripts: ['/lightview.js', '/lightview-x.js'],
-              type: 'module',
-              minHeight: 220,
-              html: '<div id="demo" style="height: 200px;"></div>'
-            });
-          </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
+              <!-- Object DOM Syntax -->
+              <div id="syntax-object" style="display: none;">
+                <pre><script>
+                  examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js'],
+                    type: 'module',
+                    minHeight: 220,
+                    html: '<div id="demo" style="height: 200px;"></div>'
+                  });
+                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
 const { tags, $ } = Lightview;
 tags.Drawer = Drawer;
 tags['Drawer.Content'] = Drawer.Content;
@@ -233,53 +233,53 @@ const drawer = {
 };
 
 $('#example').content(drawer);</code></pre>
-        </div>
-      </div>
-    </div>
+              </div>
+            </div>
+          </div>
 
-    <!-- Reactive Example with Examplify -->
-    <div class="card bg-base-200" style="margin-bottom: 2rem;">
-      <div class="card-body">
-        <h2 class="card-title">Right Side Drawer</h2>
-        <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Drawer opening from the right</p>
+          <!-- Reactive Example with Examplify -->
+          <div class="card bg-base-200" style="margin-bottom: 2rem;">
+            <div class="card-body">
+              <h2 class="card-title">Right Side Drawer</h2>
+              <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Drawer opening from the right</p>
 
-        <!-- Tabs -->
-        <script>
-          window.switchReactiveSyntaxTab = (tabId) => {
-            const tabs = ['tagged', 'vdom', 'object'];
-            tabs.forEach(t => {
-              const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-              const contentEl = document.getElementById(`reactive-syntax-${t}`);
-              if (t === tabId) {
-                tabEl.classList.add('syntax-tab-active');
-                contentEl.style.display = 'block';
-              } else {
-                tabEl.classList.remove('syntax-tab-active');
-                contentEl.style.display = 'none';
-              }
-            });
-          };
-        </script>
-        <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-          <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-            onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-          <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-            onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-          <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-            onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-        </div>
+              <!-- Tabs -->
+              <script>
+                window.switchReactiveSyntaxTab = (tabId) => {
+                  const tabs = ['tagged', 'vdom', 'object'];
+                  tabs.forEach(t => {
+                    const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                    const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                    if (t === tabId) {
+                      tabEl.classList.add('syntax-tab-active');
+                      contentEl.style.display = 'block';
+                    } else {
+                      tabEl.classList.remove('syntax-tab-active');
+                      contentEl.style.display = 'none';
+                    }
+                  });
+                };
+              </script>
+              <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                  onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                  onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                  onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+              </div>
 
-        <!-- Tagged Syntax -->
-        <div id="reactive-syntax-tagged">
-          <pre><script>
-            examplify(document.currentScript.nextElementSibling, {
-              at: document.currentScript.parentElement,
-              scripts: ['/lightview.js', '/lightview-x.js'],
-              type: 'module',
-              minHeight: 220,
-              html: '<div id="demo" style="height: 200px;"></div>'
-            });
-          </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
+              <!-- Tagged Syntax -->
+              <div id="reactive-syntax-tagged">
+                <pre><script>
+                  examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js'],
+                    type: 'module',
+                    minHeight: 220,
+                    html: '<div id="demo" style="height: 200px;"></div>'
+                  });
+                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
@@ -305,19 +305,19 @@ const drawer = Drawer({ id: drawerId, end: true },
 );
 
 $('#example').content(drawer);</code></pre>
-        </div>
+              </div>
 
-        <!-- vDOM Syntax -->
-        <div id="reactive-syntax-vdom" style="display: none;">
-          <pre><script>
-            examplify(document.currentScript.nextElementSibling, {
-              at: document.currentScript.parentElement,
-              scripts: ['/lightview.js', '/lightview-x.js'],
-              type: 'module',
-              minHeight: 220,
-              html: '<div id="demo" style="height: 200px;"></div>'
-            });
-          </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
+              <!-- vDOM Syntax -->
+              <div id="reactive-syntax-vdom" style="display: none;">
+                <pre><script>
+                  examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js'],
+                    type: 'module',
+                    minHeight: 220,
+                    html: '<div id="demo" style="height: 200px;"></div>'
+                  });
+                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { $ } = Lightview;
 
@@ -360,19 +360,19 @@ const drawer = {
 };
 
 $('#example').content(drawer);</code></pre>
-        </div>
+              </div>
 
-        <!-- Object DOM Syntax -->
-        <div id="reactive-syntax-object" style="display: none;">
-          <pre><script>
-            examplify(document.currentScript.nextElementSibling, {
-              at: document.currentScript.parentElement,
-              scripts: ['/lightview.js', '/lightview-x.js'],
-              type: 'module',
-              minHeight: 220,
-              html: '<div id="demo" style="height: 200px;"></div>'
-            });
-          </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
+              <!-- Object DOM Syntax -->
+              <div id="reactive-syntax-object" style="display: none;">
+                <pre><script>
+                  examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js'],
+                    type: 'module',
+                    minHeight: 220,
+                    html: '<div id="demo" style="height: 200px;"></div>'
+                  });
+                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
 tags.Drawer = Drawer;
@@ -425,92 +425,94 @@ const drawer = {
 };
 
 $('#example').content(drawer);</code></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Props Table -->
-    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-    <div style="overflow-x: auto; margin-bottom: 2rem;">
-      <table class="table table-zebra">
-        <thead>
-          <tr>
-            <th>Prop</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>id</code></td>
-            <td>string</td>
-            <td>auto</td>
-            <td>Unique ID for the drawer toggle</td>
-          </tr>
-          <tr>
-            <td><code>open</code></td>
-            <td>boolean | function</td>
-            <td>false</td>
-            <td>Control open state (reactive)</td>
-          </tr>
-          <tr>
-            <td><code>end</code></td>
-            <td>boolean</td>
-            <td>false</td>
-            <td>Open from right side</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Sub-components -->
-    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
-    <div style="overflow-x: auto; margin-bottom: 2rem;">
-      <table class="table table-zebra">
-        <thead>
-          <tr>
-            <th>Component</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>Drawer.Content</code></td>
-            <td>Main content area (visible when drawer is closed)</td>
-          </tr>
-          <tr>
-            <td><code>Drawer.Side</code></td>
-            <td>Sidebar content container</td>
-          </tr>
-          <tr>
-            <td><code>Drawer.Overlay</code></td>
-            <td>Click-to-close overlay backdrop</td>
-          </tr>
-          <tr>
-            <td><code>Drawer.Button</code></td>
-            <td>Toggle button to open drawer</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Static Example -->
-    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Interactive Demo</h2>
-    <div class="drawer rounded-lg border border-base-300" style="margin-bottom: 2rem; height: 12rem; overflow: hidden;">
-      <input id="demo-drawer" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content flex flex-col items-center justify-center">
-        <label for="demo-drawer" class="btn btn-primary drawer-button">Open drawer</label>
-      </div>
-      <div class="drawer-side z-50">
-        <label for="demo-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-        <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-          <li><a>Sidebar Item 1</a></li>
-          <li><a>Sidebar Item 2</a></li>
-          <li><a>Sidebar Item 3</a></li>
-        </ul>
-      </div>                </div>
+              </div>
             </div>
+          </div>
+
+          <!-- Props Table -->
+          <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+          <div style="overflow-x: auto; margin-bottom: 2rem;">
+            <table class="table table-zebra">
+              <thead>
+                <tr>
+                  <th>Prop</th>
+                  <th>Type</th>
+                  <th>Default</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>id</code></td>
+                  <td>string</td>
+                  <td>auto</td>
+                  <td>Unique ID for the drawer toggle</td>
+                </tr>
+                <tr>
+                  <td><code>open</code></td>
+                  <td>boolean | function</td>
+                  <td>false</td>
+                  <td>Control open state (reactive)</td>
+                </tr>
+                <tr>
+                  <td><code>end</code></td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Open from right side</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Sub-components -->
+          <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+          <div style="overflow-x: auto; margin-bottom: 2rem;">
+            <table class="table table-zebra">
+              <thead>
+                <tr>
+                  <th>Component</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Drawer.Content</code></td>
+                  <td>Main content area (visible when drawer is closed)</td>
+                </tr>
+                <tr>
+                  <td><code>Drawer.Side</code></td>
+                  <td>Sidebar content container</td>
+                </tr>
+                <tr>
+                  <td><code>Drawer.Overlay</code></td>
+                  <td>Click-to-close overlay backdrop</td>
+                </tr>
+                <tr>
+                  <td><code>Drawer.Button</code></td>
+                  <td>Toggle button to open drawer</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Static Example -->
+          <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Interactive Demo</h2>
+          <div class="drawer rounded-lg border border-base-300"
+            style="margin-bottom: 2rem; height: 12rem; overflow: hidden;">
+            <input id="demo-drawer" type="checkbox" class="drawer-toggle" />
+            <div class="drawer-content flex flex-col items-center justify-center">
+              <label for="demo-drawer" class="btn btn-primary drawer-button">Open drawer</label>
+            </div>
+            <div class="drawer-side z-50">
+              <label for="demo-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+              <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+                <li><a>Sidebar Item 1</a></li>
+                <li><a>Sidebar Item 2</a></li>
+                <li><a>Sidebar Item 3</a></li>
+              </ul>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </div>

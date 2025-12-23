@@ -5,7 +5,7 @@
     /**
      * Shim function for individual pages
      * Redirects direct page access to the shell with a load parameter
-     * @param {string} shellPath - Relative path to the shell (e.g., '../../index.html')
+     * @param {string} shellPath - Relative path to the shell (e.g., '/index.html')
      */
     const base = (shellPath) => {
         if (typeof window === 'undefined') return;

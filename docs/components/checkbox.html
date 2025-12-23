@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,52 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Checkbox allows the user to select one or multiple items from a set.
-            Supports labels, descriptions, validation, and reactive state binding.
+                        Supports labels, descriptions, validation, and reactive state binding.
                     </p>
 
-        <!-- Basic Examples -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Examples</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple checkboxes with various
-                    configurations</p>
+                    <!-- Basic Examples -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Examples</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple checkboxes with various
+                                configurations</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
@@ -136,18 +137,18 @@ const disabled = Checkbox({
 $('#example').content(
     div({ class: 'space-y-4' }, basic, withDesc, required, disabled)
 );</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
 const { $ } = Lightview;
 
 const basic = {
@@ -186,18 +187,18 @@ $('#example').content({
     attributes: { class: 'space-y-4' },
     children: [basic, withDesc, required, disabled]
 });</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
 const { tags, $ } = Lightview;
 tags.Checkbox = Checkbox;
 
@@ -229,53 +230,54 @@ $('#example').content({
         ]
     }
 });</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Reactive Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals and live
-                    validation</p>
+                    <!-- Reactive Example -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Reactive Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals
+                                and live
+                                validation</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 320
-                        });
-                    </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 320
+                                    });
+                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
 const { signal, tags, $ } = Lightview;
 const { div, p, span, button } = tags;
 
@@ -317,18 +319,18 @@ const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
 );
 
 $('#example').content(reactiveDemo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 320
-                        });
-                    </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 320
+                                    });
+                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
 const { signal, $ } = Lightview;
 
 const notifications = signal(true);
@@ -392,18 +394,18 @@ const reactiveDemo = {
 };
 
 $('#example').content(reactiveDemo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 320
-                        });
-                    </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 320
+                                    });
+                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
 const { signal, tags, $ } = Lightview;
 tags.Checkbox = Checkbox;
 
@@ -467,135 +469,137 @@ const reactiveDemo = {
 };
 
 $('#example').content(reactiveDemo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>checked</code></td>
+                                    <td>boolean | signal</td>
+                                    <td>-</td>
+                                    <td>Checked state (reactive with signals)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>defaultChecked</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Default checked state for uncontrolled mode</td>
+                                </tr>
+                                <tr>
+                                    <td><code>indeterminate</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Indeterminate (partial) state</td>
+                                </tr>
+                                <tr>
+                                    <td><code>label</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Label text displayed next to checkbox</td>
+                                </tr>
+                                <tr>
+                                    <td><code>description</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Description text below the label</td>
+                                </tr>
+                                <tr>
+                                    <td><code>error</code></td>
+                                    <td>string | function</td>
+                                    <td>-</td>
+                                    <td>Error message or reactive error function</td>
+                                </tr>
+                                <tr>
+                                    <td><code>validate</code></td>
+                                    <td>function</td>
+                                    <td>-</td>
+                                    <td>Validation function: <code>(checked) => errorMessage | null</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>size</code></td>
+                                    <td>string</td>
+                                    <td>'md'</td>
+                                    <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>disabled</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Disable the checkbox</td>
+                                </tr>
+                                <tr>
+                                    <td><code>required</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Mark as required field (shows asterisk)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onChange</code></td>
+                                    <td>function</td>
+                                    <td>-</td>
+                                    <td>Callback when value changes: <code>(checked, event) => void</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>useShadow</code></td>
+                                    <td>boolean</td>
+                                    <td>*</td>
+                                    <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Colors Example -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <div class="example-flex" style="margin-bottom: 2rem;">
+                        <input type="checkbox" class="checkbox" checked />
+                        <input type="checkbox" class="checkbox checkbox-primary" checked />
+                        <input type="checkbox" class="checkbox checkbox-secondary" checked />
+                        <input type="checkbox" class="checkbox checkbox-accent" checked />
+                        <input type="checkbox" class="checkbox checkbox-success" checked />
+                        <input type="checkbox" class="checkbox checkbox-warning" checked />
+                        <input type="checkbox" class="checkbox checkbox-info" checked />
+                        <input type="checkbox" class="checkbox checkbox-error" checked />
+                    </div>
+
+                    <!-- Sizes Example -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <div class="example-flex-centered" style="margin-bottom: 2rem;">
+                        <input type="checkbox" class="checkbox checkbox-xs" checked />
+                        <input type="checkbox" class="checkbox checkbox-sm" checked />
+                        <input type="checkbox" class="checkbox checkbox-md" checked />
+                        <input type="checkbox" class="checkbox checkbox-lg" checked />
+                    </div>
+
+                    <!-- With Label -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label</h2>
+                    <div class="form-control" style="width: 13rem; margin-bottom: 2rem;">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Remember me</span>
+                            <input type="checkbox" class="checkbox checkbox-primary" />
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>checked</code></td>
-                        <td>boolean | signal</td>
-                        <td>-</td>
-                        <td>Checked state (reactive with signals)</td>
-                    </tr>
-                    <tr>
-                        <td><code>defaultChecked</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Default checked state for uncontrolled mode</td>
-                    </tr>
-                    <tr>
-                        <td><code>indeterminate</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Indeterminate (partial) state</td>
-                    </tr>
-                    <tr>
-                        <td><code>label</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Label text displayed next to checkbox</td>
-                    </tr>
-                    <tr>
-                        <td><code>description</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Description text below the label</td>
-                    </tr>
-                    <tr>
-                        <td><code>error</code></td>
-                        <td>string | function</td>
-                        <td>-</td>
-                        <td>Error message or reactive error function</td>
-                    </tr>
-                    <tr>
-                        <td><code>validate</code></td>
-                        <td>function</td>
-                        <td>-</td>
-                        <td>Validation function: <code>(checked) => errorMessage | null</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>color</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
-                    </tr>
-                    <tr>
-                        <td><code>size</code></td>
-                        <td>string</td>
-                        <td>'md'</td>
-                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
-                    </tr>
-                    <tr>
-                        <td><code>disabled</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Disable the checkbox</td>
-                    </tr>
-                    <tr>
-                        <td><code>required</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Mark as required field (shows asterisk)</td>
-                    </tr>
-                    <tr>
-                        <td><code>onChange</code></td>
-                        <td>function</td>
-                        <td>-</td>
-                        <td>Callback when value changes: <code>(checked, event) => void</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>useShadow</code></td>
-                        <td>boolean</td>
-                        <td>*</td>
-                        <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Colors Example -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-        <div class="example-flex" style="margin-bottom: 2rem;">
-            <input type="checkbox" class="checkbox" checked />
-            <input type="checkbox" class="checkbox checkbox-primary" checked />
-            <input type="checkbox" class="checkbox checkbox-secondary" checked />
-            <input type="checkbox" class="checkbox checkbox-accent" checked />
-            <input type="checkbox" class="checkbox checkbox-success" checked />
-            <input type="checkbox" class="checkbox checkbox-warning" checked />
-            <input type="checkbox" class="checkbox checkbox-info" checked />
-            <input type="checkbox" class="checkbox checkbox-error" checked />
-        </div>
-
-        <!-- Sizes Example -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-        <div class="example-flex-centered" style="margin-bottom: 2rem;">
-            <input type="checkbox" class="checkbox checkbox-xs" checked />
-            <input type="checkbox" class="checkbox checkbox-sm" checked />
-            <input type="checkbox" class="checkbox checkbox-md" checked />
-            <input type="checkbox" class="checkbox checkbox-lg" checked />
-        </div>
-
-        <!-- With Label -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label</h2>
-        <div class="form-control" style="width: 13rem; margin-bottom: 2rem;">
-            <label class="label cursor-pointer">
-                <span class="label-text">Remember me</span>
-                <input type="checkbox" class="checkbox checkbox-primary" />
-            </label>                </div>
-            </div>
-        </div>
     </div>
-</div>

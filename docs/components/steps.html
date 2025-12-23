@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,52 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Steps show a sequence of steps and current progress.
-            Supports colors, icons, and vertical layout.
+                        Supports colors, icons, and vertical layout.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Interactive checkout steps</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Interactive checkout steps</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 120
-                        });
-                    </script><code contenteditable="true">const { default: Steps } = await import('/components/navigation/steps.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 120
+                                    });
+                                </script><code contenteditable="true">const { default: Steps } = await import('/components/navigation/steps.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 const { div } = tags;
@@ -134,18 +135,18 @@ const demo = div({ class: 'flex flex-col gap-4' },
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 120
-                        });
-                    </script><code contenteditable="true">const { default: Steps } = await import('/components/navigation/steps.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 120
+                                    });
+                                </script><code contenteditable="true">const { default: Steps } = await import('/components/navigation/steps.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, $ } = Lightview;
 
@@ -195,18 +196,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 120
-                        });
-                    </script><code contenteditable="true">const { default: Steps } = await import('/components/navigation/steps.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 120
+                                    });
+                                </script><code contenteditable="true">const { default: Steps } = await import('/components/navigation/steps.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 tags.Steps = Steps;
@@ -259,92 +260,94 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>vertical</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Vertical layout</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Steps.Item Props -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Steps.Item Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>content</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Custom icon/content for step circle</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Colors -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <ul class="steps" style="margin-bottom: 2rem;">
+                        <li class="step step-primary">Primary</li>
+                        <li class="step step-secondary">Secondary</li>
+                        <li class="step step-accent">Accent</li>
+                        <li class="step step-info">Info</li>
+                        <li class="step step-success">Success</li>
+                        <li class="step step-warning">Warning</li>
+                        <li class="step step-error">Error</li>
+                    </ul>
+
+                    <!-- With Icons -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Icons</h2>
+                    <ul class="steps" style="margin-bottom: 2rem;">
+                        <li class="step step-info" data-content="?">Step 1</li>
+                        <li class="step step-info" data-content="!">Step 2</li>
+                        <li class="step step-info" data-content="✓">Step 3</li>
+                        <li class="step step-info" data-content="✕">Step 4</li>
+                        <li class="step step-info" data-content="★">Step 5</li>
+                    </ul>
+
+                    <!-- Vertical -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical</h2>
+                    <ul class="steps steps-vertical" style="margin-bottom: 2rem;">
+                        <li class="step step-primary">Register</li>
+                        <li class="step step-primary">Choose plan</li>
+                        <li class="step">Purchase</li>
+                        <li class="step">Receive Product</li>
+                    </ul>
                 </div>
-            </div>
-        </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>vertical</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Vertical layout</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Steps.Item Props -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Steps.Item Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>color</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
-                    </tr>
-                    <tr>
-                        <td><code>content</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Custom icon/content for step circle</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Colors -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-        <ul class="steps" style="margin-bottom: 2rem;">
-            <li class="step step-primary">Primary</li>
-            <li class="step step-secondary">Secondary</li>
-            <li class="step step-accent">Accent</li>
-            <li class="step step-info">Info</li>
-            <li class="step step-success">Success</li>
-            <li class="step step-warning">Warning</li>
-            <li class="step step-error">Error</li>
-        </ul>
-
-        <!-- With Icons -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Icons</h2>
-        <ul class="steps" style="margin-bottom: 2rem;">
-            <li class="step step-info" data-content="?">Step 1</li>
-            <li class="step step-info" data-content="!">Step 2</li>
-            <li class="step step-info" data-content="✓">Step 3</li>
-            <li class="step step-info" data-content="✕">Step 4</li>
-            <li class="step step-info" data-content="★">Step 5</li>
-        </ul>
-
-        <!-- Vertical -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical</h2>
-        <ul class="steps steps-vertical" style="margin-bottom: 2rem;">
-            <li class="step step-primary">Register</li>
-            <li class="step step-primary">Choose plan</li>
-            <li class="step">Purchase</li>
-            <li class="step">Receive Product</li>
-        </ul>                </div>
             </div>
         </div>
     </div>

@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Hero is a large banner section with centered content.
-            Perfect for landing pages and feature highlights.
+                        Perfect for landing pages and feature highlights.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Centered hero with call-to-action</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Centered hero with
+                                call-to-action</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 280
-                        });
-                    </script><code contenteditable="true">const { default: Hero } = await import('/components/layout/hero.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">const { default: Hero } = await import('/components/layout/hero.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
@@ -119,18 +121,18 @@ const hero = Hero({ class: 'bg-base-200 min-h-64 rounded-box' },
 );
 
 $('#example').content(hero);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 280
-                        });
-                    </script><code contenteditable="true">const { default: Hero } = await import('/components/layout/hero.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">const { default: Hero } = await import('/components/layout/hero.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { $ } = Lightview;
 
@@ -155,18 +157,18 @@ const hero = {
 };
 
 $('#example').content(hero);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 280
-                        });
-                    </script><code contenteditable="true">const { default: Hero } = await import('/components/layout/hero.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">const { default: Hero } = await import('/components/layout/hero.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
 tags.Hero = Hero;
@@ -192,61 +194,63 @@ const hero = {
 };
 
 $('#example').content(hero);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Props</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>Hero.Content</code></td>
-                        <td>center</td>
-                        <td>Content container</td>
-                    </tr>
-                    <tr>
-                        <td><code>Hero.Overlay</code></td>
-                        <td>-</td>
-                        <td>Dark overlay for background images</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Props</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Hero.Content</code></td>
+                                    <td>center</td>
+                                    <td>Content container</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Hero.Overlay</code></td>
+                                    <td>-</td>
+                                    <td>Dark overlay for background images</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-        <!-- Static Examples -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Figure</h2>
-        <div class="hero bg-base-200 min-h-64 rounded-box" style="margin-bottom: 2rem;">
-            <div class="hero-content flex-col lg:flex-row">
-                <img src="https://picsum.photos/300/200" class="max-w-sm rounded-lg shadow-2xl" alt="Hero" />
-                <div>
-                    <h1 class="text-5xl font-bold">Box Office News!</h1>
-                    <p class="py-6">Provident cupiditate voluptatem et in.</p>
-                    <button class="btn btn-primary">Get Started</button>
-                </div>
-            </div>
-        </div>
+                    <!-- Static Examples -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Figure</h2>
+                    <div class="hero bg-base-200 min-h-64 rounded-box" style="margin-bottom: 2rem;">
+                        <div class="hero-content flex-col lg:flex-row">
+                            <img src="https://picsum.photos/300/200" class="max-w-sm rounded-lg shadow-2xl"
+                                alt="Hero" />
+                            <div>
+                                <h1 class="text-5xl font-bold">Box Office News!</h1>
+                                <p class="py-6">Provident cupiditate voluptatem et in.</p>
+                                <button class="btn btn-primary">Get Started</button>
+                            </div>
+                        </div>
+                    </div>
 
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Overlay</h2>
-        <div class="hero min-h-64 rounded-box"
-            style="background-image: url(https://picsum.photos/800/400); margin-bottom: 2rem;">
-            <div class="hero-overlay bg-opacity-60 rounded-box"></div>
-            <div class="hero-content text-neutral-content text-center">
-                <div class="max-w-md">
-                    <h1 class="mb-5 text-5xl font-bold">Hello there</h1>
-                    <p class="mb-5">Provident cupiditate voluptatem et in.</p>
-                    <button class="btn btn-primary">Get Started</button>
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Overlay</h2>
+                    <div class="hero min-h-64 rounded-box"
+                        style="background-image: url(https://picsum.photos/800/400); margin-bottom: 2rem;">
+                        <div class="hero-overlay bg-opacity-60 rounded-box"></div>
+                        <div class="hero-content text-neutral-content text-center">
+                            <div class="max-w-md">
+                                <h1 class="mb-5 text-5xl font-bold">Hello there</h1>
+                                <p class="mb-5">Provident cupiditate voluptatem et in.</p>
+                                <button class="btn btn-primary">Get Started</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>                </div>
             </div>
         </div>
     </div>
-</div>

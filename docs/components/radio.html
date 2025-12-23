@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Radio buttons allow the user to select one option from a set.
-            Use RadioGroup for a complete set with validation support.
+                        Use RadioGroup for a complete set with validation support.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic RadioGroup</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Radio group with label and options</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic RadioGroup</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Radio group with label and
+                                options</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 420
-                        });
-                    </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 420
+                                    });
+                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
@@ -139,18 +141,18 @@ const horizontal = RadioGroup({
 $('#example').content(
     div({ class: 'space-y-6 max-w-md' }, basic, withDesc, horizontal)
 );</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 420
-                        });
-                    </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 420
+                                    });
+                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
 const { $ } = Lightview;
 
 const basic = {
@@ -193,18 +195,18 @@ $('#example').content({
     attributes: { class: 'space-y-6 max-w-md' },
     children: [basic, withDesc, horizontal]
 });</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 420
-                        });
-                    </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 420
+                                    });
+                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
 const { tags, $ } = Lightview;
 tags.RadioGroup = RadioGroup;
 
@@ -244,53 +246,54 @@ $('#example').content({
         ]
     }
 });</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Reactive Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals and
-                    validation</p>
+                    <!-- Reactive Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Reactive Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals
+                                and
+                                validation</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 260
-                        });
-                    </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 260
+                                    });
+                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
 const { signal, tags, $ } = Lightview;
 const { div, p, span } = tags;
 
@@ -331,18 +334,18 @@ const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
 );
 
 $('#example').content(reactiveDemo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 260
-                        });
-                    </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 260
+                                    });
+                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
 const { signal, $ } = Lightview;
 
 const selectedPriority = signal('');
@@ -390,18 +393,18 @@ const reactiveDemo = {
 };
 
 $('#example').content(reactiveDemo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 260
-                        });
-                    </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 260
+                                    });
+                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
 const { signal, tags, $ } = Lightview;
 tags.RadioGroup = RadioGroup;
 
@@ -451,151 +454,154 @@ const reactiveDemo = {
 };
 
 $('#example').content(reactiveDemo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table - RadioGroup -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">RadioGroup Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>options</code></td>
+                                    <td>array</td>
+                                    <td>[]</td>
+                                    <td>Array of strings or objects <code>{value, label, description, disabled}</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>value</code></td>
+                                    <td>* | signal</td>
+                                    <td>-</td>
+                                    <td>Selected value (reactive with signals)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>defaultValue</code></td>
+                                    <td>*</td>
+                                    <td>null</td>
+                                    <td>Default value for uncontrolled mode</td>
+                                </tr>
+                                <tr>
+                                    <td><code>name</code></td>
+                                    <td>string</td>
+                                    <td>auto</td>
+                                    <td>Radio group name for form submission</td>
+                                </tr>
+                                <tr>
+                                    <td><code>label</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Group label displayed above options</td>
+                                </tr>
+                                <tr>
+                                    <td><code>helper</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Helper text displayed below options</td>
+                                </tr>
+                                <tr>
+                                    <td><code>error</code></td>
+                                    <td>string | function</td>
+                                    <td>-</td>
+                                    <td>Error message or reactive error function</td>
+                                </tr>
+                                <tr>
+                                    <td><code>validate</code></td>
+                                    <td>function</td>
+                                    <td>-</td>
+                                    <td>Validation function: <code>(value) => errorMessage | null</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>size</code></td>
+                                    <td>string</td>
+                                    <td>'md'</td>
+                                    <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>horizontal</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Arrange options horizontally</td>
+                                </tr>
+                                <tr>
+                                    <td><code>disabled</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Disable all options</td>
+                                </tr>
+                                <tr>
+                                    <td><code>required</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Mark as required field</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onChange</code></td>
+                                    <td>function</td>
+                                    <td>-</td>
+                                    <td>Callback when value changes: <code>(value) => void</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>useShadow</code></td>
+                                    <td>boolean</td>
+                                    <td>*</td>
+                                    <td>Render in Shadow DOM</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Colors Example -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <div class="example-flex" style="margin-bottom: 2rem;">
+                        <input type="radio" class="radio" checked name="color-demo" />
+                        <input type="radio" class="radio radio-primary" checked name="color-demo2" />
+                        <input type="radio" class="radio radio-secondary" checked name="color-demo3" />
+                        <input type="radio" class="radio radio-accent" checked name="color-demo4" />
+                        <input type="radio" class="radio radio-success" checked name="color-demo5" />
+                        <input type="radio" class="radio radio-warning" checked name="color-demo6" />
+                        <input type="radio" class="radio radio-info" checked name="color-demo7" />
+                        <input type="radio" class="radio radio-error" checked name="color-demo8" />
+                    </div>
+
+                    <!-- Sizes Example -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                        <input type="radio" class="radio radio-xs" checked name="size-demo" />
+                        <input type="radio" class="radio radio-sm" checked name="size-demo2" />
+                        <input type="radio" class="radio radio-md" checked name="size-demo3" />
+                        <input type="radio" class="radio radio-lg" checked name="size-demo4" />
+                    </div>
+
+                    <!-- With Label -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label</h2>
+                    <div class="form-control w-52" style="margin-bottom: 2rem;">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Option 1</span>
+                            <input type="radio" name="label-demo" class="radio radio-primary" checked />
+                        </label>
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Option 2</span>
+                            <input type="radio" name="label-demo" class="radio radio-primary" />
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table - RadioGroup -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">RadioGroup Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>options</code></td>
-                        <td>array</td>
-                        <td>[]</td>
-                        <td>Array of strings or objects <code>{value, label, description, disabled}</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>value</code></td>
-                        <td>* | signal</td>
-                        <td>-</td>
-                        <td>Selected value (reactive with signals)</td>
-                    </tr>
-                    <tr>
-                        <td><code>defaultValue</code></td>
-                        <td>*</td>
-                        <td>null</td>
-                        <td>Default value for uncontrolled mode</td>
-                    </tr>
-                    <tr>
-                        <td><code>name</code></td>
-                        <td>string</td>
-                        <td>auto</td>
-                        <td>Radio group name for form submission</td>
-                    </tr>
-                    <tr>
-                        <td><code>label</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Group label displayed above options</td>
-                    </tr>
-                    <tr>
-                        <td><code>helper</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Helper text displayed below options</td>
-                    </tr>
-                    <tr>
-                        <td><code>error</code></td>
-                        <td>string | function</td>
-                        <td>-</td>
-                        <td>Error message or reactive error function</td>
-                    </tr>
-                    <tr>
-                        <td><code>validate</code></td>
-                        <td>function</td>
-                        <td>-</td>
-                        <td>Validation function: <code>(value) => errorMessage | null</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>color</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
-                    </tr>
-                    <tr>
-                        <td><code>size</code></td>
-                        <td>string</td>
-                        <td>'md'</td>
-                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
-                    </tr>
-                    <tr>
-                        <td><code>horizontal</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Arrange options horizontally</td>
-                    </tr>
-                    <tr>
-                        <td><code>disabled</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Disable all options</td>
-                    </tr>
-                    <tr>
-                        <td><code>required</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Mark as required field</td>
-                    </tr>
-                    <tr>
-                        <td><code>onChange</code></td>
-                        <td>function</td>
-                        <td>-</td>
-                        <td>Callback when value changes: <code>(value) => void</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>useShadow</code></td>
-                        <td>boolean</td>
-                        <td>*</td>
-                        <td>Render in Shadow DOM</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Colors Example -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-        <div class="example-flex" style="margin-bottom: 2rem;">
-            <input type="radio" class="radio" checked name="color-demo" />
-            <input type="radio" class="radio radio-primary" checked name="color-demo2" />
-            <input type="radio" class="radio radio-secondary" checked name="color-demo3" />
-            <input type="radio" class="radio radio-accent" checked name="color-demo4" />
-            <input type="radio" class="radio radio-success" checked name="color-demo5" />
-            <input type="radio" class="radio radio-warning" checked name="color-demo6" />
-            <input type="radio" class="radio radio-info" checked name="color-demo7" />
-            <input type="radio" class="radio radio-error" checked name="color-demo8" />
-        </div>
-
-        <!-- Sizes Example -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-            <input type="radio" class="radio radio-xs" checked name="size-demo" />
-            <input type="radio" class="radio radio-sm" checked name="size-demo2" />
-            <input type="radio" class="radio radio-md" checked name="size-demo3" />
-            <input type="radio" class="radio radio-lg" checked name="size-demo4" />
-        </div>
-
-        <!-- With Label -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label</h2>
-        <div class="form-control w-52" style="margin-bottom: 2rem;">
-            <label class="label cursor-pointer">
-                <span class="label-text">Option 1</span>
-                <input type="radio" name="label-demo" class="radio radio-primary" checked />
-            </label>
-            <label class="label cursor-pointer">
-                <span class="label-text">Option 2</span>
-                <input type="radio" name="label-demo" class="radio radio-primary" />
-            </label>                </div>
-            </div>
-        </div>
     </div>
-</div>

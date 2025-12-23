@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Join groups elements together with shared borders.
-            Perfect for button groups, input groups, and pagination.
+                        Perfect for button groups, input groups, and pagination.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Button group and input group</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Button group and input group
+                            </p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 140
-                        });
-                    </script><code contenteditable="true">const { default: Join } = await import('/components/layout/join.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 140
+                                    });
+                                </script><code contenteditable="true">const { default: Join } = await import('/components/layout/join.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { default: Input } = await import('/components/data-input/input.js');
 
@@ -131,18 +133,18 @@ const demo = div({ class: 'flex flex-col gap-4' },
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 140
-                        });
-                    </script><code contenteditable="true">const { default: Join } = await import('/components/layout/join.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 140
+                                    });
+                                </script><code contenteditable="true">const { default: Join } = await import('/components/layout/join.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { default: Input } = await import('/components/data-input/input.js');
 const { signal, $ } = Lightview;
@@ -180,18 +182,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 140
-                        });
-                    </script><code contenteditable="true">const { default: Join } = await import('/components/layout/join.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 140
+                                    });
+                                </script><code contenteditable="true">const { default: Join } = await import('/components/layout/join.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { default: Input } = await import('/components/data-input/input.js');
 const { signal, tags, $ } = Lightview;
@@ -234,47 +236,48 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>vertical</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Stack items vertically</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Static Examples -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical</h2>
+                    <div class="join join-vertical" style="margin-bottom: 2rem;">
+                        <button class="btn join-item">Button 1</button>
+                        <button class="btn join-item">Button 2</button>
+                        <button class="btn join-item">Button 3</button>
+                    </div>
+
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Radio Group</h2>
+                    <div class="join" style="margin-bottom: 2rem;">
+                        <input class="join-item btn" type="radio" name="options" aria-label="Radio 1" />
+                        <input class="join-item btn" type="radio" name="options" aria-label="Radio 2" checked />
+                        <input class="join-item btn" type="radio" name="options" aria-label="Radio 3" />
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>vertical</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Stack items vertically</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Static Examples -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical</h2>
-        <div class="join join-vertical" style="margin-bottom: 2rem;">
-            <button class="btn join-item">Button 1</button>
-            <button class="btn join-item">Button 2</button>
-            <button class="btn join-item">Button 3</button>
-        </div>
-
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Radio Group</h2>
-        <div class="join" style="margin-bottom: 2rem;">
-            <input class="join-item btn" type="radio" name="options" aria-label="Radio 1" />
-            <input class="join-item btn" type="radio" name="options" aria-label="Radio 2" checked />
-            <input class="join-item btn" type="radio" name="options" aria-label="Radio 3" />                </div>
-            </div>
-        </div>
     </div>
-</div>

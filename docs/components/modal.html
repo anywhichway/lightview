@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,52 +58,54 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Modal is used to show a dialog or a box when you click a button.
-            Uses the native HTML <code>&lt;dialog&gt;</code> element for accessibility.
+                        Uses the native HTML <code>&lt;dialog&gt;</code> element for accessibility.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple modal with open/close functionality
-                </p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple modal with open/close
+                                functionality
+                            </p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 60
-                        });
-                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 60
+                                    });
+                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
@@ -130,18 +132,18 @@ const trigger = Button({
 }, 'Open Modal');
 
 $('#example').content(trigger, modal);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 60
-                        });
-                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 60
+                                    });
+                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { $ } = Lightview;
 
@@ -180,18 +182,18 @@ const trigger = {
 };
 
 $('#example').content(trigger, modal);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 60
-                        });
-                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 60
+                                    });
+                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
 tags.Modal = Modal;
@@ -235,52 +237,53 @@ const trigger = {
 };
 
 $('#example').content(trigger, modal);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Confirmation Dialog</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Modal with confirm/cancel actions</p>
+                    <!-- Reactive Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Confirmation Dialog</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Modal with confirm/cancel
+                                actions</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-reactive-${t}`);
-                            const contentEl = document.getElementById(`syntax-reactive-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-reactive-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-reactive-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-reactive-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-reactive-${t}`);
+                                        const contentEl = document.getElementById(`syntax-reactive-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-reactive-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-reactive-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-reactive-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-reactive-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 60
-                        });
-                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-reactive-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 60
+                                    });
+                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
@@ -322,18 +325,18 @@ const demo = div({ class: 'flex items-center gap-4' },
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-reactive-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 60
-                        });
-                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-reactive-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 60
+                                    });
+                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, $ } = Lightview;
 
@@ -391,18 +394,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-reactive-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 60
-                        });
-                    </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-reactive-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 60
+                                    });
+                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 tags.Modal = Modal;
@@ -468,165 +471,168 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>id</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Required unique ID for the modal</td>
+                                </tr>
+                                <tr>
+                                    <td><code>open</code></td>
+                                    <td>boolean | function</td>
+                                    <td>false</td>
+                                    <td>Control open state (reactive)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>position</code></td>
+                                    <td>string</td>
+                                    <td>'middle'</td>
+                                    <td>'top' | 'middle' | 'bottom'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onClose</code></td>
+                                    <td>function</td>
+                                    <td>-</td>
+                                    <td>Callback when modal closes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Static Methods -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Static Methods</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Modal.open(id)</code></td>
+                                    <td>Open a modal by its ID</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Modal.close(id)</code></td>
+                                    <td>Close a modal by its ID</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Sub-components -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Modal.Box</code></td>
+                                    <td>The content container</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Modal.Action</code></td>
+                                    <td>Container for action buttons (typically at bottom)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Modal.Backdrop</code></td>
+                                    <td>Click-to-close backdrop</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Positions -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
+                    <div class="example-flex" style="margin-bottom: 2rem;">
+                        <button class="btn" onclick="document.getElementById('modal_top').showModal()">Top</button>
+                        <button class="btn" onclick="document.getElementById('modal_middle').showModal()">Middle
+                            (default)</button>
+                        <button class="btn"
+                            onclick="document.getElementById('modal_bottom').showModal()">Bottom</button>
+                    </div>
+
+                    <dialog id="modal_top" class="modal modal-top">
+                        <div class="modal-box">
+                            <h3 class="text-lg font-bold">Top Modal</h3>
+                            <p class="py-4">This modal appears at the top.</p>
+                            <div class="modal-action">
+                                <form method="dialog"><button class="btn">Close</button></form>
+                            </div>
+                        </div>
+                        <form method="dialog" class="modal-backdrop"><button>close</button></form>
+                    </dialog>
+
+                    <dialog id="modal_middle" class="modal modal-middle">
+                        <div class="modal-box">
+                            <h3 class="text-lg font-bold">Middle Modal</h3>
+                            <p class="py-4">This modal appears in the middle (default).</p>
+                            <div class="modal-action">
+                                <form method="dialog"><button class="btn">Close</button></form>
+                            </div>
+                        </div>
+                        <form method="dialog" class="modal-backdrop"><button>close</button></form>
+                    </dialog>
+
+                    <dialog id="modal_bottom" class="modal modal-bottom">
+                        <div class="modal-box">
+                            <h3 class="text-lg font-bold">Bottom Modal</h3>
+                            <p class="py-4">This modal appears at the bottom.</p>
+                            <div class="modal-action">
+                                <form method="dialog"><button class="btn">Close</button></form>
+                            </div>
+                        </div>
+                        <form method="dialog" class="modal-backdrop"><button>close</button></form>
+                    </dialog>
+
+                    <!-- Responsive -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Responsive Modal</h2>
+                    <p style="opacity: 0.7; margin-bottom: 1rem;">Full-screen on mobile, centered on desktop.</p>
+                    <button class="btn btn-primary" style="margin-bottom: 2rem;"
+                        onclick="document.getElementById('modal_responsive').showModal()">
+                        Open Responsive Modal
+                    </button>
+
+                    <dialog id="modal_responsive" class="modal modal-bottom sm:modal-middle">
+                        <div class="modal-box">
+                            <h3 class="text-lg font-bold">Responsive Modal</h3>
+                            <p class="py-4">This modal is full-width at the bottom on mobile, and centered on larger
+                                screens.</p>
+                            <div class="modal-action">
+                                <form method="dialog">
+                                    <button class="btn">Close</button>
+                                </form>
+                            </div>
+                        </div>
+                        <form method="dialog" class="modal-backdrop">
+                            <button>close</button>
+                        </form>
+                    </dialog>
+
+
                 </div>
             </div>
-        </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>id</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Required unique ID for the modal</td>
-                    </tr>
-                    <tr>
-                        <td><code>open</code></td>
-                        <td>boolean | function</td>
-                        <td>false</td>
-                        <td>Control open state (reactive)</td>
-                    </tr>
-                    <tr>
-                        <td><code>position</code></td>
-                        <td>string</td>
-                        <td>'middle'</td>
-                        <td>'top' | 'middle' | 'bottom'</td>
-                    </tr>
-                    <tr>
-                        <td><code>onClose</code></td>
-                        <td>function</td>
-                        <td>-</td>
-                        <td>Callback when modal closes</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Static Methods -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Static Methods</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Method</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>Modal.open(id)</code></td>
-                        <td>Open a modal by its ID</td>
-                    </tr>
-                    <tr>
-                        <td><code>Modal.close(id)</code></td>
-                        <td>Close a modal by its ID</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Sub-components -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>Modal.Box</code></td>
-                        <td>The content container</td>
-                    </tr>
-                    <tr>
-                        <td><code>Modal.Action</code></td>
-                        <td>Container for action buttons (typically at bottom)</td>
-                    </tr>
-                    <tr>
-                        <td><code>Modal.Backdrop</code></td>
-                        <td>Click-to-close backdrop</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Positions -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
-        <div class="example-flex" style="margin-bottom: 2rem;">
-            <button class="btn" onclick="document.getElementById('modal_top').showModal()">Top</button>
-            <button class="btn" onclick="document.getElementById('modal_middle').showModal()">Middle (default)</button>
-            <button class="btn" onclick="document.getElementById('modal_bottom').showModal()">Bottom</button>
-        </div>
-
-        <dialog id="modal_top" class="modal modal-top">
-            <div class="modal-box">
-                <h3 class="text-lg font-bold">Top Modal</h3>
-                <p class="py-4">This modal appears at the top.</p>
-                <div class="modal-action">
-                    <form method="dialog"><button class="btn">Close</button></form>
-                </div>
-            </div>
-            <form method="dialog" class="modal-backdrop"><button>close</button></form>
-        </dialog>
-
-        <dialog id="modal_middle" class="modal modal-middle">
-            <div class="modal-box">
-                <h3 class="text-lg font-bold">Middle Modal</h3>
-                <p class="py-4">This modal appears in the middle (default).</p>
-                <div class="modal-action">
-                    <form method="dialog"><button class="btn">Close</button></form>
-                </div>
-            </div>
-            <form method="dialog" class="modal-backdrop"><button>close</button></form>
-        </dialog>
-
-        <dialog id="modal_bottom" class="modal modal-bottom">
-            <div class="modal-box">
-                <h3 class="text-lg font-bold">Bottom Modal</h3>
-                <p class="py-4">This modal appears at the bottom.</p>
-                <div class="modal-action">
-                    <form method="dialog"><button class="btn">Close</button></form>
-                </div>
-            </div>
-            <form method="dialog" class="modal-backdrop"><button>close</button></form>
-        </dialog>
-
-        <!-- Responsive -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Responsive Modal</h2>
-        <p style="opacity: 0.7; margin-bottom: 1rem;">Full-screen on mobile, centered on desktop.</p>
-        <button class="btn btn-primary" style="margin-bottom: 2rem;"
-            onclick="document.getElementById('modal_responsive').showModal()">
-            Open Responsive Modal
-        </button>
-
-        <dialog id="modal_responsive" class="modal modal-bottom sm:modal-middle">
-            <div class="modal-box">
-                <h3 class="text-lg font-bold">Responsive Modal</h3>
-                <p class="py-4">This modal is full-width at the bottom on mobile, and centered on larger screens.</p>
-                <div class="modal-action">
-                    <form method="dialog">
-                        <button class="btn">Close</button>
-                    </form>
-                </div>
-            </div>
-            <form method="dialog" class="modal-backdrop">
-                <button>close</button>
-            </form>
-        </dialog>
-
-
-    </div>
-</div>

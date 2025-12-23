@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,53 +58,55 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Toast is a wrapper to position alert components at the corner of the screen.
-            Perfect for notifications and temporary messages.
+                        Perfect for notifications and temporary messages.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Toast with alert at different positions
-                </p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Toast with alert at different
+                                positions
+                            </p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100,
-                            html: '<div id="demo" style="height: 80px; position: relative;"></div>'
-                        });
-                    </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100,
+                                        html: '<div id="demo" style="height: 80px; position: relative;"></div>'
+                                    });
+                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
 const { default: Alert } = await import('/components/data-display/alert.js');
 
 const { tags, $ } = Lightview;
@@ -118,19 +120,19 @@ const toast = Toast({ position: 'end', vertical: 'bottom' },
 );
 
 $('#example').content(toast);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100,
-                            html: '<div id="demo" style="height: 80px; position: relative;"></div>'
-                        });
-                    </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100,
+                                        html: '<div id="demo" style="height: 80px; position: relative;"></div>'
+                                    });
+                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
 const { default: Alert } = await import('/components/data-display/alert.js');
 const { $ } = Lightview;
 
@@ -147,19 +149,19 @@ const toast = {
 };
 
 $('#example').content(toast);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100,
-                            html: '<div id="demo" style="height: 80px; position: relative;"></div>'
-                        });
-                    </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100,
+                                        html: '<div id="demo" style="height: 80px; position: relative;"></div>'
+                                    });
+                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
 const { default: Alert } = await import('/components/data-display/alert.js');
 const { tags, $ } = Lightview;
 tags.Toast = Toast;
@@ -184,53 +186,54 @@ const toast = {
 };
 
 $('#example').content(toast);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Notification System</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Dynamic toasts with auto-dismiss</p>
+                    <!-- Reactive Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Notification System</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Dynamic toasts with
+                                auto-dismiss</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180,
-                            html: '<div id="demo" style="height: 150px; position: relative;"></div>'
-                        });
-                    </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180,
+                                        html: '<div id="demo" style="height: 150px; position: relative;"></div>'
+                                    });
+                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
 const { default: Alert } = await import('/components/data-display/alert.js');
 const { default: Button } = await import('/components/actions/button.js');
 
@@ -270,19 +273,19 @@ const demo = div({},
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180,
-                            html: '<div id="demo" style="height: 150px; position: relative;"></div>'
-                        });
-                    </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180,
+                                        html: '<div id="demo" style="height: 150px; position: relative;"></div>'
+                                    });
+                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
 const { default: Alert } = await import('/components/data-display/alert.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, $ } = Lightview;
@@ -330,19 +333,19 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180,
-                            html: '<div id="demo" style="height: 150px; position: relative;"></div>'
-                        });
-                    </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180,
+                                        html: '<div id="demo" style="height: 150px; position: relative;"></div>'
+                                    });
+                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
 const { default: Alert } = await import('/components/data-display/alert.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
@@ -401,67 +404,67 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>position</code></td>
+                                    <td>string</td>
+                                    <td>'end'</td>
+                                    <td>'start' | 'center' | 'end'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>vertical</code></td>
+                                    <td>string</td>
+                                    <td>'bottom'</td>
+                                    <td>'top' | 'middle' | 'bottom'</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Positions Demo -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
+                    <p style="opacity: 0.7; margin-bottom: 1rem;">Click to see toast position (shown for 3 seconds):</p>
+                    <div class="example-flex" style="margin-bottom: 2rem;">
+                        <button class="btn btn-sm" onclick="showToast('top', 'start')">Top Start</button>
+                        <button class="btn btn-sm" onclick="showToast('top', 'center')">Top Center</button>
+                        <button class="btn btn-sm" onclick="showToast('top', 'end')">Top End</button>
+                        <button class="btn btn-sm" onclick="showToast('bottom', 'start')">Bottom Start</button>
+                        <button class="btn btn-sm" onclick="showToast('bottom', 'center')">Bottom Center</button>
+                        <button class="btn btn-sm" onclick="showToast('bottom', 'end')">Bottom End</button>
+                    </div>
+
+                    <div id="toast-container"></div>
+
+
                 </div>
             </div>
-        </div>
 
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>position</code></td>
-                        <td>string</td>
-                        <td>'end'</td>
-                        <td>'start' | 'center' | 'end'</td>
-                    </tr>
-                    <tr>
-                        <td><code>vertical</code></td>
-                        <td>string</td>
-                        <td>'bottom'</td>
-                        <td>'top' | 'middle' | 'bottom'</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Positions Demo -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
-        <p style="opacity: 0.7; margin-bottom: 1rem;">Click to see toast position (shown for 3 seconds):</p>
-        <div class="example-flex" style="margin-bottom: 2rem;">
-            <button class="btn btn-sm" onclick="showToast('top', 'start')">Top Start</button>
-            <button class="btn btn-sm" onclick="showToast('top', 'center')">Top Center</button>
-            <button class="btn btn-sm" onclick="showToast('top', 'end')">Top End</button>
-            <button class="btn btn-sm" onclick="showToast('bottom', 'start')">Bottom Start</button>
-            <button class="btn btn-sm" onclick="showToast('bottom', 'center')">Bottom Center</button>
-            <button class="btn btn-sm" onclick="showToast('bottom', 'end')">Bottom End</button>
-        </div>
-
-        <div id="toast-container"></div>
-
-
-    </div>
-</div>
-
-<script>
-    function showToast(vertical, horizontal) {
-        const container = document.getElementById('toast-container');
-        container.innerHTML = `
+            <script>
+                function showToast(vertical, horizontal) {
+                    const container = document.getElementById('toast-container');
+                    container.innerHTML = `
         <div class="toast toast-${vertical} toast-${horizontal}">
             <div class="alert alert-success">
                 <span>Toast at ${vertical}-${horizontal}!</span>
             </div>
         </div>
     `;
-        setTimeout(() => container.innerHTML = '', 3000);
-    }
-</script>
+                    setTimeout(() => container.innerHTML = '', 3000);
+                }
+            </script>

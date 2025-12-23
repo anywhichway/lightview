@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Divider separates content with a horizontal or vertical line.
-            Supports text labels and colors.
+                        Supports text labels and colors.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Divider with text and colors</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Divider with text and colors
+                            </p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 240
-                        });
-                    </script><code contenteditable="true">const { default: Divider } = await import('/components/layout/divider.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 240
+                                    });
+                                </script><code contenteditable="true">const { default: Divider } = await import('/components/layout/divider.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
@@ -115,18 +117,18 @@ const demo = div({ class: 'flex flex-col w-full' },
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 240
-                        });
-                    </script><code contenteditable="true">const { default: Divider } = await import('/components/layout/divider.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 240
+                                    });
+                                </script><code contenteditable="true">const { default: Divider } = await import('/components/layout/divider.js');
 const { $ } = Lightview;
 
 const demo = {
@@ -142,18 +144,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 240
-                        });
-                    </script><code contenteditable="true">const { default: Divider } = await import('/components/layout/divider.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 240
+                                    });
+                                </script><code contenteditable="true">const { default: Divider } = await import('/components/layout/divider.js');
 const { tags, $ } = Lightview;
 tags.Divider = Divider;
 
@@ -171,63 +173,64 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>horizontal</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Vertical divider (use in flex row)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'error'</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Static Examples -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Without Text</h2>
+                    <div style="display: flex; width: 100%; flex-direction: column; margin-bottom: 2rem;">
+                        <div class="card bg-base-300 rounded-box p-4">Content</div>
+                        <div class="divider"></div>
+                        <div class="card bg-base-300 rounded-box p-4">Content</div>
+                    </div>
+
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical</h2>
+                    <div style="display: flex; width: 100%; margin-bottom: 2rem;">
+                        <div class="card bg-base-300 rounded-box p-4 flex-grow">Left</div>
+                        <div class="divider divider-horizontal">OR</div>
+                        <div class="card bg-base-300 rounded-box p-4 flex-grow">Right</div>
+                    </div>
+
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <div style="display: flex; width: 100%; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
+                        <div class="divider divider-primary">Primary</div>
+                        <div class="divider divider-secondary">Secondary</div>
+                        <div class="divider divider-accent">Accent</div>
+                        <div class="divider divider-success">Success</div>
+                        <div class="divider divider-warning">Warning</div>
+                        <div class="divider divider-error">Error</div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>horizontal</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Vertical divider (use in flex row)</td>
-                    </tr>
-                    <tr>
-                        <td><code>color</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'error'</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Static Examples -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Without Text</h2>
-        <div style="display: flex; width: 100%; flex-direction: column; margin-bottom: 2rem;">
-            <div class="card bg-base-300 rounded-box p-4">Content</div>
-            <div class="divider"></div>
-            <div class="card bg-base-300 rounded-box p-4">Content</div>
-        </div>
-
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical</h2>
-        <div style="display: flex; width: 100%; margin-bottom: 2rem;">
-            <div class="card bg-base-300 rounded-box p-4 flex-grow">Left</div>
-            <div class="divider divider-horizontal">OR</div>
-            <div class="card bg-base-300 rounded-box p-4 flex-grow">Right</div>
-        </div>
-
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-        <div style="display: flex; width: 100%; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
-            <div class="divider divider-primary">Primary</div>
-            <div class="divider divider-secondary">Secondary</div>
-            <div class="divider divider-accent">Accent</div>
-            <div class="divider divider-success">Success</div>
-            <div class="divider divider-warning">Warning</div>
-            <div class="divider divider-error">Error</div>                </div>
-            </div>
-        </div>
     </div>
-</div>

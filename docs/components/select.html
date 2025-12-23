@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,52 +58,54 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Select allows the user to pick a value from a list of options.
-            Supports labels, validation, helper text, and reactive state binding.
+                        Supports labels, validation, helper text, and reactive state binding.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Examples</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple selects with various configurations
-                </p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Examples</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Simple selects with various
+                                configurations
+                            </p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 320
-                        });
-                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 320
+                                    });
+                                </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
 const { tags, $ } = Lightview;
 const { div } = tags;
 
@@ -139,18 +141,18 @@ const required = Select({
 $('#example').content(
     div({ class: 'space-y-4 max-w-md' }, basic, withLabel, required)
 );</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 320
-                        });
-                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 320
+                                    });
+                                </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
 const { $ } = Lightview;
 
 const basic = {
@@ -192,18 +194,18 @@ $('#example').content({
     attributes: { class: 'space-y-4 max-w-md' },
     children: [basic, withLabel, required]
 });</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 320
-                        });
-                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 320
+                                    });
+                                </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
 const { tags, $ } = Lightview;
 tags.Select = Select;
 
@@ -242,53 +244,54 @@ $('#example').content({
         ]
     }
 });</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Reactive Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals and live
-                    validation</p>
+                    <!-- Reactive Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Reactive Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals
+                                and live
+                                validation</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
 const { signal, tags, $ } = Lightview;
 const { div, p, span } = tags;
 
@@ -334,18 +337,18 @@ const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
 );
 
 $('#example').content(reactiveDemo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
 const { signal, $ } = Lightview;
 
 const selectedRole = signal('');
@@ -397,18 +400,18 @@ const reactiveDemo = {
 };
 
 $('#example').content(reactiveDemo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
 const { signal, tags, $ } = Lightview;
 tags.Select = Select;
 
@@ -462,177 +465,179 @@ const reactiveDemo = {
 };
 
 $('#example').content(reactiveDemo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>options</code></td>
+                                    <td>array</td>
+                                    <td>[]</td>
+                                    <td>Array of strings or objects <code>{value, label, disabled}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>value</code></td>
+                                    <td>* | signal</td>
+                                    <td>-</td>
+                                    <td>Selected value (reactive with signals)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>defaultValue</code></td>
+                                    <td>*</td>
+                                    <td>''</td>
+                                    <td>Default value for uncontrolled mode</td>
+                                </tr>
+                                <tr>
+                                    <td><code>placeholder</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Placeholder option (disabled first option)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>label</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Label text displayed above select</td>
+                                </tr>
+                                <tr>
+                                    <td><code>helper</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Helper text displayed below the select</td>
+                                </tr>
+                                <tr>
+                                    <td><code>error</code></td>
+                                    <td>string | function</td>
+                                    <td>-</td>
+                                    <td>Error message or reactive error function</td>
+                                </tr>
+                                <tr>
+                                    <td><code>validate</code></td>
+                                    <td>function</td>
+                                    <td>-</td>
+                                    <td>Validation function: <code>(value) => errorMessage | null</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>size</code></td>
+                                    <td>string</td>
+                                    <td>'md'</td>
+                                    <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>ghost</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Ghost style (no background)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>disabled</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Disable the select</td>
+                                </tr>
+                                <tr>
+                                    <td><code>required</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Mark as required field (shows asterisk)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onChange</code></td>
+                                    <td>function</td>
+                                    <td>-</td>
+                                    <td>Callback when value changes: <code>(value, event) => void</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>useShadow</code></td>
+                                    <td>boolean</td>
+                                    <td>*</td>
+                                    <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Sizes Example -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <div class="example-stack" style="max-width: 20rem; margin-bottom: 2rem;">
+                        <select class="select select-xs">
+                            <option>Extra Small</option>
+                        </select>
+                        <select class="select select-sm">
+                            <option>Small</option>
+                        </select>
+                        <select class="select">
+                            <option>Medium</option>
+                        </select>
+                        <select class="select select-lg">
+                            <option>Large</option>
+                        </select>
+                    </div>
+
+                    <!-- Colors Example -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" style="margin-bottom: 2rem;">
+                        <select class="select select-primary">
+                            <option>Primary</option>
+                        </select>
+                        <select class="select select-secondary">
+                            <option>Secondary</option>
+                        </select>
+                        <select class="select select-accent">
+                            <option>Accent</option>
+                        </select>
+                        <select class="select select-info">
+                            <option>Info</option>
+                        </select>
+                        <select class="select select-success">
+                            <option>Success</option>
+                        </select>
+                        <select class="select select-warning">
+                            <option>Warning</option>
+                        </select>
+                        <select class="select select-error">
+                            <option>Error</option>
+                        </select>
+                        <select class="select select-ghost">
+                            <option>Ghost</option>
+                        </select>
+                    </div>
+
+                    <!-- With Fieldset -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label (Fieldset Pattern)</h2>
+                    <div class="max-w-md" style="margin-bottom: 2rem;">
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Country</legend>
+                            <select class="select w-full">
+                                <option disabled selected>Select your country</option>
+                                <option>United States</option>
+                                <option>United Kingdom</option>
+                                <option>Canada</option>
+                            </select>
+                            <p class="label">Used for shipping calculations.</p>
+                        </fieldset>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>options</code></td>
-                        <td>array</td>
-                        <td>[]</td>
-                        <td>Array of strings or objects <code>{value, label, disabled}</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>value</code></td>
-                        <td>* | signal</td>
-                        <td>-</td>
-                        <td>Selected value (reactive with signals)</td>
-                    </tr>
-                    <tr>
-                        <td><code>defaultValue</code></td>
-                        <td>*</td>
-                        <td>''</td>
-                        <td>Default value for uncontrolled mode</td>
-                    </tr>
-                    <tr>
-                        <td><code>placeholder</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Placeholder option (disabled first option)</td>
-                    </tr>
-                    <tr>
-                        <td><code>label</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Label text displayed above select</td>
-                    </tr>
-                    <tr>
-                        <td><code>helper</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Helper text displayed below the select</td>
-                    </tr>
-                    <tr>
-                        <td><code>error</code></td>
-                        <td>string | function</td>
-                        <td>-</td>
-                        <td>Error message or reactive error function</td>
-                    </tr>
-                    <tr>
-                        <td><code>validate</code></td>
-                        <td>function</td>
-                        <td>-</td>
-                        <td>Validation function: <code>(value) => errorMessage | null</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>color</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'</td>
-                    </tr>
-                    <tr>
-                        <td><code>size</code></td>
-                        <td>string</td>
-                        <td>'md'</td>
-                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
-                    </tr>
-                    <tr>
-                        <td><code>ghost</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Ghost style (no background)</td>
-                    </tr>
-                    <tr>
-                        <td><code>disabled</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Disable the select</td>
-                    </tr>
-                    <tr>
-                        <td><code>required</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Mark as required field (shows asterisk)</td>
-                    </tr>
-                    <tr>
-                        <td><code>onChange</code></td>
-                        <td>function</td>
-                        <td>-</td>
-                        <td>Callback when value changes: <code>(value, event) => void</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>useShadow</code></td>
-                        <td>boolean</td>
-                        <td>*</td>
-                        <td>Render in Shadow DOM. *Follows global <code>initComponents()</code> setting</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Sizes Example -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-        <div class="example-stack" style="max-width: 20rem; margin-bottom: 2rem;">
-            <select class="select select-xs">
-                <option>Extra Small</option>
-            </select>
-            <select class="select select-sm">
-                <option>Small</option>
-            </select>
-            <select class="select">
-                <option>Medium</option>
-            </select>
-            <select class="select select-lg">
-                <option>Large</option>
-            </select>
-        </div>
-
-        <!-- Colors Example -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" style="margin-bottom: 2rem;">
-            <select class="select select-primary">
-                <option>Primary</option>
-            </select>
-            <select class="select select-secondary">
-                <option>Secondary</option>
-            </select>
-            <select class="select select-accent">
-                <option>Accent</option>
-            </select>
-            <select class="select select-info">
-                <option>Info</option>
-            </select>
-            <select class="select select-success">
-                <option>Success</option>
-            </select>
-            <select class="select select-warning">
-                <option>Warning</option>
-            </select>
-            <select class="select select-error">
-                <option>Error</option>
-            </select>
-            <select class="select select-ghost">
-                <option>Ghost</option>
-            </select>
-        </div>
-
-        <!-- With Fieldset -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label (Fieldset Pattern)</h2>
-        <div class="max-w-md" style="margin-bottom: 2rem;">
-            <fieldset class="fieldset">
-                <legend class="fieldset-legend">Country</legend>
-                <select class="select w-full">
-                    <option disabled selected>Select your country</option>
-                    <option>United States</option>
-                    <option>United Kingdom</option>
-                    <option>Canada</option>
-                </select>
-                <p class="label">Used for shipping calculations.</p>
-            </fieldset>                </div>
-            </div>
-        </div>
     </div>
-</div>

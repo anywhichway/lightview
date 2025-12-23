@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,52 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Countdown displays a numeric value with smooth transition animation.
-            Supports reactive values for live countdowns.
+                        Supports reactive values for live countdowns.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Static countdown values</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Static countdown values</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 80
-                        });
-                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 80
+                                    });
+                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
 const { tags, $ } = Lightview;
 const { div, span } = tags;
 
@@ -115,18 +116,18 @@ const display = div({ class: 'flex gap-5' },
 );
 
 $('#example').content(display);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 80
-                        });
-                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 80
+                                    });
+                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
 const { $ } = Lightview;
 
 const display = {
@@ -142,18 +143,18 @@ const display = {
 };
 
 $('#example').content(display);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 80
-                        });
-                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 80
+                                    });
+                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
 const { tags, $ } = Lightview;
 tags.Countdown = Countdown;
 
@@ -171,53 +172,54 @@ const display = {
 };
 
 $('#example').content(display);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Live Timer</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Reactive countdown with animated
-                    transitions</p>
+                    <!-- Reactive Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Live Timer</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Reactive countdown with
+                                animated
+                                transitions</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 160
-                        });
-                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 160
+                                    });
+                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
@@ -262,18 +264,18 @@ const demo = div({ class: 'flex flex-col items-center gap-4' },
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 160
-                        });
-                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 160
+                                    });
+                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, $ } = Lightview;
 
@@ -328,18 +330,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 160
-                        });
-                    </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 160
+                                    });
+                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 tags.Countdown = Countdown;
@@ -391,68 +393,72 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>value</code></td>
+                                    <td>number | function</td>
+                                    <td>0</td>
+                                    <td>Countdown value (0-99, reactive)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Static Examples -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Labels</h2>
+                    <div
+                        style="display: grid; grid-auto-flow: column; grid-auto-columns: max-content; gap: 1.25rem; text-align: center; margin-bottom: 2rem;">
+                        <div style="display: flex; flex-direction: column; padding: 0.5rem;"
+                            class="bg-neutral rounded-box text-neutral-content">
+                            <span class="countdown font-mono text-5xl"><span id="cd-days"
+                                    style="--value:15;"></span></span>
+                            days
+                        </div>
+                        <div style="display: flex; flex-direction: column; padding: 0.5rem;"
+                            class="bg-neutral rounded-box text-neutral-content">
+                            <span class="countdown font-mono text-5xl"><span id="cd-hours"
+                                    style="--value:10;"></span></span>
+                            hours
+                        </div>
+                        <div style="display: flex; flex-direction: column; padding: 0.5rem;"
+                            class="bg-neutral rounded-box text-neutral-content">
+                            <span class="countdown font-mono text-5xl"><span id="cd-min"
+                                    style="--value:24;"></span></span>
+                            min
+                        </div>
+                        <div style="display: flex; flex-direction: column; padding: 0.5rem;"
+                            class="bg-neutral rounded-box text-neutral-content">
+                            <span class="countdown font-mono text-5xl"><span id="cd-sec"
+                                    style="--value:59;"></span></span>
+                            sec
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
-        </div>
 
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>value</code></td>
-                        <td>number | function</td>
-                        <td>0</td>
-                        <td>Countdown value (0-99, reactive)</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Static Examples -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Labels</h2>
-        <div
-            style="display: grid; grid-auto-flow: column; grid-auto-columns: max-content; gap: 1.25rem; text-align: center; margin-bottom: 2rem;">
-            <div style="display: flex; flex-direction: column; padding: 0.5rem;"
-                class="bg-neutral rounded-box text-neutral-content">
-                <span class="countdown font-mono text-5xl"><span id="cd-days" style="--value:15;"></span></span>
-                days
-            </div>
-            <div style="display: flex; flex-direction: column; padding: 0.5rem;"
-                class="bg-neutral rounded-box text-neutral-content">
-                <span class="countdown font-mono text-5xl"><span id="cd-hours" style="--value:10;"></span></span>
-                hours
-            </div>
-            <div style="display: flex; flex-direction: column; padding: 0.5rem;"
-                class="bg-neutral rounded-box text-neutral-content">
-                <span class="countdown font-mono text-5xl"><span id="cd-min" style="--value:24;"></span></span>
-                min
-            </div>
-            <div style="display: flex; flex-direction: column; padding: 0.5rem;"
-                class="bg-neutral rounded-box text-neutral-content">
-                <span class="countdown font-mono text-5xl"><span id="cd-sec" style="--value:59;"></span></span>
-                sec
-            </div>
-        </div>
-
-
-    </div>
-</div>
-
-<script>
-    // Animate the seconds countdown
-    let sec = 59;
-    setInterval(() => {
-        sec = sec > 0 ? sec - 1 : 59;
-        const el = document.getElementById('cd-sec');
-        if (el) el.style.setProperty('--value', sec);
-    }, 1000);
+            <script>
+                // Animate the seconds countdown
+                let sec = 59;
+                setInterval(() => {
+                    sec = sec > 0 ? sec - 1 : 59;
+                    const el = document.getElementById('cd-sec');
+                    if (el) el.style.setProperty('--value', sec);
+                }, 1000);

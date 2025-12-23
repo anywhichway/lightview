@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Loading shows an animated indicator for loading states.
-            Multiple types and sizes available.
+                        Multiple types and sizes available.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Different loading types and sizes</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Different loading types and
+                                sizes</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
 const { tags, $ } = Lightview;
 const { div, p } = tags;
 
@@ -118,18 +120,18 @@ const loaders = div({ class: 'flex flex-wrap gap-8' },
 );
 
 $('#example').content(loaders);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
 const { $ } = Lightview;
 
 const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
@@ -148,18 +150,18 @@ const loaders = {
 };
 
 $('#example').content(loaders);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 100
-                        });
-                    </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
 const { tags, $ } = Lightview;
 tags.Loading = Loading;
 
@@ -181,52 +183,53 @@ const loaders = {
 };
 
 $('#example').content(loaders);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Loading Button</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Button with reactive loading state</p>
+                    <!-- Reactive Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Loading Button</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Button with reactive loading
+                                state</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 80
-                        });
-                    </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 80
+                                    });
+                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
 const { default: Button } = await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
@@ -253,18 +256,18 @@ const demo = div({ class: 'flex gap-4 items-center' },
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 80
-                        });
-                    </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 80
+                                    });
+                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, $ } = Lightview;
 
@@ -303,18 +306,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 80
-                        });
-                    </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 80
+                                    });
+                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
 const { default: Button } = await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
 tags.Loading = Loading;
@@ -357,117 +360,117 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>type</code></td>
+                                    <td>string</td>
+                                    <td>'spinner'</td>
+                                    <td>'spinner' | 'dots' | 'ring' | 'ball' | 'bars' | 'infinity'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>size</code></td>
+                                    <td>string</td>
+                                    <td>'md'</td>
+                                    <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>color</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Color utility class e.g. 'text-primary'</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Types -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Types</h2>
+                    <div class="example-flex" style="margin-bottom: 2rem;">
+                        <div class="text-center">
+                            <span class="loading loading-spinner loading-lg"></span>
+                            <p class="text-sm mt-2 opacity-50">spinner</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="loading loading-dots loading-lg"></span>
+                            <p class="text-sm mt-2 opacity-50">dots</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="loading loading-ring loading-lg"></span>
+                            <p class="text-sm mt-2 opacity-50">ring</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="loading loading-ball loading-lg"></span>
+                            <p class="text-sm mt-2 opacity-50">ball</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="loading loading-bars loading-lg"></span>
+                            <p class="text-sm mt-2 opacity-50">bars</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="loading loading-infinity loading-lg"></span>
+                            <p class="text-sm mt-2 opacity-50">infinity</p>
+                        </div>
+                    </div>
+
+                    <!-- Sizes -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
+                        <div class="text-center">
+                            <span class="loading loading-spinner loading-xs"></span>
+                            <p class="text-xs mt-1 opacity-50">xs</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="loading loading-spinner loading-sm"></span>
+                            <p class="text-xs mt-1 opacity-50">sm</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="loading loading-spinner loading-md"></span>
+                            <p class="text-xs mt-1 opacity-50">md</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="loading loading-spinner loading-lg"></span>
+                            <p class="text-xs mt-1 opacity-50">lg</p>
+                        </div>
+                    </div>
+
+                    <!-- Colors -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem;">
+                        <span class="loading loading-spinner loading-lg text-primary"></span>
+                        <span class="loading loading-spinner loading-lg text-secondary"></span>
+                        <span class="loading loading-spinner loading-lg text-accent"></span>
+                        <span class="loading loading-spinner loading-lg text-info"></span>
+                        <span class="loading loading-spinner loading-lg text-success"></span>
+                        <span class="loading loading-spinner loading-lg text-warning"></span>
+                        <span class="loading loading-spinner loading-lg text-error"></span>
+                    </div>
+
+                    <!-- In Button -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">In Button</h2>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <button class="btn btn-square">
+                            <span class="loading loading-spinner"></span>
+                        </button>
+                        <button class="btn btn-primary">
+                            <span class="loading loading-spinner"></span>
+                            Loading
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>type</code></td>
-                        <td>string</td>
-                        <td>'spinner'</td>
-                        <td>'spinner' | 'dots' | 'ring' | 'ball' | 'bars' | 'infinity'</td>
-                    </tr>
-                    <tr>
-                        <td><code>size</code></td>
-                        <td>string</td>
-                        <td>'md'</td>
-                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
-                    </tr>
-                    <tr>
-                        <td><code>color</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>Color utility class e.g. 'text-primary'</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Types -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Types</h2>
-        <div class="example-flex" style="margin-bottom: 2rem;">
-            <div class="text-center">
-                <span class="loading loading-spinner loading-lg"></span>
-                <p class="text-sm mt-2 opacity-50">spinner</p>
-            </div>
-            <div class="text-center">
-                <span class="loading loading-dots loading-lg"></span>
-                <p class="text-sm mt-2 opacity-50">dots</p>
-            </div>
-            <div class="text-center">
-                <span class="loading loading-ring loading-lg"></span>
-                <p class="text-sm mt-2 opacity-50">ring</p>
-            </div>
-            <div class="text-center">
-                <span class="loading loading-ball loading-lg"></span>
-                <p class="text-sm mt-2 opacity-50">ball</p>
-            </div>
-            <div class="text-center">
-                <span class="loading loading-bars loading-lg"></span>
-                <p class="text-sm mt-2 opacity-50">bars</p>
-            </div>
-            <div class="text-center">
-                <span class="loading loading-infinity loading-lg"></span>
-                <p class="text-sm mt-2 opacity-50">infinity</p>
-            </div>
-        </div>
-
-        <!-- Sizes -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-        <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="text-center">
-                <span class="loading loading-spinner loading-xs"></span>
-                <p class="text-xs mt-1 opacity-50">xs</p>
-            </div>
-            <div class="text-center">
-                <span class="loading loading-spinner loading-sm"></span>
-                <p class="text-xs mt-1 opacity-50">sm</p>
-            </div>
-            <div class="text-center">
-                <span class="loading loading-spinner loading-md"></span>
-                <p class="text-xs mt-1 opacity-50">md</p>
-            </div>
-            <div class="text-center">
-                <span class="loading loading-spinner loading-lg"></span>
-                <p class="text-xs mt-1 opacity-50">lg</p>
-            </div>
-        </div>
-
-        <!-- Colors -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-        <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem;">
-            <span class="loading loading-spinner loading-lg text-primary"></span>
-            <span class="loading loading-spinner loading-lg text-secondary"></span>
-            <span class="loading loading-spinner loading-lg text-accent"></span>
-            <span class="loading loading-spinner loading-lg text-info"></span>
-            <span class="loading loading-spinner loading-lg text-success"></span>
-            <span class="loading loading-spinner loading-lg text-warning"></span>
-            <span class="loading loading-spinner loading-lg text-error"></span>
-        </div>
-
-        <!-- In Button -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">In Button</h2>
-        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-            <button class="btn btn-square">
-                <span class="loading loading-spinner"></span>
-            </button>
-            <button class="btn btn-primary">
-                <span class="loading loading-spinner"></span>
-                Loading
-            </button>
-        </div>
-    </div>
-</div>

@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Tabs allow showing and hiding content to organize information.
-            Supports boxed, bordered, and lifted variants.
+                        Supports boxed, bordered, and lifted variants.
                     </p>
 
-        <!-- Basic Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Interactive tabs with content panels</p>
+                    <!-- Basic Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Interactive tabs with content
+                                panels</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 150
-                        });
-                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 150
+                                    });
+                                </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
 const { signal, tags, $ } = Lightview;
 const { div } = tags;
 
@@ -124,18 +126,18 @@ const demo = div({ class: 'flex flex-col gap-4' },
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 150
-                        });
-                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 150
+                                    });
+                                </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
 const { signal, $ } = Lightview;
 
 const activeTab = signal(0);
@@ -166,18 +168,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 150
-                        });
-                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 150
+                                    });
+                                </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
 const { signal, tags, $ } = Lightview;
 tags.Tabs = Tabs;
 tags['Tabs.Tab'] = Tabs.Tab;
@@ -212,53 +214,54 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Reactive Example with Examplify -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Lifted Tabs</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Tabs with lifted style and connected
-                    content</p>
+                    <!-- Reactive Example with Examplify -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Lifted Tabs</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Tabs with lifted style and
+                                connected
+                                content</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
 const { signal, tags, $ } = Lightview;
 const { div, p, h3 } = tags;
 
@@ -286,18 +289,18 @@ const demo = Tabs({ variant: 'lifted' },
 );
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
 const { signal, $ } = Lightview;
 
 const active = signal(1);
@@ -337,18 +340,18 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 180
-                        });
-                    </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
 const { signal, tags, $ } = Lightview;
 tags.Tabs = Tabs;
 tags['Tabs.Tab'] = Tabs.Tab;
@@ -393,106 +396,107 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props (Tabs)</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>variant</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>'boxed' | 'bordered' | 'lifted'</td>
-                    </tr>
-                    <tr>
-                        <td><code>size</code></td>
-                        <td>string</td>
-                        <td>'md'</td>
-                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props (Tabs)</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>variant</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>'boxed' | 'bordered' | 'lifted'</td>
+                                </tr>
+                                <tr>
+                                    <td><code>size</code></td>
+                                    <td>string</td>
+                                    <td>'md'</td>
+                                    <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-        <!-- Sub-components -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Props</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>Tabs.Tab</code></td>
-                        <td>active, disabled</td>
-                        <td>Individual tab button</td>
-                    </tr>
-                    <tr>
-                        <td><code>Tabs.Content</code></td>
-                        <td>-</td>
-                        <td>Content panel for lifted tabs</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                    <!-- Sub-components -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Props</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Tabs.Tab</code></td>
+                                    <td>active, disabled</td>
+                                    <td>Individual tab button</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Tabs.Content</code></td>
+                                    <td>-</td>
+                                    <td>Content panel for lifted tabs</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-        <!-- Variants -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
-        <div class="example-stack-lg" style="margin-bottom: 2rem;">
-            <div>
-                <h3 class="font-bold mb-2">Bordered</h3>
-                <div role="tablist" class="tabs tabs-bordered">
-                    <a role="tab" class="tab">Tab 1</a>
-                    <a role="tab" class="tab tab-active">Tab 2</a>
-                    <a role="tab" class="tab">Tab 3</a>
-                </div>
-            </div>
-            <div>
-                <h3 class="font-bold mb-2">Boxed</h3>
-                <div role="tablist" class="tabs tabs-boxed">
-                    <a role="tab" class="tab">Tab 1</a>
-                    <a role="tab" class="tab tab-active">Tab 2</a>
-                    <a role="tab" class="tab">Tab 3</a>
-                </div>
-            </div>
-            <div>
-                <h3 class="font-bold mb-2">Lifted</h3>
-                <div role="tablist" class="tabs tabs-lifted">
-                    <a role="tab" class="tab">Tab 1</a>
-                    <a role="tab" class="tab tab-active">Tab 2</a>
-                    <a role="tab" class="tab">Tab 3</a>
-                </div>
-            </div>
-        </div>
+                    <!-- Variants -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
+                    <div class="example-stack-lg" style="margin-bottom: 2rem;">
+                        <div>
+                            <h3 class="font-bold mb-2">Bordered</h3>
+                            <div role="tablist" class="tabs tabs-bordered">
+                                <a role="tab" class="tab">Tab 1</a>
+                                <a role="tab" class="tab tab-active">Tab 2</a>
+                                <a role="tab" class="tab">Tab 3</a>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Boxed</h3>
+                            <div role="tablist" class="tabs tabs-boxed">
+                                <a role="tab" class="tab">Tab 1</a>
+                                <a role="tab" class="tab tab-active">Tab 2</a>
+                                <a role="tab" class="tab">Tab 3</a>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Lifted</h3>
+                            <div role="tablist" class="tabs tabs-lifted">
+                                <a role="tab" class="tab">Tab 1</a>
+                                <a role="tab" class="tab tab-active">Tab 2</a>
+                                <a role="tab" class="tab">Tab 3</a>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Sizes -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-        <div class="example-stack" style="margin-bottom: 2rem;">
-            <div role="tablist" class="tabs tabs-bordered tabs-xs">
-                <a role="tab" class="tab tab-active">xs</a>
-                <a role="tab" class="tab">xs</a>
-            </div>
-            <div role="tablist" class="tabs tabs-bordered tabs-lg">
-                <a role="tab" class="tab tab-active">lg</a>
-                <a role="tab" class="tab">lg</a>
-            </div>                </div>
+                    <!-- Sizes -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <div class="example-stack" style="margin-bottom: 2rem;">
+                        <div role="tablist" class="tabs tabs-bordered tabs-xs">
+                            <a role="tab" class="tab tab-active">xs</a>
+                            <a role="tab" class="tab">xs</a>
+                        </div>
+                        <div role="tablist" class="tabs tabs-bordered tabs-lg">
+                            <a role="tab" class="tab tab-active">lg</a>
+                            <a role="tab" class="tab">lg</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>

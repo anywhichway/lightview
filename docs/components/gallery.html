@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -60,434 +60,444 @@
                         Live examples of all Lightview components powered by DaisyUI.
                     </p>
 
-        <!-- Theme Selector -->
-        <div style="margin-bottom: 2rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
-            <span class="font-semibold">Theme:</span>
-            <select class="select select-bordered select-sm"
-                onchange="document.documentElement.setAttribute('data-theme', this.value)">
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="cupcake">Cupcake</option>
-                <option value="cyberpunk">Cyberpunk</option>
-                <option value="synthwave">Synthwave</option>
-                <option value="retro">Retro</option>
-                <option value="dracula">Dracula</option>
-                <option value="forest">Forest</option>
-            </select>
-        </div>
-
-        <!-- Buttons -->
-        <section style="margin-bottom: 3rem;">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <span class="badge badge-primary">Buttons</span>
-            </h2>
-            <div class="card bg-base-200">
-                <div class="card-body">
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Colors</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
-                        <button class="btn">Default</button>
-                        <button class="btn btn-neutral">Neutral</button>
-                        <button class="btn btn-primary">Primary</button>
-                        <button class="btn btn-secondary">Secondary</button>
-                        <button class="btn btn-accent">Accent</button>
-                        <button class="btn btn-info">Info</button>
-                        <button class="btn btn-success">Success</button>
-                        <button class="btn btn-warning">Warning</button>
-                        <button class="btn btn-error">Error</button>
+                    <!-- Theme Selector -->
+                    <div style="margin-bottom: 2rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                        <span class="font-semibold">Theme:</span>
+                        <select class="select select-bordered select-sm"
+                            onchange="document.documentElement.setAttribute('data-theme', this.value)">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="cupcake">Cupcake</option>
+                            <option value="cyberpunk">Cyberpunk</option>
+                            <option value="synthwave">Synthwave</option>
+                            <option value="retro">Retro</option>
+                            <option value="dracula">Dracula</option>
+                            <option value="forest">Forest</option>
+                        </select>
                     </div>
 
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Variants</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
-                        <button class="btn btn-outline btn-primary">Outline</button>
-                        <button class="btn btn-soft btn-primary">Soft</button>
-                        <button class="btn btn-ghost">Ghost</button>
-                        <button class="btn btn-link">Link</button>
-                    </div>
-
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Sizes</h3>
-                    <div
-                        style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
-                        <button class="btn btn-xs">Extra Small</button>
-                        <button class="btn btn-sm">Small</button>
-                        <button class="btn btn-md">Medium</button>
-                        <button class="btn btn-lg">Large</button>
-                    </div>
-
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">States</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                        <button class="btn btn-primary">Normal</button>
-                        <button class="btn btn-primary btn-active">Active</button>
-                        <button class="btn btn-primary" disabled>Disabled</button>
-                        <button class="btn btn-primary">
-                            <span class="loading loading-spinner loading-sm"></span>
-                            Loading
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Inputs -->
-        <section style="margin-bottom: 3rem;">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <span class="badge badge-accent">Inputs</span>
-            </h2>
-            <div class="card bg-base-200">
-                <div class="card-body">
-                    <div class="grid md:grid-cols-2" style="gap: 1.5rem;">
-                        <div>
-                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Text Input</h3>
-                            <input type="text" placeholder="Type here" class="input input-bordered w-full" />
-                        </div>
-                        <div>
-                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Select</h3>
-                            <select class="select select-bordered w-full">
-                                <option disabled selected>Pick one</option>
-                                <option>Option 1</option>
-                                <option>Option 2</option>
-                            </select>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Textarea</h3>
-                            <textarea class="textarea textarea-bordered w-full"
-                                placeholder="Your message..."></textarea>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">File Input</h3>
-                            <input type="file" class="file-input file-input-bordered w-full" />
-                        </div>
-                        <div>
-                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Range</h3>
-                            <input type="range" min="0" max="100" value="40" class="range range-primary" />
-                        </div>
-                        <div>
-                            <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Rating</h3>
-                            <div class="rating">
-                                <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400"
-                                    checked="checked" />
-                                <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Checkboxes & Toggles</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="checkbox checkbox-primary" checked />
-                            <span>Primary</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="checkbox checkbox-secondary" checked />
-                            <span>Secondary</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="toggle toggle-primary" checked />
-                            <span>Toggle</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="radio-1" class="radio radio-primary" checked />
-                            <span>Radio</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Cards -->
-        <section style="margin-bottom: 3rem;">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <span class="badge badge-secondary">Cards</span>
-            </h2>
-            <div class="grid md:grid-cols-3" style="gap: 1rem;">
-                <div class="card bg-base-100 shadow-xl">
-                    <figure><img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=200&fit=crop"
-                            alt="Shoes" /></figure>
-                    <div class="card-body">
-                        <h2 class="card-title">
-                            Card with Image
-                            <span class="badge badge-secondary">NEW</span>
+                    <!-- Buttons -->
+                    <section style="margin-bottom: 3rem;">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="badge badge-primary">Buttons</span>
                         </h2>
-                        <p>A card with an image and badge.</p>
-                        <div class="card-actions justify-end">
-                            <button class="btn btn-primary">Buy Now</button>
-                        </div>
-                    </div>
-                </div>
+                        <div class="card bg-base-200">
+                            <div class="card-body">
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Colors</h3>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <button class="btn">Default</button>
+                                    <button class="btn btn-neutral">Neutral</button>
+                                    <button class="btn btn-primary">Primary</button>
+                                    <button class="btn btn-secondary">Secondary</button>
+                                    <button class="btn btn-accent">Accent</button>
+                                    <button class="btn btn-info">Info</button>
+                                    <button class="btn btn-success">Success</button>
+                                    <button class="btn btn-warning">Warning</button>
+                                    <button class="btn btn-error">Error</button>
+                                </div>
 
-                <div class="card card-bordered bg-base-100">
-                    <div class="card-body">
-                        <h2 class="card-title">Bordered Card</h2>
-                        <p>Card with a border instead of shadow.</p>
-                        <div class="card-actions justify-end">
-                            <button class="btn btn-primary btn-outline">Details</button>
-                        </div>
-                    </div>
-                </div>
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Variants</h3>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <button class="btn btn-outline btn-primary">Outline</button>
+                                    <button class="btn btn-soft btn-primary">Soft</button>
+                                    <button class="btn btn-ghost">Ghost</button>
+                                    <button class="btn btn-link">Link</button>
+                                </div>
 
-                <div class="card image-full bg-base-100 shadow-xl">
-                    <figure><img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop"
-                            alt="Shoes" /></figure>
-                    <div class="card-body">
-                        <h2 class="card-title">Image Overlay</h2>
-                        <p>Text displayed over the image.</p>
-                        <div class="card-actions justify-end">
-                            <button class="btn btn-primary">Shop</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Sizes</h3>
+                                <div
+                                    style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <button class="btn btn-xs">Extra Small</button>
+                                    <button class="btn btn-sm">Small</button>
+                                    <button class="btn btn-md">Medium</button>
+                                    <button class="btn btn-lg">Large</button>
+                                </div>
 
-        <!-- Alerts -->
-        <section style="margin-bottom: 3rem;">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <span class="badge badge-info">Alerts</span>
-            </h2>
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <div role="alert" class="alert alert-info">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        class="h-6 w-6 shrink-0 stroke-current">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>Info: New software update available.</span>
-                </div>
-                <div role="alert" class="alert alert-success">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Success: Your purchase has been confirmed!</span>
-                </div>
-                <div role="alert" class="alert alert-warning">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                    <span>Warning: Your subscription is about to expire.</span>
-                </div>
-                <div role="alert" class="alert alert-error">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Error: Unable to process your request.</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Badges & Indicators -->
-        <section style="margin-bottom: 3rem;">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <span class="badge badge-success">Badges</span>
-            </h2>
-            <div class="card bg-base-200">
-                <div class="card-body">
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
-                        <span class="badge">default</span>
-                        <span class="badge badge-neutral">neutral</span>
-                        <span class="badge badge-primary">primary</span>
-                        <span class="badge badge-secondary">secondary</span>
-                        <span class="badge badge-accent">accent</span>
-                        <span class="badge badge-ghost">ghost</span>
-                    </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
-                        <span class="badge badge-info">info</span>
-                        <span class="badge badge-success">success</span>
-                        <span class="badge badge-warning">warning</span>
-                        <span class="badge badge-error">error</span>
-                    </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                        <span class="badge badge-outline">outline</span>
-                        <span class="badge badge-outline badge-primary">outline primary</span>
-                        <span class="badge badge-lg">large</span>
-                        <span class="badge badge-md">medium</span>
-                        <span class="badge badge-sm">small</span>
-                        <span class="badge badge-xs">xs</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Progress & Loading -->
-        <section style="margin-bottom: 3rem;">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <span class="badge badge-warning">Progress</span>
-            </h2>
-            <div class="card bg-base-200">
-                <div class="card-body">
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Progress Bars</h3>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;">
-                        <progress class="progress progress-primary w-full" value="25" max="100"></progress>
-                        <progress class="progress progress-secondary w-full" value="50" max="100"></progress>
-                        <progress class="progress progress-accent w-full" value="75" max="100"></progress>
-                        <progress class="progress progress-success w-full" value="100" max="100"></progress>
-                    </div>
-
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Loading Spinners</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-                        <span class="loading loading-spinner loading-lg"></span>
-                        <span class="loading loading-dots loading-lg"></span>
-                        <span class="loading loading-ring loading-lg"></span>
-                        <span class="loading loading-ball loading-lg"></span>
-                        <span class="loading loading-bars loading-lg"></span>
-                        <span class="loading loading-infinity loading-lg"></span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Avatars -->
-        <section style="margin-bottom: 3rem;">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <span class="badge badge-error">Avatars</span>
-            </h2>
-            <div class="card bg-base-200">
-                <div class="card-body">
-                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
-                        <div class="avatar">
-                            <div class="w-12 rounded-full">
-                                <img src="https://i.pravatar.cc/100?img=1" alt="Avatar" />
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">States</h3>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                    <button class="btn btn-primary">Normal</button>
+                                    <button class="btn btn-primary btn-active">Active</button>
+                                    <button class="btn btn-primary" disabled>Disabled</button>
+                                    <button class="btn btn-primary">
+                                        <span class="loading loading-spinner loading-sm"></span>
+                                        Loading
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="avatar">
-                            <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                                <img src="https://i.pravatar.cc/100?img=2" alt="Avatar" />
-                            </div>
-                        </div>
-                        <div class="avatar online">
-                            <div class="w-12 rounded-full">
-                                <img src="https://i.pravatar.cc/100?img=3" alt="Avatar" />
-                            </div>
-                        </div>
-                        <div class="avatar offline">
-                            <div class="w-12 rounded-full">
-                                <img src="https://i.pravatar.cc/100?img=4" alt="Avatar" />
-                            </div>
-                        </div>
-                        <div class="avatar placeholder">
-                            <div class="bg-neutral text-neutral-content w-12 rounded-full">
-                                <span>AI</span>
-                            </div>
-                        </div>
-                    </div>
+                    </section>
 
-                    <div class="divider"></div>
+                    <!-- Inputs -->
+                    <section style="margin-bottom: 3rem;">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="badge badge-accent">Inputs</span>
+                        </h2>
+                        <div class="card bg-base-200">
+                            <div class="card-body">
+                                <div class="grid md:grid-cols-2" style="gap: 1.5rem;">
+                                    <div>
+                                        <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Text Input</h3>
+                                        <input type="text" placeholder="Type here"
+                                            class="input input-bordered w-full" />
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Select</h3>
+                                        <select class="select select-bordered w-full">
+                                            <option disabled selected>Pick one</option>
+                                            <option>Option 1</option>
+                                            <option>Option 2</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Textarea</h3>
+                                        <textarea class="textarea textarea-bordered w-full"
+                                            placeholder="Your message..."></textarea>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold" style="margin-bottom: 0.5rem;">File Input</h3>
+                                        <input type="file" class="file-input file-input-bordered w-full" />
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Range</h3>
+                                        <input type="range" min="0" max="100" value="40" class="range range-primary" />
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Rating</h3>
+                                        <div class="rating">
+                                            <input type="radio" name="rating-1"
+                                                class="mask mask-star-2 bg-orange-400" />
+                                            <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400"
+                                                checked="checked" />
+                                            <input type="radio" name="rating-1"
+                                                class="mask mask-star-2 bg-orange-400" />
+                                            <input type="radio" name="rating-1"
+                                                class="mask mask-star-2 bg-orange-400" />
+                                            <input type="radio" name="rating-1"
+                                                class="mask mask-star-2 bg-orange-400" />
+                                        </div>
+                                    </div>
+                                </div>
 
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Avatar Group</h3>
-                    <div class="avatar-group -space-x-6 rtl:space-x-reverse">
-                        <div class="avatar">
-                            <div class="w-12">
-                                <img src="https://i.pravatar.cc/100?img=5" alt="Avatar" />
+                                <div class="divider"></div>
+
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Checkboxes & Toggles</h3>
+                                <div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" class="checkbox checkbox-primary" checked />
+                                        <span>Primary</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" class="checkbox checkbox-secondary" checked />
+                                        <span>Secondary</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" class="toggle toggle-primary" checked />
+                                        <span>Toggle</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="radio-1" class="radio radio-primary" checked />
+                                        <span>Radio</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        <div class="avatar">
-                            <div class="w-12">
-                                <img src="https://i.pravatar.cc/100?img=6" alt="Avatar" />
+                    </section>
+
+                    <!-- Cards -->
+                    <section style="margin-bottom: 3rem;">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="badge badge-secondary">Cards</span>
+                        </h2>
+                        <div class="grid md:grid-cols-3" style="gap: 1rem;">
+                            <div class="card bg-base-100 shadow-xl">
+                                <figure><img
+                                        src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=200&fit=crop"
+                                        alt="Shoes" /></figure>
+                                <div class="card-body">
+                                    <h2 class="card-title">
+                                        Card with Image
+                                        <span class="badge badge-secondary">NEW</span>
+                                    </h2>
+                                    <p>A card with an image and badge.</p>
+                                    <div class="card-actions justify-end">
+                                        <button class="btn btn-primary">Buy Now</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card card-bordered bg-base-100">
+                                <div class="card-body">
+                                    <h2 class="card-title">Bordered Card</h2>
+                                    <p>Card with a border instead of shadow.</p>
+                                    <div class="card-actions justify-end">
+                                        <button class="btn btn-primary btn-outline">Details</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card image-full bg-base-100 shadow-xl">
+                                <figure><img
+                                        src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop"
+                                        alt="Shoes" /></figure>
+                                <div class="card-body">
+                                    <h2 class="card-title">Image Overlay</h2>
+                                    <p>Text displayed over the image.</p>
+                                    <div class="card-actions justify-end">
+                                        <button class="btn btn-primary">Shop</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="avatar">
-                            <div class="w-12">
-                                <img src="https://i.pravatar.cc/100?img=7" alt="Avatar" />
+                    </section>
+
+                    <!-- Alerts -->
+                    <section style="margin-bottom: 3rem;">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="badge badge-info">Alerts</span>
+                        </h2>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div role="alert" class="alert alert-info">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    class="h-6 w-6 shrink-0 stroke-current">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Info: New software update available.</span>
+                            </div>
+                            <div role="alert" class="alert alert-success">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Success: Your purchase has been confirmed!</span>
+                            </div>
+                            <div role="alert" class="alert alert-warning">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                <span>Warning: Your subscription is about to expire.</span>
+                            </div>
+                            <div role="alert" class="alert alert-error">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Error: Unable to process your request.</span>
                             </div>
                         </div>
-                        <div class="avatar placeholder">
-                            <div class="bg-neutral text-neutral-content w-12">
-                                <span>+99</span>
+                    </section>
+
+                    <!-- Badges & Indicators -->
+                    <section style="margin-bottom: 3rem;">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="badge badge-success">Badges</span>
+                        </h2>
+                        <div class="card bg-base-200">
+                            <div class="card-body">
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <span class="badge">default</span>
+                                    <span class="badge badge-neutral">neutral</span>
+                                    <span class="badge badge-primary">primary</span>
+                                    <span class="badge badge-secondary">secondary</span>
+                                    <span class="badge badge-accent">accent</span>
+                                    <span class="badge badge-ghost">ghost</span>
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <span class="badge badge-info">info</span>
+                                    <span class="badge badge-success">success</span>
+                                    <span class="badge badge-warning">warning</span>
+                                    <span class="badge badge-error">error</span>
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                    <span class="badge badge-outline">outline</span>
+                                    <span class="badge badge-outline badge-primary">outline primary</span>
+                                    <span class="badge badge-lg">large</span>
+                                    <span class="badge badge-md">medium</span>
+                                    <span class="badge badge-sm">small</span>
+                                    <span class="badge badge-xs">xs</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
+
+                    <!-- Progress & Loading -->
+                    <section style="margin-bottom: 3rem;">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="badge badge-warning">Progress</span>
+                        </h2>
+                        <div class="card bg-base-200">
+                            <div class="card-body">
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Progress Bars</h3>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;">
+                                    <progress class="progress progress-primary w-full" value="25" max="100"></progress>
+                                    <progress class="progress progress-secondary w-full" value="50"
+                                        max="100"></progress>
+                                    <progress class="progress progress-accent w-full" value="75" max="100"></progress>
+                                    <progress class="progress progress-success w-full" value="100" max="100"></progress>
+                                </div>
+
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Loading Spinners</h3>
+                                <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                                    <span class="loading loading-spinner loading-lg"></span>
+                                    <span class="loading loading-dots loading-lg"></span>
+                                    <span class="loading loading-ring loading-lg"></span>
+                                    <span class="loading loading-ball loading-lg"></span>
+                                    <span class="loading loading-bars loading-lg"></span>
+                                    <span class="loading loading-infinity loading-lg"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Avatars -->
+                    <section style="margin-bottom: 3rem;">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="badge badge-error">Avatars</span>
+                        </h2>
+                        <div class="card bg-base-200">
+                            <div class="card-body">
+                                <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+                                    <div class="avatar">
+                                        <div class="w-12 rounded-full">
+                                            <img src="https://i.pravatar.cc/100?img=1" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="avatar">
+                                        <div
+                                            class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                                            <img src="https://i.pravatar.cc/100?img=2" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="avatar online">
+                                        <div class="w-12 rounded-full">
+                                            <img src="https://i.pravatar.cc/100?img=3" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="avatar offline">
+                                        <div class="w-12 rounded-full">
+                                            <img src="https://i.pravatar.cc/100?img=4" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="avatar placeholder">
+                                        <div class="bg-neutral text-neutral-content w-12 rounded-full">
+                                            <span>AI</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Avatar Group</h3>
+                                <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+                                    <div class="avatar">
+                                        <div class="w-12">
+                                            <img src="https://i.pravatar.cc/100?img=5" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="avatar">
+                                        <div class="w-12">
+                                            <img src="https://i.pravatar.cc/100?img=6" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="avatar">
+                                        <div class="w-12">
+                                            <img src="https://i.pravatar.cc/100?img=7" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div class="avatar placeholder">
+                                        <div class="bg-neutral text-neutral-content w-12">
+                                            <span>+99</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tabs & Steps -->
+                    <section style="margin-bottom: 3rem;">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="badge badge-neutral">Navigation</span>
+                        </h2>
+                        <div class="card bg-base-200">
+                            <div class="card-body">
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Tabs</h3>
+                                <div role="tablist" class="tabs tabs-boxed" style="margin-bottom: 1.5rem;">
+                                    <a role="tab" class="tab tab-active">Tab 1</a>
+                                    <a role="tab" class="tab">Tab 2</a>
+                                    <a role="tab" class="tab">Tab 3</a>
+                                </div>
+
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Steps</h3>
+                                <ul class="steps" style="margin-bottom: 1.5rem;">
+                                    <li class="step step-primary">Register</li>
+                                    <li class="step step-primary">Choose plan</li>
+                                    <li class="step">Purchase</li>
+                                    <li class="step">Receive Product</li>
+                                </ul>
+
+                                <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Breadcrumbs</h3>
+                                <div class="breadcrumbs text-sm">
+                                    <ul>
+                                        <li><a>Home</a></li>
+                                        <li><a>Documents</a></li>
+                                        <li>Add Document</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Stats -->
+                    <section style="margin-bottom: 3rem;">
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="badge">Stats</span>
+                        </h2>
+                        <div class="stats shadow w-full">
+                            <div class="stat">
+                                <div class="stat-figure text-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        class="inline-block h-8 w-8 stroke-current">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div class="stat-title">Total Likes</div>
+                                <div class="stat-value text-primary">25.6K</div>
+                                <div class="stat-desc">21% more than last month</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-figure text-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        class="inline-block h-8 w-8 stroke-current">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <div class="stat-title">Page Views</div>
+                                <div class="stat-value text-secondary">2.6M</div>
+                                <div class="stat-desc">14% better than last month</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-figure text-secondary">
+                                    <div class="avatar online">
+                                        <div class="w-16 rounded-full">
+                                            <img src="https://i.pravatar.cc/100?img=8" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="stat-value">86%</div>
+                                <div class="stat-title">Tasks done</div>
+                                <div class="stat-desc text-secondary">31 tasks remaining</div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-            </div>
-        </section>
-
-        <!-- Tabs & Steps -->
-        <section style="margin-bottom: 3rem;">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <span class="badge badge-neutral">Navigation</span>
-            </h2>
-            <div class="card bg-base-200">
-                <div class="card-body">
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Tabs</h3>
-                    <div role="tablist" class="tabs tabs-boxed" style="margin-bottom: 1.5rem;">
-                        <a role="tab" class="tab tab-active">Tab 1</a>
-                        <a role="tab" class="tab">Tab 2</a>
-                        <a role="tab" class="tab">Tab 3</a>
-                    </div>
-
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Steps</h3>
-                    <ul class="steps" style="margin-bottom: 1.5rem;">
-                        <li class="step step-primary">Register</li>
-                        <li class="step step-primary">Choose plan</li>
-                        <li class="step">Purchase</li>
-                        <li class="step">Receive Product</li>
-                    </ul>
-
-                    <h3 class="font-semibold" style="margin-bottom: 0.5rem;">Breadcrumbs</h3>
-                    <div class="breadcrumbs text-sm">
-                        <ul>
-                            <li><a>Home</a></li>
-                            <li><a>Documents</a></li>
-                            <li>Add Document</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Stats -->
-        <section style="margin-bottom: 3rem;">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <span class="badge">Stats</span>
-            </h2>
-            <div class="stats shadow w-full">
-                <div class="stat">
-                    <div class="stat-figure text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            class="inline-block h-8 w-8 stroke-current">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="stat-title">Total Likes</div>
-                    <div class="stat-value text-primary">25.6K</div>
-                    <div class="stat-desc">21% more than last month</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-figure text-secondary">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            class="inline-block h-8 w-8 stroke-current">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <div class="stat-title">Page Views</div>
-                    <div class="stat-value text-secondary">2.6M</div>
-                    <div class="stat-desc">14% better than last month</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-figure text-secondary">
-                        <div class="avatar online">
-                            <div class="w-16 rounded-full">
-                                <img src="https://i.pravatar.cc/100?img=8" alt="Avatar" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-value">86%</div>
-                    <div class="stat-title">Tasks done</div>
-                    <div class="stat-desc text-secondary">31 tasks remaining</div>
-                </div>
-            </div>
-        </section>                </div>
             </div>
         </div>
     </div>

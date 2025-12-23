@@ -1,8 +1,8 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
@@ -58,51 +58,53 @@
                 <div class="section-content" style="max-width: 1000px;">
                     <p class="text-lg" style="opacity: 0.7; margin-bottom: 1.5rem;">
                         Menu is used to display a list of links vertically or horizontally.
-            Supports icons, submenus, and collapsible sections.
+                        Supports icons, submenus, and collapsible sections.
                     </p>
 
-        <!-- Basic Usage -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Basic Example</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Vertical menu with active state</p>
+                    <!-- Basic Usage -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Basic Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Vertical menu with active
+                                state</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`tab-btn-${t}`);
-                            const contentEl = document.getElementById(`syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchSyntaxTab('tagged')">Tagged</button>
-                    <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchSyntaxTab('vdom')">vDOM</button>
-                    <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                        DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
+                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
+                                <button id="tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('object')">Object
+                                    DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 200
-                        });
-                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
+                            <!-- Tagged Syntax -->
+                            <div id="syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
 const { signal, tags, $ } = Lightview;
 
 const active = signal('home');
@@ -120,18 +122,18 @@ const menu = Menu({ class: 'bg-base-200 rounded-box w-56' },
 );
 
 $('#example').content(menu);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 200
-                        });
-                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
+                            <!-- vDOM Syntax -->
+                            <div id="syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
 const { signal, $ } = Lightview;
 
 const active = signal('home');
@@ -154,18 +156,18 @@ const menu = {
 };
 
 $('#example').content(menu);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 200
-                        });
-                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
 const { signal, tags, $ } = Lightview;
 tags.Menu = Menu;
 tags.MenuItem = Menu.Item;
@@ -192,52 +194,52 @@ const menu = {
 };
 
 $('#example').content(menu);</code></pre>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Horizontal Example -->
-        <div class="card bg-base-200" style="margin-bottom: 2rem;">
-            <div class="card-body">
-                <h2 class="card-title">Horizontal Menu</h2>
-                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navigation bar style menu</p>
+                    <!-- Horizontal Example -->
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">Horizontal Menu</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navigation bar style menu</p>
 
-                <!-- Tabs -->
-                <script>
-                    window.switchReactiveSyntaxTab = (tabId) => {
-                        const tabs = ['tagged', 'vdom', 'object'];
-                        tabs.forEach(t => {
-                            const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
-                            const contentEl = document.getElementById(`reactive-syntax-${t}`);
-                            if (t === tabId) {
-                                tabEl.classList.add('syntax-tab-active');
-                                contentEl.style.display = 'block';
-                            } else {
-                                tabEl.classList.remove('syntax-tab-active');
-                                contentEl.style.display = 'none';
-                            }
-                        });
-                    };
-                </script>
-                <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                    <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                        onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
-                    <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
-                    <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
-                        onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
-                </div>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchReactiveSyntaxTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`reactive-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="reactive-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchReactiveSyntaxTab('tagged')">Tagged</button>
+                                <button id="reactive-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
+                                <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                            </div>
 
-                <!-- Tagged Syntax -->
-                <div id="reactive-syntax-tagged">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 120
-                        });
-                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
+                            <!-- Tagged Syntax -->
+                            <div id="reactive-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 120
+                                    });
+                                </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
 const { signal, tags, $ } = Lightview;
 
 const current = signal('features');
@@ -264,18 +266,18 @@ const menu = Menu({ horizontal: true, class: 'bg-base-200 rounded-box' },
 );
 
 $('#example').content(menu);</code></pre>
-                </div>
+                            </div>
 
-                <!-- vDOM Syntax -->
-                <div id="reactive-syntax-vdom" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 120
-                        });
-                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
+                            <!-- vDOM Syntax -->
+                            <div id="reactive-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 120
+                                    });
+                                </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
 const { signal, $ } = Lightview;
 
 const current = signal('features');
@@ -321,18 +323,18 @@ const menu = {
 };
 
 $('#example').content(menu);</code></pre>
-                </div>
+                            </div>
 
-                <!-- Object DOM Syntax -->
-                <div id="reactive-syntax-object" style="display: none;">
-                    <pre><script>
-                        examplify(document.currentScript.nextElementSibling, {
-                            at: document.currentScript.parentElement,
-                            scripts: ['/lightview.js', '/lightview-x.js'],
-                            type: 'module',
-                            minHeight: 120
-                        });
-                    </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
+                            <!-- Object DOM Syntax -->
+                            <div id="reactive-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        minHeight: 120
+                                    });
+                                </script><code contenteditable="true">const { default: Menu } = await import('/components/navigation/menu.js');
 const { signal, tags, $ } = Lightview;
 tags.Menu = Menu;
 tags.MenuItem = Menu.Item;
@@ -383,108 +385,109 @@ const menu = {
 };
 
 $('#example').content(menu);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Props Table -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Prop</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>horizontal</code></td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>Horizontal layout</td>
+                                </tr>
+                                <tr>
+                                    <td><code>size</code></td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>'xs' | 'sm' | 'md' | 'lg'</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Sub-components -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
+                    <div style="overflow-x: auto; margin-bottom: 2rem;">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Props</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Menu.Item</code></td>
+                                    <td>-</td>
+                                    <td>Menu list item (li)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Menu.Link</code></td>
+                                    <td>active, disabled, href</td>
+                                    <td>Clickable link</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Menu.Title</code></td>
+                                    <td>-</td>
+                                    <td>Section header</td>
+                                </tr>
+                                <tr>
+                                    <td><code>Menu.Details</code></td>
+                                    <td>open</td>
+                                    <td>Collapsible submenu</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Static Examples -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Title</h2>
+                    <ul class="menu bg-base-200 rounded-box w-56" style="margin-bottom: 2rem;">
+                        <li class="menu-title">Title</li>
+                        <li><a>Item 1</a></li>
+                        <li><a>Item 2</a></li>
+                        <li><a>Item 3</a></li>
+                    </ul>
+
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Submenu</h2>
+                    <ul class="menu bg-base-200 rounded-box w-56" style="margin-bottom: 2rem;">
+                        <li><a>Item 1</a></li>
+                        <li>
+                            <details open>
+                                <summary>Parent</summary>
+                                <ul>
+                                    <li><a>Submenu 1</a></li>
+                                    <li><a>Submenu 2</a></li>
+                                </ul>
+                            </details>
+                        </li>
+                        <li><a>Item 3</a></li>
+                    </ul>
+
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <div class="example-flex" style="margin-bottom: 2rem;">
+                        <ul class="menu menu-xs bg-base-200 rounded-box w-40">
+                            <li><a>xs Item</a></li>
+                        </ul>
+                        <ul class="menu menu-lg bg-base-200 rounded-box w-48">
+                            <li><a>lg Item</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Props Table -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Props</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Prop</th>
-                        <th>Type</th>
-                        <th>Default</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>horizontal</code></td>
-                        <td>boolean</td>
-                        <td>false</td>
-                        <td>Horizontal layout</td>
-                    </tr>
-                    <tr>
-                        <td><code>size</code></td>
-                        <td>string</td>
-                        <td>-</td>
-                        <td>'xs' | 'sm' | 'md' | 'lg'</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Sub-components -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sub-components</h2>
-        <div style="overflow-x: auto; margin-bottom: 2rem;">
-            <table class="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Props</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>Menu.Item</code></td>
-                        <td>-</td>
-                        <td>Menu list item (li)</td>
-                    </tr>
-                    <tr>
-                        <td><code>Menu.Link</code></td>
-                        <td>active, disabled, href</td>
-                        <td>Clickable link</td>
-                    </tr>
-                    <tr>
-                        <td><code>Menu.Title</code></td>
-                        <td>-</td>
-                        <td>Section header</td>
-                    </tr>
-                    <tr>
-                        <td><code>Menu.Details</code></td>
-                        <td>open</td>
-                        <td>Collapsible submenu</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Static Examples -->
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Title</h2>
-        <ul class="menu bg-base-200 rounded-box w-56" style="margin-bottom: 2rem;">
-            <li class="menu-title">Title</li>
-            <li><a>Item 1</a></li>
-            <li><a>Item 2</a></li>
-            <li><a>Item 3</a></li>
-        </ul>
-
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Submenu</h2>
-        <ul class="menu bg-base-200 rounded-box w-56" style="margin-bottom: 2rem;">
-            <li><a>Item 1</a></li>
-            <li>
-                <details open>
-                    <summary>Parent</summary>
-                    <ul>
-                        <li><a>Submenu 1</a></li>
-                        <li><a>Submenu 2</a></li>
-                    </ul>
-                </details>
-            </li>
-            <li><a>Item 3</a></li>
-        </ul>
-
-        <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-        <div class="example-flex" style="margin-bottom: 2rem;">
-            <ul class="menu menu-xs bg-base-200 rounded-box w-40">
-                <li><a>xs Item</a></li>
-            </ul>
-            <ul class="menu menu-lg bg-base-200 rounded-box w-48">
-                <li><a>lg Item</a></li>
-            </ul>                </div>
-            </div>
-        </div>
     </div>
-</div>
