@@ -109,7 +109,7 @@
 const { tags, $ } = Lightview;
 const { div, span } = tags;
 
-const alerts = div({ class: 'space-y-4' },
+const alerts = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
     Alert({ color: 'info', icon: 'info' },
         span({}, 'New update available! Click to learn more.')
     ),
@@ -141,7 +141,7 @@ const { $ } = Lightview;
 
 const alerts = {
     tag: 'div',
-    attributes: { class: 'space-y-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [
         {
             tag: Alert,
@@ -184,7 +184,7 @@ tags.Alert = Alert;
 
 const alerts = {
     div: {
-        class: 'space-y-4',
+        style: 'display: flex; flex-direction: column; gap: 1rem',
         children: [
             { Alert: { color: 'info', icon: 'info', children: [{ span: { children: ['New update available! Click to learn more.'] } }] } },
             { Alert: { color: 'success', icon: 'success', children: [{ span: { children: ['Your order has been placed successfully!'] } }] } },

@@ -1,0 +1,21 @@
+# Exclude node_modules and dependencies
+node_modules/
+
+# Exclude version control
+.git/
+.github/
+
+# Exclude documentation (if you don't need it deployed)
+# Remove the line below if you want to deploy your docs
+# *.md
+
+# Exclude package files
+package.json
+package-lock.json
+
+# Exclude configuration files
+wrangler.toml
+
+# Exclude log files
+*.log
+.wrangler/
