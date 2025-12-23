@@ -262,10 +262,12 @@ img {
     .nav-links {
         position: fixed;
         top: var(--site-nav-height);
-        left: 0;
+        left: auto;
         right: 0;
+        width: 50vw;
         background: var(--site-surface);
         border-bottom: 1px solid var(--site-border);
+        border-left: 1px solid var(--site-border);
         flex-direction: column;
         padding: 1rem;
         gap: 0.25rem;

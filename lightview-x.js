@@ -939,9 +939,8 @@
                 }
             }
 
-            // Defer processing to next animation frame
-            // This allows the router's pushState to complete first,
-            // ensuring document.baseURI reflects the correct path
+            // Defer processing to next animation frame for batching
+            // Router now sets URL before content insertion, ensuring correct base path
             if (nodesToProcess.length > 0) {
                 requestAnimationFrame(() => {
                     nodesToProcess.forEach(node => processSrcOnNode(node, LV));

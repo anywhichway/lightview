@@ -30,14 +30,14 @@
             </button>
             <div class="nav-links">
                 <a href="/docs/" class="nav-link">Home</a>
-                <a href="/docs/getting-started" class="nav-link">Get Started</a>
-                <a href="/docs/api" class="nav-link">API</a>
-                <a href="/docs/styles" class="nav-link">Styles</a>
-                <a href="/docs/components" class="nav-link">Components</a>
-                <a href="/docs/router" class="nav-link">Router</a>
-                <a href="/docs/playground" class="nav-link">Playground</a>
+                <a href="/docs/getting-started/" class="nav-link">Get Started</a>
+                <a href="/docs/api/" class="nav-link">API</a>
+                <a href="/docs/styles/" class="nav-link">Styles</a>
+                <a href="/docs/components/" class="nav-link">Components</a>
+                <a href="/docs/router/" class="nav-link">Router</a>
+                <a href="/docs/playground/" class="nav-link">Playground</a>
 
-                <a href="/docs/about" class="nav-link">About</a>
+                <a href="/docs/about/" class="nav-link">About</a>
                 <a href="https://github.com/anywhichway/lightview" class="nav-link nav-link-external" target="_blank"
                     rel="noopener">
                     GitHub
@@ -72,18 +72,18 @@
                     <div class="footer-column">
                         <h4>Docs</h4>
                         <a href="/docs/getting-started/">Getting Started</a>
-                        <a href="/docs/api">API Reference</a>
+                        <a href="/docs/api/">API Reference</a>
                         <a href="/docs/components">Components</a>
                     </div>
                     <div class="footer-column">
                         <h4>Resources</h4>
-                        <a href="/docs/playground">Playground</a>
+                        <a href="/docs/playground/">Playground</a>
 
                         <a href="https://github.com/anywhichway/lightview" target="_blank" rel="noopener">GitHub</a>
                     </div>
                     <div class="footer-column">
                         <h4>More</h4>
-                        <a href="/docs/about">About</a>
+                        <a href="/docs/about/">About</a>
                         <a href="https://github.com/anywhichway/lightview/issues" target="_blank" rel="noopener">Report
                             Issue</a>
                     </div>
@@ -101,13 +101,78 @@
     <script src="/lightview-router.js"></script>
     <script type="module" src="/components/navigation/breadcrumbs.js"></script>
     <script src="/docs/assets/js/examplify.js"></script>
-    <script>const { $ } = Lightview;</script>
+    <!--script>const { $ } = Lightview;</script-->
 
     <!-- Router -->
     <script type="module">
         import { localeHandler } from '/middleware/locale.js';
         import { markdownHandler } from '/middleware/markdown.js';
         import { notFound } from '/middleware/notFound.js';
+
+        // Mobile Navigation - Click-Outside to Dismiss
+        const mobileNav = (() => {
+            const getNav = () => document.querySelector('.nav-links');
+            const getToggle = () => document.querySelector('.nav-toggle');
+            let isOpening = false;
+
+            const close = () => {
+                const nav = getNav();
+                if (nav) nav.classList.remove('open');
+            };
+
+            const open = () => {
+                const nav = getNav();
+                if (nav) {
+                    nav.classList.add('open');
+                    isOpening = true;
+                    // Clear flag after opening to allow outside clicks to close
+                    setTimeout(() => { isOpening = false; }, 100);
+                }
+            };
+
+            const toggle = () => {
+                const nav = getNav();
+                if (nav && nav.classList.contains('open')) {
+                    close();
+                } else {
+                    open();
+                }
+            };
+
+            const init = () => {
+                const nav = getNav();
+
+                // Close when clicking links inside nav
+                if (nav) {
+                    nav.addEventListener('click', (e) => {
+                        if (e.target.closest('a')) close();
+                    });
+                }
+
+                // Close when clicking outside nav or toggle button
+                document.addEventListener('mousedown', (event) => {
+                    const nav = getNav();
+                    const toggle = getToggle();
+
+                    if (!nav || !nav.classList.contains('open')) return;
+                    if (isOpening) return;
+
+                    const clickedNav = nav.contains(event.target);
+                    const clickedToggle = toggle && toggle.contains(event.target);
+
+                    if (!clickedNav && !clickedToggle) close();
+                });
+            };
+
+            return { toggle, close, init };
+        })();
+
+        // Expose globally
+        window.toggleMobileNav = mobileNav.toggle;
+        window.closeMobileNav = mobileNav.close;
+
+        // Initialize
+        mobileNav.init();
 
         (async function () {
             // Initialize components with shadow DOM enabled by default
@@ -122,11 +187,25 @@
                     const href = link.getAttribute('href');
                     const linkPath = href.startsWith('https://') || href.startsWith('http://') ? href : (href.startsWith('#') ? href.slice(1) : href);
 
-                    if (path === '/') {
-                        if (linkPath === '/' || linkPath === './docs/') link.classList.add('active');
-                        else link.classList.remove('active');
+                    // Normalize paths for comparison
+                    const normalizedPath = path === '/' ? '/docs/' : path;
+                    const normalizedLinkPath = linkPath === '/' ? '/docs/' : linkPath;
+
+                    // For home page (/docs/), only highlight the "Home" link
+                    if (normalizedPath === '/docs/' || normalizedPath === '/docs') {
+                        if (normalizedLinkPath === '/docs/' || normalizedLinkPath === '/docs') {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
                     } else {
-                        if (linkPath === path || (path !== '/' && linkPath.startsWith(path))) {
+                        // For other pages, check for exact match or path prefix
+                        // Use exact match first, then check if it's a valid sub-path
+                        if (normalizedLinkPath === normalizedPath) {
+                            link.classList.add('active');
+                        } else if (normalizedPath.startsWith(normalizedLinkPath + '/') ||
+                            normalizedPath.startsWith(normalizedLinkPath + '-')) {
+                            // Match sub-paths like /docs/api matches /docs/api/elements
                             link.classList.add('active');
                         } else {
                             link.classList.remove('active');
@@ -141,6 +220,9 @@
 
                 // On Start (Loading UI)
                 onStart: (path) => {
+                    // Close mobile nav if open
+                    if (window.closeMobileNav) window.closeMobileNav();
+
                     contentEl.innerHTML = `
                         <div class="loading-spinner">
                             <div class="spinner"></div>
@@ -151,6 +233,7 @@
 
                 // On Response - called AFTER auto-render for post-render logic
                 onResponse: (response, path) => {
+                    if (window.closeMobileNav) window.closeMobileNav(); // Ensure menu closes on navigation
                     window.scrollTo(0, 0);
                 }
             });
@@ -160,13 +243,13 @@
             appRouter.use('/docs', '/docs/index.html');
             appRouter.use('/docs/index.html');
             appRouter.use('/docs/getting-started', '/docs/getting-started/index.html');
-            appRouter.use('/docs/about', '/docs/about.html');
-            appRouter.use('/docs/styles', '/docs/styles/index.html');
-            appRouter.use('/docs/playground', '/docs/playground.html');
-            appRouter.use('/docs/api', '/docs/api/index.html');
-            appRouter.use('/docs/components', '/docs/components/index.html');
-            appRouter.use('/docs/examples', '/docs/examples/index.html');
-            appRouter.use('/docs/router', '/docs/router.html');
+            appRouter.use('/docs/about/', '/docs/about.html');
+            appRouter.use('/docs/styles/', '/docs/styles/index.html');
+            appRouter.use('/docs/playground/', '/docs/playground.html');
+            appRouter.use('/docs/api/', '/docs/api/index.html');
+            appRouter.use('/docs/components/', '/docs/components/index.html');
+            appRouter.use('/docs/examples/', '/docs/examples/index.html');
+            appRouter.use('/docs/router/', '/docs/router.html');
 
             // Wildcard Routes - path replacement with automatic fetch
             appRouter.use('/docs/api/*');
@@ -185,12 +268,6 @@
             // Start Router
             appRouter.start();
         })();
-
-        // Mobile nav toggle
-        window.toggleMobileNav = function () {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.toggle('open');
-        }
     </script>
 </body>
 

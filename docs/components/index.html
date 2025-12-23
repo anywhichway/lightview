@@ -1,13 +1,13 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="../../../lightview-router.js"></script>
+<script src="/lightview-router.js"></script>
 <script>
     if (window.LightviewRouter) {
-        LightviewRouter.base('../../index.html');
+        LightviewRouter.base('/index.html');
     }
 </script>
 
 <!-- Load the page-specific stylesheet -->
-<link rel="stylesheet" href="./index.css">
+<link rel="stylesheet" href="/docs/components/index.css">
 
 <!-- Gallery Structure -->
 <div class="gallery-page">
@@ -209,7 +209,7 @@ $('#example').content(app);</code></pre>
 <script type="module">
     const { default: Button } = await import('/components/actions/button.js');
     const { default: Card } = await import('/components/data-display/card.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a } = tags;
 
     const content = div({},
@@ -270,7 +270,7 @@ $('#example').content(app);</code></pre>
     const { default: Toggle } = await import('/components/data-input/toggle.js');
     const { default: Radio } = await import('/components/data-input/radio.js');
     const { default: Card } = await import('/components/data-display/card.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a, option } = tags;
 
     const content = div({},
@@ -360,7 +360,7 @@ $('#example').content(app);</code></pre>
 <script type="module">
     const { default: Card } = await import('/components/data-display/card.js');
     const { default: Button } = await import('/components/actions/button.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a, p, img } = tags;
 
     const content = div({},
@@ -402,7 +402,7 @@ $('#example').content(app);</code></pre>
 <!-- Alerts Section -->
 <script type="module">
     const { default: Alert } = await import('/components/data-display/alert.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a } = tags;
 
     const content = div({},
@@ -424,7 +424,7 @@ $('#example').content(app);</code></pre>
     const { default: Badge } = await import('/components/data-display/badge.js');
     const { default: Avatar } = await import('/components/data-display/avatar.js');
     const { default: Card } = await import('/components/data-display/card.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a } = tags;
 
     const content = div({ class: "component-grid-2" },
@@ -467,7 +467,7 @@ $('#example').content(app);</code></pre>
 <!-- Stats Section -->
 <script type="module">
     const { default: Stats } = await import('/components/data-display/stats.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a } = tags;
 
     const content = div({},
@@ -496,7 +496,7 @@ $('#example').content(app);</code></pre>
 <script type="module">
     const { default: Chart } = await import('/components/data-display/chart.js');
     const { default: Card } = await import('/components/data-display/card.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a, tr, th, td } = tags;
 
     const content = div({},
@@ -537,7 +537,7 @@ $('#example').content(app);</code></pre>
     const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
     const { default: Loading } = await import('/components/data-display/loading.js');
     const { default: Card } = await import('/components/data-display/card.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a } = tags;
 
     const content = div({},
@@ -577,7 +577,7 @@ $('#example').content(app);</code></pre>
 <!-- Steps Section -->
 <script type="module">
     const { default: Steps } = await import('/components/navigation/steps.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a } = tags;
 
     const content = div({},
@@ -601,7 +601,7 @@ $('#example').content(app);</code></pre>
 <!-- Chat Section -->
 <script type="module">
     const { default: Chat } = await import('/components/data-display/chat.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a, time } = tags;
 
     const content = div({},
@@ -640,7 +640,7 @@ $('#example').content(app);</code></pre>
 <!-- Timeline Section -->
 <script type="module">
     const { default: Timeline } = await import('/components/data-display/timeline.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a } = tags;
 
     const content = div({},
@@ -682,7 +682,7 @@ $('#example').content(app);</code></pre>
 <!-- Table Section -->
 <script type="module">
     const { default: Table } = await import('/components/data-display/table.js');
-    const { tags } = Lightview;
+    const { tags, $ } = Lightview;
     const { div, span, a, tr, th, td } = tags;
 
     const content = div({},

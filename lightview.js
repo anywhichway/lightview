@@ -682,7 +682,13 @@
     });
 
     const Lightview = {
-        signal, computed, effect, element, enhance, tags, $,
+        signal,
+        computed,
+        effect,
+        element, // do not document this
+        enhance,
+        tags,
+        $,
         // Extension hooks
         hooks: {
             onNonStandardHref: null,
