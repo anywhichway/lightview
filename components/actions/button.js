@@ -88,7 +88,7 @@ const Button = (props = {}, ...children) => {
         return children;
     };
 
-    if (!['primary', 'secondary', 'accent', 'neutral', 'info', 'success', 'warning', 'error', 'ghost', 'link'].includes(color)) {
+    if (color && !['primary', 'secondary', 'accent', 'neutral', 'info', 'success', 'warning', 'error', 'ghost', 'link'].includes(color)) {
         // set the background color using style
         rest.style = rest.style || '';
         if (typeof rest.style === 'object') {

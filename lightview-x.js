@@ -6,10 +6,104 @@
     const STANDARD_SRC_TAGS = ['img', 'script', 'iframe', 'video', 'audio', 'source', 'track', 'embed', 'input'];
     const STANDARD_HREF_TAGS = ['a', 'area', 'base', 'link'];
 
+    /**
+     * Check if a string is a valid HTML tag name
+     * @param {string} name - The tag name to check
+     * @returns {boolean}
+     */
+    const isValidTagName = (name) => {
+        if (typeof name !== 'string' || name.length === 0 || name === 'children') {
+            return false;
+        }
+        // Non-strict mode: accept anything that looks reasonable
+        return true;
+    };
+
+    /**
+     * Check if an object is in Object DOM syntax
+     * Object DOM: { div: { class: "foo", children: [...] } }
+     * vDOM: { tag: "div", attributes: {...}, children: [...] }
+     * @param {any} obj 
+     * @returns {boolean}
+     */
+    const isObjectDOM = (obj) => {
+        if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) return false;
+        if (obj.tag || obj.domEl) return false; // Already vDOM or live element
+
+        const keys = Object.keys(obj);
+        if (keys.length === 0) return false;
+
+        // Object DOM has exactly one key (the tag name or component name) whose value is an object
+        // That object may contain attributes and optionally a 'children' property
+        if (keys.length === 1) {
+            const tag = keys[0];
+            const value = obj[tag];
+            if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
+
+            // Otherwise check if it's a valid tag name
+            return isValidTagName(tag);
+        }
+
+        return false;
+    };
+
+    /**
+     * Convert Object DOM syntax to vDOM syntax (recursive)
+     * @param {any} obj - Object in Object DOM format or any child
+     * @returns {any} - Converted to vDOM format
+     */
+    const convertObjectDOM = (obj) => {
+        // Not an object or array - return as-is (strings, numbers, functions, etc.)
+        if (typeof obj !== 'object' || obj === null) return obj;
+
+        // Array - recursively convert children
+        if (Array.isArray(obj)) {
+            return obj.map(convertObjectDOM);
+        }
+
+        // Already vDOM format - recurse into children only
+        if (obj.tag) {
+            return {
+                ...obj,
+                children: obj.children ? convertObjectDOM(obj.children) : []
+            };
+        }
+
+        // Live element - pass through
+        if (obj.domEl) return obj;
+
+        // Check for Object DOM syntax
+        if (isObjectDOM(obj)) {
+            const tagKey = Object.keys(obj)[0];
+            const content = obj[tagKey];
+
+            // Access custom registry via Lightview.tags._customTags if available
+            let tag = tagKey;
+            if (typeof window !== 'undefined' && window.Lightview && window.Lightview.tags) {
+                const customTags = window.Lightview.tags._customTags || {};
+                if (customTags[tagKey]) {
+                    tag = customTags[tagKey];
+                }
+            }
+
+            // Extract children and attributes
+            const { children, ...attributes } = content;
+
+            return {
+                tag,
+                attributes,
+                children: children ? convertObjectDOM(children) : []
+            };
+        }
+
+        // Unknown object format - return as-is
+        return obj;
+    };
+
     // ============= COMPONENT CONFIGURATION =============
     // Global configuration for Lightview components
 
-    const DAISYUI_CDN = 'https://cdn.jsdelivr.net/npm/daisyui@5';
+    const DAISYUI_CDN = 'https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css';
 
     // Component configuration (set by initComponents)
     const componentConfig = {
@@ -122,7 +216,7 @@
             return useShadowProp;
         }
         // Fall back to global default
-        return componentConfig.initialized && componentConfig.shadowDefault;
+        return componentConfig.shadowDefault;
     };
 
     /**
@@ -137,6 +231,8 @@
         // Add global DaisyUI sheet
         if (componentConfig.daisyStyleSheet) {
             result.push(componentConfig.daisyStyleSheet);
+        } else {
+            result.push(DAISYUI_CDN);
         }
 
         // Add component-specific sheet
@@ -1034,6 +1130,26 @@
             async connectedCallback() {
                 const { cssUrl, styles } = options;
 
+                // Create theme wrapper
+                this.themeWrapper = document.createElement('div');
+                this.themeWrapper.style.display = 'contents';
+                // Sync theme from document
+                const syncTheme = () => {
+                    const theme = document.documentElement.getAttribute('data-theme') || 'light';
+                    this.themeWrapper.setAttribute('data-theme', theme);
+                };
+                syncTheme();
+
+                // Observe theme changes
+                this.themeObserver = new MutationObserver(syncTheme);
+                this.themeObserver.observe(document.documentElement, {
+                    attributes: true,
+                    attributeFilter: ['data-theme']
+                });
+
+                // Attach wrapper
+                this.shadowRoot.appendChild(this.themeWrapper);
+
                 // Get stylesheets
                 const adoptedStyleSheets = getAdoptedStyleSheets(cssUrl, styles);
 
@@ -1046,6 +1162,14 @@
                 }
 
                 // Handle link tags for strings (fallback or external non-CORS sheets)
+                // Also fallback for DaisyUI if not loaded as adoptedStyleSheet
+                if (!componentConfig.daisyStyleSheet) {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = DAISYUI_CDN;
+                    this.shadowRoot.appendChild(link);
+                }
+
                 adoptedStyleSheets.forEach(s => {
                     if (typeof s === 'string') {
                         const link = document.createElement('link');
@@ -1082,7 +1206,13 @@
                 }
 
                 if (content instanceof Node) {
-                    this.shadowRoot.appendChild(content);
+                    this.themeWrapper.appendChild(content);
+                }
+            }
+
+            disconnectedCallback() {
+                if (this.themeObserver) {
+                    this.themeObserver.disconnect();
                 }
             }
         };
@@ -1106,5 +1236,31 @@
     }
     if (typeof window !== 'undefined') {
         window.LightviewX = LightviewX;
+    }
+
+    // Initialize component hook to use Object DOM
+    if (typeof window !== 'undefined') {
+        window.addEventListener('load', () => {
+            if (window.Lightview) {
+                window.Lightview.hooks.processChild = (child) => {
+                    // Convert Object DOM syntax if applicable
+                    if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
+                        return convertObjectDOM(child);
+                    }
+                    return child;
+                };
+            }
+        });
+
+        // Immediate check in case load already fired or script is defer
+        if (window.Lightview) {
+            window.Lightview.hooks.processChild = (child) => {
+                // Convert Object DOM syntax if applicable
+                if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
+                    return convertObjectDOM(child);
+                }
+                return child;
+            };
+        }
     }
 })();

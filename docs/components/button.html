@@ -74,7 +74,7 @@
                             <!-- Tabs -->
                             <script>
                                 window.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -96,6 +96,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -154,7 +156,8 @@ $('#example').content(buttons);</code></pre>
                                         type: 'module',
                                         height: '100px'
                                     });
-                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">// Object DOM syntax now requires lightview-x.js
+const { default: Button } = await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
 tags.Button = Button;
 
@@ -170,6 +173,26 @@ const buttons = {
 };
 
 $('#example').content(buttons);</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        language: 'html',
+                                        height: '100px'
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-button) --&gt;
+&lt;script type="module" src="/components/actions/button.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; gap: 0.5rem;"&gt;
+    &lt;lv-button&gt;Default&lt;/lv-button&gt;
+    &lt;lv-button color="primary"&gt;Primary&lt;/lv-button&gt;
+    &lt;lv-button color="secondary"&gt;Secondary&lt;/lv-button&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>

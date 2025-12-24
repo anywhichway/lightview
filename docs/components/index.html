@@ -46,11 +46,11 @@
                         <div class="card-body">
                             <h2 class="card-title">Using Components</h2>
                             <p style="margin-bottom: 1rem;">Components can be used with multiple syntaxes. Choose your
-                                style:</p>
+                                style (Object DOM and HTML requires <code>lightview-x</code>):</p>
 
                             <script>
                                 window.switchUsageSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`usage-tab-${t}`);
                                         const contentEl = document.getElementById(`usage-syntax-${t}`);
@@ -73,6 +73,8 @@
                                     onclick="switchUsageSyntaxTab('vdom')">vDOM</button>
                                 <button id="usage-tab-object" role="tab" class="syntax-tab"
                                     onclick="switchUsageSyntaxTab('object')">Object DOM</button>
+                                <button id="usage-tab-html" role="tab" class="syntax-tab"
+                                    onclick="switchUsageSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Content Containers -->
@@ -127,7 +129,8 @@ $('#example').content(app);</code></pre>
                                         type: 'module',
                                         minHeight: 105
                                     });
-                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">// Object DOM syntax now requires lightview-x.js
+const { default: Button } = await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
 tags.Button = Button;
 
@@ -142,6 +145,24 @@ const app = {
 };
 
 $('#example').content(app);</code></pre>
+                            </div>
+
+                            <div id="usage-syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 105
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-button) --&gt;
+&lt;script type="module" src="/components/actions/button.js"&gt;&lt;/script&gt;
+
+&lt;div style="padding: 1rem; display: flex; gap: 0.5rem;"&gt;
+    &lt;lv-button color="primary"&gt;Save&lt;/lv-button&gt;
+    &lt;lv-button variant="outline"&gt;Cancel&lt;/lv-button&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>

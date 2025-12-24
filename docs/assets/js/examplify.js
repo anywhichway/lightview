@@ -3,7 +3,7 @@ var examplifyIdCounter = window.examplifyIdCounter || 0;
 window.examplifyIdCounter = examplifyIdCounter;
 
 function examplify(target, options = {}) {
-    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false } = options;
+    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false, language = 'js' } = options;
     const originalContent = target.textContent;
     const autoResize = !height; // Auto-resize if no explicit height is provided
     const iframeId = `examplify-${++examplifyIdCounter}`;
@@ -120,9 +120,9 @@ function examplify(target, options = {}) {
     ${scripts ? scripts.map(src => `<script src="${src}"><\/script>`).join('\n') : ''}
 </head>
 <body>
-${html ? html : '<div id="example"></div>'}
-<script ${type ? `type="${type}"` : ''}>const render = (content) => { const target = document.querySelector('#example'); target.innerHTML = ''; target.insertAdjacentElement('afterbegin', content.domEl || content)};${type === 'module' ? content : `window.addEventListener('load', async () => {${content}})`}<\/script>
-${autoResizeScript}
+    ${language === 'html' ? content : (html ? html : '<div id="example"></div>')}
+    ${language === 'html' ? '' : `<script ${type ? `type="${type}"` : ''}>const render = (content) => { const target = document.querySelector('#example'); target.innerHTML = ''; target.insertAdjacentElement('afterbegin', content.domEl || content)};${type === 'module' ? content : `window.addEventListener('load', async () => {${content}})`}<\/script>`}
+    ${autoResizeScript}
 </body>
 </html>`;
         frame.srcdoc = doc;

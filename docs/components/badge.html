@@ -186,7 +186,8 @@ $('#example').content(badges);</code></pre>
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
+                                </script><code contenteditable="true">// Object DOM syntax now requires lightview-x.js
+const { default: Badge } = await import('/components/data-display/badge.js');
 const { tags, $ } = Lightview;
 
 const badges = {

@@ -63,6 +63,14 @@ fs.watch(rootDir, { recursive: true }, (eventType, filename) => {
     if (allowedDirs.includes(topLevel)) {
         // Check if file exists to handle deletions gracefully
         if (fs.existsSync(srcPath)) {
+            // Check if it's a directory
+            try {
+                const stat = fs.statSync(srcPath);
+                if (stat.isDirectory()) return;
+            } catch (e) {
+                return; // Ignore if stat fails
+            }
+
             copyFile(srcPath, filename);
         }
         return;
