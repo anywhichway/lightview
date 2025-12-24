@@ -139,7 +139,7 @@ const horizontal = RadioGroup({
 
 // Insert all examples
 $('#example').content(
-    div({ class: 'space-y-6 max-w-md' }, basic, withDesc, horizontal)
+    div({ style: 'display: flex; flex-direction: column; gap: 1.5rem; max-width: 28rem' }, basic, withDesc, horizontal)
 );</code></pre>
                             </div>
 
@@ -192,7 +192,7 @@ const horizontal = {
 
 $('#example').content({
     tag: 'div',
-    attributes: { class: 'space-y-6 max-w-md' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1.5rem; max-width: 28rem' },
     children: [basic, withDesc, horizontal]
 });</code></pre>
                             </div>
@@ -212,7 +212,7 @@ tags.RadioGroup = RadioGroup;
 
 $('#example').content({
     div: {
-        class: 'space-y-6 max-w-md',
+        style: 'display: flex; flex-direction: column; gap: 1.5rem; max-width: 28rem',
         children: [
             {
                 RadioGroup: {
@@ -309,7 +309,7 @@ const priorityInfo = {
 };
 
 // Reactive radio group
-const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
+const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
     RadioGroup({
         label: 'Issue Priority',
         name: 'priority',
@@ -359,7 +359,7 @@ const priorityInfo = {
 
 const reactiveDemo = {
     tag: 'div',
-    attributes: { class: 'space-y-4 max-w-md' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
     children: [
         {
             tag: RadioGroup,
@@ -419,7 +419,7 @@ const priorityInfo = {
 
 const reactiveDemo = {
     div: {
-        class: 'space-y-4 max-w-md',
+        style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem',
         children: [
             {
                 RadioGroup: {

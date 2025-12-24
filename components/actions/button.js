@@ -136,4 +136,13 @@ const Button = (props = {}, ...children) => {
 
 window.Lightview.tags.Button = Button;
 
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const ButtonElement = window.LightviewX.createCustomElement(Button);
+    if (!customElements.get('lv-button')) {
+        customElements.define('lv-button', ButtonElement);
+    }
+}
+
+
 export default Button;

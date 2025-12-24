@@ -113,7 +113,7 @@ const { div, span } = tags;
 const page = signal(1);
 const totalPages = 5;
 
-const demo = div({ class: 'flex flex-col gap-4 items-center' },
+const demo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; align-items: center' },
     Join({},
         Button({ 
             class: 'join-item',
@@ -155,7 +155,7 @@ const totalPages = 5;
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex flex-col gap-4 items-center' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; align-items: center' },
     children: [
         {
             tag: Join,
@@ -208,7 +208,7 @@ const totalPages = 5;
 
 const demo = {
     div: {
-        class: 'flex flex-col gap-4 items-center',
+        style: 'display: flex; flex-direction: column; gap: 1rem; align-items: center',
         children: [
             {
                 Join: {

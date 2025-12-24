@@ -259,7 +259,7 @@ const addNotification = (type) => {
 };
 
 const demo = div({},
-    div({ class: 'flex flex-wrap gap-2 mb-4' },
+    div({ style: 'display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem' },
         Button({ color: 'success', size: 'sm', onclick: () => addNotification('success') }, 'Success'),
         Button({ color: 'info', size: 'sm', onclick: () => addNotification('info') }, 'Info'),
         Button({ color: 'warning', size: 'sm', onclick: () => addNotification('warning') }, 'Warning'),
@@ -312,7 +312,7 @@ const demo = {
     children: [
         {
             tag: 'div',
-            attributes: { class: 'flex flex-wrap gap-2 mb-4' },
+            attributes: { style: 'display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem' },
             children: [
                 { tag: Button, attributes: { color: 'success', size: 'sm', onclick: () => addNotification('success') }, children: ['Success'] },
                 { tag: Button, attributes: { color: 'info', size: 'sm', onclick: () => addNotification('info') }, children: ['Info'] },
@@ -375,7 +375,7 @@ const demo = {
         children: [
             {
                 div: {
-                    class: 'flex flex-wrap gap-2 mb-4',
+                    style: 'display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem',
                     children: [
                         { Button: { color: 'success', size: 'sm', onclick: () => addNotification('success'), text: 'Success' } },
                         { Button: { color: 'info', size: 'sm', onclick: () => addNotification('info'), text: 'Info' } },

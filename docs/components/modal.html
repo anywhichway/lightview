@@ -314,7 +314,7 @@ const confirmModal = Modal({ id: modalId },
     Modal.Backdrop({})
 );
 
-const demo = div({ class: 'flex items-center gap-4' },
+const demo = div({ style: 'display: flex; align-items: center; gap: 1rem' },
     Button({ 
         color: 'error',
         variant: 'outline',
@@ -377,7 +377,7 @@ const confirmModal = {
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex items-center gap-4' },
+    attributes: { style: 'display: flex; align-items: center; gap: 1rem' },
     children: [
         {
             tag: Button,
@@ -454,7 +454,7 @@ const confirmModal = {
 
 const demo = {
     div: {
-        class: 'flex items-center gap-4',
+        style: 'display: flex; align-items: center; gap: 1rem',
         children: [
             {
                 Button: {

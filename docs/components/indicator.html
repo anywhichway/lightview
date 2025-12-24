@@ -113,7 +113,7 @@ const { div } = tags;
 
 const count = signal(3);
 
-const demo = div({ class: 'flex gap-8' },
+const demo = div({ style: 'display: flex; gap: 2rem' },
     Indicator({},
         Indicator.Item({},
             Badge({ color: 'primary' }, () => count.value)
@@ -155,7 +155,7 @@ const count = signal(3);
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex gap-8' },
+    attributes: { style: 'display: flex; gap: 2rem' },
     children: [
         {
             tag: Indicator,
@@ -220,7 +220,7 @@ const count = signal(3);
 
 const demo = {
     div: {
-        class: 'flex gap-8',
+        style: 'display: flex; gap: 2rem',
         children: [
             {
                 Indicator: {

@@ -138,7 +138,7 @@ const halfStars = Rating({
 
 // Insert all examples
 $('#example').content(
-    div({ class: 'space-y-6' }, basic, withLabel, hearts, halfStars)
+    div({ style: 'display: flex; flex-direction: column; gap: 1.5rem' }, basic, withLabel, hearts, halfStars)
 );</code></pre>
                             </div>
 
@@ -192,7 +192,7 @@ const halfStars = {
 
 $('#example').content({
     tag: 'div',
-    attributes: { class: 'space-y-6' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1.5rem' },
     children: [basic, withLabel, hearts, halfStars]
 });</code></pre>
                             </div>
@@ -212,7 +212,7 @@ tags.Rating = Rating;
 
 $('#example').content({
     div: {
-        class: 'space-y-6',
+        style: 'display: flex; flex-direction: column; gap: 1.5rem',
         children: [
             { 
                 Rating: { 
@@ -299,7 +299,7 @@ const { div, p, span } = tags;
 const rating = signal(0);
 
 // Reactive rating demo
-const reactiveDemo = div({ class: 'space-y-4' },
+const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
     Rating({ 
         label: 'How was your experience?',
         value: rating,
@@ -344,7 +344,7 @@ const rating = signal(0);
 
 const reactiveDemo = {
     tag: 'div',
-    attributes: { class: 'space-y-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [
         {
             tag: Rating,
@@ -403,7 +403,7 @@ const rating = signal(0);
 
 const reactiveDemo = {
     div: {
-        class: 'space-y-4',
+        style: 'display: flex; flex-direction: column; gap: 1rem',
         children: [
             {
                 Rating: {

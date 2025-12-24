@@ -138,7 +138,7 @@ const requiredInput = Input({
 
 // Insert all examples
 $('#example').content(
-    div({ class: 'space-y-4' }, basic, withLabel, withColor, requiredInput)
+    div({ style: 'display: flex; flex-direction: column; gap: 1rem' }, basic, withLabel, withColor, requiredInput)
 );</code></pre>
                             </div>
 
@@ -189,7 +189,7 @@ const requiredInput = {
 
 $('#example').content({
     tag: 'div',
-    attributes: { class: 'space-y-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [basic, withLabel, withColor, requiredInput]
 });</code></pre>
                             </div>
@@ -209,7 +209,7 @@ tags.Input = Input;
 
 $('#example').content({
     div: {
-        class: 'space-y-4',
+        style: 'display: flex; flex-direction: column; gap: 1rem',
         children: [
             { Input: { placeholder: 'Basic input' } },
             { 
@@ -300,7 +300,7 @@ const validateUsername = (val) => {
 };
 
 // Reactive input with validation
-const reactiveDemo = div({ class: 'space-y-4' },
+const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
     Input({ 
         label: 'Username',
         placeholder: 'Enter your username...',
@@ -348,7 +348,7 @@ const validateUsername = (val) => {
 
 const reactiveDemo = {
     tag: 'div',
-    attributes: { class: 'space-y-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [
         {
             tag: Input,
@@ -410,7 +410,7 @@ const validateUsername = (val) => {
 
 const reactiveDemo = {
     div: {
-        class: 'space-y-4',
+        style: 'display: flex; flex-direction: column; gap: 1rem',
         children: [
             {
                 Input: {

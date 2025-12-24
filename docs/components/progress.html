@@ -111,7 +111,7 @@ const { div } = tags;
 
 const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
 
-const progressBars = div({ class: 'flex flex-col gap-4 w-64' },
+const progressBars = div({ style: 'display: flex; flex-direction: column; gap: 1rem; width: 16rem' },
     ...colors.map((color, i) => 
         Progress({ 
             value: 30 + i * 10, 
@@ -140,7 +140,7 @@ const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 
 
 const progressBars = {
     tag: 'div',
-    attributes: { class: 'flex flex-col gap-4 w-64' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; width: 16rem' },
     children: colors.map((color, i) => ({
         tag: Progress,
         attributes: {
@@ -171,7 +171,7 @@ const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 
 
 const progressBars = {
     div: {
-        class: 'flex flex-col gap-4 w-64',
+        style: 'display: flex; flex-direction: column; gap: 1rem; width: 16rem',
         children: colors.map((color, i) => ({
             Progress: {
                 value: 30 + i * 10,
@@ -253,7 +253,7 @@ const startDownload = () => {
     }, 200);
 };
 
-const demo = div({ class: 'flex flex-col gap-4 w-72' },
+const demo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; width: 18rem' },
     Progress({ 
         value: () => progress.value, 
         max: 100, 
@@ -309,7 +309,7 @@ const startDownload = () => {
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex flex-col gap-4 w-72' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; width: 18rem' },
     children: [
         {
             tag: Progress,
@@ -380,7 +380,7 @@ const startDownload = () => {
 
 const demo = {
     div: {
-        class: 'flex flex-col gap-4 w-72',
+        style: 'display: flex; flex-direction: column; gap: 1rem; width: 18rem',
         children: [
             {
                 Progress: {

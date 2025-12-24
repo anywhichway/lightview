@@ -138,7 +138,7 @@ const disabled = Toggle({
 
 // Insert all examples
 $('#example').content(
-    div({ class: 'space-y-4' }, basic, withDesc, labelRight, disabled)
+    div({ style: 'display: flex; flex-direction: column; gap: 1rem' }, basic, withDesc, labelRight, disabled)
 );</code></pre>
                             </div>
 
@@ -156,7 +156,7 @@ const { $ } = Lightview;
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'space-y-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [
         {
             tag: Toggle,
@@ -195,7 +195,7 @@ tags.Toggle = Toggle;
 
 const demo = {
     div: {
-        class: 'space-y-4',
+        style: 'display: flex; flex-direction: column; gap: 1rem',
         children: [
             {
                 Toggle: { label: 'Wi-Fi', defaultChecked: true, color: 'primary' }
@@ -271,7 +271,7 @@ const bluetooth = signal(false);
 const airplane = signal(false);
 
 // Reactive toggles
-const reactiveDemo = div({ class: 'space-y-4 max-w-sm' },
+const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 24rem' },
     Toggle({ 
         label: 'Wi-Fi',
         description: () => wifi.value ? 'Connected to HomeNetwork' : 'Disconnected',
@@ -317,7 +317,7 @@ const airplane = signal(false);
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'space-y-4 max-w-sm' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 24rem' },
     children: [
         {
             tag: Toggle,
@@ -377,7 +377,7 @@ const airplane = signal(false);
 
 const demo = {
     div: {
-        class: 'space-y-4 max-w-sm',
+        style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 24rem',
         children: [
             {
                 Toggle: {

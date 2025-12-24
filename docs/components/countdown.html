@@ -107,7 +107,7 @@
 const { tags, $ } = Lightview;
 const { div, span } = tags;
 
-const display = div({ class: 'flex gap-5' },
+const display = div({ style: 'display: flex; gap: 1.25rem' },
     Countdown({ value: 15, class: 'font-mono text-4xl' }),
     span({ class: 'text-4xl' }, ':'),
     Countdown({ value: 30, class: 'font-mono text-4xl' }),
@@ -132,7 +132,7 @@ const { $ } = Lightview;
 
 const display = {
     tag: 'div',
-    attributes: { class: 'flex gap-5' },
+    attributes: { style: 'display: flex; gap: 1.25rem' },
     children: [
         { tag: Countdown, attributes: { value: 15, class: 'font-mono text-4xl' } },
         { tag: 'span', attributes: { class: 'text-4xl' }, children: [':'] },
@@ -160,7 +160,7 @@ tags.Countdown = Countdown;
 
 const display = {
     div: {
-        class: 'flex gap-5',
+        style: 'display: flex; gap: 1.25rem',
         children: [
             { Countdown: { value: 15, class: 'font-mono text-4xl' } },
             { span: { class: 'text-4xl', text: ':' } },
@@ -252,9 +252,9 @@ const reset = () => {
     seconds.value = 30;
 };
 
-const demo = div({ class: 'flex flex-col items-center gap-4' },
+const demo = div({ style: 'display: flex; flex-direction: column; align-items: center; gap: 1rem' },
     Countdown({ value: () => seconds.value, class: 'font-mono text-6xl' }),
-    div({ class: 'flex gap-2' },
+    div({ style: 'display: flex; gap: 0.5rem' },
         Button({ 
             color: () => running.value ? 'error' : 'primary',
             onclick: toggle 
@@ -308,7 +308,7 @@ const reset = () => {
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex flex-col items-center gap-4' },
+    attributes: { style: 'display: flex; flex-direction: column; align-items: center; gap: 1rem' },
     children: [
         {
             tag: Countdown,
@@ -316,7 +316,7 @@ const demo = {
         },
         {
             tag: 'div',
-            attributes: { class: 'flex gap-2' },
+            attributes: { style: 'display: flex; gap: 0.5rem' },
             children: [
                 {
                     tag: Button,
@@ -376,12 +376,12 @@ const reset = () => {
 
 const demo = {
     div: {
-        class: 'flex flex-col items-center gap-4',
+        style: 'display: flex; flex-direction: column; align-items: center; gap: 1rem',
         children: [
             { Countdown: { value: () => seconds.value, class: 'font-mono text-6xl' } },
             {
                 div: {
-                    class: 'flex gap-2',
+                    style: 'display: flex; gap: 0.5rem',
                     children: [
                         { Button: { color: () => running.value ? 'error' : 'primary', onclick: toggle, text: () => running.value ? 'Pause' : 'Start' } },
                         { Button: { onclick: reset, text: 'Reset' } }

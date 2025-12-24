@@ -249,7 +249,7 @@ const dropdown = Dropdown({},
     )
 );
 
-const demo = div({ class: 'flex gap-4 items-center h-48' },
+const demo = div({ style: 'display: flex; gap: 1rem; align-items: center; height: 12rem' },
     dropdown,
     span({ class: 'text-sm opacity-70' }, 
         () => `Selected: ${selected.value}`
@@ -295,7 +295,7 @@ const dropdown = {
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex gap-4 items-center h-48' },
+    attributes: { style: 'display: flex; gap: 1rem; align-items: center; height: 12rem' },
     children: [
         dropdown,
         {
@@ -353,7 +353,7 @@ const dropdown = {
 
 const demo = {
     div: {
-        class: 'flex gap-4 items-center h-48',
+        style: 'display: flex; gap: 1rem; align-items: center; height: 12rem',
         children: [
             dropdown,
             { span: { class: 'text-sm opacity-70', text: () => `Selected: ${selected.value}` } }

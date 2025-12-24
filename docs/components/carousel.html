@@ -114,7 +114,7 @@ const images = [
     'https://picsum.photos/400/300?random=4'
 ];
 
-const carousel = Carousel({ snap: 'center', class: 'rounded-box bg-neutral p-4 gap-4' },
+const carousel = Carousel({ snap: 'center', class: 'rounded-box bg-neutral', style: 'padding: 1rem; gap: 1rem' },
     ...images.map((src, i) => 
         Carousel.Item({ src, alt: `Slide ${i + 1}`, class: 'rounded-box' })
     )
@@ -144,7 +144,7 @@ const images = [
 
 const carousel = {
     tag: Carousel,
-    attributes: { snap: 'center', class: 'rounded-box bg-neutral p-4 gap-4' },
+    attributes: { snap: 'center', class: 'rounded-box bg-neutral', style: 'padding: 1rem; gap: 1rem' },
     children: images.map((src, i) => ({
         tag: Carousel.Item,
         attributes: { src, alt: `Slide ${i + 1}`, class: 'rounded-box' }
@@ -178,7 +178,8 @@ const images = [
 const carousel = {
     Carousel: {
         snap: 'center',
-        class: 'rounded-box bg-neutral p-4 gap-4',
+        class: 'rounded-box bg-neutral',
+        style: 'padding: 1rem; gap: 1rem',
         children: images.map((src, i) => ({
             CarouselItem: {
                 src,
@@ -259,7 +260,7 @@ const demo = div({},
             )
         )
     ),
-    div({ class: 'flex justify-center w-full py-2 gap-2' },
+    div({ style: 'display: flex; justify-content: center; width: 100%; padding-top: 0.5rem; padding-bottom: 0.5rem; gap: 0.5rem' },
         ...slides.map((slide, i) => 
             a({ href: `#${slide.id}`, class: 'btn btn-xs' }, i + 1)
         )
@@ -312,7 +313,7 @@ const demo = {
         },
         {
             tag: 'div',
-            attributes: { class: 'flex justify-center w-full py-2 gap-2' },
+            attributes: { style: 'display: flex; justify-content: center; width: 100%; padding-top: 0.5rem; padding-bottom: 0.5rem; gap: 0.5rem' },
             children: slides.map((slide, i) => ({
                 tag: 'a',
                 attributes: { href: `#${slide.id}`, class: 'btn btn-xs' },
@@ -374,7 +375,7 @@ const demo = {
             },
             {
                 div: {
-                    class: 'flex justify-center w-full py-2 gap-2',
+                    style: 'display: flex; justify-content: center; width: 100%; padding-top: 0.5rem; padding-bottom: 0.5rem; gap: 0.5rem',
                     children: slides.map((slide, i) => ({
                         a: { href: `#${slide.id}`, class: 'btn btn-xs', children: [i + 1] }
                     }))

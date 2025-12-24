@@ -120,7 +120,7 @@ const playPause = Swap({ effect: 'rotate', class: 'btn btn-circle' },
 );
 
 $('#example').content(
-    div({ class: 'flex gap-8 items-center' }, 
+    div({ style: 'display: flex; gap: 2rem; align-items: center' }, 
         emojiSwap, 
         playPause
     )
@@ -159,7 +159,7 @@ const playPause = {
 
 $('#example').content({
     tag: 'div',
-    attributes: { class: 'flex gap-8 items-center' },
+    attributes: { style: 'display: flex; gap: 2rem; align-items: center' },
     children: [emojiSwap, playPause]
 });</code></pre>
                             </div>
@@ -181,7 +181,7 @@ tags['Swap.Off'] = Swap.Off;
 
 $('#example').content({
     div: {
-        class: 'flex gap-8 items-center',
+        style: 'display: flex; gap: 2rem; align-items: center',
         children: [
             {
                 Swap: {
@@ -272,7 +272,7 @@ const swap = Swap({
 );
 
 // External control
-const demo = div({ class: 'flex flex-col gap-4 items-center' },
+const demo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; align-items: center' },
     swap,
     p({ class: 'text-sm' }, 
         () => isActive.value ? 'Party time! 🎉' : 'So sad... 💔'
@@ -304,7 +304,7 @@ const isActive = signal(false);
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex flex-col gap-4 items-center' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; align-items: center' },
     children: [
         {
             tag: Swap,
@@ -360,7 +360,7 @@ const isActive = signal(false);
 
 const demo = {
     div: {
-        class: 'flex flex-col gap-4 items-center',
+        style: 'display: flex; flex-direction: column; gap: 1rem; align-items: center',
         children: [
             {
                 Swap: {

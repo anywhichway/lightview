@@ -109,18 +109,18 @@
 const { tags, $ } = Lightview;
 const { div, span } = tags;
 
-const shortcuts = div({ class: 'space-y-4' },
-    div({ class: 'flex gap-2 items-center' },
+const shortcuts = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
+    div({ style: 'display: flex; gap: 0.5rem; align-items: center' },
         span({}, 'Save: '),
         Kbd({}, '⌘'),
         Kbd({}, 'S')
     ),
-    div({ class: 'flex gap-2 items-center' },
+    div({ style: 'display: flex; gap: 0.5rem; align-items: center' },
         span({}, 'Undo: '),
         Kbd({}, '⌘'),
         Kbd({}, 'Z')
     ),
-    div({ class: 'flex gap-2 items-center' },
+    div({ style: 'display: flex; gap: 0.5rem; align-items: center' },
         span({}, 'Copy: '),
         Kbd({}, '⌘'),
         Kbd({}, 'C')
@@ -144,11 +144,11 @@ const { $ } = Lightview;
 
 const shortcuts = {
     tag: 'div',
-    attributes: { class: 'space-y-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [
         {
             tag: 'div',
-            attributes: { class: 'flex gap-2 items-center' },
+            attributes: { style: 'display: flex; gap: 0.5rem; align-items: center' },
             children: [
                 { tag: 'span', children: ['Save: '] },
                 { tag: Kbd, children: ['⌘'] },
@@ -157,7 +157,7 @@ const shortcuts = {
         },
         {
             tag: 'div',
-            attributes: { class: 'flex gap-2 items-center' },
+            attributes: { style: 'display: flex; gap: 0.5rem; align-items: center' },
             children: [
                 { tag: 'span', children: ['Undo: '] },
                 { tag: Kbd, children: ['⌘'] },
@@ -166,7 +166,7 @@ const shortcuts = {
         },
         {
             tag: 'div',
-            attributes: { class: 'flex gap-2 items-center' },
+            attributes: { style: 'display: flex; gap: 0.5rem; align-items: center' },
             children: [
                 { tag: 'span', children: ['Copy: '] },
                 { tag: Kbd, children: ['⌘'] },
@@ -194,23 +194,23 @@ tags.Kbd = Kbd;
 
 const shortcuts = {
     div: {
-        class: 'space-y-4',
+        style: 'display: flex; flex-direction: column; gap: 1rem',
         children: [
             {
                 div: {
-                    class: 'flex gap-2 items-center',
+                    style: 'display: flex; gap: 0.5rem; align-items: center',
                     children: [{ span: { text: 'Save: ' } }, { Kbd: { text: '⌘' } }, { Kbd: { text: 'S' } }]
                 }
             },
             {
                 div: {
-                    class: 'flex gap-2 items-center',
+                    style: 'display: flex; gap: 0.5rem; align-items: center',
                     children: [{ span: { text: 'Undo: ' } }, { Kbd: { text: '⌘' } }, { Kbd: { text: 'Z' } }]
                 }
             },
             {
                 div: {
-                    class: 'flex gap-2 items-center',
+                    style: 'display: flex; gap: 0.5rem; align-items: center',
                     children: [{ span: { text: 'Copy: ' } }, { Kbd: { text: '⌘' } }, { Kbd: { text: 'C' } }]
                 }
             }

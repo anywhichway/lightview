@@ -110,7 +110,7 @@ const { div, p } = tags;
 
 const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
 
-const loaders = div({ class: 'flex flex-wrap gap-8' },
+const loaders = div({ style: 'display: flex; flex-wrap: wrap; gap: 2rem' },
     ...types.map(type => 
         div({ class: 'text-center' },
             Loading({ type, size: 'lg' }),
@@ -138,7 +138,7 @@ const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
 
 const loaders = {
     tag: 'div',
-    attributes: { class: 'flex flex-wrap gap-8' },
+    attributes: { style: 'display: flex; flex-wrap: wrap; gap: 2rem' },
     children: types.map(type => ({
         tag: 'div',
         attributes: { class: 'text-center' },
@@ -169,7 +169,7 @@ const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
 
 const loaders = {
     div: {
-        class: 'flex flex-wrap gap-8',
+        style: 'display: flex; flex-wrap: wrap; gap: 2rem',
         children: types.map(type => ({
             div: {
                 class: 'text-center',
@@ -243,7 +243,7 @@ const handleClick = async () => {
     isLoading.value = false;
 };
 
-const demo = div({ class: 'flex gap-4 items-center' },
+const demo = div({ style: 'display: flex; gap: 1rem; align-items: center' },
     () => isLoading.value
         ? Button({ color: 'primary', disabled: true },
             Loading({ type: 'spinner', size: 'sm' }),
@@ -281,7 +281,7 @@ const handleClick = async () => {
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex gap-4 items-center' },
+    attributes: { style: 'display: flex; gap: 1rem; align-items: center' },
     children: [
         () => isLoading.value
             ? {
@@ -333,7 +333,7 @@ const handleClick = async () => {
 
 const demo = {
     div: {
-        class: 'flex gap-4 items-center',
+        style: 'display: flex; gap: 1rem; align-items: center',
         children: [
             () => isLoading.value
                 ? {

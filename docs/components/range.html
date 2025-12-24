@@ -140,7 +140,7 @@ const formatted = Range({
 
 // Insert all examples
 $('#example').content(
-    div({ class: 'space-y-6 max-w-md' }, basic, withLabel, formatted)
+    div({ style: 'display: flex; flex-direction: column; gap: 1.5rem; max-width: 28rem' }, basic, withLabel, formatted)
 );</code></pre>
                             </div>
 
@@ -193,7 +193,7 @@ const formatted = {
 
 $('#example').content({
     tag: 'div',
-    attributes: { class: 'space-y-6 max-w-md' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1.5rem; max-width: 28rem' },
     children: [basic, withLabel, formatted]
 });</code></pre>
                             </div>
@@ -213,7 +213,7 @@ tags.Range = Range;
 
 $('#example').content({
     div: {
-        class: 'space-y-6 max-w-md',
+        style: 'display: flex; flex-direction: column; gap: 1.5rem; max-width: 28rem',
         children: [
             { 
                 Range: { 
@@ -303,7 +303,7 @@ const contrast = signal(50);
 const saturation = signal(100);
 
 // Reactive range sliders
-const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
+const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
     Range({ 
         label: 'Brightness',
         min: 0, max: 100,
@@ -355,7 +355,7 @@ const saturation = signal(100);
 
 const reactiveDemo = {
     tag: 'div',
-    attributes: { class: 'space-y-4 max-w-md' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
     children: [
         {
             tag: Range,
@@ -423,7 +423,7 @@ const saturation = signal(100);
 
 const reactiveDemo = {
     div: {
-        class: 'space-y-4 max-w-md',
+        style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem',
         children: [
             {
                 Range: {

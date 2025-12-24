@@ -133,7 +133,7 @@ const withCount = Textarea({
 
 // Insert all examples
 $('#example').content(
-    div({ class: 'space-y-4' }, basic, withLabel, withCount)
+    div({ style: 'display: flex; flex-direction: column; gap: 1rem' }, basic, withLabel, withCount)
 );</code></pre>
                             </div>
 
@@ -180,7 +180,7 @@ const withCount = {
 
 $('#example').content({
     tag: 'div',
-    attributes: { class: 'space-y-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [basic, withLabel, withCount]
 });</code></pre>
                             </div>
@@ -200,7 +200,7 @@ tags.Textarea = Textarea;
 
 $('#example').content({
     div: {
-        class: 'space-y-4',
+        style: 'display: flex; flex-direction: column; gap: 1rem',
         children: [
             { 
                 Textarea: { 
@@ -291,7 +291,7 @@ const validateFeedback = (val) => {
 };
 
 // Reactive textarea with validation
-const reactiveDemo = div({ class: 'space-y-4' },
+const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
     Textarea({ 
         label: 'Your Feedback',
         placeholder: 'Share your thoughts with us...',
@@ -338,7 +338,7 @@ const validateFeedback = (val) => {
 
 const reactiveDemo = {
     tag: 'div',
-    attributes: { class: 'space-y-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [
         {
             tag: Textarea,
@@ -395,7 +395,7 @@ const validateFeedback = (val) => {
 
 const reactiveDemo = {
     div: {
-        class: 'space-y-4',
+        style: 'display: flex; flex-direction: column; gap: 1rem',
         children: [
             {
                 Textarea: {
@@ -568,7 +568,8 @@ $('#example').content(reactiveDemo);</code></pre>
 
                     <!-- Colors Example -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="margin-bottom: 2rem; max-width: 42rem;">
+                    <div class="grid grid-cols-1 md:grid-cols-2"
+                        style="margin-bottom: 2rem; max-width: 42rem; gap: 1rem">
                         <textarea class="textarea textarea-primary" placeholder="Primary"></textarea>
                         <textarea class="textarea textarea-secondary" placeholder="Secondary"></textarea>
                         <textarea class="textarea textarea-accent" placeholder="Accent"></textarea>

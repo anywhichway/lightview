@@ -135,7 +135,7 @@ const disabled = Checkbox({
 
 // Insert all examples
 $('#example').content(
-    div({ class: 'space-y-4' }, basic, withDesc, required, disabled)
+    div({ style: 'display: flex; flex-direction: column; gap: 1rem' }, basic, withDesc, required, disabled)
 );</code></pre>
                             </div>
 
@@ -184,7 +184,7 @@ const disabled = {
 
 $('#example').content({
     tag: 'div',
-    attributes: { class: 'space-y-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [basic, withDesc, required, disabled]
 });</code></pre>
                             </div>
@@ -204,7 +204,7 @@ tags.Checkbox = Checkbox;
 
 $('#example').content({
     div: {
-        class: 'space-y-4',
+        style: 'display: flex; flex-direction: column; gap: 1rem',
         children: [
             { Checkbox: { label: 'Remember me' } },
             { 
@@ -287,7 +287,7 @@ const marketing = signal(false);
 const termsAccepted = signal(false);
 
 // Reactive demo
-const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
+const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
     Checkbox({ 
         label: 'Email Notifications',
         description: 'Receive important updates via email',
@@ -339,7 +339,7 @@ const termsAccepted = signal(false);
 
 const reactiveDemo = {
     tag: 'div',
-    attributes: { class: 'space-y-4 max-w-md' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
     children: [
         {
             tag: Checkbox,
@@ -415,7 +415,7 @@ const termsAccepted = signal(false);
 
 const reactiveDemo = {
     div: {
-        class: 'space-y-4 max-w-md',
+        style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem',
         children: [
             {
                 Checkbox: {

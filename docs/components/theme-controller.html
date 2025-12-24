@@ -110,7 +110,7 @@ const { div, span } = tags;
 
 const isDark = signal(document.documentElement.getAttribute('data-theme') === 'dark');
 
-const demo = div({ class: 'flex items-center gap-4' },
+const demo = div({ style: 'display: flex; align-items: center; gap: 1rem' },
     ThemeController({
         toggle: true,
         lightTheme: 'light',
@@ -140,7 +140,7 @@ const isDark = signal(document.documentElement.getAttribute('data-theme') === 'd
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex items-center gap-4' },
+    attributes: { style: 'display: flex; align-items: center; gap: 1rem' },
     children: [
         {
             tag: ThemeController,
@@ -180,7 +180,7 @@ const isDark = signal(document.documentElement.getAttribute('data-theme') === 'd
 
 const demo = {
     div: {
-        class: 'flex items-center gap-4',
+        style: 'display: flex; align-items: center; gap: 1rem',
         children: [
             {
                 ThemeController: {
@@ -255,7 +255,7 @@ const { div } = tags;
 const themes = ['light', 'dark', 'cupcake', 'cyberpunk', 'synthwave'];
 const current = signal('light');
 
-const demo = div({ class: 'flex flex-wrap gap-2' },
+const demo = div({ style: 'display: flex; flex-wrap: wrap; gap: 0.5rem' },
     ...themes.map(theme =>
         ThemeController({
             radio: true,
@@ -288,7 +288,7 @@ const current = signal('light');
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex flex-wrap gap-2' },
+    attributes: { style: 'display: flex; flex-wrap: wrap; gap: 0.5rem' },
     children: themes.map(theme => ({
         tag: ThemeController,
         attributes: {
@@ -323,7 +323,7 @@ const current = signal('light');
 
 const demo = {
     div: {
-        class: 'flex flex-wrap gap-2',
+        style: 'display: flex; flex-wrap: wrap; gap: 0.5rem',
         children: themes.map(theme => ({
             ThemeController: {
                 radio: true,

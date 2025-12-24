@@ -1016,6 +1016,78 @@
 
 
 
+    /**
+     * Create a Custom Element class wrapper for a Lightview component
+     * @param {Function} Component - The Lightview component function
+     * @param {Object} options
+     * @param {string} options.cssUrl - Optional URL for component CSS
+     * @param {string[]} options.styles - Optional extra style URLs
+     * @returns {Class} - The Custom Element class
+     */
+    const createCustomElement = (Component, options = {}) => {
+        return class extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+            }
+
+            async connectedCallback() {
+                const { cssUrl, styles } = options;
+
+                // Get stylesheets
+                const adoptedStyleSheets = getAdoptedStyleSheets(cssUrl, styles);
+
+                // Handle adoptedStyleSheets
+                try {
+                    const sheets = adoptedStyleSheets.filter(s => s instanceof CSSStyleSheet);
+                    this.shadowRoot.adoptedStyleSheets = sheets;
+                } catch (e) {
+                    // Fallback handled by individual links below if needed
+                }
+
+                // Handle link tags for strings (fallback or external non-CORS sheets)
+                adoptedStyleSheets.forEach(s => {
+                    if (typeof s === 'string') {
+                        const link = document.createElement('link');
+                        link.rel = 'stylesheet';
+                        link.href = s;
+                        this.shadowRoot.appendChild(link);
+                    }
+                });
+
+                // Collect props from attributes
+                const props = {};
+                for (const attr of this.attributes) {
+                    // Convert boolean attributes
+                    if (attr.value === '') {
+                        props[attr.name] = true;
+                    } else {
+                        props[attr.name] = attr.value;
+                    }
+                }
+
+                // Force useShadow: false to avoid double shadow
+                props.useShadow = false;
+
+                // Render component with a slot for children
+                // This allows <my-btn>Click Me</my-btn> to work via projection
+                const slot = window.Lightview.tags.slot();
+
+                const result = Component(props, slot);
+
+                // Convert result to DOM
+                let content = result;
+                if (result && result.domEl) {
+                    content = result.domEl;
+                }
+
+                if (content instanceof Node) {
+                    this.shadowRoot.appendChild(content);
+                }
+            }
+        };
+    };
+
     // Export for module usage
     const LightviewX = {
         state,
@@ -1025,7 +1097,8 @@
         componentConfig,
         shouldUseShadow,
         getAdoptedStyleSheets,
-        preloadComponentCSS
+        preloadComponentCSS,
+        createCustomElement
     };
 
     if (typeof module !== 'undefined' && module.exports) {

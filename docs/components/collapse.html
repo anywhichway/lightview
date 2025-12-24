@@ -108,7 +108,7 @@
 const { tags, $ } = Lightview;
 const { div, p } = tags;
 
-const demo = div({ class: 'space-y-2' },
+const demo = div({ style: 'display: flex; flex-direction: column; gap: 0.5rem' },
     Collapse({ icon: 'arrow' },
         Collapse.Title({}, '📖 Description'),
         Collapse.Content({}, 
@@ -146,7 +146,7 @@ const { $ } = Lightview;
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'space-y-2' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 0.5rem' },
     children: [
         {
             tag: Collapse,
@@ -195,7 +195,7 @@ tags['Collapse.Content'] = Collapse.Content;
 
 const demo = {
     div: {
-        class: 'space-y-2',
+        style: 'display: flex; flex-direction: column; gap: 0.5rem',
         children: [
             {
                 Collapse: {
@@ -278,7 +278,7 @@ $('#example').content(demo);</code></pre>
 const { tags, $ } = Lightview;
 const { div, p, ul, li } = tags;
 
-const demo = div({ class: 'space-y-2' },
+const demo = div({ style: 'display: flex; flex-direction: column; gap: 0.5rem' },
     Collapse({ icon: 'plus', open: true },
         Collapse.Title({}, '🎁 What\'s included'),
         Collapse.Content({}, 
@@ -319,7 +319,7 @@ const { $ } = Lightview;
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'space-y-2' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 0.5rem' },
     children: [
         {
             tag: Collapse,
@@ -383,7 +383,7 @@ tags['Collapse.Content'] = Collapse.Content;
 
 const demo = {
     div: {
-        class: 'space-y-2',
+        style: 'display: flex; flex-direction: column; gap: 0.5rem',
         children: [
             {
                 Collapse: {

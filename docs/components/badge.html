@@ -109,9 +109,9 @@
 const { tags, $ } = Lightview;
 const { div } = tags;
 
-const badges = div({ class: 'space-y-4' },
+const badges = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
     // Colors
-    div({ class: 'flex flex-wrap gap-2' },
+    div({ style: 'display: flex; flex-direction: row; gap: .5rem' },
         Badge({}, 'Default'),
         Badge({ color: 'primary' }, 'Primary'),
         Badge({ color: 'secondary' }, 'Secondary'),
@@ -122,7 +122,7 @@ const badges = div({ class: 'space-y-4' },
         Badge({ color: 'error' }, 'Error')
     ),
     // Variants
-    div({ class: 'flex flex-wrap gap-2' },
+    div({ style: 'display: flex; flex-direction: row; gap: .5rem' },
         Badge({ variant: 'outline' }, 'Outline'),
         Badge({ variant: 'soft', color: 'primary' }, 'Soft'),
         Badge({ variant: 'dash', color: 'secondary' }, 'Dash')
@@ -146,11 +146,11 @@ const { $ } = Lightview;
 
 const badges = {
     tag: 'div',
-    attributes: { class: 'space-y-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: .5rem' },
     children: [
         {
             tag: 'div',
-            attributes: { class: 'flex flex-wrap gap-2' },
+            attributes: { style: 'display: flex; flex-direction: row; gap: .5rem' },
             children: [
                 { tag: Badge, children: ['Default'] },
                 { tag: Badge, attributes: { color: 'primary' }, children: ['Primary'] },
@@ -164,7 +164,7 @@ const badges = {
         },
         {
             tag: 'div',
-            attributes: { class: 'flex flex-wrap gap-2' },
+            attributes: { style: 'display: flex; flex-direction: row; gap: .5rem' },
             children: [
                 { tag: Badge, attributes: { variant: 'outline' }, children: ['Outline'] },
                 { tag: Badge, attributes: { variant: 'soft', color: 'primary' }, children: ['Soft'] },
@@ -188,15 +188,14 @@ $('#example').content(badges);</code></pre>
                                     });
                                 </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
 const { tags, $ } = Lightview;
-tags.Badge = Badge;
 
 const badges = {
     div: {
-        class: 'space-y-4',
+        style: 'display: flex; flex-direction: column; gap: .5rem',
         children: [
             {
                 div: {
-                    class: 'flex flex-wrap gap-2',
+                    style: 'display: flex; flex-direction: row; gap: .5rem',
                     children: [
                         { Badge: { children: ['Default'] } },
                         { Badge: { color: 'primary', children: ['Primary'] } },
@@ -211,7 +210,7 @@ const badges = {
             },
             {
                 div: {
-                    class: 'flex flex-wrap gap-2',
+                    style: 'display: flex; flex-direction: row; gap: .5rem',
                     children: [
                         { Badge: { variant: 'outline', children: ['Outline'] } },
                         { Badge: { variant: 'soft', color: 'primary', children: ['Soft'] } },
@@ -271,14 +270,15 @@ $('#example').content(badges);</code></pre>
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/badge.js');
+await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-const { div } = tags;
+// importing a component automatically adds it to tags
+const { div, Badge, Button } = tags;
 
 const count = signal(5);
 
-const demo = div({ class: 'flex items-center gap-8' },
+const demo = div({ style: 'display: flex; flex-direction: row; gap: .5rem' },
     Button({ 
         size: 'sm', 
         color: 'primary',
@@ -289,7 +289,7 @@ const demo = div({ class: 'flex items-center gap-8' },
         'Inbox',
         Badge({ 
             color: 'secondary',
-            class: 'ml-2'
+            class: 'ml-2' // you can use Tailwind classes inside components
         }, () => count.value > 99 ? '99+' : count.value)
     ),
     
@@ -311,15 +311,17 @@ $('#example').content(demo);</code></pre>
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/badge.js');
+await import('/components/actions/button.js');
+const { signal, tags, $ } = Lightview;
+// importing a component automatically adds it to tags
+const { div, Badge, Button } = tags;
 
 const count = signal(5);
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex items-center gap-8' },
+    attributes: { style: 'display: flex; flex-direction: row; gap: .5rem' },
     children: [
         {
             tag: Button,
@@ -333,6 +335,7 @@ const demo = {
                 {
                     tag: Badge,
                     attributes: { color: 'secondary', class: 'ml-2' },
+                     // you can use Tailwind classes inside components
                     children: [() => count.value > 99 ? '99+' : count.value]
                 }
             ]
@@ -357,17 +360,17 @@ $('#example').content(demo);</code></pre>
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/badge.js');
+await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-tags.Badge = Badge;
-tags.Button = Button;
+// importing a component automatically adds it to tags
+const { div, Badge, Button } = tags;
 
 const count = signal(5);
 
 const demo = {
     div: {
-        class: 'flex items-center gap-8',
+        style: 'display: flex; flex-direction: row; gap: .5rem',
         children: [
             {
                 Button: {
@@ -385,6 +388,7 @@ const demo = {
                             Badge: {
                                 color: 'secondary',
                                 class: 'ml-2',
+                                // you can use Tailwind classes inside components
                                 children: [() => count.value > 99 ? '99+' : count.value]
                             }
                         }
@@ -488,8 +492,6 @@ $('#example').content(demo);</code></pre>
                             <div class="badge badge-secondary">+99</div>
                         </button>
                     </div>
-
-
                 </div>
             </div>
         </div>

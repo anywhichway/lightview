@@ -277,7 +277,7 @@ const sendMessage = () => {
     inputVal.value = '';
 };
 
-const demo = div({ class: 'flex flex-col gap-4' },
+const demo = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
     div({ class: 'h-48 overflow-y-auto' },
         () => messages.value.map(m => 
             Chat({ position: m.pos },
@@ -286,7 +286,7 @@ const demo = div({ class: 'flex flex-col gap-4' },
             )
         )
     ),
-    div({ class: 'flex gap-2' },
+    div({ style: 'display: flex; gap: 0.5rem' },
         input({ 
             type: 'text', 
             class: 'input input-bordered flex-1',
@@ -330,7 +330,7 @@ const sendMessage = () => {
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex flex-col gap-4' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [
         {
             tag: 'div',
@@ -348,7 +348,7 @@ const demo = {
         },
         {
             tag: 'div',
-            attributes: { class: 'flex gap-2' },
+            attributes: { style: 'display: flex; gap: 0.5rem' },
             children: [
                 {
                     tag: 'input',
@@ -406,7 +406,7 @@ const sendMessage = () => {
 
 const demo = {
     div: {
-        class: 'flex flex-col gap-4',
+        style: 'display: flex; flex-direction: column; gap: 1rem',
         children: [
             {
                 div: {
@@ -426,7 +426,7 @@ const demo = {
             },
             {
                 div: {
-                    class: 'flex gap-2',
+                    style: 'display: flex; gap: 0.5rem',
                     children: [
                         {
                             input: {

@@ -109,7 +109,7 @@
 const { tags, $ } = Lightview;
 const { div } = tags;
 
-const demo = div({ class: 'flex gap-4' },
+const demo = div({ style: 'display: flex; gap: 1rem' },
     RadialProgress({ value: 0 }, '0%'),
     RadialProgress({ value: 25 }, '25%'),
     RadialProgress({ value: 50, color: 'primary' }, '50%'),
@@ -134,7 +134,7 @@ const { $ } = Lightview;
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex gap-4' },
+    attributes: { style: 'display: flex; gap: 1rem' },
     children: [
         { tag: RadialProgress, attributes: { value: 0 }, children: ['0%'] },
         { tag: RadialProgress, attributes: { value: 25 }, children: ['25%'] },
@@ -162,7 +162,7 @@ tags.RadialProgress = RadialProgress;
 
 const demo = {
     div: {
-        class: 'flex gap-4',
+        style: 'display: flex; gap: 1rem',
         children: [
             { RadialProgress: { value: 0, text: '0%' } },
             { RadialProgress: { value: 25, text: '25%' } },
@@ -207,13 +207,13 @@ const stop = () => {
     interval = null;
 };
 
-const demo = div({ class: 'flex flex-col items-center gap-4' },
+const demo = div({ style: 'display: flex; flex-direction: column; align-items: center; gap: 1rem' },
     RadialProgress({ 
         value: () => progress.value,
         size: '8rem',
         color: () => progress.value >= 100 ? 'success' : 'primary'
     }, () => `${progress.value}%`),
-    div({ class: 'flex gap-2' },
+    div({ style: 'display: flex; gap: 0.5rem' },
         Button({ size: 'sm', onclick: start }, 'Start'),
         Button({ size: 'sm', onclick: stop }, 'Stop'),
         Button({ size: 'sm', onclick: () => { progress.value = 0; } }, 'Reset')
@@ -253,7 +253,7 @@ const stop = () => {
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'flex flex-col items-center gap-4' },
+    attributes: { style: 'display: flex; flex-direction: column; align-items: center; gap: 1rem' },
     children: [
         {
             tag: RadialProgress,
@@ -266,7 +266,7 @@ const demo = {
         },
         {
             tag: 'div',
-            attributes: { class: 'flex gap-2' },
+            attributes: { style: 'display: flex; gap: 0.5rem' },
             children: [
                 { tag: Button, attributes: { size: 'sm', onclick: start }, children: ['Start'] },
                 { tag: Button, attributes: { size: 'sm', onclick: stop }, children: ['Stop'] },
@@ -311,7 +311,7 @@ const stop = () => {
 
 const demo = {
     div: {
-        class: 'flex flex-col items-center gap-4',
+        style: 'display: flex; flex-direction: column; align-items: center; gap: 1rem',
         children: [
             {
                 RadialProgress: {
@@ -323,7 +323,7 @@ const demo = {
             },
             {
                 div: {
-                    class: 'flex gap-2',
+                    style: 'display: flex; gap: 0.5rem',
                     children: [
                         { Button: { size: 'sm', onclick: start, text: 'Start' } },
                         { Button: { size: 'sm', onclick: stop, text: 'Stop' } },

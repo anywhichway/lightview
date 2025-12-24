@@ -139,7 +139,7 @@ const required = Select({
 
 // Insert all examples
 $('#example').content(
-    div({ class: 'space-y-4 max-w-md' }, basic, withLabel, required)
+    div({ style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' }, basic, withLabel, required)
 );</code></pre>
                             </div>
 
@@ -191,7 +191,7 @@ const required = {
 
 $('#example').content({
     tag: 'div',
-    attributes: { class: 'space-y-4 max-w-md' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
     children: [basic, withLabel, required]
 });</code></pre>
                             </div>
@@ -211,7 +211,7 @@ tags.Select = Select;
 
 $('#example').content({
     div: {
-        class: 'space-y-4 max-w-md',
+        style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem',
         children: [
             { 
                 Select: { 
@@ -313,7 +313,7 @@ const roleDescriptions = {
 };
 
 // Reactive select with validation
-const reactiveDemo = div({ class: 'space-y-4 max-w-md' },
+const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
     Select({ 
         label: 'User Role',
         placeholder: 'Assign a role...',
@@ -367,7 +367,7 @@ const roleDescriptions = {
 
 const reactiveDemo = {
     tag: 'div',
-    attributes: { class: 'space-y-4 max-w-md' },
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
     children: [
         {
             tag: Select,
@@ -431,7 +431,7 @@ const roleDescriptions = {
 
 const reactiveDemo = {
     div: {
-        class: 'space-y-4 max-w-md',
+        style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem',
         children: [
             {
                 Select: {
@@ -596,7 +596,7 @@ $('#example').content(reactiveDemo);</code></pre>
 
                     <!-- Colors Example -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" style="margin-bottom: 2rem;">
+                    <div class="grid grid-cols-2 md:grid-cols-4" style="margin-bottom: 2rem; gap: 1rem">
                         <select class="select select-primary">
                             <option>Primary</option>
                         </select>
