@@ -109,9 +109,9 @@
                                         type: 'module',
                                         height: '100px'
                                     });
-                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, Button } = tags;
 
 const buttons = div({ style: 'display: flex; gap: 0.5rem;' },
     Button({}, 'Default'),
@@ -131,16 +131,16 @@ $('#example').content(buttons);</code></pre>
                                         type: 'module',
                                         height: '100px'
                                     });
-                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/actions/button.js');
+const { $, tags } = Lightview;
 
 const buttons = {
     tag: 'div',
     attributes: { style: 'display: flex; gap: 0.5rem;' },
     children: [
-        { tag: Button, children: ['Default'] },
-        { tag: Button, attributes: { color: 'primary' }, children: ['Primary'] },
-        { tag: Button, attributes: { color: 'secondary' }, children: ['Secondary'] }
+        { tag: 'Button', children: ['Default'] },
+        { tag: 'Button', attributes: { color: 'primary' }, children: ['Primary'] },
+        { tag: 'Button', attributes: { color: 'secondary' }, children: ['Secondary'] }
     ]
 };
 
@@ -157,9 +157,8 @@ $('#example').content(buttons);</code></pre>
                                         height: '100px'
                                     });
                                 </script><code contenteditable="true">// Object DOM syntax now requires lightview-x.js
-const { default: Button } = await import('/components/actions/button.js');
-const { tags, $ } = Lightview;
-tags.Button = Button;
+await import('/components/actions/button.js');
+const { $ } = Lightview;
 
 const buttons = {
     div: {
@@ -208,7 +207,7 @@ $('#example').content(buttons);</code></pre>
                             <!-- Tabs -->
                             <script>
                                 window.switchReactiveSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`reactive-tab-btn-${t}`);
                                         const contentEl = document.getElementById(`reactive-syntax-${t}`);
@@ -229,6 +228,8 @@ $('#example').content(buttons);</code></pre>
                                     onclick="switchReactiveSyntaxTab('vdom')">vDOM</button>
                                 <button id="reactive-tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchReactiveSyntaxTab('object')">Object DOM</button>
+                                <button id="reactive-tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchReactiveSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -240,9 +241,9 @@ $('#example').content(buttons);</code></pre>
                                         type: 'module',
                                         height: '80px'
                                     });
-                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-const { div, span } = tags;
+const { div, span, Button } = tags;
 
 const isLoading = signal(false);
 
@@ -271,10 +272,11 @@ $('#example').content(button);</code></pre>
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
                                         type: 'module',
-                                        height: '80px'
+                                        minHeight: '80px'
                                     });
-                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/actions/button.js');
+const { signal, tags, $ } = Lightview;
+const { div, span, Button } = tags;
 
 const isLoading = signal(false);
 
@@ -315,9 +317,9 @@ $('#example').content(button);</code></pre>
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-tags.Button = Button;
+const { div, span, Button } = tags;
 
 const isLoading = signal(false);
 
@@ -348,6 +350,40 @@ const button = {
 };
 
 $('#example').content(button);</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="reactive-syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        type: 'module',
+                                        language: 'html',
+                                        height: '100px'
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Define a named signal globally --&gt;
+&lt;script&gt;
+window.signal = Lightview.signal;
+signal(false, 'btnLoading');
+&lt;/script&gt;
+
+&lt;!-- Import Button --&gt;
+&lt;script type="module" src="/components/actions/button.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; gap: 1rem; align-items: center;"&gt;
+    &lt;lv-button 
+        color="primary"
+        loading="${signal.get('btnLoading').value}"
+        onclick="signal.get('btnLoading').value = true; setTimeout(() => signal.get('btnLoading').value = false, 2000)"
+    &gt;
+        Save Changes
+    &lt;/lv-button&gt;
+    
+    &lt;span style="opacity: 0.7;"&gt;
+        ${signal.get('btnLoading').value ? '⏳ Saving...' : 'Click to test'}
+    &lt;/span&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>

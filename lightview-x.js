@@ -491,14 +491,39 @@
     const domToElements = (domNodes, element) => {
         return domNodes.map(node => {
             if (node.nodeType === Node.TEXT_NODE) {
-                const text = node.textContent.trim();
-                return text ? text : null;
+                const text = node.textContent;
+                // Skip formatting whitespace/empty text nodes if they don't contain template syntax
+                if (!text.trim() && !text.includes('${')) return null;
+
+                if (text.includes('${')) {
+                    return () => {
+                        try {
+                            const LV = window.Lightview;
+                            return new Function('state', 'signal', 'return `' + text + '`')(LV.state, LV.signal);
+                        } catch (e) {
+                            return "";
+                        }
+                    };
+                }
+                return text;
             }
             if (node.nodeType !== Node.ELEMENT_NODE) return null;
 
             const attributes = {};
             for (let attr of node.attributes) {
-                attributes[attr.name] = attr.value;
+                const value = attr.value;
+                if (value.includes('${')) {
+                    attributes[attr.name] = () => {
+                        try {
+                            const LV = window.Lightview;
+                            return new Function('state', 'signal', 'return `' + value + '`')(LV.state, LV.signal);
+                        } catch (e) {
+                            return "";
+                        }
+                    };
+                } else {
+                    attributes[attr.name] = value;
+                }
             }
 
             const children = domToElements(Array.from(node.childNodes), element);
@@ -1002,25 +1027,140 @@
         });
     };
 
+    // Track nodes to avoid double-processing
+    const processedNodes = new WeakSet();
+
     /**
-     * Setup MutationObserver to watch for added nodes with src attributes
+     * Activate reactive syntax (${...}) in existing DOM nodes
+     * Uses XPath for performance optimization
+     * @param {Node} root - Root node to start scanning from
+     * @param {Object} LV - Lightview instance
+     */
+    const activateReactiveSyntax = (root, LV) => {
+        if (!root || !LV) return;
+
+        // Helper to compile and bind effect
+        const bindEffect = (node, codeStr, isAttr = false, attrName = null) => {
+            if (processedNodes.has(node) && !isAttr) return; // Skip if node fully processed (for text)
+            // For attributes, we might process same element multiple times for diff attributes, 
+            // but the effect is per attribute so it's fine.
+            // We'll mark text nodes as processed. Attributes don't strictly need it if we trust the scanner not to duplicate.
+
+            if (!isAttr) processedNodes.add(node);
+
+            try {
+                // Determine if it's a single expression or a template string
+                // Single expression: "${...}" with no surrounding text and only one ${
+                const isSingleExpr = codeStr.trim().startsWith('${') &&
+                    codeStr.trim().endsWith('}') &&
+                    (codeStr.indexOf('${', 2) === -1);
+
+                let fnBody;
+                if (isSingleExpr) {
+                    // Extract expression: remove leading ${ and trailing }
+                    const expr = codeStr.trim().slice(2, -1);
+                    fnBody = 'return ' + expr;
+                } else {
+                    fnBody = 'return `' + codeStr + '`';
+                }
+
+                const fn = new Function('state', 'signal', fnBody);
+
+                LV.effect(() => {
+                    try {
+                        const val = fn(LV.state, LV.signal);
+                        if (isAttr) {
+                            if (val === null || val === undefined || val === false) {
+                                node.removeAttribute(attrName);
+                            } else {
+                                node.setAttribute(attrName, val);
+                            }
+                        } else {
+                            node.textContent = val !== undefined ? val : '';
+                        }
+                    } catch (e) {
+                        // Silent fail
+                    }
+                });
+            } catch (e) {
+                console.warn('Lightview: Failed to compile template literal', e);
+            }
+        };
+
+        // 1. Find Text Nodes containing '${'
+        const textXPath = ".//text()[contains(., '${')]";
+        const textResult = document.evaluate(
+            textXPath,
+            root,
+            null,
+            XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+            null
+        );
+
+        for (let i = 0; i < textResult.snapshotLength; i++) {
+            const node = textResult.snapshotItem(i);
+            // Verify it's not inside a script/style (XPath might pick them up if defined loosely)
+            if (node.parentElement && (node.parentElement.tagName === 'SCRIPT' || node.parentElement.tagName === 'STYLE')) continue;
+            bindEffect(node, node.textContent);
+        }
+
+        // 2. Find Elements with Attributes containing '${'
+        // XPath: select any element (*) that has an attribute (@*) containing '${'
+        const attrXPath = ".//*[@*[contains(., '${')]]";
+        const attrResult = document.evaluate(
+            attrXPath,
+            root,
+            null,
+            XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+            null
+        );
+
+        for (let i = 0; i < attrResult.snapshotLength; i++) {
+            const element = attrResult.snapshotItem(i);
+            if (element.tagName === 'SCRIPT' || element.tagName === 'STYLE') continue;
+
+            // Iterate attributes to find matches (XPath found the element, but not *which* attribute)
+            Array.from(element.attributes).forEach(attr => {
+                if (attr.value.includes('${')) {
+                    bindEffect(element, attr.value, true, attr.name);
+                }
+            });
+        }
+
+        // Also check the root itself (XPath .// does not always include the context node for attributes depending on implementation details, safer to check manually if root is element)
+        if (root.nodeType === Node.ELEMENT_NODE && root.tagName !== 'SCRIPT' && root.tagName !== 'STYLE') {
+            Array.from(root.attributes).forEach(attr => {
+                if (attr.value.includes('${')) {
+                    bindEffect(root, attr.value, true, attr.name);
+                }
+            });
+        }
+    };
+
+    /**
+     * Setup MutationObserver to watch for added nodes with src attributes OR reactive syntax
      * @param {Object} LV - Lightview instance
      */
     const setupSrcObserver = (LV) => {
         const observer = new MutationObserver((mutations) => {
             // Collect all nodes to process
             const nodesToProcess = [];
+            const nodesToActivate = [];
 
             for (const mutation of mutations) {
                 // Handle added nodes
                 if (mutation.type === 'childList') {
                     for (const node of mutation.addedNodes) {
+                        if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
+                            nodesToActivate.push(node);
+                        }
+
                         if (node.nodeType !== Node.ELEMENT_NODE) continue;
 
-                        // Check the added node itself
+                        // Check the added node itself for src
                         nodesToProcess.push(node);
 
-                        // Check descendants with src attribute (excluding standard src tags)
+                        // Check descendants with src attribute
                         const selector = '[src]:not(' + STANDARD_SRC_TAGS.join('):not(') + ')';
                         const descendants = node.querySelectorAll(selector);
                         for (const desc of descendants) {
@@ -1029,16 +1169,16 @@
                     }
                 }
 
-                // Handle attribute changes (specifically 'src' attribute)
+                // Handle attribute changes
                 if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
                     nodesToProcess.push(mutation.target);
                 }
             }
 
-            // Defer processing to next animation frame for batching
-            // Router now sets URL before content insertion, ensuring correct base path
-            if (nodesToProcess.length > 0) {
+            // Batch processing
+            if (nodesToProcess.length > 0 || nodesToActivate.length > 0) {
                 requestAnimationFrame(() => {
+                    nodesToActivate.forEach(node => activateReactiveSyntax(node, LV));
                     nodesToProcess.forEach(node => processSrcOnNode(node, LV));
                 });
             }
@@ -1071,19 +1211,21 @@
             setupSrcObserver(LV);
         }
 
-        // Also process any existing elements with src attributes on non-standard tags
-        if (document.body) {
+        // Also process any existing elements
+        const initialScan = () => {
             requestAnimationFrame(() => {
+                activateReactiveSyntax(document.body, LV);
+
                 const selector = '[src]:not(' + STANDARD_SRC_TAGS.join('):not(') + ')';
                 const nodes = document.querySelectorAll(selector);
                 nodes.forEach(node => processSrcOnNode(node, LV));
             });
+        };
+
+        if (document.body) {
+            initialScan();
         } else {
-            document.addEventListener('DOMContentLoaded', () => {
-                const selector = '[src]:not(' + STANDARD_SRC_TAGS.join('):not(') + ')';
-                const nodes = document.querySelectorAll(selector)
-                nodes.forEach(node => processSrcOnNode(node, LV));
-            });
+            document.addEventListener('DOMContentLoaded', initialScan);
         }
 
         // Register href click handler
@@ -1179,40 +1321,59 @@
                     }
                 });
 
-                // Collect props from attributes
-                const props = {};
-                for (const attr of this.attributes) {
-                    // Convert boolean attributes
-                    if (attr.value === '') {
-                        props[attr.name] = true;
-                    } else {
-                        props[attr.name] = attr.value;
+                // Define render function
+                this.render = () => {
+                    // Collect props from attributes
+                    const props = {};
+                    for (const attr of this.attributes) {
+                        // Convert boolean attributes
+                        if (attr.value === '') {
+                            props[attr.name] = true;
+                        } else {
+                            props[attr.name] = attr.value;
+                        }
                     }
-                }
 
-                // Force useShadow: false to avoid double shadow
-                props.useShadow = false;
+                    // Force useShadow: false to avoid double shadow
+                    props.useShadow = false;
 
-                // Render component with a slot for children
-                // This allows <my-btn>Click Me</my-btn> to work via projection
-                const slot = window.Lightview.tags.slot();
+                    // Render component with a slot for children
+                    const slot = window.Lightview.tags.slot();
+                    const result = Component(props, slot);
 
-                const result = Component(props, slot);
+                    // Convert result to DOM
+                    let content = result;
+                    if (result && result.domEl) {
+                        content = result.domEl;
+                    }
 
-                // Convert result to DOM
-                let content = result;
-                if (result && result.domEl) {
-                    content = result.domEl;
-                }
+                    // Clear previous content in themeWrapper
+                    this.themeWrapper.innerHTML = '';
 
-                if (content instanceof Node) {
-                    this.themeWrapper.appendChild(content);
-                }
+                    if (content instanceof Node) {
+                        this.themeWrapper.appendChild(content);
+                    }
+                };
+
+                // Initial render
+                this.render();
+
+                // Observe attribute changes on self to trigger re-render
+                this.attrObserver = new MutationObserver((mutations) => {
+                    // Only re-render if actual attributes changed
+                    this.render();
+                });
+                this.attrObserver.observe(this, {
+                    attributes: true
+                });
             }
 
             disconnectedCallback() {
                 if (this.themeObserver) {
                     this.themeObserver.disconnect();
+                }
+                if (this.attrObserver) {
+                    this.attrObserver.disconnect();
                 }
             }
         };

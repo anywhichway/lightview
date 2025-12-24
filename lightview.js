@@ -395,6 +395,12 @@
                 child = Lightview.hooks.processChild(child) ?? child;
             }
 
+            // Handle nested arrays (flattening)
+            if (Array.isArray(child)) {
+                childElements.push(...processChildren(child, targetNode, false));
+                continue;
+            }
+
             // Handle shadowDOM markers - attach shadow to parent and process shadow children
             if (isShadowDOMMarker(child)) {
                 // targetNode is the parent element that should get the shadow root

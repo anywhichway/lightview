@@ -34,14 +34,16 @@
             I didn't want to choose. I wanted a framework that supported <em>all</em> approaches. None of them quite hit
             the mark on their own. Plus, I wanted something none provided, template literals right inside HTML. I
             wanted a rich component library (with
-            charts!) without having to build everything from scratch.
+            charts!) without having to build everything from scratch available as both JavaScript and custom HTML
+            elements.
         </p>
 
         <p>
             I wanted something that felt more like regular HTML than even HTMX does. I wanted an un-opinionated router
             and
             at least partial "automatic" SSR—where code could execute and replace itself on the server with a simple
-            DOM emulation.
+            DOM emulation and "have-your-cake-and-eat-it-too" single page apps that are SEO enabled without any extra
+            work.
         </p>
 
         <p>
@@ -53,15 +55,17 @@
             In today's age, the ability of an LLM to generate cohensive applications using the library is also important
             to me. If figured that if an LLM generated it and it followed conventional patterns if will be able to use
             it well.
-            I alos wanted to explore the how to avoid the sloppy code that LLMs can generate.
+            I also wanted to explore the how to avoid the sloppy code that LLMs can generate.
         </p>
 
         <p>
             So, I decided to run an experiment. I told the Claude Opus 4.5 via Google Antigravity to "create me the
             combo of HTMX, Bau, and
-            Juris with no special attribute names plus HTML template literals and an SPA router. And, give me a UI
+            Juris with no special attribute names plus HTML template literals, and an SPA router. And, give me a UI
             component library like
-            Bau's but don't build it from scratch." I also provied a few examples of the kind of code I wanted to write
+            Bau's with automatic custom elment creation but don't build it from scratch. Finally, make it possible to
+            create SEO enabled apps with no extra work" I also provied a few examples of the kind of code I wanted to
+            write
             using the library.
         </p>
 

@@ -37,14 +37,18 @@ function examplify(target, options = {}) {
 
 
 
-    // Set up message listener for auto-resize
-    if (autoResize) {
-        window.addEventListener('message', (event) => {
-            if (event.data && event.data.type === 'examplify-resize' && event.data.id === iframeId) {
-                iframe.style.height = Math.max(minHeight, Math.min(event.data.height + 2, maxHeight)) + 'px';
-            }
-        });
-    }
+    // Set up message listener for resize and ready state
+    window.addEventListener('message', (event) => {
+        if (!event.data || event.data.id !== iframeId) return;
+
+        if (event.data.type === 'examplify-resize' && autoResize) {
+            iframe.style.height = Math.max(minHeight, Math.min(event.data.height + 2, maxHeight)) + 'px';
+        }
+
+        if (event.data.type === 'examplify-ready') {
+            iframe.style.opacity = '1';
+        }
+    });
 
     // 3. Create iframe after target
     let iframe = createIframe(target.textContent);
@@ -72,6 +76,8 @@ function examplify(target, options = {}) {
     function createIframe(content) {
         const frame = document.createElement('iframe');
         frame.className = 'examplify-iframe';
+        frame.style.opacity = '0'; // Start hidden
+        frame.style.transition = 'opacity 0.2s ease-in';
         frame.sandbox = `${allowSameOrigin ? 'allow-same-origin ' : ''}allow-scripts`;
         // Auto-resize script that posts height to parent
         const autoResizeScript = autoResize ? `
@@ -118,11 +124,24 @@ function examplify(target, options = {}) {
     ${styles ? styles.map(href => `<link rel="stylesheet" href="${href}">`).join('\n') : ''}
     ${modules ? modules.map(src => `<script type="module" src="${src}"><\/script>`).join('\n') : ''}
     ${scripts ? scripts.map(src => `<script src="${src}"><\/script>`).join('\n') : ''}
+    <script type="module">
+        if (window.LightviewX) {
+            await window.LightviewX.initComponents({ shadowDefault: true });
+        }
+    </script>
 </head>
 <body>
     ${language === 'html' ? content : (html ? html : '<div id="example"></div>')}
     ${language === 'html' ? '' : `<script ${type ? `type="${type}"` : ''}>const render = (content) => { const target = document.querySelector('#example'); target.innerHTML = ''; target.insertAdjacentElement('afterbegin', content.domEl || content)};${type === 'module' ? content : `window.addEventListener('load', async () => {${content}})`}<\/script>`}
     ${autoResizeScript}
+    <script>
+        window.addEventListener('load', () => {
+            // Short delay to ensure modules have run nicely
+            setTimeout(() => {
+                parent.postMessage({ type: 'examplify-ready', id: '${iframeId}' }, '*');
+            }, 50);
+        });
+    </script>
 </body>
 </html>`;
         frame.srcdoc = doc;
