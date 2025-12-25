@@ -16,7 +16,8 @@
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
         <!-- Sidebar -->
-        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden" src="./component-nav.html"></div>
+        <div id="gallery-sidebar" class="gallery-sidebar" style="visibility: hidden"
+            src="/docs/components/component-nav.html"></div>
 
         <!-- Main Content -->
         <div id="gallery-main" class="gallery-main">
@@ -83,12 +84,13 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 105
                                     });
-                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
-const { tags, $ } = Lightview;
-const { div } = tags;
+                                </script><code contenteditable="true">await import('/components/actions/button.js');
+const { $, tags } = Lightview;
+const { div, Button } = tags;
 
 const app = div({ style: 'padding: 1rem; display: flex; gap: 0.5rem;' },
     Button({ color: 'primary' }, 'Save'),
@@ -103,14 +105,16 @@ $('#example').content(app);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 105
                                     });
-                                </script><code contenteditable="true">const { default: Button } = await import('/components/actions/button.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/actions/button.js');
+const { $, tags } = Lightview;
+const { div, Button } = tags;
 
 const app = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'padding: 1rem; display: flex; gap: 0.5rem;' },
     children: [
         { tag: Button, attributes: { color: 'primary' }, children: ['Save'] },
@@ -126,13 +130,13 @@ $('#example').content(app);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 105
                                     });
                                 </script><code contenteditable="true">// Object DOM syntax now requires lightview-x.js
-const { default: Button } = await import('/components/actions/button.js');
-const { tags, $ } = Lightview;
-tags.Button = Button;
+await import('/components/actions/button.js');
+const { $ } = Lightview;
 
 const app = {
     div: {
@@ -152,6 +156,7 @@ $('#example').content(app);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         language: 'html',
                                         minHeight: 105
@@ -228,10 +233,10 @@ $('#example').content(app);</code></pre>
 
 <!-- Buttons Section -->
 <script type="module">
-    const { default: Button } = await import('/components/actions/button.js');
-    const { default: Card } = await import('/components/data-display/card.js');
+    await import('/components/actions/button.js');
+    await import('/components/data-display/card.js');
     const { tags, $ } = Lightview;
-    const { div, span, a } = tags;
+    const { div, span, a, Button, Card } = tags;
 
     const content = div({},
         div({ class: "section-header" },
@@ -281,18 +286,18 @@ $('#example').content(app);</code></pre>
 
 <!-- Inputs Section -->
 <script type="module">
-    const { default: Input } = await import('/components/data-input/input.js');
-    const { default: Select } = await import('/components/data-input/select.js');
-    const { default: FileInput } = await import('/components/data-input/file-input.js');
-    const { default: Range } = await import('/components/data-input/range.js');
-    const { default: Textarea } = await import('/components/data-input/textarea.js');
-    const { default: Rating } = await import('/components/data-input/rating.js');
-    const { default: Checkbox } = await import('/components/data-input/checkbox.js');
-    const { default: Toggle } = await import('/components/data-input/toggle.js');
-    const { default: Radio } = await import('/components/data-input/radio.js');
-    const { default: Card } = await import('/components/data-display/card.js');
+    await import('/components/data-input/input.js');
+    await import('/components/data-input/select.js');
+    await import('/components/data-input/file-input.js');
+    await import('/components/data-input/range.js');
+    await import('/components/data-input/textarea.js');
+    await import('/components/data-input/rating.js');
+    await import('/components/data-input/checkbox.js');
+    await import('/components/data-input/toggle.js');
+    await import('/components/data-input/radio.js');
+    await import('/components/data-display/card.js');
     const { tags, $ } = Lightview;
-    const { div, span, a, option } = tags;
+    const { div, span, a, option, Input, Select, FileInput, Range, Textarea, Rating, Checkbox, Toggle, Radio, Card } = tags;
 
     const content = div({},
         div({ class: "section-header" },
@@ -379,10 +384,10 @@ $('#example').content(app);</code></pre>
 
 <!-- Cards Section -->
 <script type="module">
-    const { default: Card } = await import('/components/data-display/card.js');
-    const { default: Button } = await import('/components/actions/button.js');
+    await import('/components/data-display/card.js');
+    await import('/components/actions/button.js');
     const { tags, $ } = Lightview;
-    const { div, span, a, p, img } = tags;
+    const { div, span, a, p, img, Card, Button } = tags;
 
     const content = div({},
         div({ class: "section-header" },
@@ -422,9 +427,9 @@ $('#example').content(app);</code></pre>
 
 <!-- Alerts Section -->
 <script type="module">
-    const { default: Alert } = await import('/components/data-display/alert.js');
+    await import('/components/data-display/alert.js');
     const { tags, $ } = Lightview;
-    const { div, span, a } = tags;
+    const { div, span, a, Alert } = tags;
 
     const content = div({},
         div({ class: "section-header" },
@@ -442,11 +447,11 @@ $('#example').content(app);</code></pre>
 
 <!-- Badges & Avatars Section -->
 <script type="module">
-    const { default: Badge } = await import('/components/data-display/badge.js');
-    const { default: Avatar } = await import('/components/data-display/avatar.js');
-    const { default: Card } = await import('/components/data-display/card.js');
+    await import('/components/data-display/badge.js');
+    await import('/components/data-display/avatar.js');
+    await import('/components/data-display/card.js');
     const { tags, $ } = Lightview;
-    const { div, span, a } = tags;
+    const { div, span, a, Badge, Avatar, Card } = tags;
 
     const content = div({ class: "component-grid-2" },
         div({},
@@ -487,9 +492,9 @@ $('#example').content(app);</code></pre>
 
 <!-- Stats Section -->
 <script type="module">
-    const { default: Stats } = await import('/components/data-display/stats.js');
+    await import('/components/data-display/stats.js');
     const { tags, $ } = Lightview;
-    const { div, span, a } = tags;
+    const { div, span, a, Stats } = tags;
 
     const content = div({},
         div({ class: "section-header" },
@@ -515,10 +520,10 @@ $('#example').content(app);</code></pre>
 
 <!-- Charts Section -->
 <script type="module">
-    const { default: Chart } = await import('/components/data-display/chart.js');
-    const { default: Card } = await import('/components/data-display/card.js');
+    await import('/components/data-display/chart.js');
+    await import('/components/data-display/card.js');
     const { tags, $ } = Lightview;
-    const { div, span, a, tr, th, td } = tags;
+    const { div, span, a, tr, th, td, Chart, Card } = tags;
 
     const content = div({},
         div({ class: "section-header" },
@@ -554,12 +559,12 @@ $('#example').content(app);</code></pre>
 
 <!-- Progress Section -->
 <script type="module">
-    const { default: Progress } = await import('/components/data-display/progress.js');
-    const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
-    const { default: Loading } = await import('/components/data-display/loading.js');
-    const { default: Card } = await import('/components/data-display/card.js');
+    await import('/components/data-display/progress.js');
+    await import('/components/data-display/radial-progress.js');
+    await import('/components/data-display/loading.js');
+    await import('/components/data-display/card.js');
     const { tags, $ } = Lightview;
-    const { div, span, a } = tags;
+    const { div, span, a, Progress, RadialProgress, Loading, Card } = tags;
 
     const content = div({},
         div({ class: "section-header" },
@@ -597,9 +602,9 @@ $('#example').content(app);</code></pre>
 
 <!-- Steps Section -->
 <script type="module">
-    const { default: Steps } = await import('/components/navigation/steps.js');
+    await import('/components/navigation/steps.js');
     const { tags, $ } = Lightview;
-    const { div, span, a } = tags;
+    const { div, span, a, Steps } = tags;
 
     const content = div({},
         div({ class: "section-header" },
@@ -621,9 +626,9 @@ $('#example').content(app);</code></pre>
 
 <!-- Chat Section -->
 <script type="module">
-    const { default: Chat } = await import('/components/data-display/chat.js');
+    await import('/components/data-display/chat.js');
     const { tags, $ } = Lightview;
-    const { div, span, a, time } = tags;
+    const { div, span, a, time, Chat } = tags;
 
     const content = div({},
         div({ class: "section-header" },
@@ -660,9 +665,9 @@ $('#example').content(app);</code></pre>
 
 <!-- Timeline Section -->
 <script type="module">
-    const { default: Timeline } = await import('/components/data-display/timeline.js');
+    await import('/components/data-display/timeline.js');
     const { tags, $ } = Lightview;
-    const { div, span, a } = tags;
+    const { div, span, a, Timeline } = tags;
 
     const content = div({},
         div({ class: "section-header" },
@@ -702,9 +707,9 @@ $('#example').content(app);</code></pre>
 
 <!-- Table Section -->
 <script type="module">
-    const { default: Table } = await import('/components/data-display/table.js');
+    await import('/components/data-display/table.js');
     const { tags, $ } = Lightview;
-    const { div, span, a, tr, th, td } = tags;
+    const { div, span, a, tr, th, td, Table } = tags;
 
     const content = div({},
         div({ class: "section-header" },

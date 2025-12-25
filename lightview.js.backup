@@ -18,7 +18,22 @@
 
     const signalRegistry = new Map();
 
+    // Helper to attach .for() method to arrays for list reconciliation
+    const enhanceArray = (arr) => {
+        if (!Array.isArray(arr)) return;
+        // Avoid redefining if already present
+        if (arr.hasOwnProperty('for')) return;
+        Object.defineProperty(arr, 'for', {
+            configurable: true,
+            enumerable: false,
+            value: function (fn) {
+                return { [LIST_MARKER]: true, items: this, fn };
+            }
+        });
+    };
+
     const signal = (initialValue, name) => {
+        enhanceArray(initialValue);
         let value = initialValue;
         const subscribers = new Set();
 
@@ -37,6 +52,7 @@
             },
             set(newValue) {
                 if (value !== newValue) {
+                    enhanceArray(newValue);
                     value = newValue;
                     // Copy subscribers to avoid infinite loop when effect re-subscribes during iteration
                     [...subscribers].forEach(effect => effect());
@@ -99,6 +115,7 @@
     // ============= SHADOW DOM SUPPORT =============
     // Marker symbol to identify shadowDOM directives
     const SHADOW_DOM_MARKER = Symbol('lightview.shadowDOM');
+    const LIST_MARKER = Symbol('lightview.list');
 
     /**
      * Create a shadowDOM directive marker
@@ -428,6 +445,8 @@
                     targetNode.appendChild(wrapper);
 
                     let runner;
+                    let oldState = []; // State for list reconciliation
+
                     const update = () => {
                         const val = child();
                         // Check if wrapper is still in the DOM (skip check on first run)
@@ -435,9 +454,17 @@
                             runner.stop();
                             return;
                         }
-                        const childrenToProcess = Array.isArray(val) ? val : [val];
-                        // processChildren handles clearing existing content via 3rd arg=true
-                        processChildren(childrenToProcess, wrapper, true);
+
+                        if (val && val[LIST_MARKER]) {
+                            // Optimized list reconciliation
+                            oldState = reconcileList(wrapper, oldState, val.items, val.fn);
+                        } else {
+                            // Full re-render fallback
+                            oldState = []; // Reset optimization state
+                            const childrenToProcess = Array.isArray(val) ? val : [val];
+                            // processChildren handles clearing existing content via 3rd arg=true
+                            processChildren(childrenToProcess, wrapper, true);
+                        }
                     };
 
                     runner = effect(update);
@@ -467,6 +494,76 @@
         }
 
         return childElements;
+    };
+
+    /**
+     * Efficiently reconcile list items to minimize DOM operations
+     */
+    const reconcileList = (parent, oldState, newItems, renderFn) => {
+        const reuse = new Map();
+
+        // 1. Map old nodes for potential reuse
+        for (const entry of oldState) {
+            let list = reuse.get(entry.item);
+            if (!list) { list = []; reuse.set(entry.item, list); }
+            list.push(entry.node);
+        }
+
+        const newState = [];
+
+        // 2. Build new state, reusing nodes where possible
+        for (const item of newItems) {
+            let node;
+            const list = reuse.get(item);
+            if (list && list.length > 0) {
+                // Reuse existing node for this item
+                node = list.shift();
+            } else {
+                // Create new node from render function
+                const raw = renderFn(item);
+
+                // Use a temporary container to process the result into DOM nodes
+                const temp = document.createElement('div');
+                // processChildren returns the Lightview wrappers/proxies; we need the DOM nodes
+                processChildren([raw], temp, false);
+
+                if (temp.childNodes.length === 1) {
+                    node = temp.firstChild;
+                } else if (temp.childNodes.length === 0) {
+                    node = document.createTextNode('');
+                } else {
+                    // Multiple nodes returned for one item, wrap in span
+                    node = document.createElement('span');
+                    node.style.display = 'contents';
+                    while (temp.firstChild) {
+                        node.appendChild(temp.firstChild);
+                    }
+                }
+            }
+            newState.push({ item, node });
+        }
+
+        // 3. Remove unused nodes
+        for (const list of reuse.values()) {
+            for (const n of list) {
+                n.remove();
+            }
+        }
+
+        // 4. Reorder/Append nodes in valid order
+        let sibling = parent.firstChild;
+        for (const entry of newState) {
+            const domNode = entry.node;
+            if (sibling === domNode) {
+                // Already in place
+                sibling = sibling.nextSibling;
+            } else {
+                // Needs to be moved or inserted
+                parent.insertBefore(domNode, sibling);
+            }
+        }
+
+        return newState;
     };
 
     /**
@@ -595,7 +692,6 @@
     const tags = new Proxy({}, {
         get(_, tag) {
             if (tag === "_customTags") return { ...customTags };
-
             const wrapper = (...args) => {
                 let attributes = {};
                 let children = args;
@@ -607,10 +703,9 @@
                 return element(customTags[tag] || tag, attributes, children.flat());
             };
 
-            // Lift static methods/properties from the component onto the wrapper
-            // This allows patterns like Card.Figure to work when Card is retrieved from tags
-            if (customTags[tag]) {
-                Object.assign(wrapper, customTags[tag]);
+            const original = customTags[tag];
+            if (original) {
+                Object.assign(wrapper, original);
             }
 
             return wrapper;

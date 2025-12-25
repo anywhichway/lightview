@@ -80,7 +80,9 @@
             // Access custom registry via Lightview.tags._customTags if available
             let tag = tagKey;
             if (typeof window !== 'undefined' && window.Lightview && window.Lightview.tags) {
-                const customTags = window.Lightview.tags._customTags || {};
+                const tags = window.Lightview.tags;
+                const customTags = tags._customTags || {};
+
                 if (customTags[tagKey]) {
                     tag = customTags[tagKey];
                 }
@@ -476,10 +478,15 @@
     // Template literal processing: converts "${...}" strings to reactive functions
     const processTemplateChild = (child, { state, signal }) => {
         if (typeof child === 'string' && child.includes('${')) {
-            const template = child;
+            let fn;
+            try {
+                fn = new Function('state', 'signal', 'return `' + child + '`');
+            } catch (e) {
+                return () => "";
+            }
             return () => {
                 try {
-                    return new Function('state', 'signal', 'return `' + template + '`')(state, signal);
+                    return fn(state, signal);
                 } catch (e) {
                     return "";
                 }
@@ -488,27 +495,29 @@
         return child; // No transformation needed
     };
 
-    const domToElements = (domNodes, element, parentTagName = null) => {
-        // Check if we're inside a script or style element - preserve raw content
-        const isRawContent = parentTagName === 'script' || parentTagName === 'style';
-
+    const domToElements = (domNodes, element) => {
         return domNodes.map(node => {
             if (node.nodeType === Node.TEXT_NODE) {
-                const text = node.textContent;
-
-                // For script/style content, always return raw text
-                if (isRawContent) {
-                    return text;
+                // Return text as-is if inside SCRIPT or STYLE tags to preserve code/styles
+                if (node.parentNode && (node.parentNode.tagName === 'SCRIPT' || node.parentNode.tagName === 'STYLE')) {
+                    return node.textContent;
                 }
 
+                const text = node.textContent;
                 // Skip formatting whitespace/empty text nodes if they don't contain template syntax
                 if (!text.trim() && !text.includes('${')) return null;
 
                 if (text.includes('${')) {
+                    let fn;
+                    try {
+                        fn = new Function('state', 'signal', 'return `' + text + '`');
+                    } catch (e) {
+                        return null;
+                    }
                     return () => {
                         try {
                             const LV = window.Lightview;
-                            return new Function('state', 'signal', 'return `' + text + '`')(LV.state, LV.signal);
+                            return fn(LV.state, LV.signal);
                         } catch (e) {
                             return "";
                         }
@@ -518,19 +527,20 @@
             }
             if (node.nodeType !== Node.ELEMENT_NODE) return null;
 
-            const tagName = node.tagName.toLowerCase();
             const attributes = {};
-
-            // Skip template processing for script/style attributes too
-            const skipTemplateProcessing = tagName === 'script' || tagName === 'style';
-
             for (let attr of node.attributes) {
                 const value = attr.value;
-                if (!skipTemplateProcessing && value.includes('${')) {
+                if (value.includes('${')) {
+                    let fn;
+                    try {
+                        fn = new Function('state', 'signal', 'return `' + value + '`');
+                    } catch (e) {
+                        fn = () => "";
+                    }
                     attributes[attr.name] = () => {
                         try {
                             const LV = window.Lightview;
-                            return new Function('state', 'signal', 'return `' + value + '`')(LV.state, LV.signal);
+                            return fn(LV.state, LV.signal);
                         } catch (e) {
                             return "";
                         }
@@ -540,9 +550,8 @@
                 }
             }
 
-            // Pass the current tag name so children know their parent context
-            const children = domToElements(Array.from(node.childNodes), element, tagName);
-            return element(tagName, attributes, children);
+            const children = domToElements(Array.from(node.childNodes), element);
+            return element(node.tagName.toLowerCase(), attributes, children);
         }).filter(n => n !== null);
     };
 
@@ -749,7 +758,7 @@
                 el.domEl.attachShadow({ mode: 'open' });
             }
             setupChildren(elements, el.domEl.shadowRoot);
-            executeScripts(el.domEl.shadowRoot);
+            // executeScripts(el.domEl.shadowRoot);
             return;
         }
 
@@ -798,7 +807,7 @@
                     el.domEl.parentElement.insertBefore(fragment, el.domEl.nextSibling);
                 }
                 // Execute scripts after insertion
-                executeScripts(parent);
+                // executeScripts(parent);
                 break;
             }
 
@@ -833,7 +842,7 @@
                 fragment.appendChild(createMarker(markerId, true));
                 el.domEl.insertBefore(fragment, el.domEl.firstChild);
                 // Execute scripts after insertion
-                executeScripts(el.domEl);
+                // executeScripts(el.domEl);
                 break;
             }
 
@@ -866,7 +875,7 @@
 
                 el.domEl.appendChild(createMarker(markerId, true));
                 // Execute scripts after insertion
-                executeScripts(el.domEl);
+                // executeScripts(el.domEl);
                 break;
             }
 
@@ -907,7 +916,7 @@
                 fragment.appendChild(createMarker(markerId, true));
                 parent.replaceChild(fragment, el.domEl);
                 // Execute scripts after insertion
-                executeScripts(parent);
+                // executeScripts(parent);
                 break;
             }
 
@@ -916,7 +925,7 @@
                 // Replace all children (original behavior)
                 el.children = elements;
                 // Execute scripts after children are set
-                executeScripts(el.domEl);
+                // executeScripts(el.domEl);
                 break;
             }
         }
@@ -1251,12 +1260,20 @@
             });
         };
 
+        // Expose state and signal on Lightview object for DOM processing usage
+        LV.state = state;
+
         // Extend template literal processor to existing processChild hook
         const existingProcessChild = LV.hooks.processChild;
         LV.hooks.processChild = (child) => {
-            // First, use the existing hook (Object DOM conversion from lightview.js)
+            // First, use the existing hook
             if (existingProcessChild) {
                 child = existingProcessChild(child) ?? child;
+            }
+
+            // Convert Object DOM syntax if applicable
+            if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
+                child = convertObjectDOM(child);
             }
 
             // Then process template literals
@@ -1414,29 +1431,5 @@
         window.LightviewX = LightviewX;
     }
 
-    // Initialize component hook to use Object DOM
-    if (typeof window !== 'undefined') {
-        window.addEventListener('load', () => {
-            if (window.Lightview) {
-                window.Lightview.hooks.processChild = (child) => {
-                    // Convert Object DOM syntax if applicable
-                    if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
-                        return convertObjectDOM(child);
-                    }
-                    return child;
-                };
-            }
-        });
 
-        // Immediate check in case load already fired or script is defer
-        if (window.Lightview) {
-            window.Lightview.hooks.processChild = (child) => {
-                // Convert Object DOM syntax if applicable
-                if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
-                    return convertObjectDOM(child);
-                }
-                return child;
-            };
-        }
-    }
 })();

@@ -129,10 +129,11 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    column-count: 3;
-    column-gap: 0.5rem;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
     overflow-y: auto;
+    max-height: calc(100vh - 120px);
 }
 
 .sidebar-nav li {
