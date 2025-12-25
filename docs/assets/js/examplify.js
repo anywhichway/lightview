@@ -183,12 +183,55 @@ function examplify(target, options = {}) {
 <html>
 <head>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; padding: 1rem; margin: 0; }
+        /* Hide body until stylesheets are loaded to prevent FOUC */
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            padding: 1rem; 
+            margin: 0; 
+            opacity: 0;
+            transition: opacity 0.15s ease-in;
+        }
+        body.styles-ready { opacity: 1; }
     </style>
     ${styles ? styles.map(href => `<link rel="stylesheet" href="${href}">`).join('\n') : ''}
+    <script>
+        // Synchronously create the stylesheet-ready promise before any modules execute
+        window.__stylesheetsReady = (function() {
+            return new Promise(resolve => {
+                // Use requestAnimationFrame to ensure DOM is ready for querying
+                requestAnimationFrame(() => {
+                    const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+                    if (links.length === 0) {
+                        resolve();
+                        return;
+                    }
+                    
+                    let loaded = 0;
+                    const checkDone = () => {
+                        loaded++;
+                        if (loaded >= links.length) resolve();
+                    };
+                    
+                    links.forEach(link => {
+                        if (link.sheet) {
+                            checkDone();
+                        } else {
+                            link.addEventListener('load', checkDone);
+                            link.addEventListener('error', checkDone);
+                        }
+                    });
+                    
+                    // Fallback timeout
+                    setTimeout(resolve, 2000);
+                });
+            });
+        })();
+    <\/script>
     ${modules ? modules.map(src => `<script type="module" src="${src}"><\/script>`).join('\n') : ''}
     ${scripts ? scripts.map(src => `<script src="${src}"><\/script>`).join('\n') : ''}
     <script type="module">
+        // Wait for stylesheets before initializing Lightview components
+        await window.__stylesheetsReady;
         if (window.LightviewX) {
             await window.LightviewX.initComponents({ shadowDefault: true });
         }
@@ -208,11 +251,18 @@ function examplify(target, options = {}) {
                 target.insertAdjacentElement('afterbegin', content);
             }
         };
-        ${type === 'module' ? codeContent : `window.addEventListener('load', async () => {${codeContent}})`}
+        ${type === 'module' ? codeContent : `
+            // Wait for stylesheets before running example code
+            window.__stylesheetsReady.then(async () => {
+                ${codeContent}
+            });
+        `}
     <\/script>`}
     ${autoResizeScript}
     <script>
-        window.addEventListener('load', () => {
+        // Reveal body and signal ready only after stylesheets are loaded
+        window.__stylesheetsReady.then(() => {
+            document.body.classList.add('styles-ready');
             setTimeout(() => {
                 parent.postMessage({ type: 'examplify-ready', id: '${iframeId}' }, '*');
             }, 50);
