@@ -197,18 +197,18 @@ const Checkbox = (props = {}) => {
     const formControl = div({
         class: `form-control ${className}`.trim()
     },
-        label({ class: 'label cursor-pointer justify-start gap-3' },
+        label({ class: 'label cursor-pointer', style: 'justify-content: flex-start; gap: 0;' },
             checkboxInput,
-            labelContent.length > 0 ? div({ class: 'flex flex-col' },
+            labelContent.length > 0 ? div({ style: 'display: flex; flex-direction: column; margin-left: 0.5rem;' },
                 ...labelContent,
-                description ? span({ class: 'label-text-alt opacity-70' }, description) : null
+                description ? span({ class: 'label-text-alt', style: 'opacity: 0.7;' }, description) : null
             ) : null
         ),
         // Error message
         (validate || error || required) ? () => {
             const currentError = getError();
             return currentError
-                ? p({ class: 'label text-error text-sm', role: 'alert' }, currentError)
+                ? p({ class: 'label', style: 'color: oklch(var(--er)); font-size: 0.875rem;', role: 'alert' }, currentError)
                 : null;
         } : null
     );
@@ -241,4 +241,13 @@ const Checkbox = (props = {}) => {
 // Auto-register
 window.Lightview.tags.Checkbox = Checkbox;
 
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const CheckboxElement = window.LightviewX.createCustomElement(Checkbox);
+    if (!customElements.get('lv-checkbox')) {
+        customElements.define('lv-checkbox', CheckboxElement);
+    }
+}
+
 export default Checkbox;
+

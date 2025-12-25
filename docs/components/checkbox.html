@@ -71,7 +71,7 @@
                             <!-- Tabs -->
                             <script>
                                 window.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -93,6 +93,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -101,12 +103,13 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+                                </script><code contenteditable="true">await import('/components/data-input/checkbox.js');
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, Checkbox } = tags;
 
 // 1. Basic checkbox
 const basic = Checkbox({ 
@@ -145,11 +148,13 @@ $('#example').content(
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-input/checkbox.js');
+const { $, tags } = Lightview;
+const { Checkbox } = tags;
 
 const basic = {
     tag: Checkbox,
@@ -195,12 +200,12 @@ $('#example').content({
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+                                </script><code contenteditable="true">await import('/components/data-input/checkbox.js');
 const { tags, $ } = Lightview;
-tags.Checkbox = Checkbox;
 
 $('#example').content({
     div: {
@@ -230,6 +235,28 @@ $('#example').content({
         ]
     }
 });</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-checkbox) --&gt;
+&lt;script type="module" src="/components/data-input/checkbox.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; flex-direction: column; gap: 1rem"&gt;
+    &lt;lv-checkbox label="Remember me"&gt;&lt;/lv-checkbox&gt;
+    &lt;lv-checkbox label="Subscribe to newsletter" description="Get weekly updates on new features" color="primary"&gt;&lt;/lv-checkbox&gt;
+    &lt;lv-checkbox label="I agree to the terms and conditions" required&gt;&lt;/lv-checkbox&gt;
+    &lt;lv-checkbox label="This option is locked" default-checked disabled&gt;&lt;/lv-checkbox&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>
@@ -274,12 +301,13 @@ $('#example').content({
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 320
                                     });
-                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+                                </script><code contenteditable="true">await import('/components/data-input/checkbox.js');
 const { signal, tags, $ } = Lightview;
-const { div, p, span, button } = tags;
+const { div, p, span, button, Checkbox } = tags;
 
 // Signals for checkboxes
 const notifications = signal(true);
@@ -307,12 +335,13 @@ const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1
         color: 'accent',
         validate: (checked) => !checked ? 'You must accept the terms' : null
     }),
-    div({ class: 'pt-4 border-t border-base-300' },
-        p({ class: 'text-sm font-mono' }, 
+    div({ style: 'padding-top: 1rem; border-top: 1px solid oklch(var(--b3));' },
+        p({ style: 'font-size: 0.875rem; font-family: monospace;' }, 
             () => `Notifications: ${notifications.value}, Marketing: ${marketing.value}`
         ),
         button({ 
-            class: () => `btn btn-primary mt-2 ${termsAccepted.value ? '' : 'btn-disabled'}`,
+            class: 'btn btn-primary',
+            style: () => `margin-top: 0.5rem; ${termsAccepted.value ? '' : 'opacity: 0.5; pointer-events: none;'}`,
             disabled: () => !termsAccepted.value
         }, 'Submit')
     )
@@ -327,11 +356,13 @@ $('#example').content(reactiveDemo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 320
                                     });
-                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-input/checkbox.js');
+const { signal, $, tags } = Lightview;
+const { Checkbox } = tags;
 
 const notifications = signal(true);
 const marketing = signal(false);
@@ -371,11 +402,11 @@ const reactiveDemo = {
         },
         {
             tag: 'div',
-            attributes: { class: 'pt-4 border-t border-base-300' },
+            attributes: { style: 'padding-top: 1rem; border-top: 1px solid oklch(var(--b3));' },
             children: [
                 {
                     tag: 'p',
-                    attributes: { class: 'text-sm font-mono' },
+                    attributes: { style: 'font-size: 0.875rem; font-family: monospace;' },
                     children: [
                         () => `Notifications: ${notifications.value}, Marketing: ${marketing.value}`
                     ]
@@ -383,7 +414,8 @@ const reactiveDemo = {
                 {
                     tag: 'button',
                     attributes: {
-                        class: () => `btn btn-primary mt-2 ${termsAccepted.value ? '' : 'btn-disabled'}`,
+                        class: 'btn btn-primary',
+                        style: () => `margin-top: 0.5rem; ${termsAccepted.value ? '' : 'opacity: 0.5; pointer-events: none;'}`,
                         disabled: () => !termsAccepted.value
                     },
                     children: ['Submit']
@@ -402,12 +434,12 @@ $('#example').content(reactiveDemo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 320
                                     });
-                                </script><code contenteditable="true">const { default: Checkbox } = await import('/components/data-input/checkbox.js');
+                                </script><code contenteditable="true">await import('/components/data-input/checkbox.js');
 const { signal, tags, $ } = Lightview;
-tags.Checkbox = Checkbox;
 
 const notifications = signal(true);
 const marketing = signal(false);
@@ -444,11 +476,11 @@ const reactiveDemo = {
             },
             {
                 div: {
-                    class: 'pt-4 border-t border-base-300',
+                    style: 'padding-top: 1rem; border-top: 1px solid oklch(var(--b3));',
                     children: [
                         {
                             p: {
-                                class: 'text-sm font-mono',
+                                style: 'font-size: 0.875rem; font-family: monospace;',
                                 children: [
                                     () => `Notifications: ${notifications.value}, Marketing: ${marketing.value}`
                                 ]
@@ -456,7 +488,8 @@ const reactiveDemo = {
                         },
                         {
                             button: {
-                                class: () => `btn btn-primary mt-2 ${termsAccepted.value ? '' : 'btn-disabled'}`,
+                                class: 'btn btn-primary',
+                                style: () => `margin-top: 0.5rem; ${termsAccepted.value ? '' : 'opacity: 0.5; pointer-events: none;'}`,
                                 disabled: () => !termsAccepted.value,
                                 children: ['Submit']
                             }
