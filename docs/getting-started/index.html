@@ -133,6 +133,9 @@
         // Tutorial data for each step
         const tutorialData = {
             1: {
+                options: {
+                    autoRun: true,
+                },
                 code: `// STEP 1: SIGNALS - The foundation of reactivity
 const { signal, computed, tags, $ } = Lightview;
 const { div, h3, p, button, img, span, style } = tags;
@@ -182,7 +185,7 @@ $('#app').content(style({},
 .product-price { font-weight: bold; font-size: 1.25rem; }
 .quantity-controls { display: flex; gap: 0.5rem; align-items: center; }
 .quantity-controls button { padding: 4px 12px; cursor: pointer; }
-.quantity-display { min-width: 1.5rem; text-align: center; }\`));`,
+.quantity-display { min-width: 1.5rem; text-align: center; }\`), 'beforeend');`,
                 concepts: `
                 <h3 style="margin-top: 0; color: var(--site-primary);">Step 1: Reactive Signals</h3>
                 <p>In this step, we use <strong>Signals</strong> to handle data that changes over time.</p>
@@ -404,10 +407,10 @@ $('#app').content(App);`,
 // Import the real components from the component library
 import Button from '../../components/actions/button.js';
 import Badge from '../../components/data-display/badge.js';
-import Card from '../../components/data-display/card.js';
+import '../../components/data-display/card.js'; // auto-register the component
 
 const { tags, signal, $ } = Lightview;
-const { div, h3, p } = tags;
+const { div, h3, p, Card } = tags; // get Card an auto-registered as tag
 
 // Reactive state for the add-to-cart button
 const isAdded = signal(false);
@@ -452,6 +455,8 @@ $('#app').content(App);`,
             `
             }
         };
+
+
 
         // Initialize Steps
         Object.keys(tutorialData).forEach(step => {
@@ -505,6 +510,8 @@ $('#app').content(App);`,
                 ...data.options || {}
             });
 
+
+
             // Move iframe to preview container
             if (exResult && exResult.iframe) {
                 previewEl.appendChild(exResult.iframe);
@@ -542,6 +549,8 @@ $('#app').content(App);`,
             // Trigger onLoad for the step if it exists (e.g. fetching files)
             const data = tutorialData[step];
             if (data && data.onLoad) data.onLoad();
+
+
         };
 
         // ---- Resizable columns ----

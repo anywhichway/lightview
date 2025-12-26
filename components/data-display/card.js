@@ -57,13 +57,14 @@ const Card = (props = {}, ...children) => {
         const adoptedStyleSheets = mixedSheets.filter(s => s instanceof CSSStyleSheet);
         const fallbackLinks = mixedSheets.filter(s => typeof s === 'string');
 
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        // Use reactive theme signal if available (matches Button pattern)
+        const themeValue = LVX.themeSignal ? () => LVX.themeSignal.value : 'light';
 
         return div({ class: 'contents' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
                 // Inject fallback links if any
                 ...fallbackLinks.map(url => tags.link({ rel: 'stylesheet', href: url })),
-                div({ 'data-theme': currentTheme },
+                div({ 'data-theme': themeValue },
                     cardEl
                 )
             )

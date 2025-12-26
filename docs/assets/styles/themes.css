@@ -1,0 +1,236 @@
+/* DaisyUI Themes - Variables Only */
+
+/* LIGHT */
+[data-theme="light"] {
+    color-scheme: light;
+    --p: 261 80% 60%;
+    --pf: 262 80% 50%;
+    --sf: 316 70% 50%;
+    --af: 175 70% 41%;
+    --nf: 216 28% 25%;
+    --in: 198 93% 60%;
+    --su: 158 64% 52%;
+    --wa: 43 96% 56%;
+    --er: 0 91% 71%;
+    --inc: 198 100% 12%;
+    --suc: 158 100% 10%;
+    --wac: 43 100% 11%;
+    --erc: 0 100% 14%;
+    --rounded-box: 1rem;
+    --rounded-btn: 0.5rem;
+    --rounded-badge: 1.9rem;
+    --animation-btn: 0.25s;
+    --animation-input: .2s;
+    --btn-text-case: uppercase;
+    --btn-focus-scale: 0.95;
+    --border-btn: 1px;
+    --tab-border: 1px;
+    --tab-radius: 0.5rem;
+    --s: 316 70% 60%;
+    --a: 175 70% 51%;
+    --n: 217 28% 25%;
+    --b1: 29 10% 100%;
+    --b2: 29 10% 96%;
+    --b3: 29 10% 92%;
+    --bc: 215 28% 17%;
+    --pc: 265 98% 16%;
+    --sc: 312 91% 16%;
+    --ac: 175 42% 14%;
+    --nc: 218 19% 82%;
+}
+
+/* DARK */
+[data-theme="dark"] {
+    color-scheme: dark;
+    --p: 261 80% 70%;
+    --pf: 262 80% 60%;
+    --sf: 316 70% 60%;
+    --af: 175 70% 51%;
+    --nf: 216 28% 25%;
+    --in: 198 93% 60%;
+    --su: 158 64% 52%;
+    --wa: 43 96% 56%;
+    --er: 0 91% 71%;
+    --inc: 198 100% 12%;
+    --suc: 158 100% 10%;
+    --wac: 43 100% 11%;
+    --erc: 0 100% 14%;
+    --rounded-box: 1rem;
+    --rounded-btn: 0.5rem;
+    --rounded-badge: 1.9rem;
+    --animation-btn: 0.25s;
+    --animation-input: .2s;
+    --btn-text-case: uppercase;
+    --btn-focus-scale: 0.95;
+    --border-btn: 1px;
+    --tab-border: 1px;
+    --tab-radius: 0.5rem;
+    --s: 316 70% 70%;
+    --a: 175 70% 61%;
+    --n: 218 12% 16%;
+    --b1: 220 18% 20%;
+    --b2: 219 20% 17%;
+    --b3: 219 21% 15%;
+    --bc: 220 13% 69%;
+    --pc: 265 98% 16%;
+    --sc: 312 91% 16%;
+    --ac: 175 42% 14%;
+    --nc: 218 19% 82%;
+}
+
+/* CUPCAKE */
+[data-theme="cupcake"] {
+    color-scheme: light;
+    --p: 183 47% 59%;
+    --pf: 183 47% 49%;
+    --sf: 338 71% 68%;
+    --af: 37 92% 40%;
+    --nf: 216 26% 16%;
+    --in: 198 93% 60%;
+    --su: 158 64% 52%;
+    --wa: 43 96% 56%;
+    --er: 0 91% 71%;
+    --inc: 198 100% 12%;
+    --suc: 158 100% 10%;
+    --wac: 43 100% 11%;
+    --erc: 0 100% 14%;
+    --rounded-box: 1rem;
+    --rounded-btn: 1.9rem;
+    --rounded-badge: 1.9rem;
+    --animation-btn: 0.25s;
+    --animation-input: .2s;
+    --btn-text-case: uppercase;
+    --btn-focus-scale: 0.95;
+    --border-btn: 1px;
+    --tab-border: 1px;
+    --tab-radius: 0.5rem;
+    --s: 338 71% 78%;
+    --a: 37 92% 50%;
+    --n: 217 26% 26%;
+    --b1: 24 33% 97%;
+    --b2: 27 23% 94%;
+    --b3: 20 20% 91%;
+    --bc: 215 28% 17%;
+    --pc: 183 89% 15%;
+    --sc: 338 94% 17%;
+    --ac: 37 68% 13%;
+    --nc: 213 14% 83%;
+}
+
+/* CYBERPUNK */
+[data-theme="cyberpunk"] {
+    color-scheme: light;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+    --p: 345 100% 73%;
+    --pf: 345 100% 63%;
+    --sf: 197 94% 63%;
+    --af: 58 100% 59%;
+    --nf: 56 100% 8%;
+    --in: 198 93% 60%;
+    --su: 158 64% 52%;
+    --wa: 43 96% 56%;
+    --er: 0 91% 71%;
+    --inc: 198 100% 12%;
+    --suc: 158 100% 10%;
+    --wac: 43 100% 11%;
+    --erc: 0 100% 14%;
+    --rounded-box: 0;
+    --rounded-btn: 0;
+    --rounded-badge: 0;
+    --animation-btn: 0.25s;
+    --animation-input: .2s;
+    --btn-text-case: uppercase;
+    --btn-focus-scale: 0.95;
+    --border-btn: 1px;
+    --tab-border: 1px;
+    --tab-radius: 0.5rem;
+    --s: 197 94% 73%;
+    --a: 58 100% 69%;
+    --n: 56 100% 18%;
+    --b1: 56 100% 58%;
+    --b2: 56 100% 48%;
+    --b3: 56 100% 38%;
+    --bc: 56 100% 11%;
+    --pc: 345 100% 14%;
+    --sc: 197 100% 14%;
+    --ac: 58 100% 13%;
+    --nc: 56 100% 84%;
+}
+
+/* VALENTINE */
+[data-theme="valentine"] {
+    color-scheme: light;
+    --p: 353 74% 67%;
+    --pf: 353 74% 57%;
+    --sf: 319 46% 54%;
+    --af: 175 22% 58%;
+    --nf: 322 34% 54%;
+    --in: 198 93% 60%;
+    --su: 158 64% 52%;
+    --wa: 43 96% 56%;
+    --er: 0 91% 71%;
+    --inc: 198 100% 12%;
+    --suc: 158 100% 10%;
+    --wac: 43 100% 11%;
+    --erc: 0 100% 14%;
+    --rounded-box: 1rem;
+    --rounded-btn: 1.9rem;
+    --rounded-badge: 1.9rem;
+    --animation-btn: 0.25s;
+    --animation-input: .2s;
+    --btn-text-case: uppercase;
+    --btn-focus-scale: 0.95;
+    --border-btn: 1px;
+    --tab-border: 1px;
+    --tab-radius: 0.5rem;
+    --s: 319 46% 64%;
+    --a: 175 22% 68%;
+    --n: 322 34% 64%;
+    --b1: 337 45% 96%;
+    --b2: 332 45% 91%;
+    --b3: 332 46% 86%;
+    --bc: 343 36% 37%;
+    --pc: 353 100% 14%;
+    --sc: 319 50% 14%;
+    --ac: 175 24% 15%;
+    --nc: 322 55% 15%;
+}
+
+/* AQUA */
+[data-theme="aqua"] {
+    color-scheme: dark;
+    --p: 188 78% 69%;
+    --pf: 188 78% 59%;
+    --sf: 268 37% 55%;
+    --af: 45 92% 51%;
+    --nf: 216 28% 25%;
+    --in: 198 93% 60%;
+    --su: 158 64% 52%;
+    --wa: 43 96% 56%;
+    --er: 0 91% 71%;
+    --inc: 198 100% 12%;
+    --suc: 158 100% 10%;
+    --wac: 43 100% 11%;
+    --erc: 0 100% 14%;
+    --rounded-box: 1rem;
+    --rounded-btn: 0.5rem;
+    --rounded-badge: 1.9rem;
+    --animation-btn: 0.25s;
+    --animation-input: 0.2s;
+    --btn-text-case: uppercase;
+    --btn-focus-scale: 0.95;
+    --border-btn: 1px;
+    --tab-border: 1px;
+    --tab-radius: 0.5rem;
+    --s: 268 37% 65%;
+    --a: 45 92% 61%;
+    --n: 217 28% 25%;
+    --b1: 222 51% 18%;
+    --b2: 221 44% 15%;
+    --b3: 222 46% 12%;
+    --bc: 221 34% 69%;
+    --pc: 188 98% 16%;
+    --sc: 268 45% 16%;
+    --ac: 45 98% 15%;
+    --nc: 218 19% 82%;
+}

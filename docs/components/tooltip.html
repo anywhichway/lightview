@@ -101,7 +101,7 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         autoRun: true,
@@ -128,7 +128,7 @@ const tooltips = div({ style: 'display: flex; flex-wrap: wrap; gap: 1rem' },
     )
 );
 
-$('#example').content(tooltips);</code></pre>
+$('#demo').content(tooltips);</code></pre>
                             </div>
 
                             <!-- vDOM Syntax -->
@@ -137,7 +137,7 @@ $('#example').content(tooltips);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" class="p-8"></div>'
@@ -174,7 +174,7 @@ const tooltips = {
     ]
 };
 
-$('#example').content(tooltips);</code></pre>
+$('#demo').content(tooltips);</code></pre>
                             </div>
 
                             <!-- Object DOM Syntax -->
@@ -183,7 +183,7 @@ $('#example').content(tooltips);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" class="p-8"></div>'
@@ -196,15 +196,15 @@ const tooltips = {
     div: {
         style: 'display: flex; flex-wrap: wrap; gap: 1rem',
         children: [
-            { Tooltip: { tip: 'Tooltip on top', position: 'top', children: [{ Button: { text: 'Top' } }] } },
-            { Tooltip: { tip: 'Tooltip on bottom', position: 'bottom', children: [{ Button: { text: 'Bottom' } }] } },
-            { Tooltip: { tip: 'Tooltip on left', position: 'left', children: [{ Button: { text: 'Left' } }] } },
-            { Tooltip: { tip: 'Tooltip on right', position: 'right', children: [{ Button: { text: 'Right' } }] } }
+            { Tooltip: { tip: 'Tooltip on top', position: 'top', children: [{ Button: { children: ['Top'] } }] } },
+            { Tooltip: { tip: 'Tooltip on bottom', position: 'bottom', children: [{ Button: { children: ['Bottom'] } }] } },
+            { Tooltip: { tip: 'Tooltip on left', position: 'left', children: [{ Button: { children: ['Left'] } }] } },
+            { Tooltip: { tip: 'Tooltip on right', position: 'right', children: [{ Button: { children: ['Right'] } }] } }
         ]
     }
 };
 
-$('#example').content(tooltips);</code></pre>
+$('#demo').content(tooltips);</code></pre>
                             </div>
                         </div>
                     </div>
@@ -248,7 +248,7 @@ $('#example').content(tooltips);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" class="p-8"></div>'
@@ -269,7 +269,7 @@ const tooltips = div({ style: 'display: flex; flex-wrap: wrap; gap: 1rem' },
     )
 );
 
-$('#example').content(tooltips);</code></pre>
+$('#demo').content(tooltips);</code></pre>
                             </div>
 
                             <!-- vDOM Syntax -->
@@ -278,7 +278,7 @@ $('#example').content(tooltips);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" class="p-8"></div>'
@@ -300,7 +300,7 @@ const tooltips = {
     }))
 };
 
-$('#example').content(tooltips);</code></pre>
+$('#demo').content(tooltips);</code></pre>
                             </div>
 
                             <!-- Object DOM Syntax -->
@@ -309,7 +309,7 @@ $('#example').content(tooltips);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" class="p-8"></div>'
@@ -328,14 +328,14 @@ const tooltips = {
                 tip: `${color.charAt(0).toUpperCase() + color.slice(1)} tooltip`,
                 color,
                 children: [
-                    { Button: { color, size: 'sm', text: color } }
+                    { Button: { color, size: 'sm', children: [color] } }
                 ]
             }
         }))
     }
 };
 
-$('#example').content(tooltips);</code></pre>
+$('#demo').content(tooltips);</code></pre>
                             </div>
                         </div>
                     </div>

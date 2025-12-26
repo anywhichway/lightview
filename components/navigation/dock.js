@@ -80,6 +80,24 @@ Dock.Item = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Dock = Dock;
+/**
+ * Dock Label
+ */
+Dock.Label = (props = {}, ...children) => {
+    const { tags } = window.Lightview || {};
+    if (!tags) return null;
+
+    const { class: className = '', ...rest } = props;
+
+    return tags.span({
+        class: `dock-label ${className}`.trim(),
+        ...rest
+    }, ...children);
+};
+
+const tags = window.Lightview.tags;
+tags.Dock = Dock;
+tags['Dock.Item'] = Dock.Item;
+tags['Dock.Label'] = Dock.Label;
 
 export default Dock;

@@ -87,6 +87,8 @@ Carousel.Item = (props = {}, ...children) => {
     return tags.div({ id, class: classes.join(' '), ...rest }, ...children);
 };
 
-window.Lightview.tags.Carousel = Carousel;
+const tags = window.Lightview.tags;
+tags.Carousel = Carousel;
+tags['Carousel.Item'] = Carousel.Item;
 
 export default Carousel;

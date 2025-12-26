@@ -111,8 +111,8 @@ const { div } = tags;
 
 const active = signal('home');
 
-const demo = div({ class: 'relative h-32 bg-base-200 rounded-box overflow-hidden' },
-    Dock({ class: 'absolute bottom-0 left-0 right-0' },
+const demo = div({ style: 'position: relative; height: 8rem; background-color: #f2f2f2; border-radius: 1rem; overflow: hidden;' },
+    Dock({ style: 'position: absolute; bottom: 0; left: 0; right: 0;' },
         Dock.Item({ 
             active: () => active.value === 'home',
             onclick: () => { active.value = 'home'; }
@@ -147,11 +147,11 @@ const active = signal('home');
 
 const demo = {
     tag: 'div',
-    attributes: { class: 'relative h-32 bg-base-200 rounded-box overflow-hidden' },
+    attributes: { style: 'position: relative; height: 8rem; background-color: #f2f2f2; border-radius: 1rem; overflow: hidden;' },
     children: [
         {
             tag: Dock,
-            attributes: { class: 'absolute bottom-0 left-0 right-0' },
+            attributes: { style: 'position: absolute; bottom: 0; left: 0; right: 0;' },
             children: [
                 {
                     tag: Dock.Item,
@@ -185,25 +185,22 @@ $('#example').content(demo);</code></pre>
                                         type: 'module',
                                         minHeight: 150
                                     });
-                                </script><code contenteditable="true">const { default: Dock } = await import('/components/navigation/dock.js');
-const { signal, tags, $ } = Lightview;
-tags.Dock = Dock;
-tags['Dock.Item'] = Dock.Item;
-tags['Dock.Label'] = Dock.Label;
+                                </script><code contenteditable="true">await import('/components/navigation/dock.js');
+const { signal, $ } = Lightview;
 
 const active = signal('home');
 
 const demo = {
     div: {
-        class: 'relative h-32 bg-base-200 rounded-box overflow-hidden',
+        style: 'position: relative; height: 8rem; background-color: #f2f2f2; border-radius: 1rem; overflow: hidden;',
         children: [
             {
                 Dock: {
-                    class: 'absolute bottom-0 left-0 right-0',
+                    style: 'position: absolute; bottom: 0; left: 0; right: 0;',
                     children: [
-                        { 'Dock.Item': { active: () => active.value === 'home', onclick: () => { active.value = 'home'; }, children: ['🏠', { 'Dock.Label': { text: 'Home' } }] } },
-                        { 'Dock.Item': { active: () => active.value === 'search', onclick: () => { active.value = 'search'; }, children: ['🔍', { 'Dock.Label': { text: 'Search' } }] } },
-                        { 'Dock.Item': { active: () => active.value === 'profile', onclick: () => { active.value = 'profile'; }, children: ['👤', { 'Dock.Label': { text: 'Profile' } }] } }
+                        { 'Dock.Item': { active: () => active.value === 'home', onclick: () => { active.value = 'home'; }, children: ['🏠', { 'Dock.Label': { children: ['Home'] } }] } },
+                        { 'Dock.Item': { active: () => active.value === 'search', onclick: () => { active.value = 'search'; }, children: ['🔍', { 'Dock.Label': { children: ['Search'] } }] } },
+                        { 'Dock.Item': { active: () => active.value === 'profile', onclick: () => { active.value = 'profile'; }, children: ['👤', { 'Dock.Label': { children: ['Profile'] } }] } }
                     ]
                 }
             }
@@ -244,9 +241,10 @@ $('#example').content(demo);</code></pre>
 
                     <!-- Static Example -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Static Demo</h2>
-                    <div class="bg-base-200 rounded-box"
-                        style="position: relative; height: 8rem; margin-bottom: 2rem; overflow: hidden;">
-                        <div class="dock bg-base-100 absolute bottom-0 left-0 right-0">
+                    <div
+                        style="position: relative; height: 8rem; margin-bottom: 2rem; overflow: hidden; background-color: #f2f2f2; border-radius: 1rem;">
+                        <div class="dock"
+                            style="position: absolute; bottom: 0; left: 0; right: 0; background-color: white;">
                             <button class="dock-active">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">

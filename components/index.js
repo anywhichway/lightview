@@ -12,7 +12,7 @@ export { default as Button } from './actions/button.js';
 export { default as Dropdown } from './actions/dropdown.js';
 export { default as Modal } from './actions/modal.js';
 export { default as Swap } from './actions/swap.js';
-export { default as ThemeController } from './actions/theme-controller.js';
+
 
 // Data Display
 export { default as Accordion } from './data-display/accordion.js';
@@ -74,7 +74,7 @@ export const componentManifest = {
         { name: 'Dropdown', description: 'Dropdown menu that opens on click or hover' },
         { name: 'Modal', description: 'Dialog overlay for important content' },
         { name: 'Swap', description: 'Toggle between two elements with animation' },
-        { name: 'ThemeController', description: 'Theme switcher toggle or dropdown' }
+
     ],
     dataDisplay: [
         { name: 'Accordion', description: 'Collapsible content sections' },

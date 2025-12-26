@@ -147,6 +147,13 @@ Stats.Actions = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Stats = Stats;
+const tags = window.Lightview.tags;
+tags.Stats = Stats;
+tags['Stats.Stat'] = Stats.Stat;
+tags['Stats.Figure'] = Stats.Figure;
+tags['Stats.Title'] = Stats.Title;
+tags['Stats.Value'] = Stats.Value;
+tags['Stats.Desc'] = Stats.Desc;
+tags['Stats.Actions'] = Stats.Actions;
 
 export default Stats;

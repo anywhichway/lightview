@@ -26,6 +26,7 @@ const Badge = (props = {}, ...children) => {
         size,
         variant,
         useShadow,
+        theme, // Explicit theme override
         class: className = '',
         ...rest
     } = props;
@@ -53,11 +54,12 @@ const Badge = (props = {}, ...children) => {
     if (usesShadow) {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        // Use reactive theme signal if available, otherwise fallback to explicit 'theme' prop or default
+        const themeValue = theme || (LVX.themeSignal ? () => LVX.themeSignal.value : 'light');
 
         return div({ class: 'content', style: 'display: inline-block' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme, },
+                div({ 'data-theme': themeValue },
                     badgeEl
                 )
             )

@@ -195,7 +195,7 @@ const demo = {
             {
                 span: {
                     class: 'text-sm',
-                    text: () => isDark.value ? '🌙 Dark Mode' : '☀️ Light Mode'
+                    children: [() => isDark.value ? '🌙 Dark Mode' : '☀️ Light Mode']
                 }
             }
         ]

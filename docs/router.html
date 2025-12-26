@@ -128,6 +128,52 @@ const loadPage = async (ctx) => {
 );</code></pre>
         </div>
 
+        <h2>Advanced Usage</h2>
+
+        <h3>Functional Arguments</h3>
+        <p>
+            The <code>use(...)</code> method accepts a variadic list of arguments. While standard usage involves strings
+            for
+            matching and replacement, you can pass functions for any argument to achieve fine-grained control.
+        </p>
+        <p>
+            Internally, all strings and regexes are converted to functions. Passing a function directly gives you access
+            to the raw context pipeline.
+        </p>
+
+        <h3>Anatomy of a <code>use()</code> call</h3>
+        <p>
+            <code>appRouter.use(Matcher, ...Middleware);</code>
+        </p>
+        <ul>
+            <li><strong>Matcher (Arg 0):</strong> Determines if this chain runs. Returns a context object (continue) or
+                null (skip).</li>
+            <li><strong>Middleware (Args 1...n):</strong> Logic that executes if the matcher succeeds.</li>
+        </ul>
+
+        <div class="code-block">
+            <pre><code>appRouter.use(
+    // Argument 1: The Matcher
+    // Can be a string '/path', regex /path/, or function
+    (ctx) => {
+        // Custom matching logic
+        if (ctx.path.includes('secret') && user.isAdmin) {
+            return ctx; // Match!
+        }
+        return null; // No match, try next route
+    },
+
+    // Argument 2: Middleware / Logic
+    (ctx) => {
+        console.log('Secret route accessed');
+        // Modify the context for the next handler
+        return { ...ctx, path: '/admin/secret.html' };
+    }
+    // Note: If no implementation is provided and contentEl is set, 
+    // the router automatically appends a fetch handler for the final path.
+);</code></pre>
+        </div>
+
         <h2>API Reference</h2>
 
         <h3><code>LightviewRouter.router(options)</code></h3>

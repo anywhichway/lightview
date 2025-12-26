@@ -104,13 +104,14 @@
     // ============= COMPONENT CONFIGURATION =============
     // Global configuration for Lightview components
 
-    const DAISYUI_CDN = 'https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css';
+    const DAISYUI_CDN = 'https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css';
 
     // Component configuration (set by initComponents)
     const componentConfig = {
         initialized: false,
         shadowDefault: true,  // Default: components use shadow DOM
         daisyStyleSheet: null,
+        themeStyleSheet: null, // Global theme stylesheet
         componentStyleSheets: new Map(),
         customStyleSheets: new Map() // Registry for named custom stylesheets
     };
@@ -135,6 +136,55 @@
             componentConfig.customStyleSheets.set(url, sheet);
         } catch (e) {
             console.error(`LightviewX: Failed to register stylesheet '${url}':`, e);
+        }
+    };
+
+    // Theme Signal
+    const themeSignal = typeof window !== 'undefined' && window.Lightview ? window.Lightview.signal(
+        (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme')) ||
+        (typeof localStorage !== 'undefined' && localStorage.getItem('lightview-theme')) ||
+        'light'
+    ) : { value: 'light' };
+
+    /**
+     * Set the global theme for Lightview components (updates signal only)
+     * @param {string} themeName - The name of the theme (e.g., 'light', 'dark', 'cyberpunk')
+     */
+    const setTheme = (themeName) => {
+        if (!themeName) return;
+        // Determine base theme (light or dark) for the main document
+        const darkThemes = ['dark', 'aqua', 'black', 'business', 'coffee', 'dim', 'dracula', 'forest', 'halloween', 'luxury', 'night', 'sunset', 'synthwave'];
+        const baseTheme = darkThemes.includes(themeName) ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', baseTheme);
+
+        // Update signal
+        if (themeSignal && themeSignal.value !== themeName) {
+            themeSignal.value = themeName;
+        }
+
+        // Persist preference
+        try {
+            localStorage.setItem('lightview-theme', themeName);
+        } catch (e) {
+            // Ignore storage errors
+        }
+    };
+
+    /**
+     * Register a global theme stylesheet for all components
+     * @param {string} url - URL to the CSS file
+     * @returns {Promise<void>}
+     */
+    const registerThemeSheet = async (url) => {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Failed to fetch theme CSS: ${response.status}`);
+            const cssText = await response.text();
+            const sheet = new CSSStyleSheet();
+            sheet.replaceSync(cssText);
+            componentConfig.themeStyleSheet = sheet;
+        } catch (e) {
+            console.error(`LightviewX: Failed to register theme stylesheet '${url}':`, e);
         }
     };
 
@@ -234,6 +284,11 @@
             result.push(componentConfig.daisyStyleSheet);
         } else {
             result.push(DAISYUI_CDN);
+        }
+
+        // Add global Theme sheet (overrides default Daisy variables)
+        if (componentConfig.themeStyleSheet) {
+            result.push(componentConfig.themeStyleSheet);
         }
 
         // Add component-specific sheet
@@ -1398,7 +1453,10 @@
     // Export for module usage
     const LightviewX = {
         state,
+        themeSignal,
+        setTheme,
         registerStyleSheet,
+        registerThemeSheet,
         // Component initialization
         initComponents,
         componentConfig,
@@ -1417,6 +1475,14 @@
 
     // Initialize component hook to use Object DOM
     if (typeof window !== 'undefined') {
+        // Auto-load theme
+        try {
+            const savedTheme = localStorage.getItem('lightview-theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
+        } catch (e) { }
+
         window.addEventListener('load', () => {
             if (window.Lightview) {
                 window.Lightview.hooks.processChild = (child) => {

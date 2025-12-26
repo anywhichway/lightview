@@ -348,5 +348,5 @@ function examplify(target, options = {}) {
         }
     });
 
-    return { controls, iframe, target };
+    return { controls, iframe, target, run };
 }

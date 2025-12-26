@@ -53,6 +53,7 @@ const Toggle = (props = {}) => {
         id,
         class: className = '',
         useShadow,
+        theme, // Explicit theme override
         ...rest
     } = props;
 
@@ -130,11 +131,12 @@ const Toggle = (props = {}) => {
 
         if (usesShadow) {
             const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            // Use reactive theme signal if available, otherwise fallback to explicit 'theme' prop or default
+            const themeValue = theme || (LVX.themeSignal ? () => LVX.themeSignal.value : 'light');
 
             return div({ class: 'content', style: 'display: inline-block' },
                 shadowDOM({ mode: 'open', adoptedStyleSheets },
-                    div({ 'data-theme': currentTheme }, toggleInput)
+                    div({ 'data-theme': themeValue }, toggleInput)
                 )
             );
         }
@@ -172,11 +174,12 @@ const Toggle = (props = {}) => {
     if (usesShadow) {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        // Use reactive theme signal if available, otherwise fallback to explicit 'theme' prop or default
+        const themeValue = theme || (LVX.themeSignal ? () => LVX.themeSignal.value : 'light');
 
         return span({ style: 'margin-right: 0.5rem' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme, style: 'display: inline-block' }, formControl)
+                div({ 'data-theme': themeValue, style: 'display: inline-block' }, formControl)
             )
         );
     }

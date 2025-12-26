@@ -40,6 +40,7 @@ const Button = (props = {}, ...children) => {
         glass = false,
         noAnimation = false,
         useShadow,
+        theme, // Explicit theme override
         class: className = '',
         ...rest
     } = props;
@@ -118,12 +119,14 @@ const Button = (props = {}, ...children) => {
     if (usesShadow) {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
-        // Get current theme from document
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        // If theme is explicitly provided, wrap in a div with data-theme
+        // Otherwise, return button directly in shadow root to allow inheritance from host
+        // Use reactive theme signal if available, otherwise fallback to explicit 'theme' prop or default
+        const themeValue = theme || (LVX.themeSignal ? () => LVX.themeSignal.value : 'light');
 
         return div({ class: 'content', style: 'display: inline-block' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme },
+                div({ 'data-theme': themeValue },
                     buttonEl
                 )
             )

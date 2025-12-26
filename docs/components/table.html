@@ -101,7 +101,7 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180,
                                         autoRun: true
@@ -146,7 +146,7 @@ $('#example').content(table);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
@@ -200,7 +200,7 @@ $('#example').content(table);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
@@ -222,10 +222,10 @@ const table = {
                     children: [{
                         'Table.Row': {
                             children: [
-                                { 'Table.Th': { text: '#' } },
-                                { 'Table.Th': { text: 'Name' } },
-                                { 'Table.Th': { text: 'Job' } },
-                                { 'Table.Th': { text: 'Company' } }
+                                { 'Table.Th': { children: ['#'] } },
+                                { 'Table.Th': { children: ['Name'] } },
+                                { 'Table.Th': { children: ['Job'] } },
+                                { 'Table.Th': { children: ['Company'] } }
                             ]
                         }
                     }]
@@ -236,10 +236,10 @@ const table = {
                     children: data.map(row => ({
                         'Table.Row': {
                             children: [
-                                { 'Table.Th': { text: row.id } },
-                                { 'Table.Td': { text: row.name } },
-                                { 'Table.Td': { text: row.job } },
-                                { 'Table.Td': { text: row.company } }
+                                { 'Table.Th': { children: [row.id] } },
+                                { 'Table.Td': { children: [row.name] } },
+                                { 'Table.Td': { children: [row.job] } },
+                                { 'Table.Td': { children: [row.company] } }
                             ]
                         }
                     }))
@@ -292,7 +292,7 @@ $('#example').content(table);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
@@ -353,7 +353,7 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
@@ -436,7 +436,7 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
@@ -464,9 +464,9 @@ const demo = {
                                 children: [{
                                     'Table.Row': {
                                         children: [
-                                            { 'Table.Th': { text: 'Name' } },
-                                            { 'Table.Th': { text: 'Status' } },
-                                            { 'Table.Th': { text: 'Action' } }
+                                            { 'Table.Th': { children: ['Name'] } },
+                                            { 'Table.Th': { children: ['Status'] } },
+                                            { 'Table.Th': { children: ['Action'] } }
                                         ]
                                     }
                                 }]
@@ -480,7 +480,7 @@ const demo = {
                                         active: () => selected.value === user.id,
                                         onclick: () => { selected.value = user.id; },
                                         children: [
-                                            { 'Table.Td': { text: user.name } },
+                                            { 'Table.Td': { children: [user.name] } },
                                             { 
                                                 'Table.Td': { 
                                                     children: [{
@@ -488,14 +488,14 @@ const demo = {
                                                             color: user.status === 'active' ? 'success' : 
                                                                    user.status === 'pending' ? 'warning' : 'error',
                                                             size: 'sm',
-                                                            text: user.status
+                                                            children: [user.status]
                                                         }
                                                     }]
                                                 }
                                             },
                                             {
                                                 'Table.Td': {
-                                                    children: [{ button: { class: 'btn btn-xs', text: 'Edit' } }]
+                                                    children: [{ button: { class: 'btn btn-xs', children: ['Edit'] } }]
                                                 }
                                             }
                                         ]
@@ -509,7 +509,7 @@ const demo = {
             {
                 span: {
                     class: 'text-sm opacity-70 mt-2 block',
-                    text: () => selected.value ? `Selected: User ${selected.value}` : 'Click a row to select'
+                    children: [() => selected.value ? `Selected: User ${selected.value}` : 'Click a row to select']
                 }
             }
         ]

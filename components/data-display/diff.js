@@ -102,6 +102,10 @@ Diff.Resizer = (props = {}) => {
     return tags.div({ class: 'diff-resizer', ...props });
 };
 
-window.Lightview.tags.Diff = Diff;
+const tags = window.Lightview.tags;
+tags.Diff = Diff;
+tags['Diff.Item1'] = Diff.Item1;
+tags['Diff.Item2'] = Diff.Item2;
+tags['Diff.Resizer'] = Diff.Resizer;
 
 export default Diff;

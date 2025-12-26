@@ -12,6 +12,7 @@
 
     <!-- Site Styles -->
     <link rel="stylesheet" href="/docs/assets/styles/site.css">
+    <link rel="stylesheet" href="/docs/assets/styles/themes.css">
 </head>
 
 <body>
@@ -177,8 +178,43 @@
             // Initialize components with shadow DOM enabled by default
             //await LightviewX.initComponents({ shadowDefault: true });
             await LightviewX.registerStyleSheet('/docs/components/index.css');
+            await LightviewX.registerThemeSheet('/docs/assets/styles/themes.css');
             const contentEl = document.getElementById('content');
             const navLinks = document.querySelectorAll('.nav-link');
+
+            // Setup Theme Selector
+            const themeContainer = document.getElementById('theme-toggle-container');
+            if (themeContainer) {
+                const themes = ['light', 'dark', 'cupcake', 'bumblebee', 'emerald', 'corporate', 'synthwave', 'retro', 'cyberpunk', 'valentine', 'halloween', 'garden', 'forest', 'aqua', 'lofi', 'pastel', 'fantasy', 'wireframe', 'black', 'luxury', 'dracula', 'cmyk', 'autumn', 'business', 'acid', 'lemonade', 'night', 'coffee', 'winter', 'dim', 'nord', 'sunset'];
+                // Get current from document attribute (set by lightview-x auto-loader) or storage
+                const currentTheme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('lightview-theme') || 'light';
+
+                // Simple select styling
+                const select = document.createElement('select');
+                Object.assign(select.style, {
+                    padding: '0.25rem',
+                    borderRadius: '0.25rem',
+                    border: '1px solid #ccc',
+                    background: 'var(--b1, #fff)',
+                    color: 'var(--bc, #000)',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer'
+                });
+
+                themes.forEach(t => {
+                    const option = document.createElement('option');
+                    option.value = t;
+                    option.textContent = t.charAt(0).toUpperCase() + t.slice(1);
+                    if (t === currentTheme) option.selected = true;
+                    select.appendChild(option);
+                });
+
+                select.addEventListener('change', (e) => {
+                    LightviewX.setTheme(e.target.value);
+                });
+
+                themeContainer.appendChild(select);
+            }
 
             // Helper: Update active nav link
             function updateActiveNav(path) {

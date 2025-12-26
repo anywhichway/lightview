@@ -25,10 +25,11 @@
         ].sort(); // Sort alphabetically
 
         const linksContainer = $('#sidebar-links');
-        sidebarLinks.forEach(name => {
+        const items = sidebarLinks.map(name => {
             const slug = name.toLowerCase().replace(/\s+/g, '-');
-            linksContainer.content(li({}, a({ href: `/docs/components/${slug}` }, name)), "beforeend");
+            return li({}, a({ href: `/docs/components/${slug}` }, name));
         });
+        linksContainer.content(items);
     })();
 </script>
 

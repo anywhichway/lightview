@@ -135,6 +135,12 @@ Timeline.Hr = (props = {}) => {
     return tags.hr({ class: classes.join(' ') || undefined, ...rest });
 };
 
-window.Lightview.tags.Timeline = Timeline;
+const tags = window.Lightview.tags;
+tags.Timeline = Timeline;
+tags['Timeline.Item'] = Timeline.Item;
+tags['Timeline.Start'] = Timeline.Start;
+tags['Timeline.Middle'] = Timeline.Middle;
+tags['Timeline.End'] = Timeline.End;
+tags['Timeline.Hr'] = Timeline.Hr;
 
 export default Timeline;

@@ -110,6 +110,9 @@ Swap.Off = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Swap = Swap;
+const tags = window.Lightview.tags;
+tags.Swap = Swap;
+tags['Swap.On'] = Swap.On;
+tags['Swap.Off'] = Swap.Off;
 
 export default Swap;

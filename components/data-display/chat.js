@@ -118,6 +118,11 @@ Chat.Footer = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Chat = Chat;
+const tags = window.Lightview.tags;
+tags.Chat = Chat;
+tags['Chat.Image'] = Chat.Image;
+tags['Chat.Header'] = Chat.Header;
+tags['Chat.Bubble'] = Chat.Bubble;
+tags['Chat.Footer'] = Chat.Footer;
 
 export default Chat;
