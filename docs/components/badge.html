@@ -113,9 +113,9 @@
 const { tags, $ } = Lightview;
 const { div, Badge } = tags;
 
-const badges = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
+const badges = div({ style: 'display: flex; flex-direction: column; gap: 1rem;' },
     // Colors
-    div({ style: 'display: flex; flex-direction: row; gap: .5rem' },
+    div({ style: 'display: flex; flex-direction: row; gap: 0.5rem;' },
         Badge({}, 'Default'),
         Badge({ color: 'primary' }, 'Primary'),
         Badge({ color: 'secondary' }, 'Secondary'),
@@ -126,7 +126,7 @@ const badges = div({ style: 'display: flex; flex-direction: column; gap: 1rem' }
         Badge({ color: 'error' }, 'Error')
     ),
     // Variants
-    div({ style: 'display: flex; flex-direction: row; gap: .5rem' },
+    div({ style: 'display: flex; flex-direction: row; gap: 0.5rem;' },
         Badge({ variant: 'outline' }, 'Outline'),
         Badge({ variant: 'soft', color: 'primary' }, 'Soft'),
         Badge({ variant: 'dash', color: 'secondary' }, 'Dash')
@@ -148,15 +148,15 @@ $('#example').content(badges);</code></pre>
                                     });
                                 </script><code contenteditable="true">await import('/components/data-display/badge.js');
 const { $, tags } = Lightview;
-const { Badge } = tags;
+const { Badge, div } = tags;
 
 const badges = {
-    tag: 'div',
-    attributes: { style: 'display: flex; flex-direction: column; gap: .5rem' },
+    tag: div,
+    attributes: { style: 'display: flex; flex-direction: column; gap: 0.5rem;' },
     children: [
         {
-            tag: 'div',
-            attributes: { style: 'display: flex; flex-direction: row; gap: .5rem' },
+            tag: div,
+            attributes: { style: 'display: flex; flex-direction: row; gap: 0.5rem;' },
             children: [
                 { tag: Badge, children: ['Default'] },
                 { tag: Badge, attributes: { color: 'primary' }, children: ['Primary'] },
@@ -169,8 +169,8 @@ const badges = {
             ]
         },
         {
-            tag: 'div',
-            attributes: { style: 'display: flex; flex-direction: row; gap: .5rem' },
+            tag: div,
+            attributes: { style: 'display: flex; flex-direction: row; gap: 0.5rem;' },
             children: [
                 { tag: Badge, attributes: { variant: 'outline' }, children: ['Outline'] },
                 { tag: Badge, attributes: { variant: 'soft', color: 'primary' }, children: ['Soft'] },
@@ -193,36 +193,35 @@ $('#example').content(badges);</code></pre>
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">// Object DOM syntax now requires lightview-x.js
-await import('/components/data-display/badge.js');
+                                </script><code contenteditable="true">await import('/components/data-display/badge.js');
 const { $ } = Lightview;
 
 const badges = {
     div: {
-        style: 'display: flex; flex-direction: column; gap: .5rem',
+        style: 'display: flex; flex-direction: column; gap: 0.5rem;',
         children: [
             {
                 div: {
-                    style: 'display: flex; flex-direction: row; gap: .5rem',
+                    style: 'display: flex; flex-direction: row; gap: 0.5rem;',
                     children: [
-                        { Badge: { children: ['Default'] } },
-                        { Badge: { color: 'primary', children: ['Primary'] } },
-                        { Badge: { color: 'secondary', children: ['Secondary'] } },
-                        { Badge: { color: 'accent', children: ['Accent'] } },
-                        { Badge: { color: 'info', children: ['Info'] } },
-                        { Badge: { color: 'success', children: ['Success'] } },
-                        { Badge: { color: 'warning', children: ['Warning'] } },
-                        { Badge: { color: 'error', children: ['Error'] } }
+                        { Badge: { text: 'Default' } },
+                        { Badge: { color: 'primary', text: 'Primary' } },
+                        { Badge: { color: 'secondary', text: 'Secondary' } },
+                        { Badge: { color: 'accent', text: 'Accent' } },
+                        { Badge: { color: 'info', text: 'Info' } },
+                        { Badge: { color: 'success', text: 'Success' } },
+                        { Badge: { color: 'warning', text: 'Warning' } },
+                        { Badge: { color: 'error', text: 'Error' } }
                     ]
                 }
             },
             {
                 div: {
-                    style: 'display: flex; flex-direction: row; gap: .5rem',
+                    style: 'display: flex; flex-direction: row; gap: 0.5rem;',
                     children: [
-                        { Badge: { variant: 'outline', children: ['Outline'] } },
-                        { Badge: { variant: 'soft', color: 'primary', children: ['Soft'] } },
-                        { Badge: { variant: 'dash', color: 'secondary', children: ['Dash'] } }
+                        { Badge: { variant: 'outline', text: 'Outline' } },
+                        { Badge: { variant: 'soft', color: 'primary', text: 'Soft' } },
+                        { Badge: { variant: 'dash', color: 'secondary', text: 'Dash' } }
                     ]
                 }
             }
@@ -303,18 +302,18 @@ $('#example').content(badges);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
                                 </script><code contenteditable="true">await import('/components/data-display/badge.js');
 await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-// importing a component automatically adds it to tags
 const { div, Badge, Button } = tags;
 
 const count = signal(5);
 
-const demo = div({ style: 'display: flex; flex-direction: row; gap: .5rem' },
+const demo = div({ style: 'display: flex; flex-direction: row; gap: 0.5rem;' },
     Button({ 
         size: 'sm', 
         color: 'primary',
@@ -325,7 +324,7 @@ const demo = div({ style: 'display: flex; flex-direction: row; gap: .5rem' },
         'Inbox',
         Badge({ 
             color: 'secondary',
-            class: 'ml-2' // you can use Tailwind classes inside components
+            style: 'margin-left: 0.5rem;'
         }, () => count.value > 99 ? '99+' : count.value)
     ),
     
@@ -344,20 +343,20 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
                                 </script><code contenteditable="true">await import('/components/data-display/badge.js');
 await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-// importing a component automatically adds it to tags
 const { div, Badge, Button } = tags;
 
 const count = signal(5);
 
 const demo = {
-    tag: 'div',
-    attributes: { style: 'display: flex; flex-direction: row; gap: .5rem' },
+    tag: div,
+    attributes: { style: 'display: flex; flex-direction: row; gap: 0.5rem;' },
     children: [
         {
             tag: Button,
@@ -370,8 +369,7 @@ const demo = {
                 'Inbox',
                 {
                     tag: Badge,
-                    attributes: { color: 'secondary', class: 'ml-2' },
-                     // you can use Tailwind classes inside components
+                    attributes: { color: 'secondary', style: 'margin-left: 0.5rem;' },
                     children: [() => count.value > 99 ? '99+' : count.value]
                 }
             ]
@@ -393,27 +391,26 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
                                 </script><code contenteditable="true">await import('/components/data-display/badge.js');
 await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-// importing a component automatically adds it to tags
-const { div, Badge, Button } = tags;
+const { signal, $ } = Lightview;
 
 const count = signal(5);
 
 const demo = {
     div: {
-        style: 'display: flex; flex-direction: row; gap: .5rem',
+        style: 'display: flex; flex-direction: row; gap: 0.5rem;',
         children: [
             {
                 Button: {
                     size: 'sm',
                     color: 'primary',
                     onclick: () => { count.value++; },
-                    children: ['+ Add Message']
+                    text: '+ Add Message'
                 }
             },
             {
@@ -423,9 +420,8 @@ const demo = {
                         {
                             Badge: {
                                 color: 'secondary',
-                                class: 'ml-2',
-                                // you can use Tailwind classes inside components
-                                children: [() => count.value > 99 ? '99+' : count.value]
+                                style: 'margin-left: 0.5rem;',
+                                text: () => count.value > 99 ? '99+' : count.value
                             }
                         }
                     ]
@@ -435,7 +431,7 @@ const demo = {
                 Button: {
                     size: 'sm',
                     onclick: () => { count.value = 0; },
-                    children: ['Clear']
+                    text: 'Clear'
                 }
             }
         ]
@@ -486,7 +482,7 @@ $('#example').content(demo);</code></pre>
 
                     <!-- Colors -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                    <div class="example-flex" style="margin-bottom: 2rem;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
                         <span class="badge">Default</span>
                         <span class="badge badge-neutral">Neutral</span>
                         <span class="badge badge-primary">Primary</span>
@@ -501,7 +497,7 @@ $('#example').content(demo);</code></pre>
 
                     <!-- Variants -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
-                    <div class="example-flex" style="margin-bottom: 2rem;">
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
                         <span class="badge badge-outline">Outline</span>
                         <span class="badge badge-soft badge-primary">Soft</span>
                         <span class="badge badge-dash badge-secondary">Dash</span>
@@ -509,7 +505,7 @@ $('#example').content(demo);</code></pre>
 
                     <!-- Sizes -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-                    <div class="example-flex-centered" style="margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
                         <span class="badge badge-xs">xs</span>
                         <span class="badge badge-sm">sm</span>
                         <span class="badge badge-md">md</span>
@@ -518,7 +514,7 @@ $('#example').content(demo);</code></pre>
 
                     <!-- In Button -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">In Button</h2>
-                    <div class="example-flex" style="margin-bottom: 2rem;">
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
                         <button class="btn">
                             Inbox
                             <div class="badge">99+</div>

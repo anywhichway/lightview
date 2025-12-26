@@ -133,6 +133,14 @@ Table.Foot = (props = {}, ...children) => {
     return tags.tfoot(props, ...children);
 };
 
-window.Lightview.tags.Table = Table;
+const tags = window.Lightview.tags;
+
+tags.Table = Table;
+tags['Table.Head'] = Table.Head;
+tags['Table.Body'] = Table.Body;
+tags['Table.Row'] = Table.Row;
+tags['Table.Th'] = Table.Th;
+tags['Table.Td'] = Table.Td;
+tags['Table.Foot'] = Table.Foot;
 
 export default Table;

@@ -113,7 +113,7 @@
 const { tags, $ } = Lightview;
 const { div, span, Alert } = tags;
 
-const alerts = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
+const alerts = div({ style: 'display: flex; flex-direction: column; gap: 1rem;' },
     Alert({ color: 'info', icon: 'info' },
         span({}, 'New update available! Click to learn more.')
     ),
@@ -143,31 +143,31 @@ $('#example').content(alerts);</code></pre>
                                     });
                                 </script><code contenteditable="true">await import('/components/data-display/alert.js');
 const { $, tags } = Lightview;
-const { Alert } = tags;
+const { Alert, div, span } = tags;
 
 const alerts = {
-    tag: 'div',
-    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
+    tag: div,
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem;' },
     children: [
         {
             tag: Alert,
             attributes: { color: 'info', icon: 'info' },
-            children: [{ tag: 'span', children: ['New update available! Click to learn more.'] }]
+            children: [{ tag: span, children: ['New update available! Click to learn more.'] }]
         },
         {
             tag: Alert,
             attributes: { color: 'success', icon: 'success' },
-            children: [{ tag: 'span', children: ['Your order has been placed successfully!'] }]
+            children: [{ tag: span, children: ['Your order has been placed successfully!'] }]
         },
         {
             tag: Alert,
             attributes: { color: 'warning', icon: 'warning' },
-            children: [{ tag: 'span', children: ['Please review your information before proceeding.'] }]
+            children: [{ tag: span, children: ['Please review your information before proceeding.'] }]
         },
         {
             tag: Alert,
             attributes: { color: 'error', icon: 'error' },
-            children: [{ tag: 'span', children: ['Unable to connect to server. Please try again.'] }]
+            children: [{ tag: span, children: ['Unable to connect to server. Please try again.'] }]
         }
     ]
 };
@@ -190,12 +190,12 @@ const { $ } = Lightview;
 
 const alerts = {
     div: {
-        style: 'display: flex; flex-direction: column; gap: 1rem',
+        style: 'display: flex; flex-direction: column; gap: 1rem;',
         children: [
-            { Alert: { color: 'info', icon: 'info', children: [{ span: { children: ['New update available! Click to learn more.'] } }] } },
-            { Alert: { color: 'success', icon: 'success', children: [{ span: { children: ['Your order has been placed successfully!'] } }] } },
-            { Alert: { color: 'warning', icon: 'warning', children: [{ span: { children: ['Please review your information before proceeding.'] } }] } },
-            { Alert: { color: 'error', icon: 'error', children: [{ span: { children: ['Unable to connect to server. Please try again.'] } }] } }
+            { Alert: { color: 'info', icon: 'info', children: [{ span: { text: 'New update available! Click to learn more.' } }] } },
+            { Alert: { color: 'success', icon: 'success', children: [{ span: { text: 'Your order has been placed successfully!' } }] } },
+            { Alert: { color: 'warning', icon: 'warning', children: [{ span: { text: 'Please review your information before proceeding.' } }] } },
+            { Alert: { color: 'error', icon: 'error', children: [{ span: { text: 'Unable to connect to server. Please try again.' } }] } }
         ]
     }
 };
@@ -266,13 +266,14 @@ $('#example').content(alerts);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/alert.js');
+await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-const { div, span } = tags;
+const { div, span, Alert, Button } = tags;
 
 const visible = signal(true);
 
@@ -286,8 +287,8 @@ const demo = div({},
                 onclick: () => { visible.value = false; }
             }, '✕')
         )
-        : div({ class: 'flex gap-2' },
-            span({ class: 'text-sm opacity-50' }, 'Alert dismissed'),
+        : div({ style: 'display: flex; gap: 0.5rem;' },
+            span({ style: 'font-size: 0.875rem; opacity: 0.5;' }, 'Alert dismissed'),
             Button({ 
                 size: 'sm',
                 color: 'primary',
@@ -305,24 +306,26 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/alert.js');
+await import('/components/actions/button.js');
+const { signal, $, tags } = Lightview;
+const { div, span, Alert, Button } = tags;
 
 const visible = signal(true);
 
 const demo = {
-    tag: 'div',
+    tag: div,
     children: [
         () => visible.value 
             ? {
                 tag: Alert,
                 attributes: { color: 'success', icon: 'success' },
                 children: [
-                    { tag: 'span', children: ['Message sent successfully!'] },
+                    { tag: span, children: ['Message sent successfully!'] },
                     { 
                         tag: Button, 
                         attributes: { size: 'sm', color: 'ghost', onclick: () => { visible.value = false; } },
@@ -331,10 +334,10 @@ const demo = {
                 ]
             }
             : {
-                tag: 'div',
-                attributes: { class: 'flex gap-2' },
+                tag: div,
+                attributes: { style: 'display: flex; gap: 0.5rem;' },
                 children: [
-                    { tag: 'span', attributes: { class: 'text-sm opacity-50' }, children: ['Alert dismissed'] },
+                    { tag: span, attributes: { style: 'font-size: 0.875rem; opacity: 0.5;' }, children: ['Alert dismissed'] },
                     { 
                         tag: Button, 
                         attributes: { size: 'sm', color: 'primary', onclick: () => { visible.value = true; } },
@@ -354,14 +357,13 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-tags.Alert = Alert;
-tags.Button = Button;
+                                </script><code contenteditable="true">await import('/components/data-display/alert.js');
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
 
 const visible = signal(true);
 
@@ -374,17 +376,17 @@ const demo = {
                         color: 'success',
                         icon: 'success',
                         children: [
-                            { span: { children: ['Message sent successfully!'] } },
-                            { Button: { size: 'sm', color: 'ghost', onclick: () => { visible.value = false; }, children: ['✕'] } }
+                            { span: { text: 'Message sent successfully!' } },
+                            { Button: { size: 'sm', color: 'ghost', onclick: () => { visible.value = false; }, text: '✕' } }
                         ]
                     }
                 }
                 : {
                     div: {
-                        class: 'flex gap-2',
+                        style: 'display: flex; gap: 0.5rem;',
                         children: [
-                            { span: { class: 'text-sm opacity-50', children: ['Alert dismissed'] } },
-                            { Button: { size: 'sm', color: 'primary', onclick: () => { visible.value = true; }, children: ['Show again'] } }
+                            { span: { style: 'font-size: 0.875rem; opacity: 0.5;', text: 'Alert dismissed' } },
+                            { Button: { size: 'sm', color: 'primary', onclick: () => { visible.value = true; }, text: 'Show again' } }
                         ]
                     }
                 }
@@ -446,10 +448,10 @@ $('#example').content(demo);</code></pre>
 
                     <!-- Colors -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                    <div class="example-stack" style="margin-bottom: 2rem;">
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
                         <div role="alert" class="alert">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                class="stroke-info icon-sm">
+                                style="width: 1.25rem; height: 1.25rem; stroke: oklch(var(--in));">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
@@ -457,14 +459,15 @@ $('#example').content(demo);</code></pre>
                         </div>
                         <div role="alert" class="alert alert-info">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                class="icon-sm stroke-current">
+                                style="width: 1.25rem; height: 1.25rem; stroke: currentColor;">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             <span>Info alert — informational message.</span>
                         </div>
                         <div role="alert" class="alert alert-success">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                style="width: 1.25rem; height: 1.25rem; stroke: currentColor;" fill="none"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -472,7 +475,8 @@ $('#example').content(demo);</code></pre>
                             <span>Success alert — operation completed successfully.</span>
                         </div>
                         <div role="alert" class="alert alert-warning">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                style="width: 1.25rem; height: 1.25rem; stroke: currentColor;" fill="none"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -480,7 +484,8 @@ $('#example').content(demo);</code></pre>
                             <span>Warning alert — caution is advised.</span>
                         </div>
                         <div role="alert" class="alert alert-error">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm stroke-current" fill="none"
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                style="width: 1.25rem; height: 1.25rem; stroke: currentColor;" fill="none"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -491,7 +496,7 @@ $('#example').content(demo);</code></pre>
 
                     <!-- Variants -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
-                    <div class="example-stack" style="margin-bottom: 2rem;">
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
                         <div role="alert" class="alert alert-soft alert-info">
                             <span>Soft variant — lighter background.</span>
                         </div>

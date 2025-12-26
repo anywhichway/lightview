@@ -651,13 +651,37 @@
 
         // Global click handler delegates to hook if registered
         window.addEventListener('click', (e) => {
+            // Support fragment navigation piercing Shadow DOM
+            // Use composedPath() to find the actual clicked element, even inside shadow roots
+            const path = e.composedPath();
+            const link = path.find(el => el.tagName === 'A' && el.getAttribute?.('href')?.startsWith('#'));
+
+            if (link && !e.defaultPrevented) {
+                const href = link.getAttribute('href');
+                if (href.length > 1) {
+                    const id = href.slice(1);
+                    const root = link.getRootNode();
+                    const target = (root.getElementById ? root.getElementById(id) : null) ||
+                        (root.querySelector ? root.querySelector(`#${id}`) : null);
+
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                    }
+                }
+            }
+
             if (Lightview.hooks.onNonStandardHref) {
                 Lightview.hooks.onNonStandardHref(e);
             }
         });
 
         // Automatic Cleanup & Lifecycle Hooks
-        const walkNodes = (node, fn) => { fn(node); node.childNodes?.forEach(n => walkNodes(n, fn)); };
+        const walkNodes = (node, fn) => {
+            fn(node);
+            node.childNodes?.forEach(n => walkNodes(n, fn));
+            if (node.shadowRoot) walkNodes(node.shadowRoot, fn);
+        };
 
         const cleanupNode = (node) => walkNodes(node, n => {
             const s = nodeState.get(n);

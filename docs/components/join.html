@@ -101,16 +101,17 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 140,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Join } = await import('/components/layout/join.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { default: Input } = await import('/components/data-input/input.js');
+                                </script><code contenteditable="true">await import('/components/layout/join.js');
+await import('/components/actions/button.js');
+await import('/components/data-input/input.js');
 
 const { signal, tags, $ } = Lightview;
-const { div } = tags;
+const { div, Join, Button, Input } = tags;
 
 const email = signal('');
 
@@ -142,18 +143,20 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 140
                                     });
-                                </script><code contenteditable="true">const { default: Join } = await import('/components/layout/join.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { default: Input } = await import('/components/data-input/input.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/layout/join.js');
+await import('/components/actions/button.js');
+await import('/components/data-input/input.js');
+const { signal, $, tags } = Lightview;
+const { Join, Button, Input, div } = tags;
 
 const email = signal('');
 
 const demo = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [
         {
@@ -191,16 +194,14 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 140
                                     });
-                                </script><code contenteditable="true">const { default: Join } = await import('/components/layout/join.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { default: Input } = await import('/components/data-input/input.js');
-const { signal, tags, $ } = Lightview;
-tags.Join = Join;
-tags.Button = Button;
-tags.Input = Input;
+                                </script><code contenteditable="true">await import('/components/layout/join.js');
+await import('/components/actions/button.js');
+await import('/components/data-input/input.js');
+const { signal, $ } = Lightview;
 
 const email = signal('');
 

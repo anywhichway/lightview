@@ -61,145 +61,12 @@
                         Supports snap points, vertical layout, and full-width items.
                     </p>
 
+
+
                     <!-- Basic Usage -->
                     <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
                             <h2 class="card-title">Basic Example</h2>
-                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Image carousel with center
-                                snap</p>
-
-                            <!-- Tabs -->
-                            <script>
-                                window.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
-                                    tabs.forEach(t => {
-                                        const tabEl = document.getElementById(`tab-btn-${t}`);
-                                        const contentEl = document.getElementById(`syntax-${t}`);
-                                        if (t === tabId) {
-                                            tabEl.classList.add('syntax-tab-active');
-                                            contentEl.style.display = 'block';
-                                        } else {
-                                            tabEl.classList.remove('syntax-tab-active');
-                                            contentEl.style.display = 'none';
-                                        }
-                                    });
-                                };
-                            </script>
-                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                                <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                                    onclick="switchSyntaxTab('tagged')">Tagged</button>
-                                <button id="tab-btn-vdom" role="tab" class="syntax-tab"
-                                    onclick="switchSyntaxTab('vdom')">vDOM</button>
-                                <button id="tab-btn-object" role="tab" class="syntax-tab"
-                                    onclick="switchSyntaxTab('object')">Object
-                                    DOM</button>
-                            </div>
-
-                            <!-- Tagged Syntax -->
-                            <div id="syntax-tagged">
-                                <pre><script>
-                                    examplify(document.currentScript.nextElementSibling, {
-                                        at: document.currentScript.parentElement,
-                                        scripts: ['/lightview.js', '/lightview-x.js'],
-                                        type: 'module',
-                                        minHeight: 260,
-                                        autoRun: true
-                                    });
-                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
-const { tags, $ } = Lightview;
-
-const images = [
-    'https://picsum.photos/400/300?random=1',
-    'https://picsum.photos/400/300?random=2',
-    'https://picsum.photos/400/300?random=3',
-    'https://picsum.photos/400/300?random=4'
-];
-
-const carousel = Carousel({ snap: 'center', class: 'rounded-box bg-neutral', style: 'padding: 1rem; gap: 1rem' },
-    ...images.map((src, i) => 
-        Carousel.Item({ src, alt: `Slide ${i + 1}`, class: 'rounded-box' })
-    )
-);
-
-$('#example').content(carousel);</code></pre>
-                            </div>
-
-                            <!-- vDOM Syntax -->
-                            <div id="syntax-vdom" style="display: none;">
-                                <pre><script>
-                                    examplify(document.currentScript.nextElementSibling, {
-                                        at: document.currentScript.parentElement,
-                                        scripts: ['/lightview.js', '/lightview-x.js'],
-                                        type: 'module',
-                                        minHeight: 260
-                                    });
-                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
-const { $ } = Lightview;
-
-const images = [
-    'https://picsum.photos/400/300?random=1',
-    'https://picsum.photos/400/300?random=2',
-    'https://picsum.photos/400/300?random=3',
-    'https://picsum.photos/400/300?random=4'
-];
-
-const carousel = {
-    tag: Carousel,
-    attributes: { snap: 'center', class: 'rounded-box bg-neutral', style: 'padding: 1rem; gap: 1rem' },
-    children: images.map((src, i) => ({
-        tag: Carousel.Item,
-        attributes: { src, alt: `Slide ${i + 1}`, class: 'rounded-box' }
-    }))
-};
-
-$('#example').content(carousel);</code></pre>
-                            </div>
-
-                            <!-- Object DOM Syntax -->
-                            <div id="syntax-object" style="display: none;">
-                                <pre><script>
-                                    examplify(document.currentScript.nextElementSibling, {
-                                        at: document.currentScript.parentElement,
-                                        scripts: ['/lightview.js', '/lightview-x.js'],
-                                        type: 'module',
-                                        minHeight: 260
-                                    });
-                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
-const { tags, $ } = Lightview;
-tags.Carousel = Carousel;
-tags.CarouselItem = Carousel.Item;
-
-const images = [
-    'https://picsum.photos/400/300?random=1',
-    'https://picsum.photos/400/300?random=2',
-    'https://picsum.photos/400/300?random=3',
-    'https://picsum.photos/400/300?random=4'
-];
-
-const carousel = {
-    Carousel: {
-        snap: 'center',
-        class: 'rounded-box bg-neutral',
-        style: 'padding: 1rem; gap: 1rem',
-        children: images.map((src, i) => ({
-            CarouselItem: {
-                src,
-                alt: `Slide ${i + 1}`,
-                class: 'rounded-box'
-            }
-        }))
-    }
-};
-
-$('#example').content(carousel);</code></pre>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Reactive Example -->
-                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
-                        <div class="card-body">
-                            <h2 class="card-title">Full Width with Indicators</h2>
                             <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Navigable carousel with
                                 buttons</p>
 
@@ -235,13 +102,15 @@ $('#example').content(carousel);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
-                                        minHeight: 340
+                                        minHeight: 400,
+                                        autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/carousel.js');
+await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-const { div, a } = tags;
+const { div, a, Carousel } = tags;
 
 const slides = [
     { id: 'slide1', img: 'https://picsum.photos/800/400?random=10', title: 'Welcome' },
@@ -249,21 +118,12 @@ const slides = [
     { id: 'slide3', img: 'https://picsum.photos/800/400?random=12', title: 'Get Started' }
 ];
 
-const demo = div({},
-    Carousel({ full: true, class: 'w-full' },
-        ...slides.map((slide, i) => 
-            div({ id: slide.id, class: 'carousel-item relative w-full' },
-                tags.img({ src: slide.img, class: 'w-full' }),
-                div({ class: 'absolute left-5 right-5 top-1/2 flex -translate-y-1/2 justify-between' },
-                    a({ href: `#${slides[(i - 1 + slides.length) % slides.length].id}`, class: 'btn btn-circle' }, '❮'),
-                    a({ href: `#${slides[(i + 1) % slides.length].id}`, class: 'btn btn-circle' }, '❯')
-                )
-            )
-        )
-    ),
-    div({ style: 'display: flex; justify-content: center; width: 100%; padding-top: 0.5rem; padding-bottom: 0.5rem; gap: 0.5rem' },
-        ...slides.map((slide, i) => 
-            a({ href: `#${slide.id}`, class: 'btn btn-xs' }, i + 1)
+const demo = Carousel({ full: true, style: 'width: 100%' },
+    ...slides.map((slide, i) => 
+        div({ id: slide.id, class: 'carousel-item', style: 'position: relative; width: 100%' },
+            tags.img({ src: slide.img, style: 'width: 100%' }),
+            a({ href: `#${slides[(i - 1 + slides.length) % slides.length].id}`, class: 'btn btn-circle', style: 'position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%)' }, '❮'),
+            a({ href: `#${slides[(i + 1) % slides.length].id}`, class: 'btn btn-circle', style: 'position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%)' }, '❯')
         )
     )
 );
@@ -277,12 +137,14 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
-                                        minHeight: 340
+                                        minHeight: 400
                                     });
-                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/carousel.js');
+await import('/components/actions/button.js');
+const { $, tags } = Lightview;
+const { div, img, a, Carousel } = tags;
 
 const slides = [
     { id: 'slide1', img: 'https://picsum.photos/800/400?random=10', title: 'Welcome' },
@@ -291,37 +153,17 @@ const slides = [
 ];
 
 const demo = {
-    tag: 'div',
-    children: [
-        {
-            tag: Carousel,
-            attributes: { full: true, class: 'w-full' },
-            children: slides.map((slide, i) => ({
-                tag: 'div',
-                attributes: { id: slide.id, class: 'carousel-item relative w-full' },
-                children: [
-                    { tag: 'img', attributes: { src: slide.img, class: 'w-full' } },
-                    {
-                        tag: 'div',
-                        attributes: { class: 'absolute left-5 right-5 top-1/2 flex -translate-y-1/2 justify-between' },
-                        children: [
-                            { tag: 'a', attributes: { href: `#${slides[(i - 1 + slides.length) % slides.length].id}`, class: 'btn btn-circle' }, children: ['❮'] },
-                            { tag: 'a', attributes: { href: `#${slides[(i + 1) % slides.length].id}`, class: 'btn btn-circle' }, children: ['❯'] }
-                        ]
-                    }
-                ]
-            }))
-        },
-        {
-            tag: 'div',
-            attributes: { style: 'display: flex; justify-content: center; width: 100%; padding-top: 0.5rem; padding-bottom: 0.5rem; gap: 0.5rem' },
-            children: slides.map((slide, i) => ({
-                tag: 'a',
-                attributes: { href: `#${slide.id}`, class: 'btn btn-xs' },
-                children: [i + 1]
-            }))
-        }
-    ]
+    tag: Carousel,
+    attributes: { full: true, style: 'width: 100%' },
+    children: slides.map((slide, i) => ({
+        tag: div,
+        attributes: { id: slide.id, class: 'carousel-item', style: 'position: relative; width: 100%' },
+        children: [
+            { tag: img, attributes: { src: slide.img, style: 'width: 100%' } },
+            { tag: a, attributes: { href: `#${slides[(i - 1 + slides.length) % slides.length].id}`, class: 'btn btn-circle', style: 'position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%)' }, children: ['❮'] },
+            { tag: a, attributes: { href: `#${slides[(i + 1) % slides.length].id}`, class: 'btn btn-circle', style: 'position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%)' }, children: ['❯'] }
+        ]
+    }))
 };
 
 $('#example').content(demo);</code></pre>
@@ -333,13 +175,13 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
-                                        minHeight: 340
+                                        minHeight: 400
                                     });
-                                </script><code contenteditable="true">const { default: Carousel } = await import('/components/data-display/carousel.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { tags, $ } = Lightview;
-tags.Carousel = Carousel;
+                                </script><code contenteditable="true">await import('/components/data-display/carousel.js');
+await import('/components/actions/button.js');
+const { $ } = Lightview;
 
 const slides = [
     { id: 'slide1', img: 'https://picsum.photos/800/400?random=10', title: 'Welcome' },
@@ -348,41 +190,21 @@ const slides = [
 ];
 
 const demo = {
-    div: {
-        children: [
-            {
-                Carousel: {
-                    full: true,
-                    class: 'w-full',
-                    children: slides.map((slide, i) => ({
-                        div: {
-                            id: slide.id,
-                            class: 'carousel-item relative w-full',
-                            children: [
-                                { img: { src: slide.img, class: 'w-full' } },
-                                {
-                                    div: {
-                                        class: 'absolute left-5 right-5 top-1/2 flex -translate-y-1/2 justify-between',
-                                        children: [
-                                            { a: { href: `#${slides[(i - 1 + slides.length) % slides.length].id}`, class: 'btn btn-circle', children: ['❮'] } },
-                                            { a: { href: `#${slides[(i + 1) % slides.length].id}`, class: 'btn btn-circle', children: ['❯'] } }
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    }))
-                }
-            },
-            {
-                div: {
-                    style: 'display: flex; justify-content: center; width: 100%; padding-top: 0.5rem; padding-bottom: 0.5rem; gap: 0.5rem',
-                    children: slides.map((slide, i) => ({
-                        a: { href: `#${slide.id}`, class: 'btn btn-xs', children: [i + 1] }
-                    }))
-                }
+    Carousel: {
+        full: true,
+        style: 'width: 100%',
+        children: slides.map((slide, i) => ({
+            div: {
+                id: slide.id,
+                class: 'carousel-item',
+                style: 'position: relative; width: 100%',
+                children: [
+                    { img: { src: slide.img, style: 'width: 100%' } },
+                    { a: { href: `#${slides[(i - 1 + slides.length) % slides.length].id}`, class: 'btn btn-circle', style: 'position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%)', children: ['❮'] } },
+                    { a: { href: `#${slides[(i + 1) % slides.length].id}`, class: 'btn btn-circle', style: 'position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%)', children: ['❯'] } }
+                ]
             }
-        ]
+        }))
     }
 };
 

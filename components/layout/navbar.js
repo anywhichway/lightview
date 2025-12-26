@@ -101,6 +101,10 @@ Navbar.End = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Navbar = Navbar;
+const tags = window.Lightview.tags;
+tags.Navbar = Navbar;
+tags['Navbar.Start'] = Navbar.Start;
+tags['Navbar.Center'] = Navbar.Center;
+tags['Navbar.End'] = Navbar.End;
 
 export default Navbar;

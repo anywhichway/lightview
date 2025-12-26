@@ -111,6 +111,10 @@ Dropdown.Item = (props = {}, ...children) => {
     return tags.li(props, tags.a({}, ...children));
 };
 
-window.Lightview.tags.Dropdown = Dropdown;
+const tags = window.Lightview.tags;
+tags.Dropdown = Dropdown;
+tags['Dropdown.Trigger'] = Dropdown.Trigger;
+tags['Dropdown.Content'] = Dropdown.Content;
+tags['Dropdown.Item'] = Dropdown.Item;
 
 export default Dropdown;

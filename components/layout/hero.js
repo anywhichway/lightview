@@ -80,16 +80,30 @@ Hero.Content = (props = {}, ...children) => {
     const { tags } = window.Lightview || {};
     if (!tags) return null;
 
-    const { position = 'center', class: className = '', ...rest } = props;
+    const { position = 'center', center, class: className = '', ...rest } = props;
 
     const classes = ['hero-content'];
-    if (position === 'center') classes.push('text-center');
+    if (position === 'center' || center === true) classes.push('text-center');
     else if (position === 'start') classes.push('text-start');
     if (className) classes.push(className);
 
     return tags.div({ class: classes.join(' '), ...rest }, ...children);
 };
 
-window.Lightview.tags.Hero = Hero;
+/**
+ * Hero Overlay
+ */
+Hero.Overlay = (props = {}) => {
+    const { tags } = window.Lightview || {};
+    if (!tags) return null;
+
+    const { class: className = '', ...rest } = props;
+    return tags.div({ class: `hero-overlay bg-opacity-60 ${className}`.trim(), ...rest });
+};
+
+const tags = window.Lightview.tags;
+tags.Hero = Hero;
+tags['Hero.Content'] = Hero.Content;
+tags['Hero.Overlay'] = Hero.Overlay;
 
 export default Hero;

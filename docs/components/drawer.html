@@ -98,15 +98,15 @@
                   examplify(document.currentScript.nextElementSibling, {
                     at: document.currentScript.parentElement,
                     scripts: ['/lightview.js', '/lightview-x.js'],
+                    styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                     type: 'module',
                     minHeight: 220,
                     autoRun: true,
                     html: '<div id="demo" style="height: 200px;"></div>'
                   });
-                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
-
+                </script><code contenteditable="true">await import('/components/layout/drawer.js');
 const { tags, $ } = Lightview;
-const { ul, li, a, p } = tags;
+const { ul, li, a, p, Drawer } = tags;
 
 const drawerId = 'my-drawer';
 
@@ -135,12 +135,14 @@ $('#example').content(drawer);</code></pre>
                   examplify(document.currentScript.nextElementSibling, {
                     at: document.currentScript.parentElement,
                     scripts: ['/lightview.js', '/lightview-x.js'],
+                    styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                     type: 'module',
                     minHeight: 220,
                     html: '<div id="demo" style="height: 200px;"></div>'
                   });
-                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
-const { $ } = Lightview;
+                </script><code contenteditable="true">await import('/components/layout/drawer.js');
+const { $, tags } = Lightview;
+const { Drawer, ul, li, a, p } = tags;
 
 const drawerId = 'my-drawer';
 
@@ -152,7 +154,7 @@ const drawer = {
       tag: Drawer.Content,
       children: [
         { tag: Drawer.Button, attributes: { for: drawerId }, children: ['Open Drawer'] },
-        { tag: 'p', attributes: { class: 'py-4' }, children: ['Main content area. Click the button to open the drawer.'] }
+        { tag: p, attributes: { class: 'py-4' }, children: ['Main content area. Click the button to open the drawer.'] }
       ]
     },
     {
@@ -161,13 +163,13 @@ const drawer = {
       children: [
         { tag: Drawer.Overlay, attributes: { for: drawerId } },
         {
-          tag: 'ul',
+          tag: ul,
           attributes: { class: 'menu bg-base-200 text-base-content min-h-full w-64 p-4' },
           children: [
-            { tag: 'li', children: [{ tag: 'a', children: ['📁 Dashboard'] }] },
-            { tag: 'li', children: [{ tag: 'a', children: ['👤 Profile'] }] },
-            { tag: 'li', children: [{ tag: 'a', children: ['⚙️ Settings'] }] },
-            { tag: 'li', children: [{ tag: 'a', children: ['🚪 Logout'] }] }
+            { tag: li, children: [{ tag: a, children: ['📁 Dashboard'] }] },
+            { tag: li, children: [{ tag: a, children: ['👤 Profile'] }] },
+            { tag: li, children: [{ tag: a, children: ['⚙️ Settings'] }] },
+            { tag: li, children: [{ tag: a, children: ['🚪 Logout'] }] }
           ]
         }
       ]
@@ -184,17 +186,13 @@ $('#example').content(drawer);</code></pre>
                   examplify(document.currentScript.nextElementSibling, {
                     at: document.currentScript.parentElement,
                     scripts: ['/lightview.js', '/lightview-x.js'],
+                    styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                     type: 'module',
                     minHeight: 220,
                     html: '<div id="demo" style="height: 200px;"></div>'
                   });
-                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
-const { tags, $ } = Lightview;
-tags.Drawer = Drawer;
-tags['Drawer.Content'] = Drawer.Content;
-tags['Drawer.Button'] = Drawer.Button;
-tags['Drawer.Side'] = Drawer.Side;
-tags['Drawer.Overlay'] = Drawer.Overlay;
+                </script><code contenteditable="true">await import('/components/layout/drawer.js');
+const { $ } = Lightview;
 
 const drawerId = 'my-drawer';
 
@@ -276,15 +274,16 @@ $('#example').content(drawer);</code></pre>
                   examplify(document.currentScript.nextElementSibling, {
                     at: document.currentScript.parentElement,
                     scripts: ['/lightview.js', '/lightview-x.js'],
+                    styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                     type: 'module',
                     minHeight: 220,
                     html: '<div id="demo" style="height: 200px;"></div>'
                   });
-                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
-const { default: Button } = await import('/components/actions/button.js');
+                </script><code contenteditable="true">await import('/components/layout/drawer.js');
+await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
-const { ul, li, a, div, p, h3 } = tags;
+const { ul, li, a, div, p, h3, Drawer, Button } = tags;
 
 const drawerId = 'cart-drawer';
 
@@ -314,13 +313,15 @@ $('#example').content(drawer);</code></pre>
                   examplify(document.currentScript.nextElementSibling, {
                     at: document.currentScript.parentElement,
                     scripts: ['/lightview.js', '/lightview-x.js'],
+                    styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                     type: 'module',
                     minHeight: 220,
                     html: '<div id="demo" style="height: 200px;"></div>'
                   });
-                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { $ } = Lightview;
+                </script><code contenteditable="true">await import('/components/layout/drawer.js');
+await import('/components/actions/button.js');
+const { $, tags } = Lightview;
+const { Drawer, Button, div, h3, p } = tags;
 
 const drawerId = 'cart-drawer';
 
@@ -340,14 +341,14 @@ const drawer = {
       children: [
         { tag: Drawer.Overlay, attributes: { for: drawerId } },
         {
-          tag: 'div',
+          tag: div,
           attributes: { class: 'bg-base-200 text-base-content min-h-full w-80 p-4' },
           children: [
-            { tag: 'h3', attributes: { class: 'text-lg font-bold mb-4' }, children: ['🛒 Shopping Cart'] },
-            { tag: 'div', attributes: { class: 'divider' } },
-            { tag: 'p', attributes: { class: 'opacity-70' }, children: ['Your cart is empty'] },
+            { tag: h3, attributes: { class: 'text-lg font-bold mb-4' }, children: ['🛒 Shopping Cart'] },
+            { tag: div, attributes: { class: 'divider' } },
+            { tag: p, attributes: { class: 'opacity-70' }, children: ['Your cart is empty'] },
             {
-              tag: 'div',
+              tag: div,
               attributes: { class: 'mt-4' },
               children: [
                 { tag: Button, attributes: { color: 'primary', class: 'w-full' }, children: ['Checkout'] }
@@ -369,19 +370,14 @@ $('#example').content(drawer);</code></pre>
                   examplify(document.currentScript.nextElementSibling, {
                     at: document.currentScript.parentElement,
                     scripts: ['/lightview.js', '/lightview-x.js'],
+                    styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                     type: 'module',
                     minHeight: 220,
                     html: '<div id="demo" style="height: 200px;"></div>'
                   });
-                </script><code contenteditable="true">const { default: Drawer } = await import('/components/layout/drawer.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { tags, $ } = Lightview;
-tags.Drawer = Drawer;
-tags.Button = Button;
-tags['Drawer.Content'] = Drawer.Content;
-tags['Drawer.Button'] = Drawer.Button;
-tags['Drawer.Side'] = Drawer.Side;
-tags['Drawer.Overlay'] = Drawer.Overlay;
+                </script><code contenteditable="true">await import('/components/layout/drawer.js');
+await import('/components/actions/button.js');
+const { $ } = Lightview;
 
 const drawerId = 'cart-drawer';
 

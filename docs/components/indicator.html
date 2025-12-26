@@ -101,16 +101,17 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Indicator } = await import('/components/layout/indicator.js');
-const { default: Badge } = await import('/components/data-display/badge.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/layout/indicator.js');
+await import('/components/data-display/badge.js');
+await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
-const { div } = tags;
+const { div, img, Indicator, Badge, Button } = tags;
 
 const count = signal(3);
 
@@ -129,7 +130,7 @@ const demo = div({ style: 'display: flex; gap: 2rem' },
         ),
         div({ class: 'avatar' },
             div({ class: 'w-12 rounded-full' },
-                tags.img({ src: 'https://i.pravatar.cc/100?img=5' })
+                img({ src: 'https://i.pravatar.cc/100?img=5' })
             )
         )
     )
@@ -144,18 +145,20 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Indicator } = await import('/components/layout/indicator.js');
-const { default: Badge } = await import('/components/data-display/badge.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/layout/indicator.js');
+await import('/components/data-display/badge.js');
+await import('/components/actions/button.js');
+const { signal, $, tags } = Lightview;
+const { Indicator, Badge, Button, div, img } = tags;
 
 const count = signal(3);
 
 const demo = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; gap: 2rem' },
     children: [
         {
@@ -181,13 +184,13 @@ const demo = {
                     children: [{ tag: Badge, attributes: { color: 'success', size: 'xs' } }]
                 },
                 {
-                    tag: 'div',
+                    tag: div,
                     attributes: { class: 'avatar' },
                     children: [
                         {
-                            tag: 'div',
+                            tag: div,
                             attributes: { class: 'w-12 rounded-full' },
-                            children: [{ tag: 'img', attributes: { src: 'https://i.pravatar.cc/100?img=5' } }]
+                            children: [{ tag: img, attributes: { src: 'https://i.pravatar.cc/100?img=5' } }]
                         }
                     ]
                 }
@@ -205,17 +208,14 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Indicator } = await import('/components/layout/indicator.js');
-const { default: Badge } = await import('/components/data-display/badge.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-tags.Indicator = Indicator;
-tags.Badge = Badge;
-tags.Button = Button;
-tags['Indicator.Item'] = Indicator.Item;
+                                </script><code contenteditable="true">await import('/components/layout/indicator.js');
+await import('/components/data-display/badge.js');
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
 
 const count = signal(3);
 

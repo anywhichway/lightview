@@ -101,25 +101,27 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { default: Menu } = await import('/components/navigation/menu.js');
+                                </script><code contenteditable="true">await import('/components/layout/navbar.js');
+await import('/components/actions/button.js');
+await import('/components/navigation/menu.js');
 
 const { tags, $ } = Lightview;
+const { Navbar, Button, Menu } = tags;
 
-const navbar = Navbar({ class: 'bg-base-100 rounded-box' },
+const navbar = Navbar({ style: 'background-color: oklch(var(--b1)); border-radius: var(--rounded-box, 1rem);' },
     Navbar.Start({},
-        Button({ ghost: true, class: 'text-xl' }, '🚀 Lightview')
+        Button({ ghost: true, style: 'font-size: 1.25rem;' }, '🚀 Lightview')
     ),
-    Navbar.Center({ class: 'hidden lg:flex' },
+    Navbar.Center({ style: 'display: flex;' },
         Menu({ horizontal: true },
-            Menu.Item({}, Menu.Link({}, 'Features')),
-            Menu.Item({}, Menu.Link({}, 'Pricing')),
-            Menu.Item({}, Menu.Link({}, 'About'))
+            Menu.Item({}, 'Features'),
+            Menu.Item({}, 'Pricing'),
+            Menu.Item({}, 'About')
         )
     ),
     Navbar.End({},
@@ -136,33 +138,35 @@ $('#example').content(navbar);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { default: Menu } = await import('/components/navigation/menu.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/layout/navbar.js');
+await import('/components/actions/button.js');
+await import('/components/navigation/menu.js');
+const { $, tags } = Lightview;
+const { Navbar, Button, Menu } = tags;
 
 const navbar = {
     tag: Navbar,
-    attributes: { class: 'bg-base-100 rounded-box' },
+    attributes: { style: 'background-color: oklch(var(--b1)); border-radius: var(--rounded-box, 1rem);' },
     children: [
         {
             tag: Navbar.Start,
-            children: [{ tag: Button, attributes: { ghost: true, class: 'text-xl' }, children: ['🚀 Lightview'] }]
+            children: [{ tag: Button, attributes: { ghost: true, style: 'font-size: 1.25rem;' }, children: ['🚀 Lightview'] }]
         },
         {
             tag: Navbar.Center,
-            attributes: { class: 'hidden lg:flex' },
+            attributes: { style: 'display: flex;' },
             children: [
                 {
                     tag: Menu,
                     attributes: { horizontal: true },
                     children: [
-                        { tag: Menu.Item, children: [{ tag: Menu.Link, children: ['Features'] }] },
-                        { tag: Menu.Item, children: [{ tag: Menu.Link, children: ['Pricing'] }] },
-                        { tag: Menu.Item, children: [{ tag: Menu.Link, children: ['About'] }] }
+                        { tag: Menu.Item, children: ['Features'] },
+                        { tag: Menu.Item, children: ['Pricing'] },
+                        { tag: Menu.Item, children: ['About'] }
                     ]
                 }
             ]
@@ -183,42 +187,35 @@ $('#example').content(navbar);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Navbar } = await import('/components/layout/navbar.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { default: Menu } = await import('/components/navigation/menu.js');
-const { tags, $ } = Lightview;
-tags.Navbar = Navbar;
-tags.Button = Button;
-tags.Menu = Menu;
-tags['Navbar.Start'] = Navbar.Start;
-tags['Navbar.Center'] = Navbar.Center;
-tags['Navbar.End'] = Navbar.End;
-tags['Menu.Item'] = Menu.Item;
-tags['Menu.Link'] = Menu.Link;
+                                </script><code contenteditable="true">await import('/components/layout/navbar.js');
+await import('/components/actions/button.js');
+await import('/components/navigation/menu.js');
+const { $ } = Lightview;
 
 const navbar = {
     Navbar: {
-        class: 'bg-base-100 rounded-box',
+        style: 'background-color: oklch(var(--b1)); border-radius: var(--rounded-box, 1rem);',
         children: [
             {
                 'Navbar.Start': {
-                    children: [{ Button: { ghost: true, class: 'text-xl', text: '🚀 Lightview' } }]
+                    children: [{ Button: { ghost: true, style: 'font-size: 1.25rem;', children: ['🚀 Lightview'] } }]
                 }
             },
             {
                 'Navbar.Center': {
-                    class: 'hidden lg:flex',
+                    style: 'display: flex;',
                     children: [
                         {
                             Menu: {
                                 horizontal: true,
                                 children: [
-                                    { 'Menu.Item': { children: [{ 'Menu.Link': { text: 'Features' } }] } },
-                                    { 'Menu.Item': { children: [{ 'Menu.Link': { text: 'Pricing' } }] } },
-                                    { 'Menu.Item': { children: [{ 'Menu.Link': { text: 'About' } }] } }
+                                    { 'Menu.Item': { children: ['Features'] } },
+                                    { 'Menu.Item': { children: ['Pricing'] } },
+                                    { 'Menu.Item': { children: ['About'] } }
                                 ]
                             }
                         }
@@ -227,7 +224,7 @@ const navbar = {
             },
             {
                 'Navbar.End': {
-                    children: [{ Button: { color: 'primary', text: 'Get Started' } }]
+                    children: [{ Button: { color: 'primary', children: ['Get Started'] } }]
                 }
             }
         ]
@@ -268,31 +265,32 @@ $('#example').content(navbar);</code></pre>
 
                     <!-- Static Examples -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Dropdown</h2>
-                    <div class="navbar bg-base-100 rounded-box" style="margin-bottom: 2rem;">
-                        <div class="flex-none">
+                    <div class="navbar"
+                        style="background-color: oklch(var(--b1)); border-radius: var(--rounded-box, 1rem); margin-bottom: 2rem;">
+                        <div style="flex: none;">
                             <div class="dropdown">
                                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="height: 1.25rem; width: 1.25rem;"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 6h16M4 12h16M4 18h7" />
                                     </svg>
                                 </div>
-                                <ul tabindex="0"
-                                    class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                                <ul tabindex="0" class="menu menu-sm dropdown-content"
+                                    style="background-color: oklch(var(--b1)); border-radius: var(--rounded-box, 1rem); z-index: 10; margin-top: 0.75rem; width: 13rem; padding: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
                                     <li><a>Homepage</a></li>
                                     <li><a>Portfolio</a></li>
                                     <li><a>About</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="flex-1">
-                            <a class="btn btn-ghost text-xl">daisyUI</a>
+                        <div style="flex: 1;">
+                            <a class="btn btn-ghost" style="font-size: 1.25rem;">daisyUI</a>
                         </div>
-                        <div class="flex-none">
+                        <div style="flex: none;">
                             <button class="btn btn-ghost btn-circle">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" style="height: 1.25rem; width: 1.25rem;"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
@@ -301,12 +299,13 @@ $('#example').content(navbar);</code></pre>
                     </div>
 
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Background Color</h2>
-                    <div class="navbar bg-neutral text-neutral-content rounded-box" style="margin-bottom: 2rem;">
+                    <div class="navbar"
+                        style="background-color: oklch(var(--n)); color: oklch(var(--nc)); border-radius: var(--rounded-box, 1rem); margin-bottom: 2rem;">
                         <div class="navbar-start">
-                            <a class="btn btn-ghost text-xl">daisyUI</a>
+                            <a class="btn btn-ghost" style="font-size: 1.25rem;">daisyUI</a>
                         </div>
-                        <div class="navbar-center hidden lg:flex">
-                            <ul class="menu menu-horizontal px-1">
+                        <div class="navbar-center" style="display: flex;">
+                            <ul class="menu menu-horizontal" style="padding-left: 0.25rem; padding-right: 0.25rem;">
                                 <li><a>Item 1</a></li>
                                 <li><a>Item 2</a></li>
                                 <li><a>Item 3</a></li>

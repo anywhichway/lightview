@@ -100,13 +100,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Chat } = await import('/components/data-display/chat.js');
+                                </script><code contenteditable="true">await import('/components/data-display/chat.js');
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, Chat } = tags;
 
 const conversation = div({},
     Chat({ position: 'start' },
@@ -132,14 +133,16 @@ $('#example').content(conversation);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Chat } = await import('/components/data-display/chat.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/chat.js');
+const { $, tags } = Lightview;
+const { Chat, div } = tags;
 
 const conversation = {
-    tag: 'div',
+    tag: div,
     children: [
         {
             tag: Chat,
@@ -173,16 +176,12 @@ $('#example').content(conversation);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Chat } = await import('/components/data-display/chat.js');
-const { tags, $ } = Lightview;
-tags.Chat = Chat;
-tags.ChatImage = Chat.Image;
-tags.ChatHeader = Chat.Header;
-tags.ChatBubble = Chat.Bubble;
-tags.ChatFooter = Chat.Footer;
+                                </script><code contenteditable="true">await import('/components/data-display/chat.js');
+const { $ } = Lightview;
 
 const conversation = {
     div: {
@@ -257,13 +256,14 @@ $('#example').content(conversation);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 300
                                     });
-                                </script><code contenteditable="true">const { default: Chat } = await import('/components/data-display/chat.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/chat.js');
+await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-const { div, input } = tags;
+const { div, input, Chat, Button } = tags;
 
 const messages = signal([
     { pos: 'start', text: 'Hey! How are you?', time: '10:00' }
@@ -309,12 +309,14 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 300
                                     });
-                                </script><code contenteditable="true">const { default: Chat } = await import('/components/data-display/chat.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/chat.js');
+await import('/components/actions/button.js');
+const { signal, $, tags } = Lightview;
+const { Chat, Button, div, input } = tags;
 
 const messages = signal([
     { pos: 'start', text: 'Hey! How are you?', time: '10:00' }
@@ -330,11 +332,11 @@ const sendMessage = () => {
 };
 
 const demo = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
     children: [
         {
-            tag: 'div',
+            tag: div,
             attributes: { class: 'h-48 overflow-y-auto' },
             children: [
                 () => messages.value.map(m => ({
@@ -348,11 +350,11 @@ const demo = {
             ]
         },
         {
-            tag: 'div',
+            tag: div,
             attributes: { style: 'display: flex; gap: 0.5rem' },
             children: [
                 {
-                    tag: 'input',
+                    tag: input,
                     attributes: {
                         type: 'text',
                         class: 'input input-bordered flex-1',
@@ -381,16 +383,13 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 300
                                     });
-                                </script><code contenteditable="true">const { default: Chat } = await import('/components/data-display/chat.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-tags.Chat = Chat;
-tags.ChatBubble = Chat.Bubble;
-tags.ChatFooter = Chat.Footer;
-tags.Button = Button;
+                                </script><code contenteditable="true">await import('/components/data-display/chat.js');
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
 
 const messages = signal([
     { pos: 'start', text: 'Hey! How are you?', time: '10:00' }

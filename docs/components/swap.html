@@ -100,13 +100,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Swap } = await import('/components/actions/swap.js');
+                                </script><code contenteditable="true">await import('/components/actions/swap.js');
 const { tags, $ } = Lightview;
-const { div, span } = tags;
+const { div, Swap } = tags;
 
 // Emoji swap with rotate effect
 const emojiSwap = Swap({ effect: 'rotate', class: 'text-4xl' },
@@ -134,11 +135,13 @@ $('#example').content(
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Swap } = await import('/components/actions/swap.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/actions/swap.js');
+const { $, tags } = Lightview;
+const { Swap, div } = tags;
 
 const emojiSwap = {
     tag: Swap,
@@ -159,7 +162,7 @@ const playPause = {
 };
 
 $('#example').content({
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; gap: 2rem; align-items: center' },
     children: [emojiSwap, playPause]
 });</code></pre>
@@ -171,16 +174,14 @@ $('#example').content({
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Swap } = await import('/components/actions/swap.js');
-const { tags, $ } = Lightview;
-tags.Swap = Swap;
-tags['Swap.On'] = Swap.On;
-tags['Swap.Off'] = Swap.Off;
+                                </script><code contenteditable="true">await import('/components/actions/swap.js');
+const { $ } = Lightview;
 
-$('#example').content({
+const demo = {
     div: {
         style: 'display: flex; gap: 2rem; align-items: center',
         children: [
@@ -206,7 +207,9 @@ $('#example').content({
             }
         ]
     }
-});</code></pre>
+};
+
+$('#example').content(demo);</code></pre>
                             </div>
                         </div>
                     </div>
@@ -250,14 +253,15 @@ $('#example').content({
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Swap } = await import('/components/actions/swap.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/actions/swap.js');
+await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
-const { div, span, p } = tags;
+const { div, p, Swap, Button } = tags;
 
 const isActive = signal(false);
 
@@ -294,17 +298,19 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Swap } = await import('/components/actions/swap.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/actions/swap.js');
+await import('/components/actions/button.js');
+const { signal, $, tags } = Lightview;
+const { Swap, Button, div, p } = tags;
 
 const isActive = signal(false);
 
 const demo = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; align-items: center' },
     children: [
         {
@@ -321,7 +327,7 @@ const demo = {
             ]
         },
         {
-            tag: 'p',
+            tag: p,
             attributes: { class: 'text-sm' },
             children: [() => isActive.value ? 'Party time! 🎉' : 'So sad... 💔']
         },
@@ -346,16 +352,13 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Swap } = await import('/components/actions/swap.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-tags.Swap = Swap;
-tags['Swap.On'] = Swap.On;
-tags['Swap.Off'] = Swap.Off;
-tags.Button = Button;
+                                </script><code contenteditable="true">await import('/components/actions/swap.js');
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
 
 const isActive = signal(false);
 

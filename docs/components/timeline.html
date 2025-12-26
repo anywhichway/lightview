@@ -101,12 +101,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+                                </script><code contenteditable="true">await import('/components/data-display/timeline.js');
 const { tags, $ } = Lightview;
+const { Timeline } = tags;
 
 const events = [
     { date: '2020', title: 'Project Started', done: true },
@@ -135,11 +137,13 @@ $('#example').content(timeline);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/timeline.js');
+const { $, tags } = Lightview;
+const { Timeline } = tags;
 
 const events = [
     { date: '2020', title: 'Project Started', done: true },
@@ -171,17 +175,12 @@ $('#example').content(timeline);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
-const { tags, $ } = Lightview;
-tags.Timeline = Timeline;
-tags['Timeline.Item'] = Timeline.Item;
-tags['Timeline.Start'] = Timeline.Start;
-tags['Timeline.Middle'] = Timeline.Middle;
-tags['Timeline.End'] = Timeline.End;
-tags['Timeline.Hr'] = Timeline.Hr;
+                                </script><code contenteditable="true">await import('/components/data-display/timeline.js');
+const { $ } = Lightview;
 
 const events = [
     { date: '2020', title: 'Project Started', done: true },
@@ -250,11 +249,13 @@ $('#example').content(timeline);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 280
                                     });
-                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
+                                </script><code contenteditable="true">await import('/components/data-display/timeline.js');
 const { tags, $ } = Lightview;
+const { Timeline } = tags;
 
 const steps = [
     { title: 'Order Placed', desc: 'Dec 10, 2023', done: true },
@@ -283,11 +284,13 @@ $('#example').content(timeline);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 280
                                     });
-                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/timeline.js');
+const { $, tags } = Lightview;
+const { Timeline } = tags;
 
 const steps = [
     { title: 'Order Placed', desc: 'Dec 10, 2023', done: true },
@@ -320,17 +323,12 @@ $('#example').content(timeline);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 280
                                     });
-                                </script><code contenteditable="true">const { default: Timeline } = await import('/components/data-display/timeline.js');
-const { tags, $ } = Lightview;
-tags.Timeline = Timeline;
-tags['Timeline.Item'] = Timeline.Item;
-tags['Timeline.Start'] = Timeline.Start;
-tags['Timeline.Middle'] = Timeline.Middle;
-tags['Timeline.End'] = Timeline.End;
-tags['Timeline.Hr'] = Timeline.Hr;
+                                </script><code contenteditable="true">await import('/components/data-display/timeline.js');
+const { $ } = Lightview;
 
 const steps = [
     { title: 'Order Placed', desc: 'Dec 10, 2023', done: true },

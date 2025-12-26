@@ -48,7 +48,31 @@ const Avatar = (props = {}, ...children) => {
     if (placeholder && !src) wrapperClasses.push('placeholder');
     if (className) wrapperClasses.push(className);
 
-    const innerClasses = [size];
+    const innerClasses = [];
+    const innerStyle = {};
+
+    // Check if size is a Tailwind class (w-*) or a direct measurement
+    if (size) {
+        if (/^w-(\d+)$/.test(size)) {
+            // Workaround: Map w- classes to explicit styles as Tailwind classes might be missing
+            const num = parseInt(size.split('-')[1]);
+            const remValue = num * 0.25;
+            innerStyle.width = `${remValue}rem`;
+            innerStyle.height = `${remValue}rem`;
+            innerClasses.push(size);
+        } else if (/^w-/.test(size)) {
+            innerClasses.push(size);
+        } else {
+            // Treat as direct measurement (e.g., 64px, 4rem)
+            innerStyle.width = size;
+            innerStyle.height = size;
+        }
+    } else {
+        innerClasses.push('w-12');
+        innerStyle.width = '3rem';
+        innerStyle.height = '3rem';
+    }
+
     if (ring) {
         innerClasses.push('ring', ringColor, 'ring-offset-base-100', 'ring-offset-2');
     }
@@ -63,15 +87,27 @@ const Avatar = (props = {}, ...children) => {
     let avatarEl;
     if (src) {
         avatarEl = div({ class: wrapperClasses.join(' '), ...rest },
-            div({ class: innerClasses.join(' ') },
-                img({ src, alt })
+            div({ class: innerClasses.join(' '), style: innerStyle },
+                img({ src, alt, style: 'width: 100%; height: 100%; object-fit: cover;' })
             )
         );
     } else {
         // Placeholder avatar
-        innerClasses.push('bg-neutral text-neutral-content');
+        // Use flexbox to center the placeholder text
+        innerClasses.push('bg-neutral text-neutral-content flex items-center justify-center');
+
+        // Support custom background/text colors via CSS variables if provided in style
+        innerStyle.backgroundColor = 'var(--lv-avatar-bg)';
+        innerStyle.color = 'var(--lv-avatar-text)';
+        innerStyle.display = 'flex';
+        innerStyle.alignItems = 'center';
+        innerStyle.justifyContent = 'center';
+
         avatarEl = div({ class: wrapperClasses.join(' '), ...rest },
-            div({ class: innerClasses.join(' ') },
+            div({
+                class: innerClasses.join(' '),
+                style: innerStyle
+            },
                 tags.span({}, placeholder || children[0] || '?')
             )
         );
@@ -117,6 +153,18 @@ Avatar.Group = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Avatar = Avatar;
+const tags = window.Lightview.tags;
+tags.Avatar = Avatar;
+tags['Avatar.Group'] = Avatar.Group;
+
+// Register as Custom Elements
+if (window.LightviewX?.createCustomElement) {
+    if (!customElements.get('lv-avatar')) {
+        customElements.define('lv-avatar', window.LightviewX.createCustomElement(Avatar));
+    }
+    if (!customElements.get('lv-avatar-group')) {
+        customElements.define('lv-avatar-group', window.LightviewX.createCustomElement(Avatar.Group));
+    }
+}
 
 export default Avatar;

@@ -101,20 +101,21 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 280,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Hero } = await import('/components/layout/hero.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/layout/hero.js');
+await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
-const { h1, p } = tags;
+const { h1, p, Hero, Button } = tags;
 
-const hero = Hero({ class: 'bg-base-200 min-h-64 rounded-box' },
-    Hero.Content({ center: true },
-        h1({ class: 'text-5xl font-bold' }, '🚀 Hello Lightview'),
-        p({ class: 'py-6 max-w-md' }, 
+const hero = Hero({ style: 'background-color: oklch(var(--b2)); min-height: 16rem; border-radius: 1rem;' },
+    Hero.Content({ position: 'center' },
+        h1({ style: 'font-size: 3rem; line-height: 1; font-weight: 800;' }, '🚀 Hello Lightview'),
+        p({ style: 'padding: 1.5rem 0; max-width: 28rem;' }, 
             'Build reactive UIs with a lightweight, powerful library.'
         ),
         Button({ color: 'primary' }, 'Get Started')
@@ -130,25 +131,27 @@ $('#example').content(hero);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 280
                                     });
-                                </script><code contenteditable="true">const { default: Hero } = await import('/components/layout/hero.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/layout/hero.js');
+await import('/components/actions/button.js');
+const { $, tags } = Lightview;
+const { Hero, Button, h1, p } = tags;
 
 const hero = {
     tag: Hero,
-    attributes: { class: 'bg-base-200 min-h-64 rounded-box' },
+    attributes: { style: 'background-color: oklch(var(--b2)); min-height: 16rem; border-radius: 1rem;' },
     children: [
         {
             tag: Hero.Content,
-            attributes: { center: true },
+            attributes: { position: 'center' },
             children: [
-                { tag: 'h1', attributes: { class: 'text-5xl font-bold' }, children: ['🚀 Hello Lightview'] },
+                { tag: h1, attributes: { style: 'font-size: 3rem; line-height: 1; font-weight: 800;' }, children: ['🚀 Hello Lightview'] },
                 {
-                    tag: 'p',
-                    attributes: { class: 'py-6 max-w-md' },
+                    tag: p,
+                    attributes: { style: 'padding: 1.5rem 0; max-width: 28rem' },
                     children: ['Build reactive UIs with a lightweight, powerful library.']
                 },
                 { tag: Button, attributes: { color: 'primary' }, children: ['Get Started'] }
@@ -166,26 +169,24 @@ $('#example').content(hero);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 280
                                     });
-                                </script><code contenteditable="true">const { default: Hero } = await import('/components/layout/hero.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { tags, $ } = Lightview;
-tags.Hero = Hero;
-tags.Button = Button;
-tags['Hero.Content'] = Hero.Content;
+                                </script><code contenteditable="true">await import('/components/layout/hero.js');
+await import('/components/actions/button.js');
+const { $ } = Lightview;
 
 const hero = {
     Hero: {
-        class: 'bg-base-200 min-h-64 rounded-box',
+        style: 'background-color: oklch(var(--b2)); min-height: 16rem; border-radius: 1rem;',
         children: [
             {
                 'Hero.Content': {
-                    center: true,
+                    position: 'center',
                     children: [
-                        { h1: { class: 'text-5xl font-bold', text: '🚀 Hello Lightview' } },
-                        { p: { class: 'py-6 max-w-md', text: 'Build reactive UIs with a lightweight, powerful library.' } },
+                        { h1: { style: 'font-size: 3rem; line-height: 1; font-weight: 800;', text: '🚀 Hello Lightview' } },
+                        { p: { style: 'padding: 1.5rem 0; max-width: 28rem;', text: 'Build reactive UIs with a lightweight, powerful library.' } },
                         { Button: { color: 'primary', text: 'Get Started' } }
                     ]
                 }
@@ -227,26 +228,32 @@ $('#example').content(hero);</code></pre>
 
                     <!-- Static Examples -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Figure</h2>
-                    <div class="hero bg-base-200 min-h-64 rounded-box" style="margin-bottom: 2rem;">
-                        <div class="hero-content flex-col lg:flex-row">
-                            <img src="https://picsum.photos/300/200" class="max-w-sm rounded-lg shadow-2xl"
+                    <div class="hero rounded-box"
+                        style="background-color: oklch(var(--b2)); min-height: 16rem; margin-bottom: 2rem;">
+                        <div class="hero-content" style="display: flex; flex-direction: column; gap: 2rem;">
+                            <!-- lg:flex-row replacement with style would normally need media queries, but we can use flex-wrap or just leave as is if simple enough -->
+                            <img src="https://picsum.photos/300/200"
+                                style="max-width: 24rem; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);"
                                 alt="Hero" />
                             <div>
-                                <h1 class="text-5xl font-bold">Box Office News!</h1>
-                                <p class="py-6">Provident cupiditate voluptatem et in.</p>
+                                <h1 style="font-size: 3rem; line-height: 1; font-weight: 800;">Box Office News!</h1>
+                                <p style="padding: 1.5rem 0;">Provident cupiditate voluptatem et in.</p>
                                 <button class="btn btn-primary">Get Started</button>
                             </div>
                         </div>
                     </div>
 
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Overlay</h2>
-                    <div class="hero min-h-64 rounded-box"
-                        style="background-image: url(https://picsum.photos/800/400); margin-bottom: 2rem;">
-                        <div class="hero-overlay bg-opacity-60 rounded-box"></div>
-                        <div class="hero-content text-neutral-content text-center">
-                            <div class="max-w-md">
-                                <h1 class="mb-5 text-5xl font-bold">Hello there</h1>
-                                <p class="mb-5">Provident cupiditate voluptatem et in.</p>
+                    <div class="hero"
+                        style="background-image: url(https://picsum.photos/800/400); min-height: 16rem; border-radius: 1rem; margin-bottom: 2rem; position: relative; overflow: hidden;">
+                        <div class="hero-overlay"
+                            style="background-color: rgba(0,0,0,0.6); position: absolute; inset: 0;"></div>
+                        <div class="hero-content text-center"
+                            style="color: oklch(var(--nc)); position: relative; z-index: 1;">
+                            <div style="max-width: 28rem;">
+                                <h1 style="margin-bottom: 1.25rem; font-size: 3rem; line-height: 1; font-weight: 800;">
+                                    Hello there</h1>
+                                <p style="margin-bottom: 1.25rem;">Provident cupiditate voluptatem et in.</p>
                                 <button class="btn btn-primary">Get Started</button>
                             </div>
                         </div>

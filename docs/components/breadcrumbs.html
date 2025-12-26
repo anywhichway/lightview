@@ -102,12 +102,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 75,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
+                                </script><code contenteditable="true">await import('/components/navigation/breadcrumbs.js');
 const { tags, $ } = Lightview;
+const { Breadcrumbs } = tags;
 
 const path = [
     { label: 'Home', href: '/' },
@@ -116,7 +118,7 @@ const path = [
     { label: 'Phones' } // Current page (no href)
 ];
 
-const breadcrumbs = Breadcrumbs({ style: 'font-size: .75rem' },
+const breadcrumbs = Breadcrumbs({ style: 'font-size: 0.75rem' },
     ...path.map(item => 
         item.href 
             ? Breadcrumbs.Item({ href: item.href }, item.label)
@@ -132,11 +134,13 @@ $('#example').content(breadcrumbs);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 75
                                     });
-                                </script><code contenteditable="true">const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/navigation/breadcrumbs.js');
+const { $, tags } = Lightview;
+const { Breadcrumbs } = tags;
 
 const path = [
     { label: 'Home', href: '/' },
@@ -147,7 +151,7 @@ const path = [
 
 const breadcrumbs = {
     tag: Breadcrumbs,
-    attributes: { style: 'font-size: .75rem' },
+    attributes: { style: 'font-size: 0.75rem' },
     children: path.map(item => ({
         tag: Breadcrumbs.Item,
         attributes: item.href ? { href: item.href } : {},
@@ -164,13 +168,12 @@ $('#example').content(breadcrumbs);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 75
                                     });
-                                </script><code contenteditable="true">const { default: Breadcrumbs } = await import('/components/navigation/breadcrumbs.js');
-const { tags, $ } = Lightview;
-tags.Breadcrumbs = Breadcrumbs;
-tags.BreadcrumbsItem = Breadcrumbs.Item;
+                                </script><code contenteditable="true">await import('/components/navigation/breadcrumbs.js');
+const { $ } = Lightview;
 
 const path = [
     { label: 'Home', href: '/' },
@@ -181,9 +184,9 @@ const path = [
 
 const breadcrumbs = {
     Breadcrumbs: {
-        style: 'font-size: .75rem',
+        style: 'font-size: 0.75rem',
         children: path.map(item => ({
-            BreadcrumbsItem: {
+            'Breadcrumbs.Item': {
                 ...(item.href ? { href: item.href } : {}),
                 children: [item.label]
             }
@@ -242,13 +245,13 @@ $('#example').content(breadcrumbs);</code></pre>
 
                     <!-- With Icons -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Icons</h2>
-                    <div class="breadcrumbs text-sm" style="margin-bottom: 2rem;">
+                    <div class="breadcrumbs" style="font-size: 0.875rem; margin-bottom: 2rem;">
                         <ul>
                             <li>
                                 <a>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        class="stroke-current" style="width: 1rem; height: 1rem;">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        style="width: 1rem; height: 1rem; stroke: currentColor; stroke-width: 2;">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
                                         </path>
                                     </svg>
@@ -258,8 +261,8 @@ $('#example').content(breadcrumbs);</code></pre>
                             <li>
                                 <a>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        class="stroke-current" style="width: 1rem; height: 1rem;">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        style="width: 1rem; height: 1rem; stroke: currentColor; stroke-width: 2;">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
                                         </path>
                                     </svg>

@@ -1,7 +1,7 @@
 {
   "name": "lightview",
   "version": "1.0.0",
-  "description": "A lightweight reactive UI library with signal-based reactivity and a clean API. Build dynamic UIs with automatic DOM synchronization.",
+  "description": "A lightweight reactive UI library with features of Bau, Juris, and HTMX",
   "main": "lightview.js",
   "directories": {
     "doc": "docs"

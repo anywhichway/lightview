@@ -100,12 +100,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
+                                </script><code contenteditable="true">await import('/components/data-display/accordion.js');
 const { tags, $ } = Lightview;
+const { Accordion } = tags;
 
 const faq = [
     { q: 'What is Lightview?', a: 'A lightweight reactive UI library.' },
@@ -131,11 +133,13 @@ $('#example').content(accordion);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/accordion.js');
+const { $, tags } = Lightview;
+const { Accordion } = tags;
 
 const faq = [
     { q: 'What is Lightview?', a: 'A lightweight reactive UI library.' },
@@ -164,15 +168,12 @@ $('#example').content(accordion);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
-const { tags, $ } = Lightview;
-tags.Accordion = Accordion;
-tags.AccordionItem = Accordion.Item;
-tags.AccordionTitle = Accordion.Title;
-tags.AccordionContent = Accordion.Content;
+                                </script><code contenteditable="true">await import('/components/data-display/accordion.js');
+const { $ } = Lightview;
 
 const faq = [
     { q: 'What is Lightview?', a: 'A lightweight reactive UI library.' },
@@ -183,12 +184,12 @@ const faq = [
 const accordion = {
     Accordion: {
         children: faq.map((item, i) => ({
-            AccordionItem: {
+            'Accordion.Item': {
                 name: 'faq',
                 checked: i === 0,
                 children: [
-                    { AccordionTitle: { children: [item.q] } },
-                    { AccordionContent: { children: [item.a] } }
+                    { 'Accordion.Title': { children: [item.q] } },
+                    { 'Accordion.Content': { children: [item.a] } }
                 ]
             }
         }))
@@ -239,11 +240,13 @@ $('#example').content(accordion);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
+                                </script><code contenteditable="true">await import('/components/data-display/accordion.js');
 const { tags, $ } = Lightview;
+const { Accordion } = tags;
 
 const sections = [
     { title: '📦 Shipping', content: 'Free shipping on orders over $50.' },
@@ -269,11 +272,13 @@ $('#example').content(accordion);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/accordion.js');
+const { $, tags } = Lightview;
+const { Accordion } = tags;
 
 const sections = [
     { title: '📦 Shipping', content: 'Free shipping on orders over $50.' },
@@ -303,15 +308,12 @@ $('#example').content(accordion);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Accordion } = await import('/components/data-display/accordion.js');
-const { tags, $ } = Lightview;
-tags.Accordion = Accordion;
-tags.AccordionItem = Accordion.Item;
-tags.AccordionTitle = Accordion.Title;
-tags.AccordionContent = Accordion.Content;
+                                </script><code contenteditable="true">await import('/components/data-display/accordion.js');
+const { $ } = Lightview;
 
 const sections = [
     { title: '📦 Shipping', content: 'Free shipping on orders over $50.' },
@@ -323,14 +325,14 @@ const accordion = {
     Accordion: {
         join: true,
         children: sections.map((item, i) => ({
-            AccordionItem: {
+            'Accordion.Item': {
                 name: 'info',
                 icon: 'plus',
                 join: true,
                 checked: i === 0,
                 children: [
-                    { AccordionTitle: { children: [item.title] } },
-                    { AccordionContent: { children: [item.content] } }
+                    { 'Accordion.Title': { children: [item.title] } },
+                    { 'Accordion.Content': { children: [item.content] } }
                 ]
             }
         }))
@@ -408,13 +410,15 @@ $('#example').content(accordion);</code></pre>
 
                     <!-- Static Examples -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Arrow Icon (Default)</h2>
-                    <div class="example-stack-sm" style="margin-bottom: 2rem;">
-                        <div class="collapse collapse-arrow bg-base-100 border border-base-300">
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
+                        <div class="collapse collapse-arrow"
+                            style="background-color: oklch(var(--b1)); border: 1px solid oklch(var(--b3));">
                             <input type="radio" name="accordion-demo" checked="checked" />
                             <div class="collapse-title font-semibold">Click to open this one</div>
                             <div class="collapse-content text-sm">Content for section one.</div>
                         </div>
-                        <div class="collapse collapse-arrow bg-base-100 border border-base-300">
+                        <div class="collapse collapse-arrow"
+                            style="background-color: oklch(var(--b1)); border: 1px solid oklch(var(--b3));">
                             <input type="radio" name="accordion-demo" />
                             <div class="collapse-title font-semibold">Click to open this one</div>
                             <div class="collapse-content text-sm">Content for section two.</div>
@@ -423,7 +427,8 @@ $('#example').content(accordion);</code></pre>
 
                     <!-- Plus/Minus Icon -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Plus/Minus Icon</h2>
-                    <div class="collapse collapse-plus bg-base-100 border border-base-300" style="margin-bottom: 2rem;">
+                    <div class="collapse collapse-plus"
+                        style="background-color: oklch(var(--b1)); border: 1px solid oklch(var(--b3)); margin-bottom: 2rem;">
                         <input type="checkbox" />
                         <div class="collapse-title font-semibold">Click me to show/hide</div>
                         <div class="collapse-content text-sm">Hidden content revealed!</div>

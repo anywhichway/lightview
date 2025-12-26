@@ -32,30 +32,27 @@
 
         <p>
             I didn't want to choose. I wanted a framework that supported <em>all</em> approaches. None of them quite hit
-            the mark on their own. Plus, I wanted something none provided, template literals right inside HTML. I
+            the mark on their own. Plus, I wanted something none provided, template literals right inside HTML. I also
             wanted a rich component library (with
             charts!) without having to build everything from scratch available as both JavaScript and custom HTML
             elements.
         </p>
 
         <p>
-            I wanted something that felt more like regular HTML than even HTMX does. I wanted an un-opinionated router
-            and
-            at least partial "automatic" SSR—where code could execute and replace itself on the server with a simple
+            I wanted a framework that was easy to use and learn, as close to regular HTML and JavaScript as possible,
+            something that felt more like regular HTML than even HTMX does.
+            This would also require thorough and fully interactive documentation accessible via direct URLs and an SPA
+            like experience.
+            This manadated a router with at least partial "automatic" SSR—where code could execute and replace itself on
+            the server with a simple
             DOM emulation and "have-your-cake-and-eat-it-too" single page apps that are SEO enabled without any extra
             work.
         </p>
 
         <p>
-            I also wanted something that was easy to use and learn. I wanted a framework that was easy to use and learn,
-            as close to regular HTML and JavaScript as possible.
-        </p>
-
-        <p>
             In today's age, the ability of an LLM to generate cohensive applications using the library is also important
-            to me. If figured that if an LLM generated it and it followed conventional patterns if will be able to use
-            it well.
-            I also wanted to explore the how to avoid the sloppy code that LLMs can generate.
+            to me. If figured that if an LLM generated it and it followed conventional patterns, it will be able to use
+            it well and perhaps generate a little less slop.
         </p>
 
         <p>
@@ -72,18 +69,19 @@
         <p>
             Naturally, it took a little iterating, but the basic framework was in place after just a few hours of
             working with both Claude Opus 4.5 and Gemini 3 Pro. I then asked for
-            a website for documenting and promoting Lightview that also used Lightview. This took a lot more work, 2
+            a website for documenting and promoting Lightview that also used Lightview. This took a lot more work, 3
             weeks in fact. Very little of this time was spent addressing issues with or enhancing Ligntview
             But, that is a story for another time. I will make a blog post on Hackernoon and update this page by the the
-            end of 2025. Here we are 2 weeks later with about 1,800 lines of code for
-            Lightview and 35,000 lines of code for the website.
+            end of 2025. Here we are 3 weeks later with about 2,000 lines of code for Ligtview as a whole across three
+            files, 25,000 lines of component code, and 30,000 lines of documentation.
         </p>
 
         <p>
             The resulting Lightview library is specific yet flexible. It brings together the features I craved without
-            locking me into a
-            single paradigm.
+            locking me into a single paradigm. I hope you like it.
         </p>
+
+        <h2>Design Principles</h2>
 
         <div
             style="background: var(--site-accent-light); border-left: 4px solid var(--site-accent); padding: 1.5rem; border-radius: 0 var(--site-radius) var(--site-radius) 0; margin: 1.5rem 0;">
@@ -92,15 +90,12 @@
             </p>
         </div>
 
-        <h2>Design Principles</h2>
-
         <div class="feature-grid" style="margin-top: 1.5rem;">
             <div class="feature-card">
                 <h3 class="feature-title">🪶 Keep It Light</h3>
                 <p class="feature-description">
-                    Life's too short for heavy frameworks. Although Ligheview is not tiny (core is 8K), we try to keep
-                    it lean and
-                    modular so your apps stay fast.
+                    Life's too short for heavy frameworks. Although Ligheview is not tiny (core is 8K), I tried to keep
+                    it lean and modular so your apps stay fast.
                 </p>
             </div>
             <div class="feature-card">
@@ -118,8 +113,8 @@
             <div class="feature-card">
                 <h3 class="feature-title">🎨 Your Way</h3>
                 <p class="feature-description">
-                    Three syntaxes, one system. Incremental adoption by enhancing just the HTML you want. Pick what
-                    feels right.
+                    Four syntaxes, one system. Incremental adoption by enhancing just the HTML you want. Pick what
+                    feels right. See the function <code>enhance</code> in the <a href="./api/enhance">API docs</a>.
                 </p>
             </div>
             <div class="feature-card">

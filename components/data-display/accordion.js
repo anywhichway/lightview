@@ -119,6 +119,10 @@ Accordion.Content = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Accordion = Accordion;
+const tags = window.Lightview.tags;
+tags.Accordion = Accordion;
+tags['Accordion.Item'] = Accordion.Item;
+tags['Accordion.Title'] = Accordion.Title;
+tags['Accordion.Content'] = Accordion.Content;
 
 export default Accordion;

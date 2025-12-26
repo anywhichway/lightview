@@ -102,16 +102,17 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 340,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Card } = await import('/components/data-display/card.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/card.js');
+await import('/components/actions/button.js');
 const { tags, $ } = Lightview;
-const { p } = tags;
+const { p, Card, Button } = tags;
 
-const card = Card({ class: 'w-72' },
+const card = Card({ style: 'width: 18rem;' },
     Card.Figure({ 
         src: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=200&fit=crop',
         alt: 'Shoes'
@@ -134,16 +135,18 @@ $('#example').content(card);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 340
                                     });
-                                </script><code contenteditable="true">const { default: Card } = await import('/components/data-display/card.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/card.js');
+await import('/components/actions/button.js');
+const { $, tags } = Lightview;
+const { Card, Button, p } = tags;
 
 const card = {
     tag: Card,
-    attributes: { class: 'w-72' },
+    attributes: { style: 'width: 18rem;' },
     children: [
         {
             tag: Card.Figure,
@@ -156,7 +159,7 @@ const card = {
             tag: Card.Body,
             children: [
                 { tag: Card.Title, children: ['Nike Air Max'] },
-                { tag: 'p', children: ['Premium comfort meets modern style.'] },
+                { tag: p, children: ['Premium comfort meets modern style.'] },
                 {
                     tag: Card.Actions,
                     attributes: { justify: 'end' },
@@ -178,36 +181,31 @@ $('#example').content(card);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 340
                                     });
-                                </script><code contenteditable="true">const { default: Card } = await import('/components/data-display/card.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { tags, $ } = Lightview;
-tags.Card = Card;
-tags.CardFigure = Card.Figure;
-tags.CardBody = Card.Body;
-tags.CardTitle = Card.Title;
-tags.CardActions = Card.Actions;
-tags.Button = Button;
+                                </script><code contenteditable="true">await import('/components/data-display/card.js');
+await import('/components/actions/button.js');
+const { $ } = Lightview;
 
 const card = {
     Card: {
-        class: 'w-72',
+        style: 'width: 18rem;',
         children: [
             {
-                CardFigure: { 
+                'Card.Figure': { 
                     src: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=200&fit=crop',
                     alt: 'Shoes'
                 }
             },
             {
-                CardBody: {
+                'Card.Body': {
                     children: [
-                        { CardTitle: { children: ['Nike Air Max'] } },
+                        { 'Card.Title': { children: ['Nike Air Max'] } },
                         { p: { children: ['Premium comfort meets modern style.'] } },
                         {
-                            CardActions: {
+                            'Card.Actions': {
                                 justify: 'end',
                                 children: [
                                     { Button: { color: 'primary', children: ['Buy Now'] } }
@@ -266,29 +264,30 @@ $('#example').content(card);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 380
                                     });
-                                </script><code contenteditable="true">const { default: Card } = await import('/components/data-display/card.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { default: Badge } = await import('/components/data-display/badge.js');
+                                </script><code contenteditable="true">await import('/components/data-display/card.js');
+await import('/components/actions/button.js');
+await import('/components/data-display/badge.js');
 const { signal, tags, $ } = Lightview;
-const { p, span, div } = tags;
+const { p, span, div, Card, Button, Badge } = tags;
 
 const inCart = signal(false);
 
-const card = Card({ class: 'w-72' },
+const card = Card({ style: 'width: 18rem;' },
     Card.Figure({ 
         src: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=200&fit=crop',
         alt: 'Watch'
     }),
     Card.Body({},
-        div({ class: 'flex justify-between items-start' },
+        div({ style: 'display: flex; justify-content: space-between; align-items: start;' },
             Card.Title({}, 'Smart Watch'),
             Badge({ color: 'success' }, 'New')
         ),
-        p({ class: 'text-sm opacity-70' }, 'Track your fitness goals with precision.'),
-        div({ class: 'text-xl font-bold' }, '$299'),
+        p({ style: 'font-size: 0.875rem; opacity: 0.7;' }, 'Track your fitness goals with precision.'),
+        div({ style: 'font-size: 1.25rem; font-weight: 700;' }, '$299'),
         Card.Actions({ justify: 'end' },
             () => inCart.value
                 ? Button({ color: 'success', onclick: () => { inCart.value = false; } }, '✓ In Cart')
@@ -306,19 +305,21 @@ $('#example').content(card);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 380
                                     });
-                                </script><code contenteditable="true">const { default: Card } = await import('/components/data-display/card.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { default: Badge } = await import('/components/data-display/badge.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/card.js');
+await import('/components/actions/button.js');
+await import('/components/data-display/badge.js');
+const { signal, $, tags } = Lightview;
+const { Card, Button, Badge, div, p } = tags;
 
 const inCart = signal(false);
 
 const card = {
     tag: Card,
-    attributes: { class: 'w-72' },
+    attributes: { style: 'width: 18rem;' },
     children: [
         {
             tag: Card.Figure,
@@ -331,15 +332,15 @@ const card = {
             tag: Card.Body,
             children: [
                 {
-                    tag: 'div',
-                    attributes: { class: 'flex justify-between items-start' },
+                    tag: div,
+                    attributes: { style: 'display: flex; justify-content: space-between; align-items: start;' },
                     children: [
                         { tag: Card.Title, children: ['Smart Watch'] },
                         { tag: Badge, attributes: { color: 'success' }, children: ['New'] }
                     ]
                 },
-                { tag: 'p', attributes: { class: 'text-sm opacity-70' }, children: ['Track your fitness goals with precision.'] },
-                { tag: 'div', attributes: { class: 'text-xl font-bold' }, children: ['$299'] },
+                { tag: p, attributes: { style: 'font-size: 0.875rem; opacity: 0.7;' }, children: ['Track your fitness goals with precision.'] },
+                { tag: div, attributes: { style: 'font-size: 1.25rem; font-weight: 700;' }, children: ['$299'] },
                 {
                     tag: Card.Actions,
                     attributes: { justify: 'end' },
@@ -363,49 +364,43 @@ $('#example').content(card);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 380
                                     });
-                                </script><code contenteditable="true">const { default: Card } = await import('/components/data-display/card.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { default: Badge } = await import('/components/data-display/badge.js');
-const { signal, tags, $ } = Lightview;
-tags.Card = Card;
-tags.CardFigure = Card.Figure;
-tags.CardBody = Card.Body;
-tags.CardTitle = Card.Title;
-tags.CardActions = Card.Actions;
-tags.Button = Button;
-tags.Badge = Badge;
+                                </script><code contenteditable="true">await import('/components/data-display/card.js');
+await import('/components/actions/button.js');
+await import('/components/data-display/badge.js');
+const { signal, $ } = Lightview;
 
 const inCart = signal(false);
 
 const card = {
     Card: {
-        class: 'w-72',
+        style: 'width: 18rem;',
         children: [
             {
-                CardFigure: { 
+                'Card.Figure': { 
                     src: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=200&fit=crop',
                     alt: 'Watch'
                 }
             },
             {
-                CardBody: {
+                'Card.Body': {
                     children: [
                         {
                             div: {
-                                class: 'flex justify-between items-start',
+                                style: 'display: flex; justify-content: space-between; align-items: start;',
                                 children: [
-                                    { CardTitle: { children: ['Smart Watch'] } },
+                                    { 'Card.Title': { children: ['Smart Watch'] } },
                                     { Badge: { color: 'success', children: ['New'] } }
                                 ]
                             }
                         },
-                        { p: { class: 'text-sm opacity-70', children: ['Track your fitness goals with precision.'] } },
-                        { div: { class: 'text-xl font-bold', children: ['$299'] } },
+                        { p: { style: 'font-size: 0.875rem; opacity: 0.7;', children: ['Track your fitness goals with precision.'] } },
+                        { div: { style: 'font-size: 1.25rem; font-weight: 700;', children: ['$299'] } },
                         {
-                            CardActions: {
+                            'Card.Actions': {
                                 justify: 'end',
                                 children: [
                                     () => inCart.value
@@ -500,14 +495,15 @@ $('#example').content(card);</code></pre>
 
                     <!-- Variants -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
-                    <div class="example-grid-responsive" style="margin-bottom: 2rem;">
-                        <div class="card card-bordered bg-base-100">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        <div class="card card-bordered" style="background-color: oklch(var(--b1));">
                             <div class="card-body">
                                 <h2 class="card-title">Bordered</h2>
                                 <p>Card with a border instead of shadow.</p>
                             </div>
                         </div>
-                        <div class="card card-dash bg-base-100">
+                        <div class="card card-dash" style="background-color: oklch(var(--b1));">
                             <div class="card-body">
                                 <h2 class="card-title">Dash</h2>
                                 <p>Card with a dashed border.</p>
@@ -517,14 +513,15 @@ $('#example').content(card);</code></pre>
 
                     <!-- Side Card -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Side Layout</h2>
-                    <div class="card card-side bg-base-100 shadow-sm" style="margin-bottom: 2rem;">
+                    <div class="card card-side"
+                        style="background-color: oklch(var(--b1)); box-shadow: var(--shadow-sm); margin-bottom: 2rem;">
                         <figure><img
                                 src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=200&h=200&fit=crop"
                                 alt="Album" /></figure>
                         <div class="card-body">
                             <h2 class="card-title">Horizontal Card</h2>
                             <p>Image on the side with content next to it.</p>
-                            <div class="card-actions justify-end">
+                            <div class="card-actions" style="justify-content: flex-end;">
                                 <button class="btn btn-primary">Listen</button>
                             </div>
                         </div>
@@ -532,7 +529,8 @@ $('#example').content(card);</code></pre>
 
                     <!-- Compact -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Compact</h2>
-                    <div class="card card-compact bg-base-100 shadow-sm" style="width: 16rem; margin-bottom: 2rem;">
+                    <div class="card card-compact"
+                        style="background-color: oklch(var(--b1)); box-shadow: var(--shadow-sm); width: 16rem; margin-bottom: 2rem;">
                         <figure><img
                                 src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=300&h=150&fit=crop"
                                 alt="Shoes" /></figure>
@@ -544,14 +542,15 @@ $('#example').content(card);</code></pre>
 
                     <!-- Image Overlay -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Image Overlay</h2>
-                    <div class="card image-full shadow-xl" style="width: 24rem; margin-bottom: 2rem;">
+                    <div class="card image-full"
+                        style="box-shadow: var(--shadow-xl); width: 24rem; margin-bottom: 2rem;">
                         <figure><img
                                 src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=300&fit=crop"
                                 alt="Shoes" /></figure>
                         <div class="card-body">
                             <h2 class="card-title">Text Over Image</h2>
                             <p>Content overlay on top of the image.</p>
-                            <div class="card-actions justify-end">
+                            <div class="card-actions" style="justify-content: flex-end;">
                                 <button class="btn btn-primary">Shop Now</button>
                             </div>
                         </div>

@@ -115,6 +115,9 @@ Tabs.Content = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Tabs = Tabs;
+const tags = window.Lightview.tags;
+tags.Tabs = Tabs;
+tags['Tabs.Tab'] = Tabs.Tab;
+tags['Tabs.Content'] = Tabs.Content;
 
 export default Tabs;

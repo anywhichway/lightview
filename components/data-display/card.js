@@ -140,6 +140,11 @@ Card.Figure = (props = {}, ...children) => {
     return tags.figure({ class: className, ...rest }, ...children);
 };
 
-window.Lightview.tags.Card = Card;
+const tags = window.Lightview.tags;
+tags.Card = Card;
+tags['Card.Body'] = Card.Body;
+tags['Card.Title'] = Card.Title;
+tags['Card.Actions'] = Card.Actions;
+tags['Card.Figure'] = Card.Figure;
 
 export default Card;

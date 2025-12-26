@@ -85,5 +85,7 @@ Breadcrumbs.Item = (props = {}, ...children) => {
 };
 
 
-window.Lightview.tags.Breadcrumbs = Breadcrumbs;
+const tags = window.Lightview.tags;
+tags.Breadcrumbs = Breadcrumbs;
+tags['Breadcrumbs.Item'] = Breadcrumbs.Item;
 export default Breadcrumbs;

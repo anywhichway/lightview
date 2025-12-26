@@ -95,6 +95,9 @@ Collapse.Content = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Collapse = Collapse;
+const tags = window.Lightview.tags;
+tags.Collapse = Collapse;
+tags['Collapse.Title'] = Collapse.Title;
+tags['Collapse.Content'] = Collapse.Content;
 
 export default Collapse;

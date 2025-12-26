@@ -101,13 +101,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Collapse } = await import('/components/data-display/collapse.js');
+                                </script><code contenteditable="true">await import('/components/data-display/collapse.js');
 const { tags, $ } = Lightview;
-const { div, p } = tags;
+const { div, p, Collapse } = tags;
 
 const demo = div({ style: 'display: flex; flex-direction: column; gap: 0.5rem' },
     Collapse({ icon: 'arrow' },
@@ -139,14 +140,16 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Collapse } = await import('/components/data-display/collapse.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/collapse.js');
+const { $, tags } = Lightview;
+const { Collapse, div, p } = tags;
 
 const demo = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; flex-direction: column; gap: 0.5rem' },
     children: [
         {
@@ -154,7 +157,7 @@ const demo = {
             attributes: { icon: 'arrow' },
             children: [
                 { tag: Collapse.Title, children: ['📖 Description'] },
-                { tag: Collapse.Content, children: [{ tag: 'p', children: ['This is a detailed product description that can be expanded.'] }] }
+                { tag: Collapse.Content, children: [{ tag: p, children: ['This is a detailed product description that can be expanded.'] }] }
             ]
         },
         {
@@ -162,7 +165,7 @@ const demo = {
             attributes: { icon: 'arrow' },
             children: [
                 { tag: Collapse.Title, children: ['📦 Shipping Info'] },
-                { tag: Collapse.Content, children: [{ tag: 'p', children: ['Free shipping on orders over $50. Delivery in 3-5 days.'] }] }
+                { tag: Collapse.Content, children: [{ tag: p, children: ['Free shipping on orders over $50. Delivery in 3-5 days.'] }] }
             ]
         },
         {
@@ -170,7 +173,7 @@ const demo = {
             attributes: { icon: 'arrow' },
             children: [
                 { tag: Collapse.Title, children: ['🔄 Returns'] },
-                { tag: Collapse.Content, children: [{ tag: 'p', children: ['30-day return policy for unused items in original packaging.'] }] }
+                { tag: Collapse.Content, children: [{ tag: p, children: ['30-day return policy for unused items in original packaging.'] }] }
             ]
         }
     ]
@@ -185,14 +188,12 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Collapse } = await import('/components/data-display/collapse.js');
-const { tags, $ } = Lightview;
-tags.Collapse = Collapse;
-tags['Collapse.Title'] = Collapse.Title;
-tags['Collapse.Content'] = Collapse.Content;
+                                </script><code contenteditable="true">await import('/components/data-display/collapse.js');
+const { $ } = Lightview;
 
 const demo = {
     div: {
@@ -272,18 +273,19 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Collapse } = await import('/components/data-display/collapse.js');
+                                </script><code contenteditable="true">await import('/components/data-display/collapse.js');
 const { tags, $ } = Lightview;
-const { div, p, ul, li } = tags;
+const { div, p, ul, li, Collapse } = tags;
 
 const demo = div({ style: 'display: flex; flex-direction: column; gap: 0.5rem' },
     Collapse({ icon: 'plus', open: true },
         Collapse.Title({}, '🎁 What\'s included'),
         Collapse.Content({}, 
-            ul({ class: 'list-disc pl-4' },
+            ul({ style: 'list-style-type: disc; padding-left: 1rem;' },
                 li({}, 'Premium headphones'),
                 li({}, 'Carrying case'),
                 li({}, '3.5mm audio cable'),
@@ -294,7 +296,7 @@ const demo = div({ style: 'display: flex; flex-direction: column; gap: 0.5rem' }
     Collapse({ icon: 'plus' },
         Collapse.Title({}, '⚡ Specifications'),
         Collapse.Content({}, 
-            ul({ class: 'list-disc pl-4' },
+            ul({ style: 'list-style-type: disc; padding-left: 1rem;' },
                 li({}, 'Driver size: 40mm'),
                 li({}, 'Battery: 30h playtime'),
                 li({}, 'Bluetooth 5.0')
@@ -312,14 +314,16 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Collapse } = await import('/components/data-display/collapse.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/collapse.js');
+const { $, tags } = Lightview;
+const { Collapse, div, ul, li } = tags;
 
 const demo = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; flex-direction: column; gap: 0.5rem' },
     children: [
         {
@@ -330,13 +334,13 @@ const demo = {
                 {
                     tag: Collapse.Content,
                     children: [{
-                        tag: 'ul',
-                        attributes: { class: 'list-disc pl-4' },
+                        tag: ul,
+                        attributes: { style: 'list-style-type: disc; padding-left: 1rem;' },
                         children: [
-                            { tag: 'li', children: ['Premium headphones'] },
-                            { tag: 'li', children: ['Carrying case'] },
-                            { tag: 'li', children: ['3.5mm audio cable'] },
-                            { tag: 'li', children: ['User manual'] }
+                            { tag: li, children: ['Premium headphones'] },
+                            { tag: li, children: ['Carrying case'] },
+                            { tag: li, children: ['3.5mm audio cable'] },
+                            { tag: li, children: ['User manual'] }
                         ]
                     }]
                 }
@@ -350,12 +354,12 @@ const demo = {
                 {
                     tag: Collapse.Content,
                     children: [{
-                        tag: 'ul',
-                        attributes: { class: 'list-disc pl-4' },
+                        tag: ul,
+                        attributes: { style: 'list-style-type: disc; padding-left: 1rem;' },
                         children: [
-                            { tag: 'li', children: ['Driver size: 40mm'] },
-                            { tag: 'li', children: ['Battery: 30h playtime'] },
-                            { tag: 'li', children: ['Bluetooth 5.0'] }
+                            { tag: li, children: ['Driver size: 40mm'] },
+                            { tag: li, children: ['Battery: 30h playtime'] },
+                            { tag: li, children: ['Bluetooth 5.0'] }
                         ]
                     }]
                 }
@@ -373,14 +377,12 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Collapse } = await import('/components/data-display/collapse.js');
-const { tags, $ } = Lightview;
-tags.Collapse = Collapse;
-tags['Collapse.Title'] = Collapse.Title;
-tags['Collapse.Content'] = Collapse.Content;
+                                </script><code contenteditable="true">await import('/components/data-display/collapse.js');
+const { $ } = Lightview;
 
 const demo = {
     div: {
@@ -391,17 +393,17 @@ const demo = {
                     icon: 'plus',
                     open: true,
                     children: [
-                        { 'Collapse.Title': { text: '🎁 What\'s included' } },
+                        { 'Collapse.Title': { children: ['🎁 What\'s included'] } },
                         {
                             'Collapse.Content': {
                                 children: [{
                                     ul: {
-                                        class: 'list-disc pl-4',
+                                        style: 'list-style-type: disc; padding-left: 1rem;',
                                         children: [
-                                            { li: { text: 'Premium headphones' } },
-                                            { li: { text: 'Carrying case' } },
-                                            { li: { text: '3.5mm audio cable' } },
-                                            { li: { text: 'User manual' } }
+                                            { li: { children: ['Premium headphones'] } },
+                                            { li: { children: ['Carrying case'] } },
+                                            { li: { children: ['3.5mm audio cable'] } },
+                                            { li: { children: ['User manual'] } }
                                         ]
                                     }
                                 }]
@@ -414,16 +416,16 @@ const demo = {
                 Collapse: {
                     icon: 'plus',
                     children: [
-                        { 'Collapse.Title': { text: '⚡ Specifications' } },
+                        { 'Collapse.Title': { children: ['⚡ Specifications'] } },
                         {
                             'Collapse.Content': {
                                 children: [{
                                     ul: {
-                                        class: 'list-disc pl-4',
+                                        style: 'list-style-type: disc; padding-left: 1rem;',
                                         children: [
-                                            { li: { text: 'Driver size: 40mm' } },
-                                            { li: { text: 'Battery: 30h playtime' } },
-                                            { li: { text: 'Bluetooth 5.0' } }
+                                            { li: { children: ['Driver size: 40mm'] } },
+                                            { li: { children: ['Battery: 30h playtime'] } },
+                                            { li: { children: ['Bluetooth 5.0'] } }
                                         ]
                                     }
                                 }]
@@ -501,8 +503,8 @@ $('#example').content(demo);</code></pre>
 
                     <!-- Static Examples -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Arrow Icon</h2>
-                    <div class="collapse collapse-arrow bg-base-100 border border-base-300"
-                        style="margin-bottom: 1rem;">
+                    <div class="collapse collapse-arrow"
+                        style="background-color: oklch(var(--b1)); border: 1px solid oklch(var(--b3)); border-radius: var(--rounded-box, 1rem); margin-bottom: 1rem;">
                         <input type="checkbox" />
                         <div class="collapse-title font-semibold">Click to open/close</div>
                         <div class="collapse-content">
@@ -511,7 +513,8 @@ $('#example').content(demo);</code></pre>
                     </div>
 
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Plus/Minus Icon</h2>
-                    <div class="collapse collapse-plus bg-base-100 border border-base-300" style="margin-bottom: 1rem;">
+                    <div class="collapse collapse-plus"
+                        style="background-color: oklch(var(--b1)); border: 1px solid oklch(var(--b3)); border-radius: var(--rounded-box, 1rem); margin-bottom: 1rem;">
                         <input type="checkbox" />
                         <div class="collapse-title font-semibold">Click to expand</div>
                         <div class="collapse-content">
@@ -520,7 +523,8 @@ $('#example').content(demo);</code></pre>
                     </div>
 
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Force Open</h2>
-                    <div class="collapse collapse-open bg-base-100 border border-base-300" style="margin-bottom: 2rem;">
+                    <div class="collapse collapse-open"
+                        style="background-color: oklch(var(--b1)); border: 1px solid oklch(var(--b3)); border-radius: var(--rounded-box, 1rem); margin-bottom: 2rem;">
                         <div class="collapse-title font-semibold">I am always open</div>
                         <div class="collapse-content">
                             <p>This collapse is forced open with <code>collapse-open</code>.</p>

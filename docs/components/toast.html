@@ -102,16 +102,17 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         autoRun: true,
                                         html: '<div id="demo" style="height: 80px; position: relative;"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
-const { default: Alert } = await import('/components/data-display/alert.js');
+                                </script><code contenteditable="true">await import('/components/data-display/toast.js');
+await import('/components/data-display/alert.js');
 
 const { tags, $ } = Lightview;
-const { span } = tags;
+const { span, Toast, Alert } = tags;
 
 // Toast positioned at bottom-end (default)
 const toast = Toast({ position: 'end', vertical: 'bottom' },
@@ -129,13 +130,15 @@ $('#example').content(toast);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" style="height: 80px; position: relative;"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
-const { default: Alert } = await import('/components/data-display/alert.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/toast.js');
+await import('/components/data-display/alert.js');
+const { $, tags } = Lightview;
+const { Toast, Alert, span } = tags;
 
 const toast = {
     tag: Toast,
@@ -144,7 +147,7 @@ const toast = {
         {
             tag: Alert,
             attributes: { color: 'success', icon: 'success' },
-            children: [{ tag: 'span', children: ['Message sent successfully!'] }]
+            children: [{ tag: span, children: ['Message sent successfully!'] }]
         }
     ]
 };
@@ -158,15 +161,14 @@ $('#example').content(toast);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" style="height: 80px; position: relative;"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
-const { default: Alert } = await import('/components/data-display/alert.js');
-const { tags, $ } = Lightview;
-tags.Toast = Toast;
-tags.Alert = Alert;
+                                </script><code contenteditable="true">await import('/components/data-display/toast.js');
+await import('/components/data-display/alert.js');
+const { $ } = Lightview;
 
 const toast = {
     Toast: {
@@ -230,16 +232,17 @@ $('#example').content(toast);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180,
                                         html: '<div id="demo" style="height: 150px; position: relative;"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
-const { default: Alert } = await import('/components/data-display/alert.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/toast.js');
+await import('/components/data-display/alert.js');
+await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
-const { div, span } = tags;
+const { div, span, Toast, Alert, Button } = tags;
 
 const notifications = signal([]);
 let id = 0;
@@ -282,14 +285,16 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180,
                                         html: '<div id="demo" style="height: 150px; position: relative;"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
-const { default: Alert } = await import('/components/data-display/alert.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/toast.js');
+await import('/components/data-display/alert.js');
+await import('/components/actions/button.js');
+const { signal, $, tags } = Lightview;
+const { Toast, Alert, Button, div, span } = tags;
 
 const notifications = signal([]);
 let id = 0;
@@ -309,10 +314,10 @@ const addNotification = (type) => {
 };
 
 const demo = {
-    tag: 'div',
+    tag: div,
     children: [
         {
-            tag: 'div',
+            tag: div,
             attributes: { style: 'display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem' },
             children: [
                 { tag: Button, attributes: { color: 'success', size: 'sm', onclick: () => addNotification('success') }, children: ['Success'] },
@@ -327,7 +332,7 @@ const demo = {
             children: notifications.value.map(n => ({
                 tag: Alert,
                 attributes: { color: n.type, key: n.id },
-                children: [{ tag: 'span', children: [n.msg] }]
+                children: [{ tag: span, children: [n.msg] }]
             }))
         })
     ]
@@ -342,17 +347,15 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180,
                                         html: '<div id="demo" style="height: 150px; position: relative;"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Toast } = await import('/components/data-display/toast.js');
-const { default: Alert } = await import('/components/data-display/alert.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-tags.Toast = Toast;
-tags.Alert = Alert;
-tags.Button = Button;
+                                </script><code contenteditable="true">await import('/components/data-display/toast.js');
+await import('/components/data-display/alert.js');
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
 
 const notifications = signal([]);
 let id = 0;

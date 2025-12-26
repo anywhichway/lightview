@@ -97,13 +97,13 @@ div({ id: 'main' }) // Content appears here</code></pre>
             <code>shadow</code>.
         </p>
 
-        <pre><code>// Option A: Suffix syntax (Target Selector:Location)
+        <pre><code>// Option A: Suffix syntax for href (Target Selector:Location)
 button({ 
     href: '/partials/item.html', 
     target: '#list:beforeend' // Append to list
 }, 'Add Item')
 
-// Option B: Explicit attribute on target
+// Option B: Explicit attribute on target for src
 div({ 
     src: '/partials/banner.html', 
     location: 'afterbegin' 
@@ -160,90 +160,6 @@ const app = div({ class: 'app' },
     })
 );
 
-// Clicking nav buttons updates the main content area!</code></pre>
 
-        <h2>The enhance() Function</h2>
-        <p>
-            Make existing DOM elements reactive:
-        </p>
-        <pre><code>// HTML
-&lt;button id="my-btn"&gt;Click me&lt;/button&gt;
-&lt;span id="output"&gt;&lt;/span&gt;
-
-// JS
-const count = signal(0);
-
-// Enhance existing elements
-Lightview.enhance('#my-btn', {
-    onclick: () => count.value++
-});
-
-Lightview.enhance('#output', {
-    innerText: () => `Clicked ${count.value} times`
-});</code></pre>
-
-        <div class="code-example">
-            <div class="code-example-preview" id="hypermedia-demo">
-                <div id="demo-content"
-                    style="padding: 1rem; border: 1px dashed var(--site-border); border-radius: 8px; min-height: 60px;">
-                    <p style="color: var(--site-text-muted); margin: 0;">Click a button to load content</p>
-                </div>
-                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;" id="demo-buttons"></div>
-            </div>
-            <div class="code-example-code">
-                <pre><code>// Simulated hypermedia navigation
-nav(
-    button({ onclick: () => loadContent('home') }, 'Home'),
-    button({ onclick: () => loadContent('about') }, 'About')
-)
-main({ id: 'content' })</code></pre>
-            </div>
-        </div>
     </main>
 </div>
-
-<script>
-    (function () {
-        const { signal, tags } = Lightview;
-        const { div, button, p, h3 } = tags;
-
-        const content = signal({ title: 'Welcome', body: 'Click a button to load content' });
-
-        const pages = {
-            home: { title: '🏠 Home', body: 'Welcome to the home page! This content was loaded dynamically.' },
-            about: { title: '📖 About', body: 'This is the about page. Hypermedia makes navigation smooth!' },
-            contact: { title: '✉️ Contact', body: 'Get in touch! Content swapping is easy with Lightview.' }
-        };
-
-        const loadContent = (page) => {
-            content.value = pages[page];
-        };
-
-        const contentArea = div({ style: 'padding: 1rem; border: 1px dashed var(--site-border); border-radius: 8px; min-height: 80px;' },
-            h3({ style: 'margin: 0 0 0.5rem;' }, () => content.value.title),
-            p({ style: 'margin: 0; color: var(--site-text-secondary);' }, () => content.value.body)
-        );
-
-        const buttons = div({ style: 'display: flex; gap: 0.5rem; margin-top: 1rem;' },
-            button({
-                onclick: () => loadContent('home'),
-                style: 'padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--site-border); background: var(--site-surface); border-radius: 6px;'
-            }, '🏠 Home'),
-            button({
-                onclick: () => loadContent('about'),
-                style: 'padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--site-border); background: var(--site-surface); border-radius: 6px;'
-            }, '📖 About'),
-            button({
-                onclick: () => loadContent('contact'),
-                style: 'padding: 0.5rem 1rem; cursor: pointer; border: 1px solid var(--site-border); background: var(--site-surface); border-radius: 6px;'
-            }, '✉️ Contact')
-        );
-
-        const container = document.getElementById('hypermedia-demo');
-        if (container) {
-            container.innerHTML = '';
-            container.appendChild(contentArea.domEl);
-            container.appendChild(buttons.domEl);
-        }
-    })();
-</script>

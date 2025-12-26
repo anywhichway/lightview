@@ -117,6 +117,10 @@ Menu.Dropdown = (props = {}, ...children) => {
     return tags.li({}, details);
 };
 
-window.Lightview.tags.Menu = Menu;
+const tags = window.Lightview.tags;
+tags.Menu = Menu;
+tags['Menu.Item'] = Menu.Item;
+tags['Menu.Title'] = Menu.Title;
+tags['Menu.Dropdown'] = Menu.Dropdown;
 
 export default Menu;

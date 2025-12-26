@@ -106,6 +106,7 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         height: '100px',
                                         autoRun: true
@@ -135,14 +136,15 @@ $('#example').content(buttons);</code></pre>
                                     });
                                 </script><code contenteditable="true">await import('/components/actions/button.js');
 const { $, tags } = Lightview;
+const { div, Button } = tags;
 
 const buttons = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; gap: 0.5rem;' },
     children: [
-        { tag: 'Button', children: ['Default'] },
-        { tag: 'Button', attributes: { color: 'primary' }, children: ['Primary'] },
-        { tag: 'Button', attributes: { color: 'secondary' }, children: ['Secondary'] }
+        { tag: Button, children: ['Default'] },
+        { tag: Button, attributes: { color: 'primary' }, children: ['Primary'] },
+        { tag: Button, attributes: { color: 'secondary' }, children: ['Secondary'] }
     ]
 };
 
@@ -491,9 +493,9 @@ signal(false, 'btnLoading');
                     </div>
 
                     <script type="module">
-                        const { default: Button } = await import('/components/actions/button.js');
+                        await import('/components/actions/button.js');
                         const { tags, $ } = Lightview;
-                        const { div, h3, svg, path } = tags;
+                        const { div, h3, svg, path, Button } = tags;
 
                         // Helper to create X icon SVG Component
                         const XIcon = () => svg(

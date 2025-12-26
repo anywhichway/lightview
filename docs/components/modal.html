@@ -102,15 +102,16 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 60,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/actions/modal.js');
+await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
-const { h3, p } = tags;
+const { h3, p, Modal, Button } = tags;
 
 const modalId = 'my_modal';
 
@@ -141,12 +142,14 @@ $('#example').content(trigger, modal);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 60
                                     });
-                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/actions/modal.js');
+await import('/components/actions/button.js');
+const { $, tags } = Lightview;
+const { Modal, Button, h3, p } = tags;
 
 const modalId = 'my_modal';
 
@@ -158,8 +161,8 @@ const modal = {
         {
             tag: Modal.Box,
             children: [
-                { tag: 'h3', attributes: { class: 'text-lg font-bold' }, children: ['Hello! 👋'] },
-                { tag: 'p', attributes: { class: 'py-4' }, children: ['This modal was created with Lightview components.'] },
+                { tag: h3, attributes: { class: 'text-lg font-bold' }, children: ['Hello! 👋'] },
+                { tag: p, attributes: { class: 'py-4' }, children: ['This modal was created with Lightview components.'] },
                 {
                     tag: Modal.Action,
                     children: [
@@ -191,17 +194,13 @@ $('#example').content(trigger, modal);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 60
                                     });
-                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { tags, $ } = Lightview;
-tags.Modal = Modal;
-tags.Button = Button;
-tags['Modal.Box'] = Modal.Box;
-tags['Modal.Action'] = Modal.Action;
-tags['Modal.Backdrop'] = Modal.Backdrop;
+                                </script><code contenteditable="true">await import('/components/actions/modal.js');
+await import('/components/actions/button.js');
+const { $ } = Lightview;
 
 const modalId = 'my_modal';
 
@@ -281,14 +280,15 @@ $('#example').content(trigger, modal);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 60
                                     });
-                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/actions/modal.js');
+await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
-const { div, h3, p } = tags;
+const { div, h3, p, Modal, Button } = tags;
 
 const status = signal('Ready');
 const modalId = 'confirm_modal';
@@ -334,12 +334,14 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 60
                                     });
-                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/actions/modal.js');
+await import('/components/actions/button.js');
+const { signal, $, tags } = Lightview;
+const { Modal, Button, div, h3, p } = tags;
 
 const status = signal('Ready');
 const modalId = 'confirm_modal';
@@ -361,8 +363,8 @@ const confirmModal = {
         {
             tag: Modal.Box,
             children: [
-                { tag: 'h3', attributes: { class: 'text-lg font-bold' }, children: ['Are you sure?'] },
-                { tag: 'p', attributes: { class: 'py-4' }, children: ['This action cannot be undone.'] },
+                { tag: h3, attributes: { class: 'text-lg font-bold' }, children: ['Are you sure?'] },
+                { tag: p, attributes: { class: 'py-4' }, children: ['This action cannot be undone.'] },
                 {
                     tag: Modal.Action,
                     children: [
@@ -377,7 +379,7 @@ const confirmModal = {
 };
 
 const demo = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; align-items: center; gap: 1rem' },
     children: [
         {
@@ -389,7 +391,7 @@ const demo = {
             },
             children: ['Delete Item']
         },
-        { tag: 'p', attributes: { class: 'text-sm opacity-70' }, children: [() => `Status: ${status.value}`] },
+        { tag: p, attributes: { class: 'text-sm opacity-70' }, children: [() => `Status: ${status.value}`] },
         confirmModal
     ]
 };
@@ -403,17 +405,13 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 60
                                     });
-                                </script><code contenteditable="true">const { default: Modal } = await import('/components/actions/modal.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-tags.Modal = Modal;
-tags.Button = Button;
-tags['Modal.Box'] = Modal.Box;
-tags['Modal.Action'] = Modal.Action;
-tags['Modal.Backdrop'] = Modal.Backdrop;
+                                </script><code contenteditable="true">await import('/components/actions/modal.js');
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
 
 const status = signal('Ready');
 const modalId = 'confirm_modal';

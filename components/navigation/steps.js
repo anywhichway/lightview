@@ -82,6 +82,8 @@ Steps.Item = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Steps = Steps;
+const tags = window.Lightview.tags;
+tags.Steps = Steps;
+tags['Steps.Item'] = Steps.Item;
 
 export default Steps;

@@ -101,13 +101,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 240,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Divider } = await import('/components/layout/divider.js');
+                                </script><code contenteditable="true">await import('/components/layout/divider.js');
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, Divider } = tags;
 
 const demo = div({ class: 'flex flex-col w-full' },
     div({ class: 'card bg-base-300 p-4 rounded-box' }, 'Content above'),
@@ -126,21 +127,23 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 240
                                     });
-                                </script><code contenteditable="true">const { default: Divider } = await import('/components/layout/divider.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/layout/divider.js');
+const { $, tags } = Lightview;
+const { Divider, div } = tags;
 
 const demo = {
-    tag: 'div',
+    tag: div,
     attributes: { class: 'flex flex-col w-full' },
     children: [
-        { tag: 'div', attributes: { class: 'card bg-base-300 p-4 rounded-box' }, children: ['Content above'] },
+        { tag: div, attributes: { class: 'card bg-base-300 p-4 rounded-box' }, children: ['Content above'] },
         { tag: Divider, children: ['OR'] },
-        { tag: 'div', attributes: { class: 'card bg-base-300 p-4 rounded-box' }, children: ['Content below'] },
+        { tag: div, attributes: { class: 'card bg-base-300 p-4 rounded-box' }, children: ['Content below'] },
         { tag: Divider, attributes: { color: 'primary' }, children: ['Primary'] },
-        { tag: 'div', attributes: { class: 'card bg-base-300 p-4 rounded-box' }, children: ['More content'] }
+        { tag: div, attributes: { class: 'card bg-base-300 p-4 rounded-box' }, children: ['More content'] }
     ]
 };
 
@@ -153,12 +156,12 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 240
                                     });
-                                </script><code contenteditable="true">const { default: Divider } = await import('/components/layout/divider.js');
-const { tags, $ } = Lightview;
-tags.Divider = Divider;
+                                </script><code contenteditable="true">await import('/components/layout/divider.js');
+const { $ } = Lightview;
 
 const demo = {
     div: {

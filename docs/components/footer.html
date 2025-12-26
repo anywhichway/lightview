@@ -101,13 +101,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Footer } = await import('/components/layout/footer.js');
+                                </script><code contenteditable="true">await import('/components/layout/footer.js');
 const { tags, $ } = Lightview;
-const { a } = tags;
+const { a, Footer } = tags;
 
 const footer = Footer({ class: 'bg-neutral text-neutral-content p-10 rounded-box' },
     Footer.Nav({},
@@ -138,11 +139,13 @@ $('#example').content(footer);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Footer } = await import('/components/layout/footer.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/layout/footer.js');
+const { $, tags } = Lightview;
+const { Footer, a } = tags;
 
 const footer = {
     tag: Footer,
@@ -152,26 +155,26 @@ const footer = {
             tag: Footer.Nav,
             children: [
                 { tag: Footer.Title, children: ['Services'] },
-                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Branding'] },
-                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Design'] },
-                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Marketing'] }
+                { tag: a, attributes: { class: 'link link-hover' }, children: ['Branding'] },
+                { tag: a, attributes: { class: 'link link-hover' }, children: ['Design'] },
+                { tag: a, attributes: { class: 'link link-hover' }, children: ['Marketing'] }
             ]
         },
         {
             tag: Footer.Nav,
             children: [
                 { tag: Footer.Title, children: ['Company'] },
-                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['About us'] },
-                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Contact'] },
-                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Jobs'] }
+                { tag: a, attributes: { class: 'link link-hover' }, children: ['About us'] },
+                { tag: a, attributes: { class: 'link link-hover' }, children: ['Contact'] },
+                { tag: a, attributes: { class: 'link link-hover' }, children: ['Jobs'] }
             ]
         },
         {
             tag: Footer.Nav,
             children: [
                 { tag: Footer.Title, children: ['Legal'] },
-                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Terms of use'] },
-                { tag: 'a', attributes: { class: 'link link-hover' }, children: ['Privacy policy'] }
+                { tag: a, attributes: { class: 'link link-hover' }, children: ['Terms of use'] },
+                { tag: a, attributes: { class: 'link link-hover' }, children: ['Privacy policy'] }
             ]
         }
     ]
@@ -186,14 +189,12 @@ $('#example').content(footer);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Footer } = await import('/components/layout/footer.js');
-const { tags, $ } = Lightview;
-tags.Footer = Footer;
-tags['Footer.Nav'] = Footer.Nav;
-tags['Footer.Title'] = Footer.Title;
+                                </script><code contenteditable="true">await import('/components/layout/footer.js');
+const { $ } = Lightview;
 
 const footer = {
     Footer: {

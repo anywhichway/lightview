@@ -142,7 +142,7 @@ const requiredInput = Input({
 
 // Insert all examples
 $('#example').content(
-    div({ style: 'display: flex; flex-direction: column; gap: 1rem' }, basic, withLabel, withColor, requiredInput)
+    div({ style: 'display: flex; flex-direction: column; gap: 1rem;' }, basic, withLabel, withColor, requiredInput)
 );</code></pre>
                             </div>
 
@@ -158,7 +158,7 @@ $('#example').content(
                                     });
                                 </script><code contenteditable="true">await import('/components/data-input/input.js');
 const { $, tags } = Lightview;
-const { Input } = tags;
+const { Input, div } = tags;
 
 const basic = {
     tag: Input,
@@ -194,8 +194,8 @@ const requiredInput = {
 };
 
 $('#example').content({
-    tag: 'div',
-    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
+    tag: div,
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem;' },
     children: [basic, withLabel, withColor, requiredInput]
 });</code></pre>
                             </div>
@@ -213,9 +213,9 @@ $('#example').content({
                                 </script><code contenteditable="true">await import('/components/data-input/input.js');
 const { $ } = Lightview;
 
-$('#example').content({
+const demo = {
     div: {
-        style: 'display: flex; flex-direction: column; gap: 1rem',
+        style: 'display: flex; flex-direction: column; gap: 1rem;',
         children: [
             { Input: { placeholder: 'Basic input' } },
             { 
@@ -242,7 +242,9 @@ $('#example').content({
             }
         ]
     }
-});</code></pre>
+};
+
+$('#example').content(demo);</code></pre>
                             </div>
 
                             <!-- HTML Syntax -->
@@ -261,7 +263,7 @@ $('#example').content({
 
 &lt;div style="display: flex; flex-direction: column; gap: 1rem;"&gt;
     &lt;lv-input placeholder="Basic input"&gt;&lt;/lv-input&gt;
-    &lt;lv-input label="Email Address" type="email" placeholder="you@example.com" helper="We will never share your email."&gt;&lt;/lv-input&gt;
+    &lt;lv-input label="Email Address" type="email" placeholder="you@example.com" helper="We'll never share your email."&gt;&lt;/lv-input&gt;
     &lt;lv-input label="Primary Color" placeholder="Styled input" color="primary"&gt;&lt;/lv-input&gt;
     &lt;lv-input label="Username" placeholder="Enter username" required&gt;&lt;/lv-input&gt;
 &lt;/div&gt;</code></pre>
@@ -270,10 +272,12 @@ $('#example').content({
                     </div>
 
                     <!-- Reactive Example -->
-                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
-                        <div class="card-body">
-                            <h2 class="card-title">Reactive Example</h2>
-                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals
+                    <div
+                        style="background-color: oklch(var(--b2)); border-radius: var(--rounded-box, 1rem); margin-bottom: 2rem;">
+                        <div style="padding: 1.5rem;">
+                            <h2 style="font-size: 1.5rem; font-weight: 600; line-height: 2rem;">Reactive Example</h2>
+                            <p style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 1rem;">Two-way binding with
+                                signals
                                 and live
                                 validation</p>
 
@@ -309,12 +313,13 @@ $('#example').content({
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 220
                                     });
-                                </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
+                                </script><code contenteditable="true">await import('/components/data-input/input.js');
 const { signal, tags, $ } = Lightview;
-const { div, p, span } = tags;
+const { div, p, span, Input } = tags;
 
 // Signal for two-way binding
 const username = signal('');
@@ -328,7 +333,7 @@ const validateUsername = (val) => {
 };
 
 // Reactive input with validation
-const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
+const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem;' },
     Input({ 
         label: 'Username',
         placeholder: 'Enter your username...',
@@ -336,16 +341,16 @@ const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1
         validate: validateUsername,
         required: true
     }),
-    p({ class: 'text-sm' }, 
-        span({ class: 'opacity-70' }, 'Current value: '),
-        span({ class: 'font-mono text-primary' }, () => username.value || '(empty)')
+    p({ style: 'font-size: 0.875rem;' }, 
+        span({ style: 'opacity: 0.7;' }, 'Current value: '),
+        span({ style: 'font-family: monospace; color: oklch(var(--p));' }, () => username.value || '(empty)')
     ),
-    p({ class: 'text-sm' }, 
+    p({ style: 'font-size: 0.875rem;' }, 
         () => {
             const error = validateUsername(username.value);
             return error 
-                ? span({ class: 'text-error' }, '✗ ' + error)
-                : span({ class: 'text-success' }, '✓ Username is valid!');
+                ? span({ style: 'color: oklch(var(--er));' }, '✗ ' + error)
+                : span({ style: 'color: oklch(var(--su));' }, '✓ Username is valid!');
         }
     )
 );
@@ -359,11 +364,13 @@ $('#example').content(reactiveDemo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 220
                                     });
-                                </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-input/input.js');
+const { signal, $, tags } = Lightview;
+const { Input, div, p, span } = tags;
 
 const username = signal('');
 
@@ -375,8 +382,8 @@ const validateUsername = (val) => {
 };
 
 const reactiveDemo = {
-    tag: 'div',
-    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
+    tag: div,
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem;' },
     children: [
         {
             tag: Input,
@@ -389,22 +396,22 @@ const reactiveDemo = {
             }
         },
         {
-            tag: 'p',
-            attributes: { class: 'text-sm' },
+            tag: p,
+            attributes: { style: 'font-size: 0.875rem;' },
             children: [
-                { tag: 'span', attributes: { class: 'opacity-70' }, children: ['Current value: '] },
-                { tag: 'span', attributes: { class: 'font-mono text-primary' }, children: [() => username.value || '(empty)'] }
+                { tag: span, attributes: { style: 'opacity: 0.7;' }, children: ['Current value: '] },
+                { tag: span, attributes: { style: 'font-family: monospace; color: oklch(var(--p));' }, children: [() => username.value || '(empty)'] }
             ]
         },
         {
-            tag: 'p',
-            attributes: { class: 'text-sm' },
+            tag: p,
+            attributes: { style: 'font-size: 0.875rem;' },
             children: [
                 () => {
                     const error = validateUsername(username.value);
                     return error 
-                        ? { tag: 'span', attributes: { class: 'text-error' }, children: ['✗ ' + error] }
-                        : { tag: 'span', attributes: { class: 'text-success' }, children: ['✓ Username is valid!'] };
+                        ? { tag: span, attributes: { style: 'color: oklch(var(--er));' }, children: ['✗ ' + error] }
+                        : { tag: span, attributes: { style: 'color: oklch(var(--su));' }, children: ['✓ Username is valid!'] };
                 }
             ]
         }
@@ -420,12 +427,13 @@ $('#example').content(reactiveDemo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 220
                                     });
-                                </script><code contenteditable="true">const { default: Input } = await import('/components/data-input/input.js');
+                                </script><code contenteditable="true">await import('/components/data-input/input.js');
 const { signal, tags, $ } = Lightview;
-tags.Input = Input;
+const { Input, div, p, span } = tags;
 
 const username = signal('');
 
@@ -438,7 +446,7 @@ const validateUsername = (val) => {
 
 const reactiveDemo = {
     div: {
-        style: 'display: flex; flex-direction: column; gap: 1rem',
+        style: 'display: flex; flex-direction: column; gap: 1rem;',
         children: [
             {
                 Input: {
@@ -451,22 +459,22 @@ const reactiveDemo = {
             },
             {
                 p: {
-                    class: 'text-sm',
+                    style: 'font-size: 0.875rem;',
                     children: [
-                        { span: { class: 'opacity-70', children: ['Current value: '] } },
-                        { span: { class: 'font-mono text-primary', children: [() => username.value || '(empty)'] } }
+                        { span: { style: 'opacity: 0.7;', children: ['Current value: '] } },
+                        { span: { style: 'font-family: monospace; color: oklch(var(--p));', children: [() => username.value || '(empty)'] } }
                     ]
                 }
             },
             {
                 p: {
-                    class: 'text-sm',
+                    style: 'font-size: 0.875rem;',
                     children: [
                         () => {
                             const error = validateUsername(username.value);
                             return error 
-                                ? { span: { class: 'text-error', children: ['✗ ' + error] } }
-                                : { span: { class: 'text-success', children: ['✓ Username is valid!'] } };
+                                ? { span: { style: 'color: oklch(var(--er));', children: ['✗ ' + error] } }
+                                : { span: { style: 'color: oklch(var(--su));', children: ['✓ Username is valid!'] } };
                         }
                     ]
                 }
@@ -596,7 +604,7 @@ $('#example').content(reactiveDemo);</code></pre>
 
                     <!-- Sizes Example -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-                    <div class="example-flex" style="align-items: flex-end; margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: flex-end; gap: 0.5rem; margin-bottom: 2rem;">
                         <input type="text" placeholder="Extra small" class="input input-xs" />
                         <input type="text" placeholder="Small" class="input input-sm" />
                         <input type="text" placeholder="Medium" class="input" />
@@ -605,7 +613,8 @@ $('#example').content(reactiveDemo);</code></pre>
 
                     <!-- Colors Example -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                    <div class="example-grid-responsive" style="margin-bottom: 2rem;">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 1rem; margin-bottom: 2rem;">
                         <input type="text" placeholder="Primary" class="input input-primary" />
                         <input type="text" placeholder="Secondary" class="input input-secondary" />
                         <input type="text" placeholder="Accent" class="input input-accent" />
@@ -619,10 +628,14 @@ $('#example').content(reactiveDemo);</code></pre>
                     <!-- With Fieldset -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label (Fieldset Pattern)</h2>
                     <div style="max-width: 28rem; margin-bottom: 2rem;">
-                        <fieldset class="fieldset">
-                            <legend class="fieldset-legend">Email Address</legend>
-                            <input type="email" class="input w-full" placeholder="you@example.com" />
-                            <p class="label">We'll never share your email.</p>
+                        <fieldset
+                            style="display: flex; flex-direction: column; gap: 0.5rem; border: none; padding: 0.5rem 0;">
+                            <legend
+                                style="font-size: 0.875rem; font-weight: 700; color: oklch(var(--bc)/0.8); padding: 0 0.5rem;">
+                                Email Address</legend>
+                            <input type="email" class="input" style="width: 100%;" placeholder="you@example.com" />
+                            <p style="font-size: 0.875rem; color: oklch(var(--bc)/0.6); padding: 0 0.5rem;">We'll never
+                                share your email.</p>
                         </fieldset>
                     </div>
                 </div>

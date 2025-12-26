@@ -101,16 +101,17 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         autoRun: true,
                                         html: '<div id="demo" class="p-8"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/tooltip.js');
+await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, Tooltip, Button } = tags;
 
 const tooltips = div({ style: 'display: flex; flex-wrap: wrap; gap: 1rem' },
     Tooltip({ tip: 'Tooltip on top', position: 'top' },
@@ -136,16 +137,18 @@ $('#example').content(tooltips);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" class="p-8"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/tooltip.js');
+await import('/components/actions/button.js');
+const { $, tags } = Lightview;
+const { Tooltip, Button, div } = tags;
 
 const tooltips = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; flex-wrap: wrap; gap: 1rem' },
     children: [
         {
@@ -180,15 +183,14 @@ $('#example').content(tooltips);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" class="p-8"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { tags, $ } = Lightview;
-tags.Tooltip = Tooltip;
-tags.Button = Button;
+                                </script><code contenteditable="true">await import('/components/data-display/tooltip.js');
+await import('/components/actions/button.js');
+const { $ } = Lightview;
 
 const tooltips = {
     div: {
@@ -246,15 +248,16 @@ $('#example').content(tooltips);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" class="p-8"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/tooltip.js');
+await import('/components/actions/button.js');
 
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, Tooltip, Button } = tags;
 
 const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
 
@@ -275,18 +278,20 @@ $('#example').content(tooltips);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" class="p-8"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/tooltip.js');
+await import('/components/actions/button.js');
+const { $, tags } = Lightview;
+const { Tooltip, Button, div } = tags;
 
 const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
 
 const tooltips = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; flex-wrap: wrap; gap: 1rem' },
     children: colors.map(color => ({
         tag: Tooltip,
@@ -304,15 +309,14 @@ $('#example').content(tooltips);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100,
                                         html: '<div id="demo" class="p-8"></div>'
                                     });
-                                </script><code contenteditable="true">const { default: Tooltip } = await import('/components/data-display/tooltip.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { tags, $ } = Lightview;
-tags.Tooltip = Tooltip;
-tags.Button = Button;
+                                </script><code contenteditable="true">await import('/components/data-display/tooltip.js');
+await import('/components/actions/button.js');
+const { $ } = Lightview;
 
 const colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error'];
 

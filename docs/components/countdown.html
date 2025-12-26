@@ -100,13 +100,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
+                                </script><code contenteditable="true">await import('/components/data-display/countdown.js');
 const { tags, $ } = Lightview;
-const { div, span } = tags;
+const { div, span, Countdown } = tags;
 
 const display = div({ style: 'display: flex; gap: 1.25rem' },
     Countdown({ value: 15, class: 'font-mono text-4xl' }),
@@ -125,20 +126,22 @@ $('#example').content(display);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/countdown.js');
+const { $, tags } = Lightview;
+const { Countdown, div, span } = tags;
 
 const display = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; gap: 1.25rem' },
     children: [
         { tag: Countdown, attributes: { value: 15, class: 'font-mono text-4xl' } },
-        { tag: 'span', attributes: { class: 'text-4xl' }, children: [':'] },
+        { tag: span, attributes: { class: 'text-4xl' }, children: [':'] },
         { tag: Countdown, attributes: { value: 30, class: 'font-mono text-4xl' } },
-        { tag: 'span', attributes: { class: 'text-4xl' }, children: [':'] },
+        { tag: span, attributes: { class: 'text-4xl' }, children: [':'] },
         { tag: Countdown, attributes: { value: 45, class: 'font-mono text-4xl' } }
     ]
 };
@@ -152,12 +155,12 @@ $('#example').content(display);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
-const { tags, $ } = Lightview;
-tags.Countdown = Countdown;
+                                </script><code contenteditable="true">await import('/components/data-display/countdown.js');
+const { $ } = Lightview;
 
 const display = {
     div: {
@@ -217,14 +220,15 @@ $('#example').content(display);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 160
                                     });
-                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/countdown.js');
+await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
-const { div } = tags;
+const { div, Countdown, Button } = tags;
 
 const seconds = signal(30);
 const running = signal(false);
@@ -273,12 +277,14 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 160
                                     });
-                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/countdown.js');
+await import('/components/actions/button.js');
+const { signal, $, tags } = Lightview;
+const { Countdown, div, Button } = tags;
 
 const seconds = signal(30);
 const running = signal(false);
@@ -308,7 +314,7 @@ const reset = () => {
 };
 
 const demo = {
-    tag: 'div',
+    tag: div,
     attributes: { style: 'display: flex; flex-direction: column; align-items: center; gap: 1rem' },
     children: [
         {
@@ -316,7 +322,7 @@ const demo = {
             attributes: { value: () => seconds.value, class: 'font-mono text-6xl' }
         },
         {
-            tag: 'div',
+            tag: div,
             attributes: { style: 'display: flex; gap: 0.5rem' },
             children: [
                 {
@@ -339,14 +345,13 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 160
                                     });
-                                </script><code contenteditable="true">const { default: Countdown } = await import('/components/data-display/countdown.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-tags.Countdown = Countdown;
-tags.Button = Button;
+                                </script><code contenteditable="true">await import('/components/data-display/countdown.js');
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
 
 const seconds = signal(30);
 const running = signal(false);

@@ -100,19 +100,20 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 120,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Steps } = await import('/components/navigation/steps.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/navigation/steps.js');
+await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-const { div } = tags;
+const { div, Steps, Button } = tags;
 
 const currentStep = signal(1);
 const stepNames = ['Cart', 'Shipping', 'Payment', 'Confirm'];
 
-const demo = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
+const demo = div({ style: 'display: flex; flex-direction: column; gap: 1rem;' },
     Steps({},
         ...stepNames.map((name, i) => 
             Steps.Item({ 
@@ -120,7 +121,7 @@ const demo = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
             }, name)
         )
     ),
-    div({ style: 'display: flex; gap: 0.5rem; justify-content: center' },
+    div({ style: 'display: flex; gap: 0.5rem; justify-content: center;' },
         Button({ 
             size: 'sm',
             disabled: () => currentStep.value <= 1,
@@ -144,19 +145,21 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 120
                                     });
-                                </script><code contenteditable="true">const { default: Steps } = await import('/components/navigation/steps.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/navigation/steps.js');
+await import('/components/actions/button.js');
+const { signal, $, tags } = Lightview;
+const { Steps, Button, div } = tags;
 
 const currentStep = signal(1);
 const stepNames = ['Cart', 'Shipping', 'Payment', 'Confirm'];
 
 const demo = {
-    tag: 'div',
-    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
+    tag: div,
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem;' },
     children: [
         {
             tag: Steps,
@@ -169,8 +172,8 @@ const demo = {
             }))
         },
         {
-            tag: 'div',
-            attributes: { style: 'display: flex; gap: 0.5rem; justify-content: center' },
+            tag: div,
+            attributes: { style: 'display: flex; gap: 0.5rem; justify-content: center;' },
             children: [
                 {
                     tag: Button,
@@ -205,43 +208,41 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 120
                                     });
-                                </script><code contenteditable="true">const { default: Steps } = await import('/components/navigation/steps.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-tags.Steps = Steps;
-tags['Steps.Item'] = Steps.Item;
-tags.Button = Button;
+                                </script><code contenteditable="true">await import('/components/navigation/steps.js');
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
 
 const currentStep = signal(1);
 const stepNames = ['Cart', 'Shipping', 'Payment', 'Confirm'];
 
 const demo = {
     div: {
-        style: 'display: flex; flex-direction: column; gap: 1rem',
+        style: 'display: flex; flex-direction: column; gap: 1rem;',
         children: [
             {
                 Steps: {
                     children: stepNames.map((name, i) => ({
                         'Steps.Item': {
                             color: () => i < currentStep.value ? 'primary' : undefined,
-                            text: name
+                            children: [name]
                         }
                     }))
                 }
             },
             {
                 div: {
-                    style: 'display: flex; gap: 0.5rem; justify-content: center',
+                    style: 'display: flex; gap: 0.5rem; justify-content: center;',
                     children: [
                         {
                             Button: {
                                 size: 'sm',
                                 disabled: () => currentStep.value <= 1,
                                 onclick: () => { currentStep.value--; },
-                                text: 'Back'
+                                children: ['Back']
                             }
                         },
                         {
@@ -250,7 +251,7 @@ const demo = {
                                 color: 'primary',
                                 disabled: () => currentStep.value >= stepNames.length,
                                 onclick: () => { currentStep.value++; },
-                                text: 'Next'
+                                children: ['Next']
                             }
                         }
                     ]

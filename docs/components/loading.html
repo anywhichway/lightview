@@ -114,11 +114,11 @@ const { div, p, Loading } = tags;
 
 const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
 
-const loaders = div({ style: 'display: flex; flex-wrap: wrap; gap: 2rem' },
+const loaders = div({ style: 'display: flex; flex-wrap: wrap; gap: 2rem;' },
     ...types.map(type => 
-        div({ class: 'text-center' },
+        div({ style: 'text-align: center;' },
             Loading({ type, size: 'lg' }),
-            p({ class: 'text-sm mt-2 opacity-50' }, type)
+            p({ style: 'font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;' }, type)
         )
     )
 );
@@ -138,19 +138,19 @@ $('#example').content(loaders);</code></pre>
                                     });
                                 </script><code contenteditable="true">await import('/components/data-display/loading.js');
 const { $, tags } = Lightview;
-const { Loading } = tags;
+const { Loading, div, p } = tags;
 
 const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
 
 const loaders = {
-    tag: 'div',
-    attributes: { style: 'display: flex; flex-wrap: wrap; gap: 2rem' },
+    tag: div,
+    attributes: { style: 'display: flex; flex-wrap: wrap; gap: 2rem;' },
     children: types.map(type => ({
-        tag: 'div',
-        attributes: { class: 'text-center' },
+        tag: div,
+        attributes: { style: 'text-align: center;' },
         children: [
             { tag: Loading, attributes: { type, size: 'lg' } },
-            { tag: 'p', attributes: { class: 'text-sm mt-2 opacity-50' }, children: [type] }
+            { tag: p, attributes: { style: 'font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;' }, children: [type] }
         ]
     }))
 };
@@ -175,13 +175,13 @@ const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
 
 const loaders = {
     div: {
-        style: 'display: flex; flex-wrap: wrap; gap: 2rem',
+        style: 'display: flex; flex-wrap: wrap; gap: 2rem;',
         children: types.map(type => ({
             div: {
-                class: 'text-center',
+                style: 'text-align: center;',
                 children: [
                     { Loading: { type, size: 'lg' } },
-                    { p: { class: 'text-sm mt-2 opacity-50', text: type } }
+                    { p: { style: 'font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;', text: type } }
                 ]
             }
         }))
@@ -254,13 +254,23 @@ $('#example').content(loaders);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
-const { default: Button } = await import('/components/actions/button.js');
+                                </script><code contenteditable="true">await import('/components/data-display/loading.js');
+await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
+const { div, span, Loading, Button } = tags;
+
+const isLoading = signal(false);
+
+const handleClick = async () => {
+                                </script><code contenteditable="true">import { signal, tags, $ } from '/lightview.js';
+import { Loading } from '/components/data-display/loading.js';
+import { Button } from '/components/actions/button.js';
+
 const { div, span } = tags;
 
 const isLoading = signal(false);
@@ -271,14 +281,14 @@ const handleClick = async () => {
     isLoading.value = false;
 };
 
-const demo = div({ style: 'display: flex; gap: 1rem; align-items: center' },
+const demo = div({ style: 'display: flex; gap: 1rem; align-items: center;' },
     () => isLoading.value
         ? Button({ color: 'primary', disabled: true },
             Loading({ type: 'spinner', size: 'sm' }),
             span({}, ' Processing...')
         )
         : Button({ color: 'primary', onclick: handleClick }, 'Submit'),
-    span({ class: 'text-sm opacity-70' },
+    span({ style: 'font-size: 0.875rem; opacity: 0.7;' },
         () => isLoading.value ? 'Please wait...' : 'Click the button'
     )
 );
@@ -292,12 +302,14 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">import { signal, $, tags } from '/lightview.js';
+import { Loading } from '/components/data-display/loading.js';
+import { Button } from '/components/actions/button.js';
+const { div, span } = tags;
 
 const isLoading = signal(false);
 
@@ -308,26 +320,29 @@ const handleClick = async () => {
 };
 
 const demo = {
-    tag: 'div',
-    attributes: { style: 'display: flex; gap: 1rem; align-items: center' },
+    tag: div,
+    attributes: { style: 'display: flex; gap: 1rem; align-items: center;' },
     children: [
-        () => isLoading.value
-            ? {
-                tag: Button,
-                attributes: { color: 'primary', disabled: true },
-                children: [
-                    { tag: Loading, attributes: { type: 'spinner', size: 'sm' } },
-                    { tag: 'span', children: [' Processing...'] }
-                ]
-            }
-            : {
-                tag: Button,
-                attributes: { color: 'primary', onclick: handleClick },
-                children: ['Submit']
-            },
         {
-            tag: 'span',
-            attributes: { class: 'text-sm opacity-70' },
+            observable: isLoading,
+            callback: (loading) => loading
+                ? {
+                    tag: Button,
+                    attributes: { color: 'primary', disabled: true },
+                    children: [
+                        { tag: Loading, attributes: { type: 'spinner', size: 'sm' } },
+                        { tag: span, children: [' Processing...'] }
+                    ]
+                }
+                : {
+                    tag: Button,
+                    attributes: { color: 'primary', onclick: handleClick },
+                    children: ['Submit']
+                }
+        },
+        {
+            tag: span,
+            attributes: { style: 'font-size: 0.875rem; opacity: 0.7;' },
             children: [() => isLoading.value ? 'Please wait...' : 'Click the button']
         }
     ]
@@ -342,14 +357,13 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 80
                                     });
-                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-tags.Loading = Loading;
-tags.Button = Button;
+                                </script><code contenteditable="true">import { signal, $ } from '/lightview.js';
+import { Loading } from '/components/data-display/loading.js';
+import { Button } from '/components/actions/button.js';
 
 const isLoading = signal(false);
 
@@ -363,23 +377,26 @@ const demo = {
     div: {
         style: 'display: flex; gap: 1rem; align-items: center',
         children: [
-            () => isLoading.value
-                ? {
-                    Button: {
-                        color: 'primary',
-                        disabled: true,
-                        children: [
-                            { Loading: { type: 'spinner', size: 'sm' } },
-                            { span: { text: ' Processing...' } }
-                        ]
+            {
+                observable: isLoading,
+                callback: (loading) => loading
+                    ? {
+                        Button: {
+                            color: 'primary',
+                            disabled: true,
+                            children: [
+                                { Loading: { type: 'spinner', size: 'sm' } },
+                                { span: { text: ' Processing...' } }
+                            ]
+                        }
                     }
-                }
-                : {
-                    Button: { color: 'primary', onclick: handleClick, text: 'Submit' }
-                },
+                    : {
+                        Button: { color: 'primary', onclick: handleClick, text: 'Submit' }
+                    }
+            },
             {
                 span: {
-                    class: 'text-sm opacity-70',
+                    style: 'font-size: 0.875rem; opacity: 0.7;',
                     text: () => isLoading.value ? 'Please wait...' : 'Click the button'
                 }
             }
@@ -429,64 +446,64 @@ $('#example').content(demo);</code></pre>
 
                     <!-- Types -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Types</h2>
-                    <div class="example-flex" style="margin-bottom: 2rem;">
-                        <div class="text-center">
+                    <div style="display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 2rem;">
+                        <div style="text-align: center;">
                             <span class="loading loading-spinner loading-lg"></span>
-                            <p class="text-sm mt-2 opacity-50">spinner</p>
+                            <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">spinner</p>
                         </div>
-                        <div class="text-center">
+                        <div style="text-align: center;">
                             <span class="loading loading-dots loading-lg"></span>
-                            <p class="text-sm mt-2 opacity-50">dots</p>
+                            <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">dots</p>
                         </div>
-                        <div class="text-center">
+                        <div style="text-align: center;">
                             <span class="loading loading-ring loading-lg"></span>
-                            <p class="text-sm mt-2 opacity-50">ring</p>
+                            <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">ring</p>
                         </div>
-                        <div class="text-center">
+                        <div style="text-align: center;">
                             <span class="loading loading-ball loading-lg"></span>
-                            <p class="text-sm mt-2 opacity-50">ball</p>
+                            <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">ball</p>
                         </div>
-                        <div class="text-center">
+                        <div style="text-align: center;">
                             <span class="loading loading-bars loading-lg"></span>
-                            <p class="text-sm mt-2 opacity-50">bars</p>
+                            <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">bars</p>
                         </div>
-                        <div class="text-center">
+                        <div style="text-align: center;">
                             <span class="loading loading-infinity loading-lg"></span>
-                            <p class="text-sm mt-2 opacity-50">infinity</p>
+                            <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">infinity</p>
                         </div>
                     </div>
 
                     <!-- Sizes -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
                     <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
-                        <div class="text-center">
+                        <div style="text-align: center;">
                             <span class="loading loading-spinner loading-xs"></span>
-                            <p class="text-xs mt-1 opacity-50">xs</p>
+                            <p style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.5;">xs</p>
                         </div>
-                        <div class="text-center">
+                        <div style="text-align: center;">
                             <span class="loading loading-spinner loading-sm"></span>
-                            <p class="text-xs mt-1 opacity-50">sm</p>
+                            <p style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.5;">sm</p>
                         </div>
-                        <div class="text-center">
+                        <div style="text-align: center;">
                             <span class="loading loading-spinner loading-md"></span>
-                            <p class="text-xs mt-1 opacity-50">md</p>
+                            <p style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.5;">md</p>
                         </div>
-                        <div class="text-center">
+                        <div style="text-align: center;">
                             <span class="loading loading-spinner loading-lg"></span>
-                            <p class="text-xs mt-1 opacity-50">lg</p>
+                            <p style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.5;">lg</p>
                         </div>
                     </div>
 
                     <!-- Colors -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
                     <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem;">
-                        <span class="loading loading-spinner loading-lg text-primary"></span>
-                        <span class="loading loading-spinner loading-lg text-secondary"></span>
-                        <span class="loading loading-spinner loading-lg text-accent"></span>
-                        <span class="loading loading-spinner loading-lg text-info"></span>
-                        <span class="loading loading-spinner loading-lg text-success"></span>
-                        <span class="loading loading-spinner loading-lg text-warning"></span>
-                        <span class="loading loading-spinner loading-lg text-error"></span>
+                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--p));"></span>
+                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--s));"></span>
+                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--a));"></span>
+                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--in));"></span>
+                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--su));"></span>
+                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--wa));"></span>
+                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--er));"></span>
                     </div>
 
                     <!-- In Button -->

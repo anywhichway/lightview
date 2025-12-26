@@ -99,13 +99,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 160,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Dropdown } = await import('/components/actions/dropdown.js');
+                                </script><code contenteditable="true">await import('/components/actions/dropdown.js');
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, Dropdown } = tags;
 
 // Basic dropdown
 const dropdown = Dropdown({},
@@ -117,7 +118,7 @@ const dropdown = Dropdown({},
     )
 );
 
-$('#example').content(div({ class: 'h-40' }, dropdown));</code></pre>
+$('#example').content(div({ style: 'height: 10rem;' }, dropdown));</code></pre>
                             </div>
 
                             <!-- vDOM Syntax -->
@@ -126,11 +127,13 @@ $('#example').content(div({ class: 'h-40' }, dropdown));</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 160
                                     });
-                                </script><code contenteditable="true">const { default: Dropdown } = await import('/components/actions/dropdown.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/actions/dropdown.js');
+const { $, tags } = Lightview;
+const { Dropdown, div } = tags;
 
 const dropdown = {
     tag: Dropdown,
@@ -147,7 +150,7 @@ const dropdown = {
     ]
 };
 
-$('#example').content({ tag: 'div', attributes: { class: 'h-40' }, children: [dropdown] });</code></pre>
+$('#example').content({ tag: div, attributes: { style: 'height: 10rem;' }, children: [dropdown] });</code></pre>
                             </div>
 
                             <!-- Object DOM Syntax -->
@@ -156,26 +159,23 @@ $('#example').content({ tag: 'div', attributes: { class: 'h-40' }, children: [dr
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 160
                                     });
-                                </script><code contenteditable="true">const { default: Dropdown } = await import('/components/actions/dropdown.js');
-const { tags, $ } = Lightview;
-tags.Dropdown = Dropdown;
-tags['Dropdown.Trigger'] = Dropdown.Trigger;
-tags['Dropdown.Content'] = Dropdown.Content;
-tags['Dropdown.Item'] = Dropdown.Item;
+                                </script><code contenteditable="true">await import('/components/actions/dropdown.js');
+const { $ } = Lightview;
 
 const dropdown = {
     Dropdown: {
         children: [
-            { 'Dropdown.Trigger': { text: 'Click me' } },
+            { 'Dropdown.Trigger': { children: ['Click me'] } },
             {
                 'Dropdown.Content': {
                     children: [
-                        { 'Dropdown.Item': { text: 'Profile' } },
-                        { 'Dropdown.Item': { text: 'Settings' } },
-                        { 'Dropdown.Item': { text: 'Logout' } }
+                        { 'Dropdown.Item': { children: ['Profile'] } },
+                        { 'Dropdown.Item': { children: ['Settings'] } },
+                        { 'Dropdown.Item': { children: ['Logout'] } }
                     ]
                 }
             }
@@ -183,7 +183,7 @@ const dropdown = {
     }
 };
 
-$('#example').content({ div: { class: 'h-40', children: [dropdown] } });</code></pre>
+$('#example').content({ div: { style: 'height: 10rem;', children: [dropdown] } });</code></pre>
                             </div>
                         </div>
                     </div>
@@ -227,12 +227,13 @@ $('#example').content({ div: { class: 'h-40', children: [dropdown] } });</code><
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Dropdown } = await import('/components/actions/dropdown.js');
+                                </script><code contenteditable="true">await import('/components/actions/dropdown.js');
 const { signal, tags, $ } = Lightview;
-const { div, span } = tags;
+const { div, span, Dropdown } = tags;
 
 const selected = signal('Select an option');
 const options = ['🍎 Apple', '🍌 Banana', '🍊 Orange', '🍇 Grape'];
@@ -250,9 +251,9 @@ const dropdown = Dropdown({},
     )
 );
 
-const demo = div({ style: 'display: flex; gap: 1rem; align-items: center; height: 12rem' },
+const demo = div({ style: 'display: flex; gap: 1rem; align-items: center; height: 12rem;' },
     dropdown,
-    span({ class: 'text-sm opacity-70' }, 
+    span({ style: 'font-size: 0.875rem; opacity: 0.7;' }, 
         () => `Selected: ${selected.value}`
     )
 );
@@ -266,11 +267,13 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Dropdown } = await import('/components/actions/dropdown.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/actions/dropdown.js');
+const { signal, $, tags } = Lightview;
+const { Dropdown, div, span } = tags;
 
 const selected = signal('Select an option');
 const options = ['🍎 Apple', '🍌 Banana', '🍊 Orange', '🍇 Grape'];
@@ -295,13 +298,13 @@ const dropdown = {
 };
 
 const demo = {
-    tag: 'div',
-    attributes: { style: 'display: flex; gap: 1rem; align-items: center; height: 12rem' },
+    tag: div,
+    attributes: { style: 'display: flex; gap: 1rem; align-items: center; height: 12rem;' },
     children: [
         dropdown,
         {
-            tag: 'span',
-            attributes: { class: 'text-sm opacity-70' },
+            tag: span,
+            attributes: { style: 'font-size: 0.875rem; opacity: 0.7;' },
             children: [() => `Selected: ${selected.value}`]
         }
     ]
@@ -316,15 +319,12 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Dropdown } = await import('/components/actions/dropdown.js');
-const { signal, tags, $ } = Lightview;
-tags.Dropdown = Dropdown;
-tags['Dropdown.Trigger'] = Dropdown.Trigger;
-tags['Dropdown.Content'] = Dropdown.Content;
-tags['Dropdown.Item'] = Dropdown.Item;
+                                </script><code contenteditable="true">await import('/components/actions/dropdown.js');
+const { signal, $ } = Lightview;
 
 const selected = signal('Select an option');
 const options = ['🍎 Apple', '🍌 Banana', '🍊 Orange', '🍇 Grape'];
@@ -335,7 +335,7 @@ const dropdown = {
             {
                 'Dropdown.Trigger': {
                     class: 'btn-primary',
-                    text: () => selected.value
+                    children: [() => selected.value]
                 }
             },
             {
@@ -343,7 +343,7 @@ const dropdown = {
                     children: options.map(opt => ({
                         'Dropdown.Item': {
                             onclick: () => { selected.value = opt; },
-                            text: opt
+                            children: [opt]
                         }
                     }))
                 }
@@ -354,10 +354,10 @@ const dropdown = {
 
 const demo = {
     div: {
-        style: 'display: flex; gap: 1rem; align-items: center; height: 12rem',
+        style: 'display: flex; gap: 1rem; align-items: center; height: 12rem;',
         children: [
             dropdown,
-            { span: { class: 'text-sm opacity-70', text: () => `Selected: ${selected.value}` } }
+            { span: { style: 'font-size: 0.875rem; opacity: 0.7;', text: () => `Selected: ${selected.value}` } }
         ]
     }
 };
@@ -431,32 +431,33 @@ $('#example').content(demo);</code></pre>
 
                     <!-- Positions -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
-                    <div class="example-flex" style="margin-bottom: 2rem; padding-top: 8rem; padding-bottom: 8rem;">
+                    <div
+                        style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 2rem; padding-top: 8rem; padding-bottom: 8rem;">
                         <div class="dropdown dropdown-bottom">
                             <div tabindex="0" role="button" class="btn">Bottom</div>
-                            <ul tabindex="0"
-                                class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                            <ul tabindex="0" class="dropdown-content menu"
+                                style="background-color: oklch(var(--b1)); border-radius: var(--rounded-box, 1rem); z-index: 10; width: 13rem; padding: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
                                 <li><a>Item</a></li>
                             </ul>
                         </div>
                         <div class="dropdown dropdown-top">
                             <div tabindex="0" role="button" class="btn">Top</div>
-                            <ul tabindex="0"
-                                class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                            <ul tabindex="0" class="dropdown-content menu"
+                                style="background-color: oklch(var(--b1)); border-radius: var(--rounded-box, 1rem); z-index: 10; width: 13rem; padding: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
                                 <li><a>Item</a></li>
                             </ul>
                         </div>
                         <div class="dropdown dropdown-left">
                             <div tabindex="0" role="button" class="btn">Left</div>
-                            <ul tabindex="0"
-                                class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                            <ul tabindex="0" class="dropdown-content menu"
+                                style="background-color: oklch(var(--b1)); border-radius: var(--rounded-box, 1rem); z-index: 10; width: 13rem; padding: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
                                 <li><a>Item</a></li>
                             </ul>
                         </div>
                         <div class="dropdown dropdown-right">
                             <div tabindex="0" role="button" class="btn">Right</div>
-                            <ul tabindex="0"
-                                class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                            <ul tabindex="0" class="dropdown-content menu"
+                                style="background-color: oklch(var(--b1)); border-radius: var(--rounded-box, 1rem); z-index: 10; width: 13rem; padding: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
                                 <li><a>Item</a></li>
                             </ul>
                         </div>
@@ -465,8 +466,9 @@ $('#example').content(demo);</code></pre>
                     <!-- Hover -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Hover</h2>
                     <div class="dropdown dropdown-hover" style="margin-bottom: 2rem; height: 8rem;">
-                        <div tabindex="0" role="button" class="btn m-1">Hover me</div>
-                        <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                        <div tabindex="0" role="button" class="btn" style="margin: 0.25rem;">Hover me</div>
+                        <ul tabindex="0" class="dropdown-content menu"
+                            style="background-color: oklch(var(--b1)); border-radius: var(--rounded-box, 1rem); z-index: 10; width: 13rem; padding: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
                             <li><a>Item 1</a></li>
                             <li><a>Item 2</a></li>
                         </ul>

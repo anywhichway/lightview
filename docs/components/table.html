@@ -101,12 +101,14 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
+                                </script><code contenteditable="true">await import('/components/data-display/table.js');
 const { tags, $ } = Lightview;
+const { Table } = tags;
 
 const data = [
     { id: 1, name: 'Alice Johnson', job: 'Engineer', company: 'TechCorp' },
@@ -144,11 +146,13 @@ $('#example').content(table);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/table.js');
+const { $, tags } = Lightview;
+const { Table } = tags;
 
 const data = [
     { id: 1, name: 'Alice Johnson', job: 'Engineer', company: 'TechCorp' },
@@ -196,17 +200,12 @@ $('#example').content(table);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 180
                                     });
-                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
-const { tags, $ } = Lightview;
-tags.Table = Table;
-tags.TableHead = Table.Head;
-tags.TableBody = Table.Body;
-tags.TableRow = Table.Row;
-tags.TableTh = Table.Th;
-tags.TableTd = Table.Td;
+                                </script><code contenteditable="true">await import('/components/data-display/table.js');
+const { $ } = Lightview;
 
 const data = [
     { id: 1, name: 'Alice Johnson', job: 'Engineer', company: 'TechCorp' },
@@ -219,28 +218,28 @@ const table = {
         zebra: true,
         children: [
             {
-                TableHead: {
+                'Table.Head': {
                     children: [{
-                        TableRow: {
+                        'Table.Row': {
                             children: [
-                                { TableTh: { children: ['#'] } },
-                                { TableTh: { children: ['Name'] } },
-                                { TableTh: { children: ['Job'] } },
-                                { TableTh: { children: ['Company'] } }
+                                { 'Table.Th': { text: '#' } },
+                                { 'Table.Th': { text: 'Name' } },
+                                { 'Table.Th': { text: 'Job' } },
+                                { 'Table.Th': { text: 'Company' } }
                             ]
                         }
                     }]
                 }
             },
             {
-                TableBody: {
+                'Table.Body': {
                     children: data.map(row => ({
-                        TableRow: {
+                        'Table.Row': {
                             children: [
-                                { TableTh: { children: [row.id] } },
-                                { TableTd: { children: [row.name] } },
-                                { TableTd: { children: [row.job] } },
-                                { TableTd: { children: [row.company] } }
+                                { 'Table.Th': { text: row.id } },
+                                { 'Table.Td': { text: row.name } },
+                                { 'Table.Td': { text: row.job } },
+                                { 'Table.Td': { text: row.company } }
                             ]
                         }
                     }))
@@ -293,13 +292,14 @@ $('#example').content(table);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
-const { default: Badge } = await import('/components/data-display/badge.js');
+                                </script><code contenteditable="true">await import('/components/data-display/table.js');
+await import('/components/data-display/badge.js');
 const { signal, tags, $ } = Lightview;
-const { div, span } = tags;
+const { div, span, Table, Badge, button } = tags;
 
 const selected = signal(null);
 const users = [
@@ -333,7 +333,7 @@ const demo = div({},
                         }, user.status)
                     ),
                     Table.Td({}, 
-                        tags.button({ class: 'btn btn-xs' }, 'Edit')
+                        button({ class: 'btn btn-xs' }, 'Edit')
                     )
                 )
             )
@@ -353,12 +353,14 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
-const { default: Badge } = await import('/components/data-display/badge.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/table.js');
+await import('/components/data-display/badge.js');
+const { signal, $, tags } = Lightview;
+const { Table, Badge, div, span, button } = tags;
 
 const selected = signal(null);
 const users = [
@@ -368,7 +370,7 @@ const users = [
 ];
 
 const demo = {
-    tag: 'div',
+    tag: div,
     children: [
         {
             tag: Table,
@@ -410,7 +412,7 @@ const demo = {
                             },
                             {
                                 tag: Table.Td,
-                                children: [{ tag: 'button', attributes: { class: 'btn btn-xs' }, children: ['Edit'] }]
+                                children: [{ tag: button, attributes: { class: 'btn btn-xs' }, children: ['Edit'] }]
                             }
                         ]
                     }))
@@ -418,7 +420,7 @@ const demo = {
             ]
         },
         {
-            tag: 'span',
+            tag: span,
             attributes: { class: 'text-sm opacity-70 mt-2 block' },
             children: [() => selected.value ? `Selected: User ${selected.value}` : 'Click a row to select']
         }
@@ -434,19 +436,13 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 200
                                     });
-                                </script><code contenteditable="true">const { default: Table } = await import('/components/data-display/table.js');
-const { default: Badge } = await import('/components/data-display/badge.js');
-const { signal, tags, $ } = Lightview;
-tags.Table = Table;
-tags.TableHead = Table.Head;
-tags.TableBody = Table.Body;
-tags.TableRow = Table.Row;
-tags.TableTh = Table.Th;
-tags.TableTd = Table.Td;
-tags.Badge = Badge;
+                                </script><code contenteditable="true">await import('/components/data-display/table.js');
+await import('/components/data-display/badge.js');
+const { signal, $ } = Lightview;
 
 const selected = signal(null);
 const users = [
@@ -464,42 +460,42 @@ const demo = {
                     size: 'sm',
                     children: [
                         {
-                            TableHead: {
+                            'Table.Head': {
                                 children: [{
-                                    TableRow: {
+                                    'Table.Row': {
                                         children: [
-                                            { TableTh: { children: ['Name'] } },
-                                            { TableTh: { children: ['Status'] } },
-                                            { TableTh: { children: ['Action'] } }
+                                            { 'Table.Th': { text: 'Name' } },
+                                            { 'Table.Th': { text: 'Status' } },
+                                            { 'Table.Th': { text: 'Action' } }
                                         ]
                                     }
                                 }]
                             }
                         },
                         {
-                            TableBody: {
+                            'Table.Body': {
                                 children: users.map(user => ({
-                                    TableRow: {
+                                    'Table.Row': {
                                         hover: true,
                                         active: () => selected.value === user.id,
                                         onclick: () => { selected.value = user.id; },
                                         children: [
-                                            { TableTd: { children: [user.name] } },
+                                            { 'Table.Td': { text: user.name } },
                                             { 
-                                                TableTd: { 
+                                                'Table.Td': { 
                                                     children: [{
                                                         Badge: { 
                                                             color: user.status === 'active' ? 'success' : 
                                                                    user.status === 'pending' ? 'warning' : 'error',
                                                             size: 'sm',
-                                                            children: [user.status]
+                                                            text: user.status
                                                         }
                                                     }]
                                                 }
                                             },
                                             {
-                                                TableTd: {
-                                                    children: [{ button: { class: 'btn btn-xs', children: ['Edit'] } }]
+                                                'Table.Td': {
+                                                    children: [{ button: { class: 'btn btn-xs', text: 'Edit' } }]
                                                 }
                                             }
                                         ]
@@ -513,7 +509,7 @@ const demo = {
             {
                 span: {
                     class: 'text-sm opacity-70 mt-2 block',
-                    children: [() => selected.value ? `Selected: User ${selected.value}` : 'Click a row to select']
+                    text: () => selected.value ? `Selected: User ${selected.value}` : 'Click a row to select'
                 }
             }
         ]

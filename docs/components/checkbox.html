@@ -139,7 +139,7 @@ const disabled = Checkbox({
 
 // Insert all examples
 $('#example').content(
-    div({ style: 'display: flex; flex-direction: column; gap: 1rem' }, basic, withDesc, required, disabled)
+    div({ style: 'display: flex; flex-direction: column; gap: 1rem;' }, basic, withDesc, required, disabled)
 );</code></pre>
                             </div>
 
@@ -155,7 +155,7 @@ $('#example').content(
                                     });
                                 </script><code contenteditable="true">await import('/components/data-input/checkbox.js');
 const { $, tags } = Lightview;
-const { Checkbox } = tags;
+const { Checkbox, div } = tags;
 
 const basic = {
     tag: Checkbox,
@@ -189,8 +189,8 @@ const disabled = {
 };
 
 $('#example').content({
-    tag: 'div',
-    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem' },
+    tag: div,
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem;' },
     children: [basic, withDesc, required, disabled]
 });</code></pre>
                             </div>
@@ -210,7 +210,7 @@ const { tags, $ } = Lightview;
 
 $('#example').content({
     div: {
-        style: 'display: flex; flex-direction: column; gap: 1rem',
+        style: 'display: flex; flex-direction: column; gap: 1rem;',
         children: [
             { Checkbox: { label: 'Remember me' } },
             { 
@@ -252,7 +252,7 @@ $('#example').content({
                                 </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-checkbox) --&gt;
 &lt;script type="module" src="/components/data-input/checkbox.js"&gt;&lt;/script&gt;
 
-&lt;div style="display: flex; flex-direction: column; gap: 1rem"&gt;
+&lt;div style="display: flex; flex-direction: column; gap: 1rem;"&gt;
     &lt;lv-checkbox label="Remember me"&gt;&lt;/lv-checkbox&gt;
     &lt;lv-checkbox label="Subscribe to newsletter" description="Get weekly updates on new features" color="primary"&gt;&lt;/lv-checkbox&gt;
     &lt;lv-checkbox label="I agree to the terms and conditions" required&gt;&lt;/lv-checkbox&gt;
@@ -263,10 +263,13 @@ $('#example').content({
                     </div>
 
                     <!-- Reactive Example -->
-                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
-                        <div class="card-body">
-                            <h2 class="card-title">Reactive Example</h2>
-                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Two-way binding with signals
+                    <div
+                        style="background-color: oklch(var(--b2)); border-radius: var(--rounded-box, 1rem); box-shadow: var(--shadow-2, 0 25px 50px -12px rgba(0,0,0,0.25)); margin-bottom: 2rem;">
+                        <div style="padding: var(--padding-card, 2rem);">
+                            <h2 style="font-size: 1.5rem; font-weight: 600; line-height: 2rem; margin-bottom: 0.5rem;">
+                                Reactive Example</h2>
+                            <p style="font-size: 0.875rem; opacity: 0.7; margin-bottom: 1rem;">Two-way binding with
+                                signals
                                 and live
                                 validation</p>
 
@@ -316,7 +319,7 @@ const marketing = signal(false);
 const termsAccepted = signal(false);
 
 // Reactive demo
-const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
+const reactiveDemo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem;' },
     Checkbox({ 
         label: 'Email Notifications',
         description: 'Receive important updates via email',
@@ -363,15 +366,15 @@ $('#example').content(reactiveDemo);</code></pre>
                                     });
                                 </script><code contenteditable="true">await import('/components/data-input/checkbox.js');
 const { signal, $, tags } = Lightview;
-const { Checkbox } = tags;
+const { Checkbox, div, p, button } = tags;
 
 const notifications = signal(true);
 const marketing = signal(false);
 const termsAccepted = signal(false);
 
 const reactiveDemo = {
-    tag: 'div',
-    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem' },
+    tag: div,
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem;' },
     children: [
         {
             tag: Checkbox,
@@ -402,18 +405,18 @@ const reactiveDemo = {
             }
         },
         {
-            tag: 'div',
+            tag: div,
             attributes: { style: 'padding-top: 1rem; border-top: 1px solid oklch(var(--b3));' },
             children: [
                 {
-                    tag: 'p',
+                    tag: p,
                     attributes: { style: 'font-size: 0.875rem; font-family: monospace;' },
                     children: [
                         () => `Notifications: ${notifications.value}, Marketing: ${marketing.value}`
                     ]
                 },
                 {
-                    tag: 'button',
+                    tag: button,
                     attributes: {
                         class: 'btn btn-primary',
                         style: () => `margin-top: 0.5rem; ${termsAccepted.value ? '' : 'opacity: 0.5; pointer-events: none;'}`,
@@ -448,7 +451,7 @@ const termsAccepted = signal(false);
 
 const reactiveDemo = {
     div: {
-        style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem',
+        style: 'display: flex; flex-direction: column; gap: 1rem; max-width: 28rem;',
         children: [
             {
                 Checkbox: {
@@ -482,9 +485,7 @@ const reactiveDemo = {
                         {
                             p: {
                                 style: 'font-size: 0.875rem; font-family: monospace;',
-                                children: [
-                                    () => `Notifications: ${notifications.value}, Marketing: ${marketing.value}`
-                                ]
+                                text: () => `Notifications: ${notifications.value}, Marketing: ${marketing.value}`
                             }
                         },
                         {
@@ -492,7 +493,7 @@ const reactiveDemo = {
                                 class: 'btn btn-primary',
                                 style: () => `margin-top: 0.5rem; ${termsAccepted.value ? '' : 'opacity: 0.5; pointer-events: none;'}`,
                                 disabled: () => !termsAccepted.value,
-                                children: ['Submit']
+                                text: 'Submit'
                             }
                         }
                     ]
@@ -605,7 +606,7 @@ $('#example').content(reactiveDemo);</code></pre>
 
                     <!-- Colors Example -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                    <div class="example-flex" style="margin-bottom: 2rem;">
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
                         <input type="checkbox" class="checkbox" checked />
                         <input type="checkbox" class="checkbox checkbox-primary" checked />
                         <input type="checkbox" class="checkbox checkbox-secondary" checked />
@@ -618,7 +619,7 @@ $('#example').content(reactiveDemo);</code></pre>
 
                     <!-- Sizes Example -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-                    <div class="example-flex-centered" style="margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
                         <input type="checkbox" class="checkbox checkbox-xs" checked />
                         <input type="checkbox" class="checkbox checkbox-sm" checked />
                         <input type="checkbox" class="checkbox checkbox-md" checked />
@@ -627,9 +628,10 @@ $('#example').content(reactiveDemo);</code></pre>
 
                     <!-- With Label -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label</h2>
-                    <div class="form-control" style="width: 13rem; margin-bottom: 2rem;">
-                        <label class="label cursor-pointer">
-                            <span class="label-text">Remember me</span>
+                    <div style="display: flex; flex-direction: column; width: 13rem; margin-bottom: 2rem;">
+                        <label
+                            style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 0.5rem 0;">
+                            <span style="font-size: 0.875rem;">Remember me</span>
                             <input type="checkbox" class="checkbox checkbox-primary" />
                         </label>
                     </div>

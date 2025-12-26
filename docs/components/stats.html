@@ -100,14 +100,16 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 120,
                                         autoRun: true
                                     });
-                                </script><code contenteditable="true">const { default: Stats } = await import('/components/data-display/stats.js');
+                                </script><code contenteditable="true">await import('/components/data-display/stats.js');
 const { tags, $ } = Lightview;
+const { Stats } = tags;
 
-const stats = Stats({ class: 'shadow' },
+const stats = Stats({ style: 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);' },
     Stats.Stat({},
         Stats.Title({}, 'Total Users'),
         Stats.Value({}, '89,400'),
@@ -115,12 +117,12 @@ const stats = Stats({ class: 'shadow' },
     ),
     Stats.Stat({},
         Stats.Title({}, 'Page Views'),
-        Stats.Value({ class: 'text-primary' }, '2.6M'),
+        Stats.Value({ style: 'color: oklch(var(--p));' }, '2.6M'),
         Stats.Desc({}, '↗︎ 14% from last month')
     ),
     Stats.Stat({},
         Stats.Title({}, 'Conversion'),
-        Stats.Value({ class: 'text-secondary' }, '4.2%'),
+        Stats.Value({ style: 'color: oklch(var(--s));' }, '4.2%'),
         Stats.Desc({}, '↘︎ 2% from last month')
     )
 );
@@ -134,15 +136,17 @@ $('#example').content(stats);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 120
                                     });
-                                </script><code contenteditable="true">const { default: Stats } = await import('/components/data-display/stats.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/stats.js');
+const { $, tags } = Lightview;
+const { Stats } = tags;
 
 const stats = {
     tag: Stats,
-    attributes: { class: 'shadow' },
+    attributes: { style: 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);' },
     children: [
         {
             tag: Stats.Stat,
@@ -156,7 +160,7 @@ const stats = {
             tag: Stats.Stat,
             children: [
                 { tag: Stats.Title, children: ['Page Views'] },
-                { tag: Stats.Value, attributes: { class: 'text-primary' }, children: ['2.6M'] },
+                { tag: Stats.Value, attributes: { style: 'color: oklch(var(--p));' }, children: ['2.6M'] },
                 { tag: Stats.Desc, children: ['↗︎ 14% from last month'] }
             ]
         },
@@ -164,7 +168,7 @@ const stats = {
             tag: Stats.Stat,
             children: [
                 { tag: Stats.Title, children: ['Conversion'] },
-                { tag: Stats.Value, attributes: { class: 'text-secondary' }, children: ['4.2%'] },
+                { tag: Stats.Value, attributes: { style: 'color: oklch(var(--s));' }, children: ['4.2%'] },
                 { tag: Stats.Desc, children: ['↘︎ 2% from last month'] }
             ]
         }
@@ -180,45 +184,41 @@ $('#example').content(stats);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 120
                                     });
-                                </script><code contenteditable="true">const { default: Stats } = await import('/components/data-display/stats.js');
-const { tags, $ } = Lightview;
-tags.Stats = Stats;
-tags.StatsStat = Stats.Stat;
-tags.StatsTitle = Stats.Title;
-tags.StatsValue = Stats.Value;
-tags.StatsDesc = Stats.Desc;
+                                </script><code contenteditable="true">await import('/components/data-display/stats.js');
+const { $ } = Lightview;
 
 const stats = {
     Stats: {
-        class: 'shadow',
+        style: 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);',
         children: [
             {
-                StatsStat: {
+                'Stats.Stat': {
                     children: [
-                        { StatsTitle: { children: ['Total Users'] } },
-                        { StatsValue: { children: ['89,400'] } },
-                        { StatsDesc: { children: ['↗︎ 21% from last month'] } }
+                        { 'Stats.Title': { text: 'Total Users' } },
+                        { 'Stats.Value': { text: '89,400' } },
+                        { 'Stats.Desc': { text: '↗︎ 21% from last month' } }
                     ]
                 }
             },
             {
-                StatsStat: {
+                'Stats.Stat': {
                     children: [
-                        { StatsTitle: { children: ['Page Views'] } },
-                        { StatsValue: { class: 'text-primary', children: ['2.6M'] } },
-                        { StatsDesc: { children: ['↗︎ 14% from last month'] } }
+                        { 'Stats.Title': { text: 'Page Views' } },
+                        { 'Stats.Value': { style: 'color: oklch(var(--p));', text: '2.6M' } },
+                        { 'Stats.Desc': { text: '↗︎ 14% from last month' } }
                     ]
                 }
             },
             {
-                StatsStat: {
+                'Stats.Stat': {
                     children: [
-                        { StatsTitle: { children: ['Conversion'] } },
-                        { StatsValue: { class: 'text-secondary', children: ['4.2%'] } },
-                        { StatsDesc: { children: ['↘︎ 2% from last month'] } }
+                        { 'Stats.Title': { text: 'Conversion' } },
+                        { 'Stats.Value': { style: 'color: oklch(var(--s));', text: '4.2%' } },
+                        { 'Stats.Desc': { text: '↘︎ 2% from last month' } }
                     ]
                 }
             }
@@ -269,11 +269,13 @@ $('#example').content(stats);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 120
                                     });
-                                </script><code contenteditable="true">const { default: Stats } = await import('/components/data-display/stats.js');
+                                </script><code contenteditable="true">await import('/components/data-display/stats.js');
 const { signal, tags, $ } = Lightview;
+const { Stats } = tags;
 
 const visitors = signal(1234);
 const sessions = signal(567);
@@ -284,10 +286,10 @@ setInterval(() => {
     sessions.value += Math.floor(Math.random() * 3);
 }, 2000);
 
-const stats = Stats({ class: 'shadow' },
+const stats = Stats({ style: 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);' },
     Stats.Stat({},
         Stats.Title({}, '🟢 Live Visitors'),
-        Stats.Value({ class: 'text-success' }, () => visitors.value.toLocaleString()),
+        Stats.Value({ style: 'color: oklch(var(--su));' }, () => visitors.value.toLocaleString()),
         Stats.Desc({}, 'Currently online')
     ),
     Stats.Stat({},
@@ -306,11 +308,13 @@ $('#example').content(stats);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 120
                                     });
-                                </script><code contenteditable="true">const { default: Stats } = await import('/components/data-display/stats.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/stats.js');
+const { signal, $, tags } = Lightview;
+const { Stats } = tags;
 
 const visitors = signal(1234);
 const sessions = signal(567);
@@ -323,13 +327,13 @@ setInterval(() => {
 
 const stats = {
     tag: Stats,
-    attributes: { class: 'shadow' },
+    attributes: { style: 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);' },
     children: [
         {
             tag: Stats.Stat,
             children: [
                 { tag: Stats.Title, children: ['🟢 Live Visitors'] },
-                { tag: Stats.Value, attributes: { class: 'text-success' }, children: [() => visitors.value.toLocaleString()] },
+                { tag: Stats.Value, attributes: { style: 'color: oklch(var(--su));' }, children: [() => visitors.value.toLocaleString()] },
                 { tag: Stats.Desc, children: ['Currently online'] }
             ]
         },
@@ -353,16 +357,12 @@ $('#example').content(stats);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 120
                                     });
-                                </script><code contenteditable="true">const { default: Stats } = await import('/components/data-display/stats.js');
-const { signal, tags, $ } = Lightview;
-tags.Stats = Stats;
-tags.StatsStat = Stats.Stat;
-tags.StatsTitle = Stats.Title;
-tags.StatsValue = Stats.Value;
-tags.StatsDesc = Stats.Desc;
+                                </script><code contenteditable="true">await import('/components/data-display/stats.js');
+const { signal, $ } = Lightview;
 
 const visitors = signal(1234);
 const sessions = signal(567);
@@ -375,23 +375,23 @@ setInterval(() => {
 
 const stats = {
     Stats: {
-        class: 'shadow',
+        style: 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);',
         children: [
             {
-                StatsStat: {
+                'Stats.Stat': {
                     children: [
-                        { StatsTitle: { children: ['🟢 Live Visitors'] } },
-                        { StatsValue: { class: 'text-success', children: [() => visitors.value.toLocaleString()] } },
-                        { StatsDesc: { children: ['Currently online'] } }
+                        { 'Stats.Title': { text: '🟢 Live Visitors' } },
+                        { 'Stats.Value': { style: 'color: oklch(var(--su));', text: () => visitors.value.toLocaleString() } },
+                        { 'Stats.Desc': { text: 'Currently online' } }
                     ]
                 }
             },
             {
-                StatsStat: {
+                'Stats.Stat': {
                     children: [
-                        { StatsTitle: { children: ['📊 Active Sessions'] } },
-                        { StatsValue: { children: [() => sessions.value.toLocaleString()] } },
-                        { StatsDesc: { children: ['Last 5 minutes'] } }
+                        { 'Stats.Title': { text: '📊 Active Sessions' } },
+                        { 'Stats.Value': { text: () => sessions.value.toLocaleString() } },
+                        { 'Stats.Desc': { text: 'Last 5 minutes' } }
                     ]
                 }
             }
@@ -464,7 +464,8 @@ $('#example').content(stats);</code></pre>
 
                     <!-- Vertical -->
                     <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical Layout</h2>
-                    <div class="stats stats-vertical shadow" style="margin-bottom: 2rem;">
+                    <div class="stats stats-vertical"
+                        style="box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); margin-bottom: 2rem;">
                         <div class="stat">
                             <div class="stat-title">Downloads</div>
                             <div class="stat-value">31K</div>

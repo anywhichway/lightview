@@ -4,6 +4,7 @@
     // Adds: src attribute fetching, href navigation, DOM-to-element conversion, template literals, named registries, Object DOM syntax
 
     const STANDARD_SRC_TAGS = ['img', 'script', 'iframe', 'video', 'audio', 'source', 'track', 'embed', 'input'];
+    const isStandardSrcTag = (tagName) => STANDARD_SRC_TAGS.includes(tagName) || tagName.startsWith('lv-');
     const STANDARD_HREF_TAGS = ['a', 'area', 'base', 'link'];
 
     /**
@@ -1023,7 +1024,7 @@
         if (node.nodeType !== Node.ELEMENT_NODE) return;
 
         const tagName = node.tagName.toLowerCase();
-        if (STANDARD_SRC_TAGS.includes(tagName)) return;
+        if (isStandardSrcTag(tagName)) return;
 
         const src = node.getAttribute('src');
         if (!src) return;
@@ -1076,7 +1077,9 @@
                     const expr = codeStr.trim().slice(2, -1);
                     fnBody = 'return ' + expr;
                 } else {
-                    fnBody = 'return `' + codeStr + '`';
+                    // Escape backticks and backslashes for the template literal
+                    const escaped = codeStr.replace(/\\/g, '\\\\').replace(/`/g, '\\`');
+                    fnBody = 'return `' + escaped + '`';
                 }
 
                 const fn = new Function('state', 'signal', fnBody);
@@ -1114,8 +1117,8 @@
 
         for (let i = 0; i < textResult.snapshotLength; i++) {
             const node = textResult.snapshotItem(i);
-            // Verify it's not inside a script/style (XPath might pick them up if defined loosely)
-            if (node.parentElement && (node.parentElement.tagName === 'SCRIPT' || node.parentElement.tagName === 'STYLE')) continue;
+            // Verify it's not inside a skip tag (XPath might pick them up if defined loosely)
+            if (node.parentElement && node.parentElement.closest('SCRIPT, STYLE, CODE, PRE, TEMPLATE, NOSCRIPT')) continue;
             bindEffect(node, node.textContent);
         }
 
@@ -1132,7 +1135,7 @@
 
         for (let i = 0; i < attrResult.snapshotLength; i++) {
             const element = attrResult.snapshotItem(i);
-            if (element.tagName === 'SCRIPT' || element.tagName === 'STYLE') continue;
+            if (['SCRIPT', 'STYLE', 'CODE', 'PRE', 'TEMPLATE', 'NOSCRIPT'].includes(element.tagName)) continue;
 
             // Iterate attributes to find matches (XPath found the element, but not *which* attribute)
             Array.from(element.attributes).forEach(attr => {
@@ -1143,7 +1146,7 @@
         }
 
         // Also check the root itself (XPath .// does not always include the context node for attributes depending on implementation details, safer to check manually if root is element)
-        if (root.nodeType === Node.ELEMENT_NODE && root.tagName !== 'SCRIPT' && root.tagName !== 'STYLE') {
+        if (root.nodeType === Node.ELEMENT_NODE && !['SCRIPT', 'STYLE', 'CODE', 'PRE', 'TEMPLATE', 'NOSCRIPT'].includes(root.tagName)) {
             Array.from(root.attributes).forEach(attr => {
                 if (attr.value.includes('${')) {
                     bindEffect(root, attr.value, true, attr.name);
@@ -1179,6 +1182,7 @@
                         const selector = '[src]:not(' + STANDARD_SRC_TAGS.join('):not(') + ')';
                         const descendants = node.querySelectorAll(selector);
                         for (const desc of descendants) {
+                            if (desc.tagName.toLowerCase().startsWith('lv-')) continue;
                             nodesToProcess.push(desc);
                         }
                     }
@@ -1233,7 +1237,10 @@
 
                 const selector = '[src]:not(' + STANDARD_SRC_TAGS.join('):not(') + ')';
                 const nodes = document.querySelectorAll(selector);
-                nodes.forEach(node => processSrcOnNode(node, LV));
+                nodes.forEach(node => {
+                    if (node.tagName.toLowerCase().startsWith('lv-')) return;
+                    processSrcOnNode(node, LV);
+                });
             });
         };
 
@@ -1341,11 +1348,14 @@
                     // Collect props from attributes
                     const props = {};
                     for (const attr of this.attributes) {
+                        // Convert kebab-case to camelCase
+                        const name = attr.name.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+
                         // Convert boolean attributes
                         if (attr.value === '') {
-                            props[attr.name] = true;
+                            props[name] = true;
                         } else {
-                            props[attr.name] = attr.value;
+                            props[name] = attr.value;
                         }
                     }
 
@@ -1356,18 +1366,9 @@
                     const slot = window.Lightview.tags.slot();
                     const result = Component(props, slot);
 
-                    // Convert result to DOM
-                    let content = result;
-                    if (result && result.domEl) {
-                        content = result.domEl;
-                    }
-
-                    // Clear previous content in themeWrapper
-                    this.themeWrapper.innerHTML = '';
-
-                    if (content instanceof Node) {
-                        this.themeWrapper.appendChild(content);
-                    }
+                    // Use Lightview's internal setupChildren to render the result
+                    // This handles vDOM, DOM nodes, strings, and reactive content
+                    window.Lightview.internals.setupChildren([result], this.themeWrapper);
                 };
 
                 // Initial render
