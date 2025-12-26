@@ -126,7 +126,7 @@ const drawer = Drawer({ id: drawerId },
     )
 );
 
-$('#example').content(drawer);</code></pre>
+$('#demo').content(drawer);</code></pre>
               </div>
 
               <!-- vDOM Syntax -->
@@ -177,7 +177,7 @@ const drawer = {
   ]
 };
 
-$('#example').content(drawer);</code></pre>
+$('#demo').content(drawer);</code></pre>
               </div>
 
               <!-- Object DOM Syntax -->
@@ -203,8 +203,8 @@ const drawer = {
       {
         'Drawer.Content': {
           children: [
-            { 'Drawer.Button': { for: drawerId, text: 'Open Drawer' } },
-            { p: { class: 'py-4', text: 'Main content area. Click the button to open the drawer.' } }
+            { 'Drawer.Button': { for: drawerId, children: ['Open Drawer'] } },
+            { p: { class: 'py-4', children: ['Main content area. Click the button to open the drawer.'] } }
           ]
         }
       },
@@ -217,10 +217,10 @@ const drawer = {
               ul: {
                 class: 'menu bg-base-200 text-base-content min-h-full w-64 p-4',
                 children: [
-                  { li: { children: [{ a: { text: '📁 Dashboard' } }] } },
-                  { li: { children: [{ a: { text: '👤 Profile' } }] } },
-                  { li: { children: [{ a: { text: '⚙️ Settings' } }] } },
-                  { li: { children: [{ a: { text: '🚪 Logout' } }] } }
+                  { li: { children: [{ a: { children: ['📁 Dashboard'] } }] } },
+                  { li: { children: [{ a: { children: ['👤 Profile'] } }] } },
+                  { li: { children: [{ a: { children: ['⚙️ Settings'] } }] } },
+                  { li: { children: [{ a: { children: ['🚪 Logout'] } }] } }
                 ]
               }
             }
@@ -231,7 +231,7 @@ const drawer = {
   }
 };
 
-$('#example').content(drawer);</code></pre>
+$('#demo').content(drawer);</code></pre>
               </div>
             </div>
           </div>
@@ -304,7 +304,7 @@ const drawer = Drawer({ id: drawerId, end: true },
     )
 );
 
-$('#example').content(drawer);</code></pre>
+$('#demo').content(drawer);</code></pre>
               </div>
 
               <!-- vDOM Syntax -->
@@ -361,7 +361,7 @@ const drawer = {
   ]
 };
 
-$('#example').content(drawer);</code></pre>
+$('#demo').content(drawer);</code></pre>
               </div>
 
               <!-- Object DOM Syntax -->
@@ -389,7 +389,7 @@ const drawer = {
       {
         'Drawer.Content': {
           children: [
-            { 'Drawer.Button': { for: drawerId, class: 'btn-accent', text: '🛒 View Cart' } }
+            { 'Drawer.Button': { for: drawerId, class: 'btn-accent', children: ['🛒 View Cart'] } }
           ]
         }
       },
@@ -402,13 +402,13 @@ const drawer = {
               div: {
                 class: 'bg-base-200 text-base-content min-h-full w-80 p-4',
                 children: [
-                  { h3: { class: 'text-lg font-bold mb-4', text: '🛒 Shopping Cart' } },
+                  { h3: { class: 'text-lg font-bold mb-4', children: ['🛒 Shopping Cart'] } },
                   { div: { class: 'divider' } },
-                  { p: { class: 'opacity-70', text: 'Your cart is empty' } },
+                  { p: { class: 'opacity-70', children: ['Your cart is empty'] } },
                   {
                     div: {
                       class: 'mt-4',
-                      children: [{ Button: { color: 'primary', class: 'w-full', text: 'Checkout' } }]
+                      children: [{ Button: { color: 'primary', class: 'w-full', children: ['Checkout'] } }]
                     }
                   }
                 ]
@@ -421,7 +421,7 @@ const drawer = {
   }
 };
 
-$('#example').content(drawer);</code></pre>
+$('#demo').content(drawer);</code></pre>
               </div>
             </div>
           </div>

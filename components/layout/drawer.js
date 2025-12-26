@@ -132,6 +132,11 @@ Drawer.Button = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Drawer = Drawer;
+const tags = window.Lightview.tags;
+tags.Drawer = Drawer;
+tags['Drawer.Content'] = Drawer.Content;
+tags['Drawer.Side'] = Drawer.Side;
+tags['Drawer.Overlay'] = Drawer.Overlay;
+tags['Drawer.Button'] = Drawer.Button;
 
 export default Drawer;

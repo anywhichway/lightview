@@ -63,31 +63,60 @@
                     </p>
 
                     <!-- Basic Usage -->
-                    <h2 class="text-xl font-bold mb-4">Usage</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">To create a pie chart, use <code>type: 'pie'</code> and specify
+                            <h2 class="card-title">Basic Usage</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                To create a pie chart, use <code>type: 'pie'</code> and specify
                                 <code>start</code> and
-                                <code>end</code> for each segment:
+                                <code>end</code> for each segment.
                             </p>
-                            <div id="basic-pie" style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;">
-                                <table class="charts-css pie">
-                                    <caption>Basic Pie Chart</caption>
-                                    <tbody>
-                                        <tr>
-                                            <td style="--start: 0.0; --end: 0.5; --color: #4CAF50;"></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="--start: 0.5; --end: 0.8; --color: #2196F3;"></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="--start: 0.8; --end: 1.0; --color: #FF9800;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchBasicPieTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`basic-pie-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`basic-pie-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="basic-pie-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchBasicPieTab('tagged')">Tagged</button>
+                                <button id="basic-pie-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchBasicPieTab('vdom')">vDOM</button>
+                                <button id="basic-pie-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchBasicPieTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie' },
+
+                            <!-- Tagged Syntax -->
+                            <div id="basic-pie-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const chart = Chart({ 
+    type: 'pie',
+    style: 'width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;' 
+},
     Chart.Body({},
         Chart.Row({},
             Chart.Data({ start: 0.0, end: 0.5, color: '#4CAF50' }) // 50%
@@ -99,176 +128,628 @@
             Chart.Data({ start: 0.8, end: 1.0, color: '#FF9800' }) // 20%
         )
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="basic-pie-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const segments = [
+    { start: 0.0, end: 0.5, color: '#4CAF50' },
+    { start: 0.5, end: 0.8, color: '#2196F3' },
+    { start: 0.8, end: 1.0, color: '#FF9800' }
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'pie',
+        style: 'width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: segments.map(seg => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Data, attributes: seg }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="basic-pie-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'pie',
+        style: 'width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        { 'Chart.Row': { children: [{ 'Chart.Data': { start: 0.0, end: 0.5, color: '#4CAF50' } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Data': { start: 0.5, end: 0.8, color: '#2196F3' } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Data': { start: 0.8, end: 1.0, color: '#FF9800' } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- With Labels -->
-                    <h2 class="text-xl font-bold mb-4">With Labels</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Add data labels with <code>labels: true</code> and include a
-                                <code>&lt;span class="data"&gt;</code>:
+                            <h2 class="card-title">With Labels</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Add data labels with <code>labels: true</code> and include a
+                                <code>&lt;span class="data"&gt;</code>.
                             </p>
-                            <div id="labeled-pie"
-                                style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;">
-                                <table class="charts-css pie show-labels">
-                                    <caption>Browser Market Share</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Chrome </th>
-                                            <td style="--start: 0.0; --end: 0.6; --color: #4CAF50;">
-                                                <span class="data"> 60% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Firefox </th>
-                                            <td style="--start: 0.6; --end: 0.85; --color: #F44336;">
-                                                <span class="data"> 25% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Safari </th>
-                                            <td style="--start: 0.85; --end: 1.0; --color: #2196F3;">
-                                                <span class="data"> 15% </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchLabelsPieTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`labels-pie-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`labels-pie-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="labels-pie-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchLabelsPieTab('tagged')">Tagged</button>
+                                <button id="labels-pie-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchLabelsPieTab('vdom')">vDOM</button>
+                                <button id="labels-pie-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchLabelsPieTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie', labels: true },
+
+                            <!-- Tagged Syntax -->
+                            <div id="labels-pie-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const chart = Chart({ 
+    type: 'pie', 
+    labels: true,
+    style: 'width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;' 
+},
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Chrome'),
             Chart.Data({ start: 0.0, end: 0.6, color: '#4CAF50' }, 
-                $('span', { class: 'data' }, '60%'))
+                span({ class: 'data' }, '60%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Firefox'),
             Chart.Data({ start: 0.6, end: 0.85, color: '#F44336' }, 
-                $('span', { class: 'data' }, '25%'))
+                span({ class: 'data' }, '25%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Safari'),
             Chart.Data({ start: 0.85, end: 1.0, color: '#2196F3' }, 
-                $('span', { class: 'data' }, '15%'))
+                span({ class: 'data' }, '15%'))
         )
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="labels-pie-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const browsers = [
+    { name: 'Chrome', start: 0.0, end: 0.6, color: '#4CAF50', text: '60%' },
+    { name: 'Firefox', start: 0.6, end: 0.85, color: '#F44336', text: '25%' },
+    { name: 'Safari', start: 0.85, end: 1.0, color: '#2196F3', text: '15%' }
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'pie', 
+        labels: true,
+        style: 'width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: browsers.map(b => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [b.name] },
+                    { 
+                        tag: Chart.Data, 
+                        attributes: { start: b.start, end: b.end, color: b.color },
+                        children: [{ tag: span, attributes: { class: 'data' }, children: [b.text] }]
+                    }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="labels-pie-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'pie',
+        labels: true,
+        style: 'width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Chrome'] } },
+                                    { 'Chart.Data': { start: 0.0, end: 0.6, color: '#4CAF50', children: [{ span: { class: 'data', children: ['60%'] } }] } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Firefox'] } },
+                                    { 'Chart.Data': { start: 0.6, end: 0.85, color: '#F44336', children: [{ span: { class: 'data', children: ['25%'] } }] } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Safari'] } },
+                                    { 'Chart.Data': { start: 0.85, end: 1.0, color: '#2196F3', children: [{ span: { class: 'data', children: ['15%'] } }] } }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Spacing -->
-                    <h2 class="text-xl font-bold mb-4">Spacing</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Add gaps between slices with the <code>spacing</code> prop:</p>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-sm font-bold mb-2">No spacing</p>
-                                    <div style="max-width: 200px; margin: 0 auto; aspect-ratio: 1;">
-                                        <table class="charts-css pie">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="--start: 0.0; --end: 0.4; --color: #E91E63;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="--start: 0.4; --end: 0.7; --color: #9C27B0;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="--start: 0.7; --end: 1.0; --color: #673AB7;"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold mb-2">spacing: 5</p>
-                                    <div style="max-width: 200px; margin: 0 auto; aspect-ratio: 1;">
-                                        <table class="charts-css pie data-spacing-5">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="--start: 0.0; --end: 0.4; --color: #E91E63;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="--start: 0.4; --end: 0.7; --color: #9C27B0;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="--start: 0.7; --end: 1.0; --color: #673AB7;"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                            <h2 class="card-title">Spacing</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Add gaps between slices with the <code>spacing</code> prop.
+                            </p>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSpacingPieTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`spacing-pie-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`spacing-pie-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="spacing-pie-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSpacingPieTab('tagged')">Tagged</button>
+                                <button id="spacing-pie-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSpacingPieTab('vdom')">vDOM</button>
+                                <button id="spacing-pie-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSpacingPieTab('object')">Object DOM</button>
+                            </div>
+
+                            <!-- Tagged Syntax -->
+                            <div id="spacing-pie-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, div } = tags;
+
+const charts = div({ style: 'display: flex; gap: 2rem; flex-wrap: wrap;' },
+    div({ style: 'flex: 1; min-width: 200px;' },
+        div({ style: 'font-weight: bold; margin-bottom: 0.5rem; text-align: center;' }, 'No spacing'),
+        Chart({ 
+            type: 'pie', 
+            style: 'width: 100%; max-width: 200px; margin: 0 auto; aspect-ratio: 1;' 
+        },
+            Chart.Body({},
+                Chart.Row({}, Chart.Data({ start: 0.0, end: 0.4, color: '#E91E63' })),
+                Chart.Row({}, Chart.Data({ start: 0.4, end: 0.7, color: '#9C27B0' })),
+                Chart.Row({}, Chart.Data({ start: 0.7, end: 1.0, color: '#673AB7' }))
+            )
+        )
+    ),
+    div({ style: 'flex: 1; min-width: 200px;' },
+        div({ style: 'font-weight: bold; margin-bottom: 0.5rem; text-align: center;' }, 'spacing: 5'),
+        Chart({ 
+            type: 'pie', 
+            spacing: 5,
+            style: 'width: 100%; max-width: 200px; margin: 0 auto; aspect-ratio: 1;' 
+        },
+            Chart.Body({},
+                Chart.Row({}, Chart.Data({ start: 0.0, end: 0.4, color: '#E91E63' })),
+                Chart.Row({}, Chart.Data({ start: 0.4, end: 0.7, color: '#9C27B0' })),
+                Chart.Row({}, Chart.Data({ start: 0.7, end: 1.0, color: '#673AB7' }))
+            )
+        )
+    )
+);
+
+$('#example').content(charts);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="spacing-pie-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, div } = tags;
+
+const segments = [
+    { start: 0.0, end: 0.4, color: '#E91E63' },
+    { start: 0.4, end: 0.7, color: '#9C27B0' },
+    { start: 0.7, end: 1.0, color: '#673AB7' }
+];
+
+const createChart = (spacing, label) => ({
+    tag: div,
+    attributes: { style: 'flex: 1; min-width: 200px;' },
+    children: [
+        { tag: div, attributes: { style: 'font-weight: bold; margin-bottom: 0.5rem; text-align: center;' }, children: [label] },
+        {
+            tag: Chart,
+            attributes: { 
+                type: 'pie', 
+                spacing,
+                style: 'width: 100%; max-width: 200px; margin: 0 auto; aspect-ratio: 1;' 
+            },
+            children: [
+                {
+                    tag: Chart.Body,
+                    children: segments.map(s => ({
+                        tag: Chart.Row,
+                        children: [{ tag: Chart.Data, attributes: s }]
+                    }))
+                }
+            ]
+        }
+    ]
+});
+
+const charts = {
+    tag: div,
+    attributes: { style: 'display: flex; gap: 2rem; flex-wrap: wrap;' },
+    children: [
+        createChart(undefined, 'No spacing'),
+        createChart(5, 'spacing: 5')
+    ]
+};
+
+$('#example').content(charts);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="spacing-pie-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chartData = [
+    { 'Chart.Row': { children: [{ 'Chart.Data': { start: 0.0, end: 0.4, color: '#E91E63' } }] } },
+    { 'Chart.Row': { children: [{ 'Chart.Data': { start: 0.4, end: 0.7, color: '#9C27B0' } }] } },
+    { 'Chart.Row': { children: [{ 'Chart.Data': { start: 0.7, end: 1.0, color: '#673AB7' } }] } }
+];
+
+const charts = {
+    div: {
+        style: 'display: flex; gap: 2rem; flex-wrap: wrap;',
+        children: [
+            {
+                div: {
+                    style: 'flex: 1; min-width: 200px;',
+                    children: [
+                        { div: { style: 'font-weight: bold; margin-bottom: 0.5rem; text-align: center;', children: ['No spacing'] } },
+                        { Chart: { type: 'pie', style: 'width: 100%; max-width: 200px; margin: 0 auto; aspect-ratio: 1;', children: [{ 'Chart.Body': { children: chartData } }] } }
+                    ]
+                }
+            },
+            {
+                div: {
+                    style: 'flex: 1; min-width: 200px;',
+                    children: [
+                        { div: { style: 'font-weight: bold; margin-bottom: 0.5rem; text-align: center;', children: ['spacing: 5'] } },
+                        { Chart: { type: 'pie', spacing: 5, style: 'width: 100%; max-width: 200px; margin: 0 auto; aspect-ratio: 1;', children: [{ 'Chart.Body': { children: chartData } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(charts);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Color Schemes -->
-                    <h2 class="text-xl font-bold mb-4">Color Schemes</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Use custom colors for each slice via the <code>color</code> prop:</p>
-                            <div id="colored-pie"
-                                style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;">
-                                <table class="charts-css pie show-labels data-spacing-2">
-                                    <caption>Device Usage</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Desktop </th>
-                                            <td style="--start: 0.0; --end: 0.45; --color: #00BCD4;">
-                                                <span class="data"> 45% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Mobile </th>
-                                            <td style="--start: 0.45; --end: 0.80; --color: #8BC34A;">
-                                                <span class="data"> 35% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Tablet </th>
-                                            <td style="--start: 0.80; --end: 0.95; --color: #FFC107;">
-                                                <span class="data"> 15% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Other </th>
-                                            <td style="--start: 0.95; --end: 1.0; --color: #607D8B;">
-                                                <span class="data"> 5% </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <h2 class="card-title">Color Schemes</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Use custom colors for each slice via the <code>color</code> prop.
+                            </p>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchColorPieTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`color-pie-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`color-pie-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="color-pie-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchColorPieTab('tagged')">Tagged</button>
+                                <button id="color-pie-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchColorPieTab('vdom')">vDOM</button>
+                                <button id="color-pie-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchColorPieTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie', labels: true, spacing: 2 },
+
+                            <!-- Tagged Syntax -->
+                            <div id="color-pie-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const chart = Chart({ 
+    type: 'pie', 
+    labels: true, 
+    spacing: 2,
+    style: 'width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;' 
+},
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Desktop'),
             Chart.Data({ start: 0.0, end: 0.45, color: '#00BCD4' }, 
-                $('span', { class: 'data' }, '45%'))
+                span({ class: 'data' }, '45%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Mobile'),
             Chart.Data({ start: 0.45, end: 0.80, color: '#8BC34A' }, 
-                $('span', { class: 'data' }, '35%'))
+                span({ class: 'data' }, '35%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Tablet'),
             Chart.Data({ start: 0.80, end: 0.95, color: '#FFC107' }, 
-                $('span', { class: 'data' }, '15%'))
+                span({ class: 'data' }, '15%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Other'),
             Chart.Data({ start: 0.95, end: 1.0, color: '#607D8B' }, 
-                $('span', { class: 'data' }, '5%'))
+                span({ class: 'data' }, '5%'))
         )
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="color-pie-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const devices = [
+    { name: 'Desktop', start: 0.0, end: 0.45, color: '#00BCD4', text: '45%' },
+    { name: 'Mobile', start: 0.45, end: 0.80, color: '#8BC34A', text: '35%' },
+    { name: 'Tablet', start: 0.80, end: 0.95, color: '#FFC107', text: '15%' },
+    { name: 'Other', start: 0.95, end: 1.0, color: '#607D8B', text: '5%' }
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'pie', 
+        labels: true, 
+        spacing: 2,
+        style: 'width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: devices.map(d => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [d.name] },
+                    { 
+                        tag: Chart.Data, 
+                        attributes: { start: d.start, end: d.end, color: d.color },
+                        children: [{ tag: span, attributes: { class: 'data' }, children: [d.text] }]
+                    }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="color-pie-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 300
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'pie',
+        labels: true,
+        spacing: 2,
+        style: 'width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Desktop'] } }, { 'Chart.Data': { start: 0.0, end: 0.45, color: '#00BCD4', children: [{ span: { class: 'data', children: ['45%'] } }] } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Mobile'] } }, { 'Chart.Data': { start: 0.45, end: 0.80, color: '#8BC34A', children: [{ span: { class: 'data', children: ['35%'] } }] } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Tablet'] } }, { 'Chart.Data': { start: 0.80, end: 0.95, color: '#FFC107', children: [{ span: { class: 'data', children: ['15%'] } }] } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Other'] } }, { 'Chart.Data': { start: 0.95, end: 1.0, color: '#607D8B', children: [{ span: { class: 'data', children: ['5%'] } }] } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>

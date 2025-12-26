@@ -208,6 +208,13 @@ Chart.Data = (props = {}, ...children) => {
     }, ...content);
 };
 
-window.Lightview.tags.Chart = Chart;
+const tags = window.Lightview.tags;
+
+tags.Chart = Chart;
+tags['Chart.Head'] = Chart.Head;
+tags['Chart.Body'] = Chart.Body;
+tags['Chart.Row'] = Chart.Row;
+tags['Chart.Label'] = Chart.Label;
+tags['Chart.Data'] = Chart.Data;
 
 export default Chart;

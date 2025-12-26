@@ -133,7 +133,7 @@ const trigger = Button({
     onclick: () => Modal.open(modalId)
 }, 'Open Modal');
 
-$('#example').content(trigger, modal);</code></pre>
+$('#example').content([trigger, modal]);</code></pre>
                             </div>
 
                             <!-- vDOM Syntax -->
@@ -185,7 +185,7 @@ const trigger = {
     children: ['Open Modal']
 };
 
-$('#example').content(trigger, modal);</code></pre>
+$('#example').content([trigger, modal]);</code></pre>
                             </div>
 
                             <!-- Object DOM Syntax -->
@@ -201,6 +201,7 @@ $('#example').content(trigger, modal);</code></pre>
                                 </script><code contenteditable="true">await import('/components/actions/modal.js');
 await import('/components/actions/button.js');
 const { $ } = Lightview;
+const { Modal } = Lightview.tags;
 
 const modalId = 'my_modal';
 
@@ -212,11 +213,11 @@ const modal = {
             {
                 'Modal.Box': {
                     children: [
-                        { h3: { class: 'text-lg font-bold', text: 'Hello! 👋' } },
-                        { p: { class: 'py-4', text: 'This modal was created with Lightview components.' } },
+                        { h3: { class: 'text-lg font-bold', children: ['Hello! 👋'] } },
+                        { p: { class: 'py-4', children: ['This modal was created with Lightview components.'] } },
                         {
                             'Modal.Action': {
-                                children: [{ Button: { onclick: () => Modal.close(modalId), text: 'Close' } }]
+                                children: [{ Button: { onclick: () => Modal.close(modalId), children: ['Close'] } }]
                             }
                         }
                     ]
@@ -232,11 +233,11 @@ const trigger = {
     Button: {
         color: 'primary',
         onclick: () => Modal.open(modalId),
-        text: 'Open Modal'
+        children: ['Open Modal']
     }
 };
 
-$('#example').content(trigger, modal);</code></pre>
+$('#example').content([trigger, modal]);</code></pre>
                             </div>
                         </div>
                     </div>
@@ -412,6 +413,7 @@ $('#example').content(demo);</code></pre>
                                 </script><code contenteditable="true">await import('/components/actions/modal.js');
 await import('/components/actions/button.js');
 const { signal, $ } = Lightview;
+const { Modal } = Lightview.tags;
 
 const status = signal('Ready');
 const modalId = 'confirm_modal';
@@ -433,13 +435,13 @@ const confirmModal = {
             {
                 'Modal.Box': {
                     children: [
-                        { h3: { class: 'text-lg font-bold', text: 'Are you sure?' } },
-                        { p: { class: 'py-4', text: 'This action cannot be undone.' } },
+                        { h3: { class: 'text-lg font-bold', children: ['Are you sure?'] } },
+                        { p: { class: 'py-4', children: ['This action cannot be undone.'] } },
                         {
                             'Modal.Action': {
                                 children: [
-                                    { Button: { color: 'ghost', onclick: handleCancel, text: 'Cancel' } },
-                                    { Button: { color: 'error', onclick: handleConfirm, text: 'Delete' } }
+                                    { Button: { color: 'ghost', onclick: handleCancel, children: ['Cancel'] } },
+                                    { Button: { color: 'error', onclick: handleConfirm, children: ['Delete'] } }
                                 ]
                             }
                         }
@@ -460,10 +462,10 @@ const demo = {
                     color: 'error',
                     variant: 'outline',
                     onclick: () => Modal.open(modalId),
-                    text: 'Delete Item'
+                    children: ['Delete Item']
                 }
             },
-            { p: { class: 'text-sm opacity-70', text: () => `Status: ${status.value}` } },
+            { p: { class: 'text-sm opacity-70', children: [() => `Status: ${status.value}`] } },
             confirmModal
         ]
     }

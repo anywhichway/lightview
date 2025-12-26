@@ -3,14 +3,16 @@
     <h2 class="sidebar-title">Components</h2>
     <p class="sidebar-subtitle">Over 50 components</p>
 </div>
-<ul class="sidebar-nav" style="max-height: calc(100vh - 120px); overflow-y: auto;" id="sidebar-links"></ul>
+<ul class="sidebar-nav"
+    style="max-height: calc(100vh - 120px); overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; grid-auto-flow: row;"
+    id="sidebar-links"></ul>
 
 <script>
     (() => {
         const { tags, $ } = Lightview;
         const { li, a } = tags;
 
-        // Populate sidebar links
+        // Populate sidebar links - alphabetically sorted
         const sidebarLinks = [
             'Accordion', 'Alert', 'Avatar', 'Badge', 'Breadcrumbs', 'Button', 'Card',
             'Carousel', 'Chart', 'Chart Area', 'Chart Bar', 'Chart Column', 'Chart Line', 'Chart Pie',
@@ -20,7 +22,7 @@
             'Pagination', 'Progress', 'Radial Progress', 'Radio', 'Range', 'Rating',
             'Select', 'Skeleton', 'Stats', 'Steps', 'Swap', 'Table', 'Tabs', 'Textarea',
             'Theme Controller', 'Timeline', 'Toast', 'Toggle', 'Tooltip'
-        ];
+        ].sort(); // Sort alphabetically
 
         const linksContainer = $('#sidebar-links');
         sidebarLinks.forEach(name => {
@@ -32,5 +34,19 @@
 
 <script type="module">
     import { initSidebar } from './sidebar-setup.js';
-    initSidebar();
+    const sidebarAPI = initSidebar();
+
+    // Close drawer when clicking navigation links to prevent page shift
+    if (sidebarAPI) {
+        const sidebarLinks = document.getElementById('sidebar-links');
+        if (sidebarLinks) {
+            sidebarLinks.addEventListener('click', (e) => {
+                // Check if clicked element is a link or inside a link
+                const link = e.target.closest('a');
+                if (link) {
+                    sidebarAPI.close();
+                }
+            });
+        }
+    }
 </script>

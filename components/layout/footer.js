@@ -92,6 +92,9 @@ Footer.Nav = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Footer = Footer;
+const tags = window.Lightview.tags;
+tags.Footer = Footer;
+tags['Footer.Title'] = Footer.Title;
+tags['Footer.Nav'] = Footer.Nav;
 
 export default Footer;

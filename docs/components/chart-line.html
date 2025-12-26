@@ -62,109 +62,272 @@
                     </p>
 
                     <!-- Basic Usage -->
-                    <h2 class="text-xl font-bold mb-4">Usage</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">To visualize data with a line chart, use <code>type: 'line'</code>.
-                                Line charts require both <code>--start</code> and <code>--size</code> to draw the line
-                                between
-                                points:</p>
-                            <div id="basic-line" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
-                                <table class="charts-css line show-labels show-primary-axis">
-                                    <caption>Basic Line Chart</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Jan </th>
-                                            <td style="--start: 0.2; --size: 0.4;"> <span class="data"> 40% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Feb </th>
-                                            <td style="--start: 0.4; --size: 0.6;"> <span class="data"> 60% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Mar </th>
-                                            <td style="--start: 0.6; --size: 0.5;"> <span class="data"> 50% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Apr </th>
-                                            <td style="--start: 0.5; --size: 0.8;"> <span class="data"> 80% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> May </th>
-                                            <td style="--start: 0.8; --size: 0.7;"> <span class="data"> 70% </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <h2 class="card-title">Basic Usage</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                To visualize data with a line chart, use <code>type: 'line'</code>. Line charts require
+                                both <code>start</code> and <code>value</code> (displayed as <code>--size</code>).
+                            </p>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchBasicLineTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`basic-line-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`basic-line-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="basic-line-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchBasicLineTab('tagged')">Tagged</button>
+                                <button id="basic-line-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchBasicLineTab('vdom')">vDOM</button>
+                                <button id="basic-line-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchBasicLineTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', labels: true, primaryAxis: true },
+
+                            <!-- Tagged Syntax -->
+                            <div id="basic-line-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const chart = Chart({ 
+    type: 'line', 
+    labels: true, 
+    primaryAxis: true,
+    style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto;' 
+},
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Jan'),
-            Chart.Data({ start: 0.2, value: 0.4 }, $('span', { class: 'data' }, '40%'))
+            Chart.Data({ start: 0.2, value: 0.4 }, span({ class: 'data' }, '40%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Feb'),
-            Chart.Data({ start: 0.4, value: 0.6 }, $('span', { class: 'data' }, '60%'))
+            Chart.Data({ start: 0.4, value: 0.6 }, span({ class: 'data' }, '60%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Mar'),
-            Chart.Data({ start: 0.6, value: 0.5 }, $('span', { class: 'data' }, '50%'))
+            Chart.Data({ start: 0.6, value: 0.5 }, span({ class: 'data' }, '50%'))
         ),
-        // ... more rows
+        Chart.Row({},
+            Chart.Label({}, 'Apr'),
+            Chart.Data({ start: 0.5, value: 0.8 }, span({ class: 'data' }, '80%'))
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'May'),
+            Chart.Data({ start: 0.8, value: 0.7 }, span({ class: 'data' }, '70%'))
+        )
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="basic-line-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const months = [
+    { label: 'Jan', start: 0.2, value: 0.4, text: '40%' },
+    { label: 'Feb', start: 0.4, value: 0.6, text: '60%' },
+    { label: 'Mar', start: 0.6, value: 0.5, text: '50%' },
+    { label: 'Apr', start: 0.5, value: 0.8, text: '80%' },
+    { label: 'May', start: 0.8, value: 0.7, text: '70%' }
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'line', 
+        labels: true, 
+        primaryAxis: true,
+        style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: months.map(m => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [m.label] },
+                    { 
+                        tag: Chart.Data, 
+                        attributes: { start: m.start, value: m.value },
+                        children: [{ tag: span, attributes: { class: 'data' }, children: [m.text] }]
+                    }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="basic-line-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'line',
+        labels: true,
+        primaryAxis: true,
+        style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Jan'] } },
+                                    { 'Chart.Data': { start: 0.2, value: 0.4, children: [{ span: { class: 'data', children: ['40%'] } }] } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Feb'] } },
+                                    { 'Chart.Data': { start: 0.4, value: 0.6, children: [{ span: { class: 'data', children: ['60%'] } }] } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Mar'] } },
+                                    { 'Chart.Data': { start: 0.6, value: 0.5, children: [{ span: { class: 'data', children: ['50%'] } }] } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Apr'] } },
+                                    { 'Chart.Data': { start: 0.5, value: 0.8, children: [{ span: { class: 'data', children: ['80%'] } }] } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['May'] } },
+                                    { 'Chart.Data': { start: 0.8, value: 0.7, children: [{ span: { class: 'data', children: ['70%'] } }] } }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Multiple Datasets -->
-                    <h2 class="text-xl font-bold mb-4">Multiple Datasets</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Add multiple lines by using multiple <code>Chart.Data</code> elements with
-                                <code>multiple: true</code>:
+                            <h2 class="card-title">Multiple Datasets</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Add multiple lines by using multiple <code>Chart.Data</code> elements with
+                                <code>multiple: true</code>.
                             </p>
-                            <div id="multiple-line"
-                                style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
-                                <table class="charts-css line multiple show-labels show-primary-axis"
-                                    style="--color-1: #4CAF50; --color-2: #2196F3; --color-3: #FF9800;">
-                                    <caption>Multi-Line Chart</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Q1 </th>
-                                            <td style="--start: 0.2; --size: 0.4;"></td>
-                                            <td style="--start: 0.3; --size: 0.5;"></td>
-                                            <td style="--start: 0.1; --size: 0.3;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Q2 </th>
-                                            <td style="--start: 0.4; --size: 0.5;"></td>
-                                            <td style="--start: 0.5; --size: 0.6;"></td>
-                                            <td style="--start: 0.3; --size: 0.5;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Q3 </th>
-                                            <td style="--start: 0.5; --size: 0.7;"></td>
-                                            <td style="--start: 0.6; --size: 0.4;"></td>
-                                            <td style="--start: 0.5; --size: 0.6;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Q4 </th>
-                                            <td style="--start: 0.7; --size: 0.9;"></td>
-                                            <td style="--start: 0.4; --size: 0.7;"></td>
-                                            <td style="--start: 0.6; --size: 0.8;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchMultipleLineTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`multiple-line-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`multiple-line-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="multiple-line-tab-btn-tagged" role="tab"
+                                    class="syntax-tab syntax-tab-active"
+                                    onclick="switchMultipleLineTab('tagged')">Tagged</button>
+                                <button id="multiple-line-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchMultipleLineTab('vdom')">vDOM</button>
+                                <button id="multiple-line-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchMultipleLineTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', multiple: true, labels: true, primaryAxis: true },
+
+                            <!-- Tagged Syntax -->
+                            <div id="multiple-line-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const chart = Chart({ 
+    type: 'line', 
+    multiple: true,
+    labels: true, 
+    primaryAxis: true,
+    style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto; --color-1: #4CAF50; --color-2: #2196F3; --color-3: #FF9800;' 
+},
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Q1'),
@@ -172,164 +335,458 @@
             Chart.Data({ start: 0.3, value: 0.5 }),
             Chart.Data({ start: 0.1, value: 0.3 })
         ),
-        // ... more rows
+        Chart.Row({},
+            Chart.Label({}, 'Q2'),
+            Chart.Data({ start: 0.4, value: 0.5 }),
+            Chart.Data({ start: 0.5, value: 0.6 }),
+            Chart.Data({ start: 0.3, value: 0.5 })
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Q3'),
+            Chart.Data({ start: 0.5, value: 0.7 }),
+            Chart.Data({ start: 0.6, value: 0.4 }),
+            Chart.Data({ start: 0.5, value: 0.6 })
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Q4'),
+            Chart.Data({ start: 0.7, value: 0.9 }),
+            Chart.Data({ start: 0.4, value: 0.7 }),
+            Chart.Data({ start: 0.6, value: 0.8 })
+        )
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="multiple-line-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const quarters = [
+    { label: 'Q1', data: [[0.2, 0.4], [0.3, 0.5], [0.1, 0.3]] },
+    { label: 'Q2', data: [[0.4, 0.5], [0.5, 0.6], [0.3, 0.5]] },
+    { label: 'Q3', data: [[0.5, 0.7], [0.6, 0.4], [0.5, 0.6]] },
+    { label: 'Q4', data: [[0.7, 0.9], [0.4, 0.7], [0.6, 0.8]] }
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'line', 
+        multiple: true,
+        labels: true, 
+        primaryAxis: true,
+        style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto; --color-1: #4CAF50; --color-2: #2196F3; --color-3: #FF9800;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: quarters.map(q => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [q.label] },
+                    ...q.data.map(([start, value]) => ({
+                        tag: Chart.Data,
+                        attributes: { start, value }
+                    }))
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="multiple-line-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'line',
+        multiple: true,
+        labels: true,
+        primaryAxis: true,
+        style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto; --color-1: #4CAF50; --color-2: #2196F3; --color-3: #FF9800;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Q1'] } },
+                                    { 'Chart.Data': { start: 0.2, value: 0.4 } },
+                                    { 'Chart.Data': { start: 0.3, value: 0.5 } },
+                                    { 'Chart.Data': { start: 0.1, value: 0.3 } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Q2'] } },
+                                    { 'Chart.Data': { start: 0.4, value: 0.5 } },
+                                    { 'Chart.Data': { start: 0.5, value: 0.6 } },
+                                    { 'Chart.Data': { start: 0.3, value: 0.5 } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Q3'] } },
+                                    { 'Chart.Data': { start: 0.5, value: 0.7 } },
+                                    { 'Chart.Data': { start: 0.6, value: 0.4 } },
+                                    { 'Chart.Data': { start: 0.5, value: 0.6 } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Q4'] } },
+                                    { 'Chart.Data': { start: 0.7, value: 0.9 } },
+                                    { 'Chart.Data': { start: 0.4, value: 0.7 } },
+                                    { 'Chart.Data': { start: 0.6, value: 0.8 } }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Axes and Grid -->
-                    <h2 class="text-xl font-bold mb-4">Axes and Grid</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Add grid lines with <code>secondaryAxis</code>:</p>
-                            <div id="axes-line" style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
-                                <table class="charts-css line show-labels show-primary-axis show-10-secondary-axes">
-                                    <caption>With 10 Grid Lines</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> 1 </th>
-                                            <td style="--start: 0.1; --size: 0.3;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2 </th>
-                                            <td style="--start: 0.3; --size: 0.5;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 3 </th>
-                                            <td style="--start: 0.5; --size: 0.4;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 4 </th>
-                                            <td style="--start: 0.4; --size: 0.7;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 5 </th>
-                                            <td style="--start: 0.7; --size: 0.6;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 6 </th>
-                                            <td style="--start: 0.6; --size: 0.9;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', labels: true, primaryAxis: true, secondaryAxis: true },
-    Chart.Body({},
-        // Data rows...
-    )
-)
+                            <h2 class="card-title">Axes and Grid</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Add grid lines with <code>secondaryAxis</code>.
+                            </p>
 
-// Or with custom number of grid lines:
-Chart({ type: 'line', secondaryAxis: 'show-4-secondary-axes' }, ...)</code></pre>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchAxesLineTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`axes-line-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`axes-line-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="axes-line-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchAxesLineTab('tagged')">Tagged</button>
+                                <button id="axes-line-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchAxesLineTab('vdom')">vDOM</button>
+                                <button id="axes-line-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchAxesLineTab('object')">Object DOM</button>
+                            </div>
+
+                            <!-- Tagged Syntax -->
+                            <div id="axes-line-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const chart = Chart({ 
+    type: 'line', 
+    labels: true, 
+    primaryAxis: true,
+    secondaryAxis: 'show-10-secondary-axes',
+    style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;' 
+},
+    Chart.Body({},
+        Chart.Row({}, Chart.Label({}, '1'), Chart.Data({ start: 0.1, value: 0.3 })),
+        Chart.Row({}, Chart.Label({}, '2'), Chart.Data({ start: 0.3, value: 0.5 })),
+        Chart.Row({}, Chart.Label({}, '3'), Chart.Data({ start: 0.5, value: 0.4 })),
+        Chart.Row({}, Chart.Label({}, '4'), Chart.Data({ start: 0.4, value: 0.7 })),
+        Chart.Row({}, Chart.Label({}, '5'), Chart.Data({ start: 0.7, value: 0.6 })),
+        Chart.Row({}, Chart.Label({}, '6'), Chart.Data({ start: 0.6, value: 0.9 }))
+    )
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="axes-line-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const data = [
+    [0.1, 0.3], [0.3, 0.5], [0.5, 0.4], 
+    [0.4, 0.7], [0.7, 0.6], [0.6, 0.9]
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'line', 
+        labels: true, 
+        primaryAxis: true,
+        secondaryAxis: 'show-10-secondary-axes',
+        style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: data.map(([start, value], i) => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [String(i + 1)] },
+                    { tag: Chart.Data, attributes: { start, value } }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="axes-line-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'line',
+        labels: true,
+        primaryAxis: true,
+        secondaryAxis: 'show-10-secondary-axes',
+        style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['1'] } }, { 'Chart.Data': { start: 0.1, value: 0.3 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['2'] } }, { 'Chart.Data': { start: 0.3, value: 0.5 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['3'] } }, { 'Chart.Data': { start: 0.5, value: 0.4 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['4'] } }, { 'Chart.Data': { start: 0.4, value: 0.7 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['5'] } }, { 'Chart.Data': { start: 0.7, value: 0.6 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['6'] } }, { 'Chart.Data': { start: 0.6, value: 0.9 } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Line Styling -->
-                    <h2 class="text-xl font-bold mb-4">Line Styling</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Customize line appearance with CSS custom properties:</p>
-                            <div id="styled-line" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
-                                <table class="charts-css line show-labels" style="--color: #7480ff; --line-size: 3px;">
-                                    <caption>Styled Line (thicker, custom color)</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Jan </th>
-                                            <td style="--start: 0.3; --size: 0.5;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Feb </th>
-                                            <td style="--start: 0.5; --size: 0.7;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Mar </th>
-                                            <td style="--start: 0.7; --size: 0.6;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Apr </th>
-                                            <td style="--start: 0.6; --size: 0.9;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> May </th>
-                                            <td style="--start: 0.9; --size: 0.8;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <h2 class="card-title">Line Styling</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Customize line appearance with CSS custom properties.
+                            </p>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchStyledLineTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`styled-line-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`styled-line-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="styled-line-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchStyledLineTab('tagged')">Tagged</button>
+                                <button id="styled-line-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchStyledLineTab('vdom')">vDOM</button>
+                                <button id="styled-line-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchStyledLineTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ 
+
+                            <!-- Tagged Syntax -->
+                            <div id="styled-line-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const chart = Chart({ 
     type: 'line', 
     labels: true,
-    style: '--color: #7480ff; --line-size: 3px;'
+    style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto; --color: #7480ff; --line-size: 3px;' 
 },
     Chart.Body({},
-        // Data rows...
+        Chart.Row({}, Chart.Label({}, 'Jan'), Chart.Data({ start: 0.3, value: 0.5 })),
+        Chart.Row({}, Chart.Label({}, 'Feb'), Chart.Data({ start: 0.5, value: 0.7 })),
+        Chart.Row({}, Chart.Label({}, 'Mar'), Chart.Data({ start: 0.7, value: 0.6 })),
+        Chart.Row({}, Chart.Label({}, 'Apr'), Chart.Data({ start: 0.6, value: 0.9 })),
+        Chart.Row({}, Chart.Label({}, 'May'), Chart.Data({ start: 0.9, value: 0.8 }))
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="styled-line-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May'];
+const data = [[0.3, 0.5], [0.5, 0.7], [0.7, 0.6], [0.6, 0.9], [0.9, 0.8]];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'line', 
+        labels: true,
+        style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto; --color: #7480ff; --line-size: 3px;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: months.map((month, i) => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [month] },
+                    { tag: Chart.Data, attributes: { start: data[i][0], value: data[i][1] } }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="styled-line-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'line',
+        labels: true,
+        style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto; --color: #7480ff; --line-size: 3px;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Jan'] } }, { 'Chart.Data': { start: 0.3, value: 0.5 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Feb'] } }, { 'Chart.Data': { start: 0.5, value: 0.7 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Mar'] } }, { 'Chart.Data': { start: 0.7, value: 0.6 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Apr'] } }, { 'Chart.Data': { start: 0.6, value: 0.9 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['May'] } }, { 'Chart.Data': { start: 0.9, value: 0.8 } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Reverse Orientation -->
-                    <h2 class="text-xl font-bold mb-4">Orientation</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
-                        <div class="card-body">
-                            <p class="mb-4">Reverse the chart with <code>reverse: true</code>:</p>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-sm font-bold mb-2">Normal</p>
-                                    <div style="height: 180px;">
-                                        <table class="charts-css line show-labels">
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row"> A </th>
-                                                    <td style="--start: 0.2; --size: 0.5;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> B </th>
-                                                    <td style="--start: 0.5; --size: 0.8;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> C </th>
-                                                    <td style="--start: 0.8; --size: 0.6;"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold mb-2">Reversed</p>
-                                    <div style="height: 180px;">
-                                        <table class="charts-css line show-labels reverse">
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row"> A </th>
-                                                    <td style="--start: 0.2; --size: 0.5;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> B </th>
-                                                    <td style="--start: 0.5; --size: 0.8;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> C </th>
-                                                    <td style="--start: 0.8; --size: 0.6;"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between mt-8" style="display: none;">
-                        <a href="/docs/components/chart-column" class="btn btn-outline">← Column Chart</a>
-                        <a href="/docs/components/chart-area" class="btn btn-primary">Area Chart →</a>
-                    </div>
                 </div>
             </div>
         </div>

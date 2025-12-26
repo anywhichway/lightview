@@ -62,322 +62,719 @@
                     </p>
 
                     <!-- Basic Usage -->
-                    <h2 class="text-xl font-bold mb-4">Usage</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">To visualize data with a bar chart, use <code>type: 'bar'</code>:</p>
-                            <div id="basic-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                                <table class="charts-css bar show-labels">
-                                    <caption>Basic Bar Chart</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Item 1 </th>
-                                            <td style="--size: 0.4;"> <span class="data"> 40% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Item 2 </th>
-                                            <td style="--size: 0.6;"> <span class="data"> 60% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Item 3 </th>
-                                            <td style="--size: 0.8;"> <span class="data"> 80% </span> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <h2 class="card-title">Basic Usage</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                To visualize data with a bar chart, use <code>type: 'bar'</code>.
+                            </p>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchBasicBarTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`basic-bar-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`basic-bar-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="basic-bar-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchBasicBarTab('tagged')">Tagged</button>
+                                <button id="basic-bar-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchBasicBarTab('vdom')">vDOM</button>
+                                <button id="basic-bar-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchBasicBarTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true },
+
+                            <!-- Tagged Syntax -->
+                            <div id="basic-bar-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 200,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const chart = Chart({ 
+    type: 'bar', 
+    labels: true,
+    style: 'width: 100%; max-width: 600px; margin: 0 auto;' 
+},
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Item 1'),
-            Chart.Data({ value: 0.4 }, $('span', { class: 'data' }, '40%'))
+            Chart.Data({ value: 0.4 }, span({ class: 'data' }, '40%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Item 2'),
-            Chart.Data({ value: 0.6 }, $('span', { class: 'data' }, '60%'))
+            Chart.Data({ value: 0.6 }, span({ class: 'data' }, '60%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Item 3'),
-            Chart.Data({ value: 0.8 }, $('span', { class: 'data' }, '80%'))
+            Chart.Data({ value: 0.8 }, span({ class: 'data' }, '80%'))
         )
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="basic-bar-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const items = [
+    { label: 'Item 1', value: 0.4, text: '40%' },
+    { label: 'Item 2', value: 0.6, text: '60%' },
+    { label: 'Item 3', value: 0.8, text: '80%' }
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { type: 'bar', labels: true, style: 'width: 100%; max-width: 600px; margin: 0 auto;' },
+    children: [
+        {
+            tag: Chart.Body,
+            children: items.map(item => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [item.label] },
+                    { 
+                        tag: Chart.Data, 
+                        attributes: { value: item.value },
+                        children: [{ tag: span, attributes: { class: 'data' }, children: [item.text] }]
+                    }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="basic-bar-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'bar',
+        labels: true,
+        style: 'width: 100%; max-width: 600px; margin: 0 auto;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Item 1'] } },
+                                    { 'Chart.Data': { value: 0.4, children: [{ span: { class: 'data', children: ['40%'] } }] } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Item 2'] } },
+                                    { 'Chart.Data': { value: 0.6, children: [{ span: { class: 'data', children: ['60%'] } }] } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Item 3'] } },
+                                    { 'Chart.Data': { value: 0.8, children: [{ span: { class: 'data', children: ['80%'] } }] } }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Multiple Datasets -->
-                    <h2 class="text-xl font-bold mb-4">Multiple Datasets</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Add multiple <code>Chart.Data</code> elements per row and set
-                                <code>multiple: true</code>:
+                            <h2 class="card-title">Multiple Datasets</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Add multiple <code>Chart.Data</code> elements per row and set
+                                <code>multiple: true</code>.
                             </p>
-                            <div id="multiple-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                                <table class="charts-css bar multiple show-labels show-primary-axis data-spacing-5">
-                                    <caption>Quarterly Sales by Region</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Q1 </th>
-                                            <td style="--size: 0.3; --color: #4CAF50;"> <span class="data"> East </span>
-                                            </td>
-                                            <td style="--size: 0.5; --color: #2196F3;"> <span class="data"> West </span>
-                                            </td>
-                                            <td style="--size: 0.4; --color: #FF9800;"> <span class="data"> North
-                                                </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Q2 </th>
-                                            <td style="--size: 0.5; --color: #4CAF50;"> <span class="data"> East </span>
-                                            </td>
-                                            <td style="--size: 0.6; --color: #2196F3;"> <span class="data"> West </span>
-                                            </td>
-                                            <td style="--size: 0.7; --color: #FF9800;"> <span class="data"> North
-                                                </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Q3 </th>
-                                            <td style="--size: 0.7; --color: #4CAF50;"> <span class="data"> East </span>
-                                            </td>
-                                            <td style="--size: 0.8; --color: #2196F3;"> <span class="data"> West </span>
-                                            </td>
-                                            <td style="--size: 0.5; --color: #FF9800;"> <span class="data"> North
-                                                </span> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchMultipleBarTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`multiple-bar-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`multiple-bar-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="multiple-bar-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchMultipleBarTab('tagged')">Tagged</button>
+                                <button id="multiple-bar-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchMultipleBarTab('vdom')">vDOM</button>
+                                <button id="multiple-bar-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchMultipleBarTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', multiple: true, labels: true, primaryAxis: true, spacing: 5 },
+
+                            <!-- Tagged Syntax -->
+                            <div id="multiple-bar-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 220,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const chart = Chart({ 
+    type: 'bar', 
+    multiple: true,
+    labels: true, 
+    primaryAxis: true,
+    spacing: 5,
+    style: 'width: 100%; max-width: 600px; margin: 0 auto;' 
+},
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Q1'),
-            Chart.Data({ value: 0.3, color: '#4CAF50' }, $('span', { class: 'data' }, 'East')),
-            Chart.Data({ value: 0.5, color: '#2196F3' }, $('span', { class: 'data' }, 'West')),
-            Chart.Data({ value: 0.4, color: '#FF9800' }, $('span', { class: 'data' }, 'North'))
+            Chart.Data({ value: 0.3, color: '#4CAF50' }, span({ class: 'data' }, 'East')),
+            Chart.Data({ value: 0.5, color: '#2196F3' }, span({ class: 'data' }, 'West')),
+            Chart.Data({ value: 0.4, color: '#FF9800' }, span({ class: 'data' }, 'North'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Q2'),
-            Chart.Data({ value: 0.5, color: '#4CAF50' }, $('span', { class: 'data' }, 'East')),
-            Chart.Data({ value: 0.6, color: '#2196F3' }, $('span', { class: 'data' }, 'West')),
-            Chart.Data({ value: 0.7, color: '#FF9800' }, $('span', { class: 'data' }, 'North'))
+            Chart.Data({ value: 0.5, color: '#4CAF50' }, span({ class: 'data' }, 'East')),
+            Chart.Data({ value: 0.6, color: '#2196F3' }, span({ class: 'data' }, 'West')),
+            Chart.Data({ value: 0.7, color: '#FF9800' }, span({ class: 'data' }, 'North'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Q3'),
-            Chart.Data({ value: 0.7, color: '#4CAF50' }, $('span', { class: 'data' }, 'East')),
-            Chart.Data({ value: 0.8, color: '#2196F3' }, $('span', { class: 'data' }, 'West')),
-            Chart.Data({ value: 0.5, color: '#FF9800' }, $('span', { class: 'data' }, 'North'))
+            Chart.Data({ value: 0.7, color: '#4CAF50' }, span({ class: 'data' }, 'East')),
+            Chart.Data({ value: 0.8, color: '#2196F3' }, span({ class: 'data' }, 'West')),
+            Chart.Data({ value: 0.5, color: '#FF9800' }, span({ class: 'data' }, 'North'))
         )
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="multiple-bar-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 220
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const quarters = [
+    { label: 'Q1', values: [0.3, 0.5, 0.4] },
+    { label: 'Q2', values: [0.5, 0.6, 0.7] },
+    { label: 'Q3', values: [0.7, 0.8, 0.5] }
+];
+const regions = ['East', 'West', 'North'];
+const colors = ['#4CAF50', '#2196F3', '#FF9800'];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'bar', 
+        multiple: true,
+        labels: true, 
+        primaryAxis: true,
+        spacing: 5,
+        style: 'width: 100%; max-width: 600px; margin: 0 auto;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: quarters.map(q => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [q.label] },
+                    ...q.values.map((value, i) => ({
+                        tag: Chart.Data,
+                        attributes: { value, color: colors[i] },
+                        children: [{ tag: span, attributes: { class: 'data' }, children: [regions[i]] }]
+                    }))
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="multiple-bar-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 220
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'bar',
+        multiple: true,
+        labels: true,
+        primaryAxis: true,
+        spacing: 5,
+        style: 'width: 100%; max-width: 600px; margin: 0 auto;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Q1'] } },
+                                    { 'Chart.Data': { value: 0.3, color: '#4CAF50', children: [{ span: { class: 'data', children: ['East'] } }] } },
+                                    { 'Chart.Data': { value: 0.5, color: '#2196F3', children: [{ span: { class: 'data', children: ['West'] } }] } },
+                                    { 'Chart.Data': { value: 0.4, color: '#FF9800', children: [{ span: { class: 'data', children: ['North'] } }] } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Q2'] } },
+                                    { 'Chart.Data': { value: 0.5, color: '#4CAF50', children: [{ span: { class: 'data', children: ['East'] } }] } },
+                                    { 'Chart.Data': { value: 0.6, color: '#2196F3', children: [{ span: { class: 'data', children: ['West'] } }] } },
+                                    { 'Chart.Data': { value: 0.7, color: '#FF9800', children: [{ span: { class: 'data', children: ['North'] } }] } }
+                                ]
+                            }
+                        },
+                        {
+                            'Chart.Row': {
+                                children: [
+                                    { 'Chart.Label': { children: ['Q3'] } },
+                                    { 'Chart.Data': { value: 0.7, color: '#4CAF50', children: [{ span: { class: 'data', children: ['East'] } }] } },
+                                    { 'Chart.Data': { value: 0.8, color: '#2196F3', children: [{ span: { class: 'data', children: ['West'] } }] } },
+                                    { 'Chart.Data': { value: 0.5, color: '#FF9800', children: [{ span: { class: 'data', children: ['North'] } }] } }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Axes -->
-                    <h2 class="text-xl font-bold mb-4">Axes</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Control axis visibility with <code>primaryAxis</code> and
-                                <code>secondaryAxis</code>:
+                            <h2 class="card-title">Axes</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Control axis visibility with <code>primaryAxis</code> and <code>secondaryAxis</code>.
                             </p>
-                            <div id="axes-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                                <table class="charts-css bar show-labels show-primary-axis show-4-secondary-axes">
-                                    <caption>With Primary and Secondary Axes</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Jan </th>
-                                            <td style="--size: 0.25;"> <span class="data"> 25% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Feb </th>
-                                            <td style="--size: 0.5;"> <span class="data"> 50% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Mar </th>
-                                            <td style="--size: 0.75;"> <span class="data"> 75% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Apr </th>
-                                            <td style="--size: 1.0;"> <span class="data"> 100% </span> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchAxesBarTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`axes-bar-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`axes-bar-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="axes-bar-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchAxesBarTab('tagged')">Tagged</button>
+                                <button id="axes-bar-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchAxesBarTab('vdom')">vDOM</button>
+                                <button id="axes-bar-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchAxesBarTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true, primaryAxis: true, secondaryAxis: 'show-4-secondary-axes' },
+
+                            <!-- Tagged Syntax -->
+                            <div id="axes-bar-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 220,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const chart = Chart({ 
+    type: 'bar', 
+    labels: true, 
+    primaryAxis: true,
+    secondaryAxis: 'show-4-secondary-axes',
+    style: 'width: 100%; max-width: 600px; margin: 0 auto;' 
+},
     Chart.Body({},
-        Chart.Row({},
-            Chart.Label({}, 'Jan'),
-            Chart.Data({ value: 0.25 }, $('span', { class: 'data' }, '25%'))
-        ),
-        Chart.Row({},
-            Chart.Label({}, 'Feb'),
-            Chart.Data({ value: 0.5 }, $('span', { class: 'data' }, '50%'))
-        ),
-        Chart.Row({},
-            Chart.Label({}, 'Mar'),
-            Chart.Data({ value: 0.75 }, $('span', { class: 'data' }, '75%'))
-        ),
-        Chart.Row({},
-            Chart.Label({}, 'Apr'),
-            Chart.Data({ value: 1.0 }, $('span', { class: 'data' }, '100%'))
-        )
+        Chart.Row({}, Chart.Label({}, 'Jan'), Chart.Data({ value: 0.25 }, span({ class: 'data' }, '25%'))),
+        Chart.Row({}, Chart.Label({}, 'Feb'), Chart.Data({ value: 0.5 }, span({ class: 'data' }, '50%'))),
+        Chart.Row({}, Chart.Label({}, 'Mar'), Chart.Data({ value: 0.75 }, span({ class: 'data' }, '75%'))),
+        Chart.Row({}, Chart.Label({}, 'Apr'), Chart.Data({ value: 1.0 }, span({ class: 'data' }, '100%')))
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="axes-bar-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 220
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, span } = tags;
+
+const months = [
+    { label: 'Jan', value: 0.25, text: '25%' },
+    { label: 'Feb', value: 0.5, text: '50%' },
+    { label: 'Mar', value: 0.75, text: '75%' },
+    { label: 'Apr', value: 1.0, text: '100%' }
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'bar', 
+        labels: true, 
+        primaryAxis: true,
+        secondaryAxis: 'show-4-secondary-axes',
+        style: 'width: 100%; max-width: 600px; margin: 0 auto;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: months.map(m => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [m.label] },
+                    { 
+                        tag: Chart.Data, 
+                        attributes: { value: m.value },
+                        children: [{ tag: span, attributes: { class: 'data' }, children: [m.text] }]
+                    }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="axes-bar-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 220
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'bar',
+        labels: true,
+        primaryAxis: true,
+        secondaryAxis: 'show-4-secondary-axes',
+        style: 'width: 100%; max-width: 600px; margin: 0 auto;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Jan'] } }, { 'Chart.Data': { value: 0.25, children: [{ span: { class: 'data', children: ['25%'] } }] } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Feb'] } }, { 'Chart.Data': { value: 0.5, children: [{ span: { class: 'data', children: ['50%'] } }] } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Mar'] } }, { 'Chart.Data': { value: 0.75, children: [{ span: { class: 'data', children: ['75%'] } }] } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Apr'] } }, { 'Chart.Data': { value: 1.0, children: [{ span: { class: 'data', children: ['100%'] } }] } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Spacing -->
-                    <h2 class="text-xl font-bold mb-4">Spacing</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Control the gap between bars with the <code>spacing</code> prop (1-20):</p>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-sm font-bold mb-2">spacing: 2</p>
-                                    <div style="height: 150px;">
-                                        <table class="charts-css bar show-labels data-spacing-2">
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row"> A </th>
-                                                    <td style="--size: 0.6;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> B </th>
-                                                    <td style="--size: 0.8;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> C </th>
-                                                    <td style="--size: 0.5;"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold mb-2">spacing: 15</p>
-                                    <div style="height: 150px;">
-                                        <table class="charts-css bar show-labels data-spacing-15">
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row"> A </th>
-                                                    <td style="--size: 0.6;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> B </th>
-                                                    <td style="--size: 0.8;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> C </th>
-                                                    <td style="--size: 0.5;"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            <h2 class="card-title">Spacing</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Control the gap between bars with the <code>spacing</code> prop (1-20).
+                            </p>
 
-                    <!-- Orientation -->
-                    <h2 class="text-xl font-bold mb-4">Orientation</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
-                        <div class="card-body">
-                            <p class="mb-4">Use <code>reverse: true</code> to reverse the chart orientation:</p>
-                            <div id="reverse-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                                <table class="charts-css bar show-labels reverse">
-                                    <caption>Reversed Bar Chart</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> First </th>
-                                            <td style="--size: 0.3;"> <span class="data"> 30% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Second </th>
-                                            <td style="--size: 0.6;"> <span class="data"> 60% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Third </th>
-                                            <td style="--size: 0.9;"> <span class="data"> 90% </span> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <!-- Tabs -->
+                            <script>
+                                window.switchSpacingBarTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`spacing-bar-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`spacing-bar-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="spacing-bar-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchSpacingBarTab('tagged')">Tagged</button>
+                                <button id="spacing-bar-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchSpacingBarTab('vdom')">vDOM</button>
+                                <button id="spacing-bar-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchSpacingBarTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true, reverse: true },
-    Chart.Body({},
-        Chart.Row({},
-            Chart.Label({}, 'First'),
-            Chart.Data({ value: 0.3 }, $('span', { class: 'data' }, '30%'))
-        ),
-        Chart.Row({},
-            Chart.Label({}, 'Second'),
-            Chart.Data({ value: 0.6 }, $('span', { class: 'data' }, '60%'))
-        ),
-        Chart.Row({},
-            Chart.Label({}, 'Third'),
-            Chart.Data({ value: 0.9 }, $('span', { class: 'data' }, '90%'))
+
+                            <!-- Tagged Syntax -->
+                            <div id="spacing-bar-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 200,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, div } = tags;
+
+const charts = div({ style: 'display: flex; gap: 2rem; flex-wrap: wrap;' },
+    div({ style: 'flex: 1; min-width: 250px;' },
+        div({ style: 'font-weight: bold; margin-bottom: 0.5rem;' }, 'spacing: 2'),
+        Chart({ type: 'bar', labels: true, spacing: 2, style: 'height: 150px;' },
+            Chart.Body({},
+                Chart.Row({}, Chart.Label({}, 'A'), Chart.Data({ value: 0.6 })),
+                Chart.Row({}, Chart.Label({}, 'B'), Chart.Data({ value: 0.8 })),
+                Chart.Row({}, Chart.Label({}, 'C'), Chart.Data({ value: 0.5 }))
+            )
+        )
+    ),
+    div({ style: 'flex: 1; min-width: 250px;' },
+        div({ style: 'font-weight: bold; margin-bottom: 0.5rem;' }, 'spacing: 15'),
+        Chart({ type: 'bar', labels: true, spacing: 15, style: 'height: 150px;' },
+            Chart.Body({},
+                Chart.Row({}, Chart.Label({}, 'A'), Chart.Data({ value: 0.6 })),
+                Chart.Row({}, Chart.Label({}, 'B'), Chart.Data({ value: 0.8 })),
+                Chart.Row({}, Chart.Label({}, 'C'), Chart.Data({ value: 0.5 }))
+            )
         )
     )
-)</code></pre>
+);
+
+$('#example').content(charts);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="spacing-bar-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart, div } = tags;
+
+const data = [
+    { label: 'A', value: 0.6 },
+    { label: 'B', value: 0.8 },
+    { label: 'C', value: 0.5 }
+];
+
+const createChart = (spacing) => ({
+    tag: div,
+    attributes: { style: 'flex: 1; min-width: 250px;' },
+    children: [
+        { tag: div, attributes: { style: 'font-weight: bold; margin-bottom: 0.5rem;' }, children: [`spacing: ${spacing}`] },
+        {
+            tag: Chart,
+            attributes: { type: 'bar', labels: true, spacing, style: 'height: 150px;' },
+            children: [
+                {
+                    tag: Chart.Body,
+                    children: data.map(d => ({
+                        tag: Chart.Row,
+                        children: [
+                            { tag: Chart.Label, children: [d.label] },
+                            { tag: Chart.Data, attributes: { value: d.value } }
+                        ]
+                    }))
+                }
+            ]
+        }
+    ]
+});
+
+const charts = {
+    tag: div,
+    attributes: { style: 'display: flex; gap: 2rem; flex-wrap: wrap;' },
+    children: [createChart(2), createChart(15)]
+};
+
+$('#example').content(charts);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="spacing-bar-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 200
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chartData = [
+    { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['A'] } }, { 'Chart.Data': { value: 0.6 } }] } },
+    { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['B'] } }, { 'Chart.Data': { value: 0.8 } }] } },
+    { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['C'] } }, { 'Chart.Data': { value: 0.5 } }] } }
+];
+
+const charts = {
+    div: {
+        style: 'display: flex; gap: 2rem; flex-wrap: wrap;',
+        children: [
+            {
+                div: {
+                    style: 'flex: 1; min-width: 250px;',
+                    children: [
+                        { div: { style: 'font-weight: bold; margin-bottom: 0.5rem;', children: ['spacing: 2'] } },
+                        { Chart: { type: 'bar', labels: true, spacing: 2, style: 'height: 150px;', children: [{ 'Chart.Body': { children: chartData } }] } }
+                    ]
+                }
+            },
+            {
+                div: {
+                    style: 'flex: 1; min-width: 250px;',
+                    children: [
+                        { div: { style: 'font-weight: bold; margin-bottom: 0.5rem;', children: ['spacing: 15'] } },
+                        { Chart: { type: 'bar', labels: true, spacing: 15, style: 'height: 150px;', children: [{ 'Chart.Body': { children: chartData } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(charts);</code></pre>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Stacked Bars -->
-                    <h2 class="text-xl font-bold mb-4">Stacked Bars</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
-                        <div class="card-body">
-                            <p class="mb-4">Create stacked bars by setting <code>stacked: true</code> (or using
-                                <code>.stacked</code> class):
-                            </p>
-                            <div id="stacked-bar" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                                <table class="charts-css bar multiple stacked show-labels">
-                                    <caption>Stacked Bar Chart</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> 2021 </th>
-                                            <td style="--size: 0.2; --color: #4CAF50;"></td>
-                                            <td style="--size: 0.3; --color: #2196F3;"></td>
-                                            <td style="--size: 0.1; --color: #FF9800;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2022 </th>
-                                            <td style="--size: 0.3; --color: #4CAF50;"></td>
-                                            <td style="--size: 0.25; --color: #2196F3;"></td>
-                                            <td style="--size: 0.15; --color: #FF9800;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2023 </th>
-                                            <td style="--size: 0.25; --color: #4CAF50;"></td>
-                                            <td style="--size: 0.35; --color: #2196F3;"></td>
-                                            <td style="--size: 0.2; --color: #FF9800;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', multiple: true, stacked: true, labels: true },
-    Chart.Body({},
-        Chart.Row({},
-            Chart.Label({}, '2021'),
-            Chart.Data({ value: 0.2, color: '#4CAF50' }),
-            Chart.Data({ value: 0.3, color: '#2196F3' }),
-            Chart.Data({ value: 0.1, color: '#FF9800' })
-        ),
-        // ... more rows
-    )
-)</code></pre>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between mt-8" style="display: none;">
-                        <a href="/docs/components/chart" class="btn btn-outline">← Back to Charts</a>
-                        <a href="/docs/components/chart-column" class="btn btn-primary">Column Chart →</a>
-                    </div>
                 </div>
             </div>
         </div>

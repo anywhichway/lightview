@@ -27,7 +27,7 @@ const Modal = (props = {}, ...children) => {
         open = false,
         position,
         onClose,
-        useShadow,
+        useShadow = false,
         class: className = '',
         ...rest
     } = props;
@@ -138,6 +138,10 @@ Modal.close = (id) => {
     document.getElementById(id)?.close?.();
 };
 
-window.Lightview.tags.Modal = Modal;
+const tags = window.Lightview.tags;
+tags.Modal = Modal;
+tags['Modal.Box'] = Modal.Box;
+tags['Modal.Action'] = Modal.Action;
+tags['Modal.Backdrop'] = Modal.Backdrop;
 
 export default Modal;

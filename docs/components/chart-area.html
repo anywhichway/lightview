@@ -63,101 +63,217 @@
                     </p>
 
                     <!-- Basic Usage -->
-                    <h2 class="text-xl font-bold mb-4">Usage</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">To visualize data with an area chart, use <code>type: 'area'</code>.
-                                Like line charts, area charts require both <code>--start</code> and <code>--size</code>:
+                            <h2 class="card-title">Basic Usage</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                To visualize data with an area chart, use <code>type: 'area'</code>. Like line charts,
+                                area charts require both <code>start</code> and <code>value</code>.
                             </p>
-                            <div id="basic-area" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
-                                <table class="charts-css area show-labels show-primary-axis">
-                                    <caption>Basic Area Chart</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Jan </th>
-                                            <td style="--start: 0.2; --size: 0.4;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Feb </th>
-                                            <td style="--start: 0.4; --size: 0.6;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Mar </th>
-                                            <td style="--start: 0.6; --size: 0.5;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Apr </th>
-                                            <td style="--start: 0.5; --size: 0.8;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> May </th>
-                                            <td style="--start: 0.8; --size: 0.7;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchBasicAreaTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`basic-area-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`basic-area-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="basic-area-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchBasicAreaTab('tagged')">Tagged</button>
+                                <button id="basic-area-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchBasicAreaTab('vdom')">vDOM</button>
+                                <button id="basic-area-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchBasicAreaTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'area', labels: true, primaryAxis: true },
+
+                            <!-- Tagged Syntax -->
+                            <div id="basic-area-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const chart = Chart({ 
+    type: 'area', 
+    labels: true, 
+    primaryAxis: true,
+    style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto;' 
+},
     Chart.Body({},
-        Chart.Row({},
-            Chart.Label({}, 'Jan'),
-            Chart.Data({ start: 0.2, value: 0.4 })
-        ),
-        Chart.Row({},
-            Chart.Label({}, 'Feb'),
-            Chart.Data({ start: 0.4, value: 0.6 })
-        ),
-        Chart.Row({},
-            Chart.Label({}, 'Mar'),
-            Chart.Data({ start: 0.6, value: 0.5 })
-        ),
-        // ... more rows
+        Chart.Row({}, Chart.Label({}, 'Jan'), Chart.Data({ start: 0.2, value: 0.4 })),
+        Chart.Row({}, Chart.Label({}, 'Feb'), Chart.Data({ start: 0.4, value: 0.6 })),
+        Chart.Row({}, Chart.Label({}, 'Mar'), Chart.Data({ start: 0.6, value: 0.5 })),
+        Chart.Row({}, Chart.Label({}, 'Apr'), Chart.Data({ start: 0.5, value: 0.8 })),
+        Chart.Row({}, Chart.Label({}, 'May'), Chart.Data({ start: 0.8, value: 0.7 }))
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="basic-area-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const months = [
+    { label: 'Jan', start: 0.2, value: 0.4 },
+    { label: 'Feb', start: 0.4, value: 0.6 },
+    { label: 'Mar', start: 0.6, value: 0.5 },
+    { label: 'Apr', start: 0.5, value: 0.8 },
+    { label: 'May', start: 0.8, value: 0.7 }
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'area', 
+        labels: true, 
+        primaryAxis: true,
+        style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: months.map(m => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [m.label] },
+                    { tag: Chart.Data, attributes: { start: m.start, value: m.value } }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="basic-area-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'area',
+        labels: true,
+        primaryAxis: true,
+        style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Jan'] } }, { 'Chart.Data': { start: 0.2, value: 0.4 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Feb'] } }, { 'Chart.Data': { start: 0.4, value: 0.6 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Mar'] } }, { 'Chart.Data': { start: 0.6, value: 0.5 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Apr'] } }, { 'Chart.Data': { start: 0.5, value: 0.8 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['May'] } }, { 'Chart.Data': { start: 0.8, value: 0.7 } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Multiple Datasets -->
-                    <h2 class="text-xl font-bold mb-4">Multiple Datasets</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Create layered areas with multiple datasets:</p>
-                            <div id="multiple-area"
-                                style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
-                                <table class="charts-css area multiple show-labels show-primary-axis"
-                                    style="--color-1: rgba(76, 175, 80, 0.5); --color-2: rgba(33, 150, 243, 0.5); --color-3: rgba(255, 152, 0, 0.5);">
-                                    <caption>Stacked Areas</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Q1 </th>
-                                            <td style="--start: 0.1; --size: 0.3;"></td>
-                                            <td style="--start: 0.2; --size: 0.4;"></td>
-                                            <td style="--start: 0.15; --size: 0.35;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Q2 </th>
-                                            <td style="--start: 0.3; --size: 0.5;"></td>
-                                            <td style="--start: 0.4; --size: 0.6;"></td>
-                                            <td style="--start: 0.35; --size: 0.5;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Q3 </th>
-                                            <td style="--start: 0.5; --size: 0.4;"></td>
-                                            <td style="--start: 0.6; --size: 0.5;"></td>
-                                            <td style="--start: 0.5; --size: 0.6;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Q4 </th>
-                                            <td style="--start: 0.4; --size: 0.7;"></td>
-                                            <td style="--start: 0.5; --size: 0.8;"></td>
-                                            <td style="--start: 0.6; --size: 0.75;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <h2 class="card-title">Multiple Datasets</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Create layered areas with multiple datasets.
+                            </p>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchMultipleAreaTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`multiple-area-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`multiple-area-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="multiple-area-tab-btn-tagged" role="tab"
+                                    class="syntax-tab syntax-tab-active"
+                                    onclick="switchMultipleAreaTab('tagged')">Tagged</button>
+                                <button id="multiple-area-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchMultipleAreaTab('vdom')">vDOM</button>
+                                <button id="multiple-area-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchMultipleAreaTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'area', multiple: true, labels: true, primaryAxis: true },
+
+                            <!-- Tagged Syntax -->
+                            <div id="multiple-area-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const chart = Chart({ 
+    type: 'area', 
+    multiple: true,
+    labels: true, 
+    primaryAxis: true,
+    style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto; --color-1: rgba(76, 175, 80, 0.5); --color-2: rgba(33, 150, 243, 0.5); --color-3: rgba(255, 152, 0, 0.5);' 
+},
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Q1'),
@@ -165,161 +281,420 @@
             Chart.Data({ start: 0.2, value: 0.4 }),
             Chart.Data({ start: 0.15, value: 0.35 })
         ),
-        // ... more rows
+        Chart.Row({},
+            Chart.Label({}, 'Q2'),
+            Chart.Data({ start: 0.3, value: 0.5 }),
+            Chart.Data({ start: 0.4, value: 0.6 }),
+            Chart.Data({ start: 0.35, value: 0.5 })
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Q3'),
+            Chart.Data({ start: 0.5, value: 0.4 }),
+            Chart.Data({ start: 0.6, value: 0.5 }),
+            Chart.Data({ start: 0.5, value: 0.6 })
+        ),
+        Chart.Row({},
+            Chart.Label({}, 'Q4'),
+            Chart.Data({ start: 0.4, value: 0.7 }),
+            Chart.Data({ start: 0.5, value: 0.8 }),
+            Chart.Data({ start: 0.6, value: 0.75 })
+        )
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="multiple-area-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const quarters = [
+    { label: 'Q1', data: [[0.1, 0.3], [0.2, 0.4], [0.15, 0.35]] },
+    { label: 'Q2', data: [[0.3, 0.5], [0.4, 0.6], [0.35, 0.5]] },
+    { label: 'Q3', data: [[0.5, 0.4], [0.6, 0.5], [0.5, 0.6]] },
+    { label: 'Q4', data: [[0.4, 0.7], [0.5, 0.8], [0.6, 0.75]] }
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'area', 
+        multiple: true,
+        labels: true, 
+        primaryAxis: true,
+        style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto; --color-1: rgba(76, 175, 80, 0.5); --color-2: rgba(33, 150, 243, 0.5); --color-3: rgba(255, 152, 0, 0.5);' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: quarters.map(q => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [q.label] },
+                    ...q.data.map(([start, value]) => ({
+                        tag: Chart.Data,
+                        attributes: { start, value }
+                    }))
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="multiple-area-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'area',
+        multiple: true,
+        labels: true,
+        primaryAxis: true,
+        style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto; --color-1: rgba(76, 175, 80, 0.5); --color-2: rgba(33, 150, 243, 0.5); --color-3: rgba(255, 152, 0, 0.5);',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Q1'] } }, { 'Chart.Data': { start: 0.1, value: 0.3 } }, { 'Chart.Data': { start: 0.2, value: 0.4 } }, { 'Chart.Data': { start: 0.15, value: 0.35 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Q2'] } }, { 'Chart.Data': { start: 0.3, value: 0.5 } }, { 'Chart.Data': { start: 0.4, value: 0.6 } }, { 'Chart.Data': { start: 0.35, value: 0.5 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Q3'] } }, { 'Chart.Data': { start: 0.5, value: 0.4 } }, { 'Chart.Data': { start: 0.6, value: 0.5 } }, { 'Chart.Data': { start: 0.5, value: 0.6 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Q4'] } }, { 'Chart.Data': { start: 0.4, value: 0.7 } }, { 'Chart.Data': { start: 0.5, value: 0.8 } }, { 'Chart.Data': { start: 0.6, value: 0.75 } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Axes and Grid -->
-                    <h2 class="text-xl font-bold mb-4">Axes and Grid</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Add grid lines with <code>primaryAxis</code> and <code>secondaryAxis</code>:
+                            <h2 class="card-title">Axes and Grid</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Add grid lines with <code>primaryAxis</code> and <code>secondaryAxis</code>.
                             </p>
-                            <div id="axes-area" style="width: 100%; max-width: 600px; height: 280px; margin: 0 auto;">
-                                <table class="charts-css area show-labels show-primary-axis show-4-secondary-axes">
-                                    <caption>With Grid Lines</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> 1 </th>
-                                            <td style="--start: 0.0; --size: 0.25;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2 </th>
-                                            <td style="--start: 0.25; --size: 0.5;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 3 </th>
-                                            <td style="--start: 0.5; --size: 0.75;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 4 </th>
-                                            <td style="--start: 0.75; --size: 0.5;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 5 </th>
-                                            <td style="--start: 0.5; --size: 1.0;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchAxesAreaTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`axes-area-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`axes-area-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="axes-area-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchAxesAreaTab('tagged')">Tagged</button>
+                                <button id="axes-area-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchAxesAreaTab('vdom')">vDOM</button>
+                                <button id="axes-area-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchAxesAreaTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ 
+
+                            <!-- Tagged Syntax -->
+                            <div id="axes-area-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const chart = Chart({ 
     type: 'area', 
     labels: true, 
-    primaryAxis: true, 
-    secondaryAxis: 'show-4-secondary-axes'
+    primaryAxis: true,
+    secondaryAxis: 'show-4-secondary-axes',
+    style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;' 
 },
-    Chart.Body({}, /* rows */)
-)</code></pre>
+    Chart.Body({},
+        Chart.Row({}, Chart.Label({}, '1'), Chart.Data({ start: 0.0, value: 0.25 })),
+        Chart.Row({}, Chart.Label({}, '2'), Chart.Data({ start: 0.25, value: 0.5 })),
+        Chart.Row({}, Chart.Label({}, '3'), Chart.Data({ start: 0.5, value: 0.75 })),
+        Chart.Row({}, Chart.Label({}, '4'), Chart.Data({ start: 0.75, value: 0.5 })),
+        Chart.Row({}, Chart.Label({}, '5'), Chart.Data({ start: 0.5, value: 1.0 }))
+    )
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="axes-area-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const data = [
+    [0.0, 0.25], [0.25, 0.5], [0.5, 0.75], 
+    [0.75, 0.5], [0.5, 1.0]
+];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'area', 
+        labels: true, 
+        primaryAxis: true,
+        secondaryAxis: 'show-4-secondary-axes',
+        style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: data.map(([start, value], i) => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [String(i + 1)] },
+                    { tag: Chart.Data, attributes: { start, value } }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="axes-area-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'area',
+        labels: true,
+        primaryAxis: true,
+        secondaryAxis: 'show-4-secondary-axes',
+        style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['1'] } }, { 'Chart.Data': { start: 0.0, value: 0.25 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['2'] } }, { 'Chart.Data': { start: 0.25, value: 0.5 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['3'] } }, { 'Chart.Data': { start: 0.5, value: 0.75 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['4'] } }, { 'Chart.Data': { start: 0.75, value: 0.5 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['5'] } }, { 'Chart.Data': { start: 0.5, value: 1.0 } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
                     <!-- Area Styling -->
-                    <h2 class="text-xl font-bold mb-4">Area Styling</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
+                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <p class="mb-4">Customize area appearance with CSS custom properties:</p>
-                            <div id="styled-area" style="width: 100%; max-width: 600px; height: 250px; margin: 0 auto;">
-                                <table class="charts-css area show-labels" style="--color: rgba(116, 128, 255, 0.6);">
-                                    <caption>Custom Colored Area</caption>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Mon </th>
-                                            <td style="--start: 0.2; --size: 0.5;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Tue </th>
-                                            <td style="--start: 0.5; --size: 0.7;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Wed </th>
-                                            <td style="--start: 0.7; --size: 0.4;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Thu </th>
-                                            <td style="--start: 0.4; --size: 0.8;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Fri </th>
-                                            <td style="--start: 0.8; --size: 0.6;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <h2 class="card-title">Area Styling</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
+                                Customize area appearance with CSS custom properties.
+                            </p>
+
+                            <!-- Tabs -->
+                            <script>
+                                window.switchStyledAreaTab = (tabId) => {
+                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    tabs.forEach(t => {
+                                        const tabEl = document.getElementById(`styled-area-tab-btn-${t}`);
+                                        const contentEl = document.getElementById(`styled-area-syntax-${t}`);
+                                        if (t === tabId) {
+                                            tabEl.classList.add('syntax-tab-active');
+                                            contentEl.style.display = 'block';
+                                        } else {
+                                            tabEl.classList.remove('syntax-tab-active');
+                                            contentEl.style.display = 'none';
+                                        }
+                                    });
+                                };
+                            </script>
+                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
+                                <button id="styled-area-tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
+                                    onclick="switchStyledAreaTab('tagged')">Tagged</button>
+                                <button id="styled-area-tab-btn-vdom" role="tab" class="syntax-tab"
+                                    onclick="switchStyledAreaTab('vdom')">vDOM</button>
+                                <button id="styled-area-tab-btn-object" role="tab" class="syntax-tab"
+                                    onclick="switchStyledAreaTab('object')">Object DOM</button>
                             </div>
-                            <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ 
+
+                            <!-- Tagged Syntax -->
+                            <div id="styled-area-syntax-tagged">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250,
+                                        autoRun: true
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const chart = Chart({ 
     type: 'area', 
     labels: true,
-    style: '--color: rgba(116, 128, 255, 0.6);'
+    style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto; --color: rgba(116, 128, 255, 0.6);' 
 },
     Chart.Body({},
-        // Data rows...
+        Chart.Row({}, Chart.Label({}, 'Mon'), Chart.Data({ start: 0.2, value: 0.5 })),
+        Chart.Row({}, Chart.Label({}, 'Tue'), Chart.Data({ start: 0.5, value: 0.7 })),
+        Chart.Row({}, Chart.Label({}, 'Wed'), Chart.Data({ start: 0.7, value: 0.4 })),
+        Chart.Row({}, Chart.Label({}, 'Thu'), Chart.Data({ start: 0.4, value: 0.8 })),
+        Chart.Row({}, Chart.Label({}, 'Fri'), Chart.Data({ start: 0.8, value: 0.6 }))
     )
-)</code></pre>
+);
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- vDOM Syntax -->
+                            <div id="styled-area-syntax-vdom" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { tags, $ } = Lightview;
+const { Chart } = tags;
+
+const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+const data = [[0.2, 0.5], [0.5, 0.7], [0.7, 0.4], [0.4, 0.8], [0.8, 0.6]];
+
+const chart = {
+    tag: Chart,
+    attributes: { 
+        type: 'area', 
+        labels: true,
+        style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto; --color: rgba(116, 128, 255, 0.6);' 
+    },
+    children: [
+        {
+            tag: Chart.Body,
+            children: days.map((day, i) => ({
+                tag: Chart.Row,
+                children: [
+                    { tag: Chart.Label, children: [day] },
+                    { tag: Chart.Data, attributes: { start: data[i][0], value: data[i][1] } }
+                ]
+            }))
+        }
+    ]
+};
+
+$('#example').content(chart);</code></pre>
+                            </div>
+
+                            <!-- Object DOM Syntax -->
+                            <div id="styled-area-syntax-object" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        minHeight: 250
+                                    });
+                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
+const { $ } = Lightview;
+
+const chart = {
+    Chart: {
+        type: 'area',
+        labels: true,
+        style: 'width: 100%; max-width: 600px; height: 250px; margin: 0 auto; --color: rgba(116, 128, 255, 0.6);',
+        children: [
+            {
+                'Chart.Body': {
+                    children: [
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Mon'] } }, { 'Chart.Data': { start: 0.2, value: 0.5 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Tue'] } }, { 'Chart.Data': { start: 0.5, value: 0.7 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Wed'] } }, { 'Chart.Data': { start: 0.7, value: 0.4 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Thu'] } }, { 'Chart.Data': { start: 0.4, value: 0.8 } }] } },
+                        { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['Fri'] } }, { 'Chart.Data': { start: 0.8, value: 0.6 } }] } }
+                    ]
+                }
+            }
+        ]
+    }
+};
+
+$('#example').content(chart);</code></pre>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Reverse Orientation -->
-                    <h2 class="text-xl font-bold mb-4">Orientation</h2>
-                    <div class="card bg-base-100 shadow-sm mb-8">
-                        <div class="card-body">
-                            <p class="mb-4">Reverse the chart with <code>reverse: true</code>:</p>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-sm font-bold mb-2">Normal</p>
-                                    <div style="height: 180px;">
-                                        <table class="charts-css area show-labels">
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row"> A </th>
-                                                    <td style="--start: 0.2; --size: 0.5;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> B </th>
-                                                    <td style="--start: 0.5; --size: 0.8;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> C </th>
-                                                    <td style="--start: 0.8; --size: 0.6;"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold mb-2">Reversed</p>
-                                    <div style="height: 180px;">
-                                        <table class="charts-css area show-labels reverse">
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row"> A </th>
-                                                    <td style="--start: 0.2; --size: 0.5;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> B </th>
-                                                    <td style="--start: 0.5; --size: 0.8;"></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row"> C </th>
-                                                    <td style="--start: 0.8; --size: 0.6;"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between mt-8" style="display: none;">
-                        <a href="/docs/components/chart-line" class="btn btn-outline">← Line Chart</a>
-                        <a href="/docs/components/chart-pie" class="btn btn-primary">Pie Chart →</a>
-                    </div>
                 </div>
             </div>
         </div>
