@@ -3,7 +3,7 @@ var examplifyIdCounter = window.examplifyIdCounter || 0;
 window.examplifyIdCounter = examplifyIdCounter;
 
 function examplify(target, options = {}) {
-    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false, language = 'js' } = options;
+    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false, language = 'js', autoRun = false } = options;
     const originalContent = target.textContent;
     const autoResize = !height; // Auto-resize if no explicit height is provided
     const iframeId = `examplify-${++examplifyIdCounter}`;
@@ -280,8 +280,12 @@ function examplify(target, options = {}) {
         isRunning = true;
     }
 
-    // Initialize with placeholder
-    iframe.srcdoc = getPlaceholderContent();
+    // Initialize: auto-run or show placeholder
+    if (autoRun) {
+        run();
+    } else {
+        iframe.srcdoc = getPlaceholderContent();
+    }
 
     // Event Listeners
     const runBtn = controls.querySelector('.examplify-run');

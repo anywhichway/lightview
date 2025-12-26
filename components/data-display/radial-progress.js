@@ -77,4 +77,12 @@ const RadialProgress = (props = {}, ...children) => {
 
 window.Lightview.tags.RadialProgress = RadialProgress;
 
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const RadialProgressElement = window.LightviewX.createCustomElement(RadialProgress);
+    if (!customElements.get('lv-radial-progress')) {
+        customElements.define('lv-radial-progress', RadialProgressElement);
+    }
+}
+
 export default RadialProgress;

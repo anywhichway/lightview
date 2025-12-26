@@ -143,9 +143,9 @@ const Toggle = (props = {}) => {
     }
 
     // Build label content
-    const labelContent = div({ class: 'flex flex-col' },
+    const labelContent = div({ style: 'display: flex; flex-direction: column;' },
         span({ class: 'label-text' }, labelText),
-        description ? span({ class: 'label-text-alt opacity-70' }, description) : null
+        description ? span({ class: 'label-text-alt', style: 'opacity: 0.7;' }, description) : null
     );
 
     // Arrange based on label position
@@ -156,7 +156,7 @@ const Toggle = (props = {}) => {
     const formControl = div({
         class: `form-control ${className}`.trim()
     },
-        label({ class: 'label cursor-pointer justify-start gap-3' },
+        label({ class: 'label cursor-pointer', style: 'justify-content: flex-start; gap: 0.75rem;' },
             ...labelChildren
         )
     );
@@ -186,5 +186,13 @@ const Toggle = (props = {}) => {
 
 // Auto-register
 window.Lightview.tags.Toggle = Toggle;
+
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const ToggleElement = window.LightviewX.createCustomElement(Toggle);
+    if (!customElements.get('lv-toggle')) {
+        customElements.define('lv-toggle', ToggleElement);
+    }
+}
 
 export default Toggle;

@@ -72,7 +72,7 @@
                             <!-- Tabs -->
                             <script>
                                 window.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -94,6 +94,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -102,12 +104,13 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 280
                                     });
-                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
+                                </script><code contenteditable="true">await import('/components/data-display/alert.js');
 const { tags, $ } = Lightview;
-const { div, span } = tags;
+const { div, span, Alert } = tags;
 
 const alerts = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
     Alert({ color: 'info', icon: 'info' },
@@ -133,11 +136,13 @@ $('#example').content(alerts);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 280
                                     });
-                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/alert.js');
+const { $, tags } = Lightview;
+const { Alert } = tags;
 
 const alerts = {
     tag: 'div',
@@ -175,12 +180,12 @@ $('#example').content(alerts);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 280
                                     });
-                                </script><code contenteditable="true">const { default: Alert } = await import('/components/data-display/alert.js');
-const { tags, $ } = Lightview;
-tags.Alert = Alert;
+                                </script><code contenteditable="true">await import('/components/data-display/alert.js');
+const { $ } = Lightview;
 
 const alerts = {
     div: {
@@ -195,6 +200,28 @@ const alerts = {
 };
 
 $('#example').content(alerts);</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 280
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-alert) --&gt;
+&lt;script type="module" src="/components/data-display/alert.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; flex-direction: column; gap: 1rem;"&gt;
+    &lt;lv-alert color="info" icon="info"&gt;New update available!&lt;/lv-alert&gt;
+    &lt;lv-alert color="success" icon="success"&gt;Your order has been placed!&lt;/lv-alert&gt;
+    &lt;lv-alert color="warning" icon="warning"&gt;Please review before proceeding.&lt;/lv-alert&gt;
+    &lt;lv-alert color="error" icon="error"&gt;Connection failed.&lt;/lv-alert&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>

@@ -89,9 +89,9 @@ const Radio = (props = {}) => {
     const formControl = div({
         class: `form-control ${className}`.trim()
     },
-        label({ class: 'label cursor-pointer justify-start gap-3' },
+        label({ class: 'label cursor-pointer', style: 'justify-content: flex-start; gap: 0;' },
             radioInput,
-            span({ class: 'label-text' }, labelText)
+            span({ class: 'label-text', style: 'margin-left: 0.5rem;' }, labelText)
         )
     );
 
@@ -237,7 +237,7 @@ const RadioGroup = (props = {}) => {
         const optDisabled = disabled || opt.disabled;
         const isChecked = () => getValue() === opt.value;
 
-        return label({ class: 'label cursor-pointer justify-start gap-3' },
+        return label({ class: 'label cursor-pointer', style: 'justify-content: flex-start; gap: 0;' },
             input({
                 type: 'radio',
                 class: getRadioClass(),
@@ -247,9 +247,9 @@ const RadioGroup = (props = {}) => {
                 disabled: optDisabled,
                 onchange: () => handleChange(opt.value)
             }),
-            div({ class: 'flex flex-col' },
+            div({ style: 'display: flex; flex-direction: column; margin-left: 0.5rem;' },
                 span({ class: 'label-text' }, opt.label),
-                opt.description ? span({ class: 'label-text-alt opacity-70' }, opt.description) : null
+                opt.description ? span({ class: 'label-text-alt', style: 'opacity: 0.7;' }, opt.description) : null
             )
         );
     });
@@ -268,7 +268,7 @@ const RadioGroup = (props = {}) => {
 
     fieldsetContent.push(
         div({
-            class: horizontal ? 'flex flex-wrap gap-4' : 'space-y-2',
+            style: horizontal ? 'display: flex; flex-wrap: wrap; gap: 1rem;' : 'display: flex; flex-direction: column; gap: 0.5rem;',
             role: 'radiogroup',
             'aria-label': groupLabel
         }, ...radioOptions)
@@ -321,6 +321,18 @@ const RadioGroup = (props = {}) => {
 // Auto-register
 window.Lightview.tags.Radio = Radio;
 window.Lightview.tags.RadioGroup = RadioGroup;
+
+// Register as Custom Elements
+if (window.LightviewX?.createCustomElement) {
+    const RadioElement = window.LightviewX.createCustomElement(Radio);
+    if (!customElements.get('lv-radio')) {
+        customElements.define('lv-radio', RadioElement);
+    }
+    const RadioGroupElement = window.LightviewX.createCustomElement(RadioGroup);
+    if (!customElements.get('lv-radio-group')) {
+        customElements.define('lv-radio-group', RadioGroupElement);
+    }
+}
 
 export default Radio;
 export { Radio, RadioGroup };

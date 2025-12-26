@@ -71,7 +71,7 @@
                             <!-- Tabs -->
                             <script>
                                 window.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -93,6 +93,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -101,12 +103,13 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 420
                                     });
-                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
+                                </script><code contenteditable="true">await import('/components/data-input/radio.js');
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, RadioGroup } = tags;
 
 // 1. Basic radio group
 const basic = RadioGroup({
@@ -149,11 +152,13 @@ $('#example').content(
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 420
                                     });
-                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-input/radio.js');
+const { $, tags } = Lightview;
+const { RadioGroup } = tags;
 
 const basic = {
     tag: RadioGroup,
@@ -203,12 +208,12 @@ $('#example').content({
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 420
                                     });
-                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
-const { tags, $ } = Lightview;
-tags.RadioGroup = RadioGroup;
+                                </script><code contenteditable="true">await import('/components/data-input/radio.js');
+const { $ } = Lightview;
 
 $('#example').content({
     div: {
@@ -246,6 +251,38 @@ $('#example').content({
         ]
     }
 });</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 420
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-radio-group) --&gt;
+&lt;script type="module" src="/components/data-input/radio.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 28rem"&gt;
+    &lt;lv-radio-group 
+        label="Favorite Color" 
+        name="color-html" 
+        options='["Red", "Blue", "Green", "Yellow"]'
+        color="primary"&gt;
+    &lt;/lv-radio-group&gt;
+
+    &lt;lv-radio-group 
+        label="Size" 
+        name="size-html" 
+        options='["S", "M", "L", "XL"]'
+        horizontal
+        color="accent"&gt;
+    &lt;/lv-radio-group&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>
@@ -290,12 +327,13 @@ $('#example').content({
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 260
                                     });
-                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
+                                </script><code contenteditable="true">await import('/components/data-input/radio.js');
 const { signal, tags, $ } = Lightview;
-const { div, p, span } = tags;
+const { div, p, span, RadioGroup } = tags;
 
 // Signal for selected value
 const selectedPriority = signal('');
@@ -342,11 +380,13 @@ $('#example').content(reactiveDemo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 260
                                     });
-                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
-const { signal, $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-input/radio.js');
+const { signal, $, tags } = Lightview;
+const { RadioGroup } = tags;
 
 const selectedPriority = signal('');
 
@@ -401,12 +441,12 @@ $('#example').content(reactiveDemo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 260
                                     });
-                                </script><code contenteditable="true">const { RadioGroup } = await import('/components/data-input/radio.js');
-const { signal, tags, $ } = Lightview;
-tags.RadioGroup = RadioGroup;
+                                </script><code contenteditable="true">await import('/components/data-input/radio.js');
+const { signal, $ } = Lightview;
 
 const selectedPriority = signal('');
 

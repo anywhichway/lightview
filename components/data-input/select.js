@@ -76,8 +76,18 @@ const Select = (props = {}) => {
 
     const isControlled = value !== undefined;
 
-    // Normalize options
-    const normalizedOptions = options.map(opt =>
+    // Normalize options - first parse from JSON string if needed (from HTML attribute)
+    let parsedOptions = options;
+    if (typeof parsedOptions === 'string') {
+        try {
+            parsedOptions = JSON.parse(parsedOptions);
+        } catch (e) {
+            console.error('Select: Failed to parse options JSON:', e);
+            parsedOptions = [];
+        }
+    }
+
+    const normalizedOptions = (Array.isArray(parsedOptions) ? parsedOptions : []).map(opt =>
         typeof opt === 'string' ? { value: opt, label: opt } : opt
     );
 
@@ -265,5 +275,13 @@ const Select = (props = {}) => {
 
 // Auto-register
 window.Lightview.tags.Select = Select;
+
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const SelectElement = window.LightviewX.createCustomElement(Select);
+    if (!customElements.get('lv-select')) {
+        customElements.define('lv-select', SelectElement);
+    }
+}
 
 export default Select;

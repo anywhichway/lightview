@@ -69,4 +69,12 @@ const Badge = (props = {}, ...children) => {
 
 window.Lightview.tags.Badge = Badge;
 
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const BadgeElement = window.LightviewX.createCustomElement(Badge);
+    if (!customElements.get('lv-badge')) {
+        customElements.define('lv-badge', BadgeElement);
+    }
+}
+
 export default Badge;

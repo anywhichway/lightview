@@ -101,4 +101,12 @@ function getAlertIcon(type) {
 
 window.Lightview.tags.Alert = Alert;
 
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const AlertElement = window.LightviewX.createCustomElement(Alert);
+    if (!customElements.get('lv-alert')) {
+        customElements.define('lv-alert', AlertElement);
+    }
+}
+
 export default Alert;

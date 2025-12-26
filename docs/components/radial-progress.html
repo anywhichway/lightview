@@ -71,7 +71,7 @@
                             <!-- Tabs -->
                             <script>
                                 window.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -93,6 +93,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -101,13 +103,13 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
-
+                                </script><code contenteditable="true">await import('/components/data-display/radial-progress.js');
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, RadialProgress } = tags;
 
 const demo = div({ style: 'display: flex; gap: 1rem' },
     RadialProgress({ value: 0 }, '0%'),
@@ -126,11 +128,13 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/radial-progress.js');
+const { $, tags } = Lightview;
+const { RadialProgress } = tags;
 
 const demo = {
     tag: 'div',
@@ -153,12 +157,12 @@ $('#example').content(demo);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
-const { tags, $ } = Lightview;
-tags.RadialProgress = RadialProgress;
+                                </script><code contenteditable="true">await import('/components/data-display/radial-progress.js');
+const { $ } = Lightview;
 
 const demo = {
     div: {
@@ -175,6 +179,29 @@ const demo = {
 
 $('#example').content(demo);</code></pre>
                             </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-radial-progress) --&gt;
+&lt;script type="module" src="/components/data-display/radial-progress.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; gap: 1rem;"&gt;
+    &lt;lv-radial-progress value="0"&gt;0%&lt;/lv-radial-progress&gt;
+    &lt;lv-radial-progress value="25"&gt;25%&lt;/lv-radial-progress&gt;
+    &lt;lv-radial-progress value="50" color="primary"&gt;50%&lt;/lv-radial-progress&gt;
+    &lt;lv-radial-progress value="75" color="secondary"&gt;75%&lt;/lv-radial-progress&gt;
+    &lt;lv-radial-progress value="100" color="success"&gt;100%&lt;/lv-radial-progress&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
                         </div>
                     </div>
 
@@ -183,14 +210,14 @@ $('#example').content(demo);</code></pre>
                             examplify(document.currentScript.nextElementSibling, {
                                 at: document.currentScript.parentElement,
                                 scripts: ['/lightview.js', '/lightview-x.js'],
+                                styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                 type: 'module',
                                 minHeight: 200
                             });
-                        </script><code contenteditable="true">const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
-const { default: Button } = await import('/components/actions/button.js');
-
+                        </script><code contenteditable="true">await import('/components/data-display/radial-progress.js');
+await import('/components/actions/button.js');
 const { signal, tags, $ } = Lightview;
-const { div } = tags;
+const { div, RadialProgress, Button } = tags;
 
 const progress = signal(0);
 let interval;
@@ -229,12 +256,14 @@ $('#example').content(demo);</code></pre>
                             examplify(document.currentScript.nextElementSibling, {
                                 at: document.currentScript.parentElement,
                                 scripts: ['/lightview.js', '/lightview-x.js'],
+                                styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                 type: 'module',
                                 minHeight: 200
                             });
-                        </script><code contenteditable="true">const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, $ } = Lightview;
+                        </script><code contenteditable="true">await import('/components/data-display/radial-progress.js');
+await import('/components/actions/button.js');
+const { signal, $, tags } = Lightview;
+const { RadialProgress, Button } = tags;
 
 const progress = signal(0);
 let interval;
@@ -285,14 +314,13 @@ $('#example').content(demo);</code></pre>
                             examplify(document.currentScript.nextElementSibling, {
                                 at: document.currentScript.parentElement,
                                 scripts: ['/lightview.js', '/lightview-x.js'],
+                                styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                 type: 'module',
                                 minHeight: 200
                             });
-                        </script><code contenteditable="true">const { default: RadialProgress } = await import('/components/data-display/radial-progress.js');
-const { default: Button } = await import('/components/actions/button.js');
-const { signal, tags, $ } = Lightview;
-tags.RadialProgress = RadialProgress;
-tags.Button = Button;
+                        </script><code contenteditable="true">await import('/components/data-display/radial-progress.js');
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
 
 const progress = signal(0);
 let interval;

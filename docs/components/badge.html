@@ -72,7 +72,7 @@
                             <!-- Tabs -->
                             <script>
                                 window.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -94,6 +94,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -102,12 +104,13 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
+                                </script><code contenteditable="true">await import('/components/data-display/badge.js');
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, Badge } = tags;
 
 const badges = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
     // Colors
@@ -138,11 +141,13 @@ $('#example').content(badges);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Badge } = await import('/components/data-display/badge.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/badge.js');
+const { $, tags } = Lightview;
+const { Badge } = tags;
 
 const badges = {
     tag: 'div',
@@ -183,12 +188,13 @@ $('#example').content(badges);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
                                 </script><code contenteditable="true">// Object DOM syntax now requires lightview-x.js
-const { default: Badge } = await import('/components/data-display/badge.js');
-const { tags, $ } = Lightview;
+await import('/components/data-display/badge.js');
+const { $ } = Lightview;
 
 const badges = {
     div: {
@@ -224,6 +230,34 @@ const badges = {
 };
 
 $('#example').content(badges);</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-badge) --&gt;
+&lt;script type="module" src="/components/data-display/badge.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; flex-direction: column; gap: 0.5rem;"&gt;
+    &lt;div style="display: flex; gap: 0.5rem;"&gt;
+        &lt;lv-badge&gt;Default&lt;/lv-badge&gt;
+        &lt;lv-badge color="primary"&gt;Primary&lt;/lv-badge&gt;
+        &lt;lv-badge color="secondary"&gt;Secondary&lt;/lv-badge&gt;
+        &lt;lv-badge color="accent"&gt;Accent&lt;/lv-badge&gt;
+    &lt;/div&gt;
+    &lt;div style="display: flex; gap: 0.5rem;"&gt;
+        &lt;lv-badge variant="outline"&gt;Outline&lt;/lv-badge&gt;
+        &lt;lv-badge variant="soft" color="primary"&gt;Soft&lt;/lv-badge&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>

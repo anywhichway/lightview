@@ -71,7 +71,7 @@
                             <!-- Tabs -->
                             <script>
                                 window.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -93,6 +93,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -101,13 +103,13 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 140
                                     });
-                                </script><code contenteditable="true">const { default: Kbd } = await import('/components/data-display/kbd.js');
-
+                                </script><code contenteditable="true">await import('/components/data-display/kbd.js');
 const { tags, $ } = Lightview;
-const { div, span } = tags;
+const { div, span, Kbd } = tags;
 
 const shortcuts = div({ style: 'display: flex; flex-direction: column; gap: 1rem' },
     div({ style: 'display: flex; gap: 0.5rem; align-items: center' },
@@ -136,11 +138,13 @@ $('#example').content(shortcuts);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 140
                                     });
-                                </script><code contenteditable="true">const { default: Kbd } = await import('/components/data-display/kbd.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/kbd.js');
+const { $, tags } = Lightview;
+const { Kbd } = tags;
 
 const shortcuts = {
     tag: 'div',
@@ -185,12 +189,12 @@ $('#example').content(shortcuts);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 140
                                     });
-                                </script><code contenteditable="true">const { default: Kbd } = await import('/components/data-display/kbd.js');
-const { tags, $ } = Lightview;
-tags.Kbd = Kbd;
+                                </script><code contenteditable="true">await import('/components/data-display/kbd.js');
+const { $ } = Lightview;
 
 const shortcuts = {
     div: {
@@ -219,6 +223,39 @@ const shortcuts = {
 };
 
 $('#example').content(shortcuts);</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 140
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-kbd) --&gt;
+&lt;script type="module" src="/components/data-display/kbd.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; flex-direction: column; gap: 1rem"&gt;
+    &lt;div style="display: flex; gap: 0.5rem; align-items: center"&gt;
+        &lt;span&gt;Save: &lt;/span&gt;
+        &lt;lv-kbd&gt;⌘&lt;/lv-kbd&gt;
+        &lt;lv-kbd&gt;S&lt;/lv-kbd&gt;
+    &lt;/div&gt;
+    &lt;div style="display: flex; gap: 0.5rem; align-items: center"&gt;
+        &lt;span&gt;Undo: &lt;/span&gt;
+        &lt;lv-kbd&gt;⌘&lt;/lv-kbd&gt;
+        &lt;lv-kbd&gt;Z&lt;/lv-kbd&gt;
+    &lt;/div&gt;
+    &lt;div style="display: flex; gap: 0.5rem; align-items: center"&gt;
+        &lt;span&gt;Copy: &lt;/span&gt;
+        &lt;lv-kbd&gt;⌘&lt;/lv-kbd&gt;
+        &lt;lv-kbd&gt;C&lt;/lv-kbd&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>

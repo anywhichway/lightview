@@ -72,7 +72,7 @@
                             <!-- Tabs -->
                             <script>
                                 window.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -94,6 +94,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -102,12 +104,13 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 320
                                     });
-                                </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
+                                </script><code contenteditable="true">await import('/components/data-input/select.js');
 const { tags, $ } = Lightview;
-const { div } = tags;
+const { div, Select } = tags;
 
 // 1. Basic select with string options
 const basic = Select({ 
@@ -149,11 +152,13 @@ $('#example').content(
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 320
                                     });
-                                </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-input/select.js');
+const { $, tags } = Lightview;
+const { Select } = tags;
 
 const basic = {
     tag: Select,
@@ -202,12 +207,12 @@ $('#example').content({
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 320
                                     });
-                                </script><code contenteditable="true">const { default: Select } = await import('/components/data-input/select.js');
-const { tags, $ } = Lightview;
-tags.Select = Select;
+                                </script><code contenteditable="true">await import('/components/data-input/select.js');
+const { $ } = Lightview;
 
 $('#example').content({
     div: {
@@ -244,6 +249,43 @@ $('#example').content({
         ]
     }
 });</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 320
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-select) --&gt;
+&lt;script type="module" src="/components/data-input/select.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; flex-direction: column; gap: 1rem; max-width: 28rem;"&gt;
+    &lt;lv-select 
+        placeholder="Pick a movie franchise" 
+        options='["Star Wars", "Harry Potter", "Lord of the Rings", "Marvel"]'&gt;
+    &lt;/lv-select&gt;
+    
+    &lt;lv-select 
+        label="Country" 
+        placeholder="Select your country"
+        options='[{"value":"us","label":"United States"},{"value":"uk","label":"United Kingdom"}]'
+        helper="We use this for shipping calculations"&gt;
+    &lt;/lv-select&gt;
+    
+    &lt;lv-select 
+        label="Priority" 
+        placeholder="Select priority..." 
+        options='["Low", "Medium", "High", "Critical"]'
+        color="primary"
+        required&gt;
+    &lt;/lv-select&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>

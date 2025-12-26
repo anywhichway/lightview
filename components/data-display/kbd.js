@@ -54,4 +54,12 @@ const Kbd = (props = {}, ...children) => {
 
 window.Lightview.tags.Kbd = Kbd;
 
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const KbdElement = window.LightviewX.createCustomElement(Kbd);
+    if (!customElements.get('lv-kbd')) {
+        customElements.define('lv-kbd', KbdElement);
+    }
+}
+
 export default Kbd;

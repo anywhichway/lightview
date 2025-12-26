@@ -68,4 +68,12 @@ const Progress = (props = {}, ...children) => {
 
 window.Lightview.tags.Progress = Progress;
 
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const ProgressElement = window.LightviewX.createCustomElement(Progress);
+    if (!customElements.get('lv-progress')) {
+        customElements.define('lv-progress', ProgressElement);
+    }
+}
+
 export default Progress;

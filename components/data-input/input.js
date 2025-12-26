@@ -253,4 +253,12 @@ const Input = (props = {}) => {
 // Auto-register
 window.Lightview.tags.Input = Input;
 
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const InputElement = window.LightviewX.createCustomElement(Input);
+    if (!customElements.get('lv-input')) {
+        customElements.define('lv-input', InputElement);
+    }
+}
+
 export default Input;

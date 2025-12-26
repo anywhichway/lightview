@@ -71,7 +71,7 @@
                             <!-- Tabs -->
                             <script>
                                 window.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -93,6 +93,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -101,12 +103,13 @@
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
+                                </script><code contenteditable="true">await import('/components/data-display/loading.js');
 const { tags, $ } = Lightview;
-const { div, p } = tags;
+const { div, p, Loading } = tags;
 
 const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
 
@@ -128,11 +131,13 @@ $('#example').content(loaders);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
-const { $ } = Lightview;
+                                </script><code contenteditable="true">await import('/components/data-display/loading.js');
+const { $, tags } = Lightview;
+const { Loading } = tags;
 
 const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
 
@@ -158,12 +163,12 @@ $('#example').content(loaders);</code></pre>
                                     examplify(document.currentScript.nextElementSibling, {
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
                                         type: 'module',
                                         minHeight: 100
                                     });
-                                </script><code contenteditable="true">const { default: Loading } = await import('/components/data-display/loading.js');
-const { tags, $ } = Lightview;
-tags.Loading = Loading;
+                                </script><code contenteditable="true">await import('/components/data-display/loading.js');
+const { $ } = Lightview;
 
 const types = ['spinner', 'dots', 'ring', 'ball', 'bars', 'infinity'];
 
@@ -183,6 +188,28 @@ const loaders = {
 };
 
 $('#example').content(loaders);</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-loading) --&gt;
+&lt;script type="module" src="/components/data-display/loading.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; flex-wrap: wrap; gap: 2rem;"&gt;
+    &lt;lv-loading type="spinner" size="lg"&gt;&lt;/lv-loading&gt;
+    &lt;lv-loading type="dots" size="lg"&gt;&lt;/lv-loading&gt;
+    &lt;lv-loading type="ring" size="lg"&gt;&lt;/lv-loading&gt;
+    &lt;lv-loading type="ball" size="lg"&gt;&lt;/lv-loading&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>

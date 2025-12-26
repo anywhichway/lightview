@@ -72,6 +72,26 @@ Footer.Title = (props = {}, ...children) => {
     }, ...children);
 };
 
+/**
+ * Footer Nav - Navigation section within footer
+ */
+Footer.Nav = (props = {}, ...children) => {
+    const { tags } = window.Lightview || {};
+    if (!tags) return null;
+
+    const { class: className = '', style = '', ...rest } = props;
+
+    // Use border radius variable for consistent padding
+    const defaultStyle = 'padding: var(--rounded-box, 1rem);';
+    const combinedStyle = style ? `${defaultStyle} ${style}` : defaultStyle;
+
+    return tags.nav({
+        class: className || undefined,
+        style: combinedStyle,
+        ...rest
+    }, ...children);
+};
+
 window.Lightview.tags.Footer = Footer;
 
 export default Footer;

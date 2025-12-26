@@ -64,4 +64,12 @@ const Loading = (props = {}) => {
 
 window.Lightview.tags.Loading = Loading;
 
+// Register as Custom Element
+if (window.LightviewX?.createCustomElement) {
+    const LoadingElement = window.LightviewX.createCustomElement(Loading);
+    if (!customElements.get('lv-loading')) {
+        customElements.define('lv-loading', LoadingElement);
+    }
+}
+
 export default Loading;
