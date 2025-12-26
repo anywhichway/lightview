@@ -102,7 +102,8 @@
                                         at: document.currentScript.parentElement,
                                         scripts: ['/lightview.js', '/lightview-x.js'],
                                         type: 'module',
-                                        minHeight: 150
+                                        minHeight: 150,
+                                        autoRun: true
                                     });
                                 </script><code contenteditable="true">const { default: Tabs } = await import('/components/navigation/tabs.js');
 const { signal, tags, $ } = Lightview;

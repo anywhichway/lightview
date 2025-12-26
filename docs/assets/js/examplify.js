@@ -176,7 +176,7 @@ function examplify(target, options = {}) {
                     setTimeout(sendHeight, 50);
                 });
                 mutationObserver.observe(document.body, { childList: true, subtree: true, attributes: true });
-            <\/script>
+            </script>
         ` : '';
 
         return `<!DOCTYPE html>
@@ -227,8 +227,8 @@ function examplify(target, options = {}) {
             });
         })();
     <\/script>
-    ${modules ? modules.map(src => `<script type="module" src="${src}"><\/script>`).join('\n') : ''}
-    ${scripts ? scripts.map(src => `<script src="${src}"><\/script>`).join('\n') : ''}
+    ${modules ? modules.map(src => `<script type="module" src="${src}"></script>`).join('\n') : ''}
+    ${scripts ? scripts.map(src => `<script src="${src}"></script>`).join('\n') : ''}
     <script type="module">
         // Wait for stylesheets before initializing Lightview components
         await window.__stylesheetsReady;
@@ -257,7 +257,7 @@ function examplify(target, options = {}) {
                 ${codeContent}
             });
         `}
-    <\/script>`}
+    </script>`}
     ${autoResizeScript}
     <script>
         // Reveal body and signal ready only after stylesheets are loaded
