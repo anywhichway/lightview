@@ -135,11 +135,11 @@ const Range = (props = {}) => {
 
         if (usesShadow) {
             const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const themeValue = LVX.themeSignal ? () => LVX.themeSignal.value : 'light';
 
             return div({ class: 'content', style: 'display: inline-block' },
                 shadowDOM({ mode: 'open', adoptedStyleSheets },
-                    div({ 'data-theme': currentTheme }, rangeInput)
+                    div({ 'data-theme': themeValue }, rangeInput)
                 )
             );
         }
@@ -186,11 +186,11 @@ const Range = (props = {}) => {
     if (usesShadow) {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const themeValue = LVX.themeSignal ? () => LVX.themeSignal.value : 'light';
 
         return span({ style: 'margin-right: 0.5rem' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme, style: 'display: inline-block' }, wrapperEl)
+                div({ 'data-theme': themeValue, style: 'display: inline-block' }, wrapperEl)
             )
         );
     }
