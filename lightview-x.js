@@ -140,9 +140,19 @@
     };
 
     // Theme Signal
+    // Helper to safely get local storage
+    const getSavedTheme = () => {
+        try {
+            return localStorage.getItem('lightview-theme');
+        } catch (e) {
+            return null;
+        }
+    };
+
+    // Theme Signal
     const themeSignal = typeof window !== 'undefined' && window.Lightview ? window.Lightview.signal(
         (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme')) ||
-        (typeof localStorage !== 'undefined' && localStorage.getItem('lightview-theme')) ||
+        getSavedTheme() ||
         'light'
     ) : { value: 'light' };
 
@@ -155,7 +165,7 @@
         // Determine base theme (light or dark) for the main document
         const darkThemes = ['dark', 'aqua', 'black', 'business', 'coffee', 'dim', 'dracula', 'forest', 'halloween', 'luxury', 'night', 'sunset', 'synthwave'];
         const baseTheme = darkThemes.includes(themeName) ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', baseTheme);
+        document.documentElement.setAttribute('data-theme', themeName);
 
         // Update signal
         if (themeSignal && themeSignal.value !== themeName) {
@@ -1477,7 +1487,7 @@
     if (typeof window !== 'undefined') {
         // Auto-load theme
         try {
-            const savedTheme = localStorage.getItem('lightview-theme');
+            const savedTheme = getSavedTheme();
             if (savedTheme) {
                 setTheme(savedTheme);
             }

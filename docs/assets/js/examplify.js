@@ -148,6 +148,8 @@ function examplify(target, options = {}) {
 
     // Helper: Generate Iframe Content
     function getIframeContent(codeContent) {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const themeAttr = currentTheme ? ` data-theme="${currentTheme}"` : '';
         const autoResizeScript = autoResize ? `
             <script>
                 const frameId = '${iframeId}';
@@ -180,7 +182,7 @@ function examplify(target, options = {}) {
         ` : '';
 
         return `<!DOCTYPE html>
-<html>
+<html${themeAttr}>
 <head>
     <style>
         /* Hide body until stylesheets are loaded to prevent FOUC */
@@ -267,6 +269,16 @@ function examplify(target, options = {}) {
                 parent.postMessage({ type: 'examplify-ready', id: '${iframeId}' }, '*');
             }, 50);
         });
+
+        // Listen for theme changes from parent
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'theme-change' && event.data.theme) {
+                document.documentElement.setAttribute('data-theme', event.data.theme);
+                if (window.LightviewX && typeof window.LightviewX.setTheme === 'function') {
+                    window.LightviewX.setTheme(event.data.theme);
+                }
+            }
+        });
     </script>
 </body>
 </html>`;
@@ -349,4 +361,35 @@ function examplify(target, options = {}) {
     });
 
     return { controls, iframe, target, run };
+}
+
+// Global Theme Observer (Host side)
+if (typeof document !== 'undefined') {
+    let themeObserver = null;
+    const initThemeObserver = () => {
+        if (themeObserver) return;
+
+        themeObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'data-theme') {
+                    const newTheme = document.documentElement.getAttribute('data-theme');
+                    // Broadcast to all examplify iframes
+                    document.querySelectorAll('.examplify-iframe').forEach(iframe => {
+                        if (iframe.contentWindow) {
+                            iframe.contentWindow.postMessage({ type: 'theme-change', theme: newTheme }, '*');
+                        }
+                    });
+                }
+            });
+        });
+
+        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    };
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initThemeObserver);
+    } else {
+        initThemeObserver();
+    }
 }
