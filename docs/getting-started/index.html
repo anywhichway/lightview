@@ -14,10 +14,11 @@
 
         <!-- Step Navigation -->
         <div class="tutorial-steps" style="display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
-            <button class="btn btn-primary step-btn active" onclick="switchStep(1)">1. Signals</button>
-            <button class="btn btn-secondary step-btn" onclick="switchStep(2)">2. State</button>
-            <button class="btn btn-secondary step-btn" onclick="switchStep(3)">3. Hypermedia</button>
-            <button class="btn btn-secondary step-btn" onclick="switchStep(4)">4. Components</button>
+            <button class="btn btn-primary step-btn active" onclick="switchStep(1)">1. Basics</button>
+            <button class="btn btn-secondary step-btn" onclick="switchStep(2)">2. Signals</button>
+            <button class="btn btn-secondary step-btn" onclick="switchStep(3)">3. State</button>
+            <button class="btn btn-secondary step-btn" onclick="switchStep(4)">4. Hypermedia</button>
+            <button class="btn btn-secondary step-btn" onclick="switchStep(5)">5. Components</button>
         </div>
 
         <!-- Tutorial Layout: Preview on top, Code & Concepts below -->
@@ -136,16 +137,57 @@
                 options: {
                     autoRun: true,
                 },
-                code: `// STEP 1: SIGNALS - The foundation of reactivity
-const { signal, computed, tags, $ } = Lightview;
-const { div, h3, p, button, img, span, style } = tags;
+                code: `// STEP 1: BASICS - Pure UI with Tagged Functions
+const { tags, $ } = Lightview;
+const { div, h1, p, style } = tags;
 
-// Create reactive signals for price and quantity
-const price = signal(99);
-const quantity = signal(1);
+// 1. Build UI using Tagged Functions
+// These functions return standard DOM elements
+const App = div({ class: 'hero' },
+    h1('Welcome to Lightview'),
+    p('Lightview is a tiny library for building modern web interfaces.')
+);
 
-// Computed value: automatically updates when dependencies change
-const total = computed(() => price.value * quantity.value);
+// 2. The $ Function for Selections & Content
+// Inject the App into the #app container
+$('#app').content(App);
+
+// 3. Injecting Styles
+// Use $ with a location to inject styles at the end of the app
+$('#app').content(style({}, \`
+    .hero { 
+        padding: 2rem; 
+        background: #f8fafc; 
+        border-radius: 12px; 
+        border: 1px solid #e2e8f0;
+        font-family: system-ui, sans-serif;
+    }
+    h1 { color: #1e293b; margin: 0 0 1rem; font-size: 2rem; }
+    p { color: #64748b; font-size: 1.1rem; line-height: 1.5; }
+\`), 'beforeend');`,
+                concepts: `
+                <h3 style="margin-top: 0; color: var(--site-primary);">Step 1: Basic Content Creation</h3>
+                <p>Welcome! Let's start with the basics of building UI without reactivity or components.</p>
+                
+                <h4>Key Concepts:</h4>
+                <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
+                    <li style="margin-bottom: 0.75rem;"><code>tags</code> — Every HTML tag is available as a function. <code>div(...)</code> returns a real <code>HTMLDivElement</code>.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>$(selector)</code> — A powerful utility for selecting elements and manipulating them.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>.content(node, location)</code> — Replaces or appends content. Locations like <code>'beforeend'</code> allow injecting styles or scripts dynamicly.</li>
+                </ul>
+                <p>This approach results in standard, lightweight DOM elements with no overhead.</p>
+            `
+            },
+            2: {
+                options: {
+                    autoRun: true,
+                },
+                code: `// STEP 2: SIGNALS - The foundation of reactivity
+const { signal, tags, $ } = Lightview;
+const { div, h3, p, button, img, style } = tags;
+
+// Create a reactive signal for the button state
+const added = signal(false);
 
 // Build the UI using Lightview's tag functions
 const App = div({ class: 'product-card' },
@@ -154,94 +196,96 @@ const App = div({ class: 'product-card' },
         class: 'product-image'
     }),
     h3({ class: 'product-title' }, 'Red Nike Sneakers'),
-    p({ class: 'product-subtitle' }, 'Limited Edition'),
     
-    // Price display - reactive! Uses a function to track the signal
+    // Reactive button - text updates when signal changes
     div({ class: 'product-footer' },
-        span({ class: 'product-price' }, 
-            () => '$' + total.value  // This updates automatically
-        ),
-        div({ class: 'quantity-controls' },
-            button({ onclick: () => quantity.value = Math.max(1, quantity.value - 1) }, '−'),
-            span({ class: 'quantity-display' }, () => quantity.value),
-            button({ onclick: () => quantity.value++ }, '+')
-        )
+        button({ 
+            class: 'add-btn',
+            onclick: () => added.value = !added.value // Toggle state
+        }, () => added.value ? '✓ Added' : 'Add to Cart')
     )
 );
 
-// The $ function selects a DOM element and returns a Lightview-enhanced wrapper
-// .content() adds our reactive App as a child of #app
 $('#app').content(App);
 
 // ---------------------------------------------------------------
-// STYLES: Normally loaded first, shown here to keep focus on Lightview code
+// STYLES
 // ---------------------------------------------------------------
 $('#app').content(style({},
 \`.product-card { width: 280px; font-family: system-ui, sans-serif; }
 .product-image { width: 100%; border-radius: 8px; margin-bottom: 1rem; }
 .product-title { margin: 0 0 0.25rem; font-size: 1.1rem; }
-.product-subtitle { color: #666; margin: 0 0 1rem; font-size: 0.875rem; }
-.product-footer { display: flex; justify-content: space-between; align-items: center; }
-.product-price { font-weight: bold; font-size: 1.25rem; }
-.quantity-controls { display: flex; gap: 0.5rem; align-items: center; }
-.quantity-controls button { padding: 4px 12px; cursor: pointer; }
-.quantity-display { min-width: 1.5rem; text-align: center; }\`), 'beforeend');`,
+.product-footer { display: flex; justify-content: flex-end; }
+.add-btn { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+.add-btn:hover { background: #2563eb; }\`), 'beforeend');`,
                 concepts: `
-                <h3 style="margin-top: 0; color: var(--site-primary);">Step 1: Reactive Signals</h3>
+                <h3 style="margin-top: 0; color: var(--site-primary);">Step 2: Reactive Signals</h3>
                 <p>In this step, we use <strong>Signals</strong> to handle data that changes over time.</p>
                 
                 <h4>Key Concepts:</h4>
                 <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
-                    <li style="margin-bottom: 0.75rem;"><code>signal(value)</code> — Creates a reactive container. When you change <code>quantity.value</code>, the UI updates automatically.</li>
-                    <li style="margin-bottom: 0.75rem;"><code>computed(() => ...)</code> — Creates a derived value. <code>total</code> recalculates whenever <code>price</code> or <code>quantity</code> changes.</li>
-                    <li style="margin-bottom: 0.75rem;"><code>tags</code> — Build HTML elements with pure JavaScript. No JSX needed.</li>
-                    <li style="margin-bottom: 0.75rem;"><code>$('#app')</code> — The <code>$</code> function queries the DOM and returns a Lightview-enhanced element. Use <code>.content()</code> to add children. An optional second argument can say where, e.g. 'beforebegin', 'afterbegin', 'beforeend', 'afterend'.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>signal(value)</code> — Creates a reactive container. Changing <code>added.value</code> automatically updates the UI.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>tags</code> — Build HTML elements with pure JavaScript functions like <code>div()</code>, <code>button()</code>.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>Inside Tags</code> — Pass a function as a child (e.g., <code>() => added.value ? ...</code>) to create a reactive text node.</li>
                 </ul>
-                <p><strong>Try it:</strong> Click the + and − buttons to see the total update!</p>
+                <p><strong>Try it:</strong> Click the "Add to Cart" button to see it toggle!</p>
             `
             },
-            2: {
-                code: `// STEP 2: STATE - Using vDOM Syntax for complex data
-// vDOM syntax: { tag: 'element', attributes: {...}, children: [...] }
-const { element, $ } = Lightview;
-const { state } = LightviewX; // Deep reactivity from LightviewX
+            3: {
+                options: {
+                    allowSameOrigin: true,
+                    autoRun: true,
+                },
+                code: `// STEP 3: STATE + VDOM SYNTAX
+const { tags, $ } = Lightview;
+const { div, style } = tags;
+const { state } = LightviewX;
 
-// 'state' provides deep reactivity for objects and arrays
+// 1. Deep Reactivity with Optional Persistence
 const session = state({
-    cart: [],
+    cart: [
+        { id: 3, name: 'Green Reeboks', price: 60 }
+    ],
     items: [
         { id: 1, name: 'Red Nike Sneakers', price: 99 },
-        { id: 2, name: 'Blue Adidas', price: 85 }
+        { id: 2, name: 'Blue Adidas', price: 85 },
+        { id: 3, name: 'Green Reeboks', price: 60 }
     ]
-});
+}, { name: 'shopping-session', storage: sessionStorage });
 
-const addToCart = (item) => {
-    session.cart.push(item); // Direct mutation works!
+const addToCart = (item) => session.cart.push(item);
+const clearCart = () => {
+    session.cart.length = 0; // Clear reactive array
+    sessionStorage.removeItem('shopping-session'); // Delete session variable
 };
 
-// Build UI using vDOM syntax - plain objects with tag, attributes, children
-const App = element('div', { class: 'shop-container' }, [
-    // Cart badge
+// 2. vDOM Syntax: { tag, attributes, children }
+const App = div({ class: 'shop-container' }, [
+    // Cart Badge
     { tag: 'div', attributes: { class: 'cart-badge' }, children: [
         { tag: 'span', attributes: {}, children: [
             () => '🛒 Cart: ' + session.cart.length + ' items'
-        ]}
+        ]},
+        { tag: 'button', attributes: { 
+            class: 'clear-btn', 
+            onclick: clearCart 
+        }, children: ['Clear Cart'] }
     ]},
     
-    // Product list - vDOM children are arrays
+    // Product List
     { tag: 'div', attributes: { class: 'product-list' }, children: 
         session.items.map(item => ({
             tag: 'div', attributes: { class: 'product-row' }, children: [
-                { tag: 'span', attributes: {}, children: [item.name + ' ($' + item.price + ')'] },
+                { tag: 'span', children: [item.name + ' ($' + item.price + ')'] },
                 { tag: 'button', attributes: { 
-                    class: 'add-btn',
-                    onclick: () => addToCart(item)
+                    class: 'add-btn', 
+                    onclick: () => addToCart(item) 
                 }, children: ['Add'] }
             ]
         }))
     },
 
-    // Cart contents
+    // Cart Contents
     { tag: 'h3', attributes: { class: 'cart-title' }, children: ['Cart:'] },
     { tag: 'ul', attributes: { class: 'cart-list' }, children: [
         () => session.cart.length === 0 
@@ -257,10 +301,11 @@ const App = element('div', { class: 'shop-container' }, [
             }))
     ]},
 
-    // Inline styles (also using vDOM syntax)
+    // Styles
     { tag: 'style', attributes: {}, children: [
         \`.shop-container { width: 320px; font-family: system-ui, sans-serif; }
-.cart-badge { padding: 0.75rem; background: #f3f4f6; border-radius: 8px; margin-bottom: 1rem; }
+.cart-badge { padding: 0.75rem; background: #f3f4f6; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+.clear-btn { font-size: 0.7rem; padding: 4px 8px; background: #94a3b8; color: white; border: none; border-radius: 4px; cursor: pointer; }
 .product-list { display: flex; flex-direction: column; gap: 0.5rem; }
 .product-row { display: flex; justify-content: space-between; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 6px; }
 .add-btn { background: #3b82f6; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; }
@@ -274,185 +319,280 @@ const App = element('div', { class: 'shop-container' }, [
 
 $('#app').content(App);`,
                 concepts: `
-                <h3 style="margin-top: 0; color: var(--site-primary);">Step 2: vDOM Syntax + State</h3>
-                <p>This step uses <strong>vDOM syntax</strong> — an alternate way to define elements using plain objects.</p>
+                <h3 style="margin-top: 0; color: var(--site-primary);">Step 3: State & vDOM Syntax</h3>
+                <p>This step introduces <strong>State</strong> and the <strong>vDOM</strong> object syntax.</p>
                 
                 <h4>Key Concepts:</h4>
                 <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
-                    <li style="margin-bottom: 0.75rem;"><strong>vDOM Syntax</strong> — Elements are objects with <code>tag</code>, <code>attributes</code>, and <code>children</code> properties. Great for JSON storage or programmatic generation.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>Deep Reactivity</strong> — Use <code>LightviewX.state()</code> for objects and arrays. Mutate directly with <code>push</code>, <code>splice</code>, etc.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>element() function</strong> — Pass vDOM children directly to <code>element(tag, attrs, children)</code>.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>vDOM Syntax</strong> — Elements are plain objects: <code>{ tag: 'div', attributes: {}, children: [] }</code>. This structure is excellent for programmatic generation, serialization (JSON), or building custom components.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Deep Reactivity</strong> — Use <code>LightviewX.state()</code> for complex objects and arrays. Arrays methods like <code>.push()</code> and <code>.splice()</code> trigger updates automatically.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>State Persistence</strong> — Pass <code>{ name, storage }</code> to <code>state()</code> to automatically persist data to <code>sessionStorage</code> or <code>localStorage</code>.</li>
+                     <li style="margin-bottom: 0.75rem;"><strong>Interoperability</strong> — You can pass valid vDOM objects as children to standard <code>tags</code> functions directly.</li>
                 </ul>
-                <p><strong>Try it:</strong> Add items to the cart and remove them. Notice how the cart count updates!</p>
+                <p><strong>Try it:</strong> Add items to the cart and re-run the code to see persistence!</p>
             `
             },
-            3: {
+            4: {
                 options: {
-                    allowSameOrigin: true
+                    allowSameOrigin: true,
+                    autoRun: true
                 },
-                code: `// STEP 3: HYPERMEDIA + OBJECT DOM SYNTAX (requires lightview-x)
-// Choose a format to load: HTML, VDOM, or Object DOM
+                code: `// STEP 4: HYPERMEDIA + OBJECT DOM SYNTAX (requires lightview-x)
+        // Choose a format to load: HTML, VDOM, or Object DOM
 
-// Object DOM syntax integration is handled by lightview-x
-const { signal, element, $ } = Lightview;
+        // Object DOM syntax integration is handled by lightview-x
+        const { signal, element, $ } = Lightview;
 
-// Track which format was loaded and the review count
-const currentFormat = signal('none', 'currentFormat');
-const reviewCount = signal(0, 'reviewCount');
+        // Track which format was loaded and the review count
+        const currentFormat = signal('none', 'currentFormat');
+        const reviewCount = signal(0, 'reviewCount');
 
-// Build UI using Object DOM syntax - compact JSON format
-const App = element('div', { class: 'reviews-container' }, [
-    { div: { class: 'reviews-card', children: [
-        { h3: { class: 'reviews-title', children: ['Customer Reviews'] } },
-        { p: { class: 'reviews-subtitle', children: [
-            'Choose a format to load reviews from external files:'
-        ]}},
-        
-        // Format selector buttons
-        { div: { class: 'format-buttons', children: [
-            { button: {
-                class: 'format-btn html',
-                href: './reviews.html',
-                target: '#reviews-box',
-                onclick: () => { currentFormat.value = 'HTML'; reviewCount.value = 3; },
-                children: ['📄 HTML']
-            }},
-            { button: {
-                class: 'format-btn vdom',
-                href: './reviews.vdom',
-                target: '#reviews-box',
-                onclick: () => { currentFormat.value = 'VDOM'; reviewCount.value = 3; },
-                children: ['🔷 VDOM']
-            }},
-            { button: {
-                class: 'format-btn odom',
-                href: './reviews.odom',
-                target: '#reviews-box',
-                onclick: () => { currentFormat.value = 'ODOM'; reviewCount.value = 3; },
-                children: ['🔶 Object DOM']
-            }}
-        ]}},
-        
-        // Status display
-        { p: { class: 'status', children: [
-            () => currentFormat.value === 'none' 
-                ? 'Click a button above to load reviews' 
-                : 'Loaded ' + reviewCount.value + ' reviews from ' + currentFormat.value
-        ]}}
-    ]}},
-    
-    // Target container for loaded content
-    { div: { id: 'reviews-box', src: '' } },
+        // Helper to get source code signal
+        const sourceCode = signal('Select a format...', 'sourceCode');
 
-    // Styles
-    { style: { children: [
-        \`.reviews-container { width: 380px; font-family: system-ui, sans-serif; }
-.reviews-card { padding: 1rem; border: 1px solid #e5e7eb; border-radius: 8px; }
+        const loadFormat = async (format, file) => {
+            currentFormat.value = format;
+            reviewCount.value = 3;
+            // Fetch source code for display
+            try {
+                const text = await fetch(file).then(r => r.text());
+                sourceCode.value = text;
+            } catch (e) {
+                sourceCode.value = 'Error loading source';
+            }
+        };
+
+        // Build UI using Object DOM syntax - compact JSON format
+        const App = element('div', { class: 'reviews-container' }, [
+            // Header
+            {
+                div: {
+                    class: 'reviews-header', children: [
+                        { h3: { class: 'reviews-title', children: ['Customer Reviews'] } },
+                        {
+                            p: {
+                                class: 'reviews-subtitle', children: [
+                                    'Choose a format to load reviews from external files:'
+                                ]
+                            }
+                        },
+
+                        // Format selector buttons
+                        {
+                            div: {
+                                class: 'format-buttons', children: [
+                                    {
+                                        button: {
+                                            class: 'format-btn html',
+                                            href: './reviews.html',
+                                            target: '#reviews-box',
+                                            onclick: () => loadFormat('HTML', './reviews.html'),
+                                            children: ['📄 HTML']
+                                        }
+                                    },
+                                    {
+                                        button: {
+                                            class: 'format-btn vdom',
+                                            href: './reviews.vdom',
+                                            target: '#reviews-box',
+                                            onclick: () => loadFormat('VDOM', './reviews.vdom'),
+                                            children: ['🔷 VDOM']
+                                        }
+                                    },
+                                    {
+                                        button: {
+                                            class: 'format-btn odom',
+                                            href: './reviews.odom',
+                                            target: '#reviews-box',
+                                            onclick: () => loadFormat('ODOM', './reviews.odom'),
+                                            children: ['🔶 Object DOM']
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+
+            // Split layout: Rendered UI | Source Code
+            {
+                div: {
+                    class: 'split-view', children: [
+                        // Left: Rendered Content
+                        {
+                            div: {
+                                class: 'render-pane', children: [
+                                    { p: { class: 'pane-label', children: ['Rendered Output:'] } },
+                                    { div: { id: 'reviews-box', src: '' } },
+                                    {
+                                        p: {
+                                            class: 'status', children: [
+                                                () => currentFormat.value === 'none'
+                                                    ? 'Click a button above to load...'
+                                                    : 'Loaded ' + reviewCount.value + ' reviews from ' + currentFormat.value
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+
+                        // Right: Source Code
+                        {
+                            div: {
+                                class: 'source-pane', children: [
+                                    { p: { class: 'pane-label', children: ['Source Code:'] } },
+                                    {
+                                        pre: {
+                                            class: 'source-code', children: [
+                                                () => sourceCode.value
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+
+            // Styles
+            { style: { children: [
+        \`.reviews-container { width: 100%; box-sizing: border-box; font-family: system-ui, sans-serif; }
+.reviews-header { margin-bottom: 1rem; }
 .reviews-title { margin: 0 0 0.5rem; }
-.reviews-subtitle { color: #6b7280; margin: 0 0 0.75rem; }
+.reviews-subtitle { color: #6b7280; margin: 0 0 0.75rem; font-size: 0.9em; }
 .format-buttons { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-.format-btn { flex: 1; padding: 0.5rem; cursor: pointer; border: none; border-radius: 6px; font-weight: 500; }
+.format-btn { flex: 1; padding: 0.5rem; cursor: pointer; border: none; border-radius: 6px; font-weight: 500; font-size: 0.9em; }
 .format-btn.html { background: #dbeafe; color: #1e40af; }
 .format-btn.vdom { background: #ede9fe; color: #6d28d9; }
 .format-btn.odom { background: #ffedd5; color: #c2410c; }
-.format-btn:hover { opacity: 0.85; }
-.status { color: #6366f1; font-weight: 500; margin: 0; }\`
+.split-view { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; box-sizing: border-box; }
+.render-pane, .source-pane { border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; background: #fff; min-width: 0; }
+.pane-label { font-size: 0.75rem; font-weight: bold; color: #9ca3af; text-transform: uppercase; margin: 0 0 0.5rem; }
+.source-code { margin: 0; font-family: monospace; font-size: 0.75rem; background: #f8f9fa; padding: 0.5rem; border-radius: 4px; overflow-x: auto; white-space: pre-wrap; color: #374151; height: 90%; overflow-y: auto; }
+.status { color: #6366f1; font-weight: 500; margin: 1rem 0 0; font-size: 0.9em; }\`
     ]}}
 ]);
 
 $('#app').content(App);`,
                 concepts: `
-                <h3 style="margin-top: 0; color: var(--site-primary);">Step 3: Hypermedia + Multiple Formats</h3>
-                <p>Lightview's <strong>hypermedia</strong> feature can load content from HTML, VDOM JSON, or Object DOM JSON files.</p>
+                <h3 style="margin-top: 0; color: var(--site-primary);">Step 4: Hypermedia + Multiple Formats</h3>
+                <p>Lightview's <strong>hypermedia</strong> feature allows your application to load partial content dynamically from various file formats.</p>
                 
                 <h4>Key Concepts:</h4>
                 <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
-                    <li style="margin-bottom: 0.75rem;"><code>href</code> on non-links — Clicking sets <code>src</code> on target element.</li>
-                    <li style="margin-bottom: 0.75rem;"><code>src</code> — Fetches URL and injects content as children.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>HTML</strong> — Standard HTML files loaded directly.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>VDOM (.vdom)</strong> — JSON with <code>{ tag, attributes, children }</code> structure.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>Object DOM (.odom)</strong> — Compact JSON: <code>{ div: { class: 'x', children: [...] } }</code>.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>href</code> on any element — Clicking it will fetch content and place it into the target.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>src</code> — Defines the source URL to fetch content from.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Template Literals</strong> — Loaded files (HTML, VDOM, ODOM) can contain <code>\${...}</code> syntax. These are evaluated reactively and can access named <code>signals</code> or <code>state</code> using <code>signal.get('name').value</code>. Note the code <code>Displaying &dollar;{signal.get('reviewCount').value} reviews in &dollar;{signal.get('currentFormat').value} format.</code> in the examples.</li>
                 </ul>
-                <p><strong>Try it:</strong> Click each button to load the same reviews in different formats!</p>
-                
+
                 <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--site-border);">
                 
-                <h4>📄 reviews.html (HTML)</h4>
-                <pre style="background: #f8f9fa; color: #24292e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; overflow-x: auto; max-height: 180px; border: 1px solid #e1e4e8;"><code id="source-html">Loading...</code></pre>
+                <h4>Format Comparison:</h4>
+                <div style="font-size: 0.875rem;">
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: #1e40af;">📄 HTML</strong>
+                        <ul style="margin: 0.25rem 0 0; padding-left: 1.25rem; color: var(--site-text-secondary);">
+                            <li><strong>Pros:</strong> Standard, easy to read, works with existing backend templates.</li>
+                            <li><strong>Cons:</strong> Verbose, no type safety, harder to manipulate programmatically.</li>
+                        </ul>
+                    </div>
 
-                <h4 style="margin-top: 1rem;">🔶 reviews.vdom (VDOM)</h4>
-                <pre style="background: #f8f9fa; color: #24292e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; overflow-x: auto; max-height: 180px; border: 1px solid #e1e4e8;"><code id="source-vdom">Loading...</code></pre>
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: #6d28d9;">🔷 VDOM JSON</strong>
+                        <ul style="margin: 0.25rem 0 0; padding-left: 1.25rem; color: var(--site-text-secondary);">
+                            <li><strong>Pros:</strong> Explicit structure, easy to generate from servers, lightweight.</li>
+                            <li><strong>Cons:</strong> Verbose JSON structure (repeated "tag", "attributes" keys).</li>
+                        </ul>
+                    </div>
 
-                <h4 style="margin-top: 1rem;">🔶 reviews.odom (Object DOM)</h4>
-                <pre style="background: #f8f9fa; color: #24292e; padding: 0.75rem; border-radius: 6px; font-size: 0.75rem; overflow-x: auto; max-height: 180px; border: 1px solid #e1e4e8;"><code id="source-odom">Loading...</code></pre>
-            `,
-                onLoad: function () {
-                    // Fetch and display actual source files
-                    fetch('./reviews.html').then(r => r.text()).then(text => {
-                        const el = document.getElementById('source-html');
-                        if (el) el.textContent = text;
-                    });
-                    fetch('./reviews.vdom').then(r => r.text()).then(text => {
-                        const el = document.getElementById('source-vdom');
-                        if (el) el.textContent = text;
-                    });
-                    fetch('./reviews.odom').then(r => r.text()).then(text => {
-                        const el = document.getElementById('source-odom');
-                        if (el) el.textContent = text;
-                    });
-                }
+                    <div>
+                        <strong style="color: #c2410c;">🔶 Object DOM JSON</strong>
+                        <ul style="margin: 0.25rem 0 0; padding-left: 1.25rem; color: var(--site-text-secondary);">
+                            <li><strong>Pros:</strong> Extremely compact, human-readable JSON, expressive.</li>
+                            <li><strong>Cons:</strong> Non-standard structure, requires understanding the syntax mapping.</li>
+                        </ul>
+                    </div>
+                </div>
+            `
             },
-            4: {
-                code: `// STEP 4: COMPONENTS - Using the Lightview component library
+            5: {
+                options: {
+                    autoRun: true
+                },
+                code: `// STEP 5: COMPONENTS, COMPOSITION & COMPUTED
 // Import the real components from the component library
 import Button from '../../components/actions/button.js';
 import Badge from '../../components/data-display/badge.js';
-import '../../components/data-display/card.js'; // auto-register the component
+import '../../components/data-display/card.js'; 
 
-const { tags, signal, $ } = Lightview;
-const { div, h3, p, Card } = tags; // get Card an auto-registered as tag
+const { tags, signal, computed, $ } = Lightview;
+const { div, h3, span, Card, style, img } = tags;
 
-// Reactive state for the add-to-cart button
-const isAdded = signal(false);
+// Logic for the product card
+const price = 99;
+const quantity = signal(1); // Reactive signal
+const total = computed(() => price * quantity.value); // Computed derived value
 
-const App = Card({ class: 'w-[320px] bg-base-100 shadow-xl' },
-    Card.Figure({}, 
-        tags.img({
-            src: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop',
-            alt: 'Red Nike Sneakers'
-        })
-    ),
-    Card.Body({},
-        div({ class: 'flex justify-between items-start mb-2' },
-            h3({ class: 'card-title m-0' }, 'Red Nike Sneakers'),
+const styles = \`
+    .product-card { width: 500px; font-family: system-ui, sans-serif; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); background: white; border-radius: 1rem; overflow: hidden; }
+    .product-body { padding: 1.25rem; }
+    .product-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .card-title { margin: 0; font-size: 1.1rem; font-weight: bold; }
+    .product-controls { display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid #f3f4f6; }
+    .total-price { font-size: 1.25rem; font-weight: 800; color: #111; }
+    .quantity-controls { display: flex; align-items: center; gap: 0.5rem; }
+    .quantity-value { width: 1.5rem; text-align: center; font-weight: 500; }
+\`;
+
+// 5. Styles for Shadow DOM
+// Registering a named stylesheet allows it to be used inside isolated component styles
+LightviewX.registerStyleSheet('product-styles', styles);
+
+const App = Card({ 
+    class: 'product-card',
+    styleSheets: ['product-styles'] // Passes the registered sheet into the shadow root
+},
+    
+    img({
+        src: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop',
+        style: 'object-fit: cover;',
+        alt: 'Red Nike Sneakers'
+    }),
+
+    Card.Body({ class: 'product-body' },
+        div({ class: 'product-header' },
+            h3({ class: 'card-title' }, 'Red Nike Sneakers'),
             Badge({ color: 'success', variant: 'outline' }, 'In Stock')
         ),
-        p({ class: 'text-base-content/70 m-0' },
-            'Premium comfort meeting modern style.'
-        ),
-        Card.Actions({ class: 'justify-end mt-4' },
-            Button({
-                color: 'primary',
-                onclick: () => isAdded.value = true
-            }, () => isAdded.value ? '✓ Added!' : 'Add to Cart'),
-            Button({ class: 'btn-ghost' }, 'Details')
+        
+        // Quantity & Price Controls
+        div({ class: 'product-controls' },
+            span({ class: 'total-price' }, () => '$' + total.value),
+            div({ class: 'quantity-controls' },
+                Button({ size: 'sm', class: 'btn-circle', onclick: () => quantity.value = Math.max(1, quantity.value - 1) }, '-'),
+                span({ class: 'quantity-value' }, () => quantity.value),
+                Button({ size: 'sm', class: 'btn-circle', onclick: () => quantity.value++ }, '+')
+            )
         )
     )
 );
 
 $('#app').content(App);`,
-                concepts: `
-                <h3 style="margin-top: 0; color: var(--site-primary);">Step 4: Components</h3>
-                <p>Use the <strong>Lightview Component Library</strong> for polished, accessible UI elements.</p>
+                concepts: `<h3 style="margin-top: 0; color: var(--site-primary);">Step 5: Components & Isolated Styling</h3>
+                <p>Use the <strong>Lightview Component Library</strong> for polished UI elements that use Shadow DOM for isolation.</p>
                 
                 <h4>Key Concepts:</h4>
                 <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
-                    <li style="margin-bottom: 0.75rem;"><strong>Real Components</strong> — <code>Button</code>, <code>Badge</code>, <code>Card</code> are pre-built with variants, colors, and accessibility.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>Composition</strong> — Use <code>Card.Figure</code>, <code>Card.Body</code>, <code>Card.Actions</code> for structured layouts.</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>Props</strong> — Components accept props like <code>variant</code>, <code>color</code>, <code>size</code> for customization.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Components</strong> — Reusable blocks like <code>Card</code>, <code>Button</code>, and <code>Badge</code>.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Auto-Registration</strong> — Components auto-register with <code>tags</code> for easy destructuring.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Shadow DOM Isolation</strong> — Components isolate their styles (including DaisyUI/Tailwind) to avoid global CSS pollution.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Named StyleSheets</strong> — Use <code>LightviewX.registerStyleSheet(name, css)</code> to define styles that can be safely passed into a component's <code>styleSheets</code> property.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Computed</strong> — <code>computed(() => ...)</code> creates derived values that reactively update based on other signals.</li>
                 </ul>
-                <p><strong>Next:</strong> Explore the <a href="/docs/components">Components</a> library and <a href="/docs/playground">Playground</a>!</p>
-            `
+                <p><strong>Next:</strong> Explore the <a href="/docs/components">Components</a> library!</p>`
             }
         };
 
@@ -537,7 +677,7 @@ $('#app').content(App);`,
 
             // Toggle Content
             ['preview', 'code-container', 'concepts'].forEach(prefix => {
-                document.querySelectorAll(`[id^="${prefix}-"]`).forEach(el => {
+                document.querySelectorAll(`[id ^= "${prefix}-"]`).forEach(el => {
                     if (el.id === `${prefix}-${step}`) {
                         el.classList.add('active');
                     } else {

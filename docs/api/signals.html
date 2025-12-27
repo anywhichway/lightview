@@ -70,15 +70,30 @@ div(
         <p>
             You can give signals a name for easy access across your application:
         </p>
-        <pre><code>// Create a named signal
+        <pre><code>// Create a named signal and keep it in sessionStorage
 const count = signal(0, 'count');
 
 // Retrieve it elsewhere (even in another file)
 const sameCount = signal.get('count');
 
 // Get or create with default value
-// If 'score' exists, returns it. If not, creates it with 100.
-const score = signal.get('score', 100);</code></pre>
+// If ' ' exists, returns it. If not, creates it with 100.
+const score = signal.get('count', 0);</code></pre>
+
+        <h2>Stored Signals</h2>
+        <p>
+            You can store named signals in Storage objects (e.g. sessionStorage or localStorage) for persistence. It
+            will be saved any time there is a change.
+        </p>
+        <pre><code>const count = signal(0, {name:'count', storage:sessionStorage});
+
+// Retrieve it elsewhere (even in another file)
+const sameCount = signal.get('count');
+
+// Get or create with default value
+// If ' ' exists, returns it. If not, creates it with 100.
+const score = signal.get('count', {storage:sessionStorage, defaultValue:0});</code></pre>
+        <p>Note: Manually updating the value in storage will not trigger updates.</p>
 
         <h2>Tips & Patterns</h2>
 

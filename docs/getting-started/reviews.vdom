@@ -6,6 +6,11 @@
     },
     "children": [
       {
+        "tag": "p",
+        "attributes": { "style": "color: #6366f1; font-weight: 500; font-size: 0.8em; margin-bottom: 0.5rem;" },
+        "children": ["Displaying ${signal.get('reviewCount').value} reviews in ${signal.get('currentFormat').value} format."]
+      },
+      {
         "tag": "div",
         "attributes": {
           "style": "padding: 0.75rem; border-bottom: 1px solid #e2e8f0;"

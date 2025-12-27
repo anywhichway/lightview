@@ -143,11 +143,11 @@ const FileInput = (props = {}) => {
 
         if (usesShadow) {
             const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const themeValue = LVX.themeSignal ? () => LVX.themeSignal.value : 'light';
 
             return div({ class: 'content', style: 'display: inline-block' },
                 shadowDOM({ mode: 'open', adoptedStyleSheets },
-                    div({ 'data-theme': currentTheme }, fileInputEl)
+                    div({ 'data-theme': themeValue }, fileInputEl)
                 )
             );
         }
@@ -206,11 +206,11 @@ const FileInput = (props = {}) => {
     if (usesShadow) {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const themeValue = LVX.themeSignal ? () => LVX.themeSignal.value : 'light';
 
         return div({ class: 'contents' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme }, wrapperEl)
+                div({ 'data-theme': themeValue }, wrapperEl)
             )
         );
     }

@@ -118,24 +118,40 @@
 
     /**
      * Register a named stylesheet for use in components
-     * @param {string} url - URL to the CSS file
+     * @param {string} nameOrIdOrUrl - The name/ID/URL of the stylesheet
+     * @param {string} [cssText] - Optional raw CSS content. If provided, nameOrIdOrUrl is treated as a name.
      * @returns {Promise<void>}
      */
-    const registerStyleSheet = async (url) => {
-        // Use the URL as the key
-        if (componentConfig.customStyleSheets.has(url)) return;
+    const registerStyleSheet = async (nameOrIdOrUrl, cssText) => {
+        if (componentConfig.customStyleSheets.has(nameOrIdOrUrl)) return;
 
         try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch CSS for '${url}': ${response.status}`);
+            let finalCss = cssText;
+
+            if (finalCss === undefined) {
+                if (nameOrIdOrUrl.startsWith('#')) {
+                    // ID selector - search synchronously
+                    const el = document.querySelector(nameOrIdOrUrl);
+                    if (el) {
+                        finalCss = el.textContent;
+                    } else {
+                        throw new Error(`Style block '${nameOrIdOrUrl}' not found`);
+                    }
+                } else {
+                    // Assume URL
+                    const response = await fetch(nameOrIdOrUrl);
+                    if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+                    finalCss = await response.text();
+                }
             }
-            const cssText = await response.text();
-            const sheet = new CSSStyleSheet();
-            sheet.replaceSync(cssText);
-            componentConfig.customStyleSheets.set(url, sheet);
+
+            if (finalCss !== undefined) {
+                const sheet = new CSSStyleSheet();
+                sheet.replaceSync(finalCss);
+                componentConfig.customStyleSheets.set(nameOrIdOrUrl, sheet);
+            }
         } catch (e) {
-            console.error(`LightviewX: Failed to register stylesheet '${url}':`, e);
+            console.error(`LightviewX: Failed to register stylesheet '${nameOrIdOrUrl}':`, e);
         }
     };
 
@@ -143,7 +159,9 @@
     // Helper to safely get local storage
     const getSavedTheme = () => {
         try {
-            return localStorage.getItem('lightview-theme');
+            if (typeof localStorage !== 'undefined') {
+                return localStorage.getItem('lightview-theme');
+            }
         } catch (e) {
             return null;
         }
@@ -163,8 +181,9 @@
     const setTheme = (themeName) => {
         if (!themeName) return;
         // Determine base theme (light or dark) for the main document
-        const darkThemes = ['dark', 'aqua', 'black', 'business', 'coffee', 'dim', 'dracula', 'forest', 'halloween', 'luxury', 'night', 'sunset', 'synthwave'];
-        const baseTheme = darkThemes.includes(themeName) ? 'dark' : 'light';
+        // Determine base theme (light or dark) for the main document
+        // const darkThemes = ['dark', 'aqua', 'black', 'business', 'coffee', 'dim', 'dracula', 'forest', 'halloween', 'luxury', 'night', 'sunset', 'synthwave'];
+        // const baseTheme = darkThemes.includes(themeName) ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', themeName);
 
         // Update signal
@@ -494,13 +513,43 @@
      * @param {Object|Array} obj - The object to make reactive
      * @returns {Proxy} - A reactive proxy
      */
-    const state = (obj, name) => {
+    const state = (obj, optionsOrName) => {
         if (typeof obj !== 'object' || obj === null) return obj;
+
+        let name = typeof optionsOrName === 'string' ? optionsOrName : optionsOrName?.name;
+        const storage = optionsOrName?.storage;
+
+        let loadedData = null;
+        if (name && storage) {
+            try {
+                const item = storage.getItem(name);
+                if (item) loadedData = JSON.parse(item);
+            } catch (e) { /* ignore */ }
+        }
 
         let proxy;
         if (stateCache.has(obj)) {
             proxy = stateCache.get(obj);
+            // If we have loaded data for an existing proxy, update it
+            if (loadedData) {
+                if (Array.isArray(proxy) && Array.isArray(loadedData)) {
+                    proxy.length = 0;
+                    proxy.push(...loadedData);
+                } else if (!Array.isArray(proxy) && !Array.isArray(loadedData)) {
+                    Object.assign(proxy, loadedData);
+                }
+            }
         } else {
+            // Apply loaded data to raw object before proxying (if no proxy yet)
+            if (loadedData) {
+                if (Array.isArray(obj) && Array.isArray(loadedData)) {
+                    obj.length = 0;
+                    obj.push(...loadedData);
+                } else if (!Array.isArray(obj) && !Array.isArray(loadedData)) {
+                    Object.assign(obj, loadedData);
+                }
+            }
+
             // Don't proxy objects with internal slots (RegExp, Map, Set, etc.)
             const isSpecialObject = obj instanceof RegExp ||
                 obj instanceof Map || obj instanceof Set ||
@@ -524,6 +573,15 @@
             });
 
             stateCache.set(obj, proxy);
+        }
+
+        if (name && storage && typeof window !== 'undefined' && window.Lightview && window.Lightview.effect) {
+            window.Lightview.effect(() => {
+                try {
+                    const json = JSON.stringify(proxy);
+                    storage.setItem(name, json);
+                } catch (e) { /* ignore */ }
+            });
         }
 
         if (name) {
@@ -1491,7 +1549,7 @@
             if (savedTheme) {
                 setTheme(savedTheme);
             }
-        } catch (e) { }
+        } catch (e) { /* ignore */ }
 
         window.addEventListener('load', () => {
             if (window.Lightview) {

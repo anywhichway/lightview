@@ -111,6 +111,41 @@
             init();
         </script>
 
+        <!-- Registering Stylesheets -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">Registering Stylesheets</h2>
+            <p class="opacity-70 mb-4">
+                When using Shadow DOM, global styles are not inherited. <code>LightviewX</code> provides methods to
+                register stylesheets that can be adopted by components or applied globally to all components.
+            </p>
+
+            <h3 class="text-xl font-bold mb-2">Named Stylesheets</h3>
+            <p class="opacity-70 mb-4">
+                Register a stylesheet by name, and components can then request it by ID. You can register styles from a
+                string, a URL, or an existing <code>&lt;style&gt;</code> tag.
+            </p>
+            <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-6"><code>// From a CSS string
+LightviewX.registerStyleSheet('custom-vars', ':host { --my-color: #ff00ff; }');
+
+// From a URL
+LightviewX.registerStyleSheet('/styles/extra.css');
+
+// From an existing style tag in the document
+LightviewX.registerStyleSheet('#global-overrides');</code></pre>
+
+            <h3 class="text-xl font-bold mb-2">Global Theme Stylesheets</h3>
+            <p class="opacity-70 mb-4">
+                To apply a stylesheet to every Shadow DOM component automatically (like a global theme override),
+                use <code>registerThemeSheet</code>.
+            </p>
+            <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto mb-6"><code>// This sheet will be adopted by all components
+LightviewX.registerThemeSheet('/styles/theme-overrides.css');</code></pre>
+
+            <p class="opacity-70">
+                For more details on these functions, see the <a href="../api/" class="link">API Reference</a>.
+            </p>
+        </section>
+
         <!-- Controlling Themes -->
         <section class="mb-12">
             <h2 class="text-2xl font-bold mb-4">Controlling Themes Programmatically</h2>

@@ -1,6 +1,10 @@
 <!-- This file is loaded dynamically via Lightview's src attribute -->
 <!-- Demonstrates hypermedia: clicking an href triggers loading this content -->
+<!-- Template literals access parent signals/state via signal.get() -->
 <div style="padding: 1rem; background: #f8fafc; border-radius: 8px; margin-top: 1rem;">
+    <p style="color: #6366f1; font-weight: 500; font-size: 0.8em; margin-bottom: 0.5rem;">
+        Displaying ${signal.get('reviewCount').value} reviews in ${signal.get('currentFormat').value} format.
+    </p>
     <div style="padding: 0.75rem; border-bottom: 1px solid #e2e8f0;">
         <strong style="color: #f59e0b;">⭐⭐⭐⭐⭐</strong>
         <span style="margin-left: 0.5rem; color: #334155;">"Best shoes ever! Super comfortable and stylish."</span>

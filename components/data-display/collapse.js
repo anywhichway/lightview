@@ -51,11 +51,11 @@ const Collapse = (props = {}, ...children) => {
     if (usesShadow) {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const themeValue = LVX.themeSignal ? () => LVX.themeSignal.value : 'light';
 
         return div({ class: 'contents' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme },
+                div({ 'data-theme': themeValue },
                     collapseEl
                 )
             )

@@ -18,7 +18,22 @@
 
     const signalRegistry = new Map();
 
-    const signal = (initialValue, name) => {
+    const signal = (initialValue, optionsOrName) => {
+        let name = typeof optionsOrName === 'string' ? optionsOrName : optionsOrName?.name;
+        const storage = optionsOrName?.storage;
+
+        if (name && storage) {
+            const stored = storage.getItem(name);
+            if (stored !== null) {
+                initialValue = stored;
+                try {
+                    initialValue = JSON.parse(stored);
+                } catch (e) {
+                    // Ignore storage errors
+                }
+            }
+        }
+
         let value = initialValue;
         const subscribers = new Set();
 
@@ -38,6 +53,13 @@
             set(newValue) {
                 if (value !== newValue) {
                     value = newValue;
+                    if (name && storage) {
+                        try {
+                            storage.setItem(name, JSON.stringify(value));
+                        } catch (e) {
+                            // Ignore storage errors
+                        }
+                    }
                     // Copy subscribers to avoid infinite loop when effect re-subscribes during iteration
                     [...subscribers].forEach(effect => effect());
                 }

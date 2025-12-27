@@ -96,11 +96,11 @@ const Chart = (props = {}, ...children) => {
         const adoptedStyleSheets = rawSheets.filter(s => typeof s !== 'string');
         const styles = rawSheets.filter(s => typeof s === 'string');
 
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const themeValue = LVX.themeSignal ? () => LVX.themeSignal.value : 'light';
 
         return div({ class: 'contents' },
             shadowDOM({ mode: 'open', adoptedStyleSheets, styles },
-                div({ 'data-theme': currentTheme },
+                div({ 'data-theme': themeValue },
                     chartEl
                 )
             )

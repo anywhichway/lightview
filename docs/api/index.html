@@ -29,31 +29,39 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><code>signal(value, name?)</code><br><code>signal.get(name)</code></td>
-                    <td>Create reactive state that triggers updates when changed. Optional name allows global access.
+                    <td><a
+                            href="./signals.html"><code>signal(value, optionsOrName?)</code></a><br><code>signal.get(name)</code>
+                    </td>
+                    <td>Create reactive state that triggers updates when changed. Optional name or options object allows
+                        global access and persistence.
                     </td>
                 </tr>
                 <tr>
-                    <td><code>computed(fn)</code></td>
+                    <td><a href="./computed.html"><code>computed(fn)</code></a></td>
                     <td>Derive values from signals automatically</td>
                 </tr>
                 <tr>
-                    <td><code>effect(fn)</code></td>
+                    <td><a href="./effects.html"><code>effect(fn)</code></a></td>
                     <td>Run side effects when dependencies change</td>
                 </tr>
                 <tr>
-                    <td><code>tags.*</code></td>
+                    <td><a href="./elements.html"><code>tags.*</code></a></td>
                     <td>Shorthand element creators (div, span, button, etc.)</td>
                 </tr>
                 <tr>
                     <td><code>$(selector)</code></td>
-                    <td>Query the DOM and get an element on which you can call 'insert' to place content before, at the
-                        start of, and the end of or after the element. '$(css).content(node)' is polymorphic and can
-                        take
-                        both real and virtual nodes as an argument.</td>
+                    <td>Query the DOM and return a native element enhanced with a <code>.content(node, location?)</code>
+                        method.
+                        The <code>location</code> can be <code>'inner'</code> (default), <code>'outer'</code>,
+                        <code>'shadow'</code>,
+                        <code>'beforebegin'</code>, <code>'afterbegin'</code>, <code>'beforeend'</code>, or
+                        <code>'afterend'</code>.
+                        The <code>node</code> argument is polymorphic and can be a real DOM node, a virtual node (vDOM),
+                        Object DOM, or an array of these.
+                    </td>
                 </tr>
                 <tr>
-                    <td><code>enhance(selector, options)</code></td>
+                    <td><a href="./enhance.html"><code>enhance(selector, options)</code></a></td>
                     <td>Add reactivity to existing DOM elements. Perfect for progressive enhancement of traditional HTML
                         pages.</td>
                 </tr>
@@ -76,16 +84,29 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><code>state(obj, name?)</code><br><code>state.get(name)</code></td>
-                    <td>Create deep reactive state for complex objects/arrays. Optional name allows global access.</td>
+                    <td><a
+                            href="./state.html"><code>state(obj, optionsOrName?)</code></a><br><code>state.get(name)</code>
+                    </td>
+                    <td>Create deep reactive state for complex objects/arrays. Optional name or options object allows
+                        global access and persistence.</td>
                 </tr>
                 <tr>
-                    <td><code>src="..."</code></td>
+                    <td><code>registerStyleSheet(id, css)</code></td>
+                    <td>Register a named stylesheet for use in Shadow DOM components. Can take a CSS string, a URL, or a
+                        selector to a <code>&lt;style&gt;</code> tag.</td>
+                </tr>
+                <tr>
+                    <td><code>registerThemeSheet(url)</code></td>
+                    <td>Register a global theme stylesheet that is automatically applied to all Shadow DOM components.
+                    </td>
+                </tr>
+                <tr>
+                    <td><a href="./hypermedia.html"><code>src="..."</code></a></td>
                     <td>Attribute to automatically fetch HTML or JSON representing HTML and inject it into the element.
                     </td>
                 </tr>
                 <tr>
-                    <td><code>href="..."</code></td>
+                    <td><a href="./hypermedia.html"><code>href="..."</code></a></td>
                     <td>Attribute for SPA navigation and src injection on any element. Supports targeting content
                         before, at the start of, and the end of or after other elements via CSS selectors.</td>
                 </tr>

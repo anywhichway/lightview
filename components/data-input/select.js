@@ -259,11 +259,11 @@ const Select = (props = {}) => {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
         // Get current theme from document
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const themeValue = LVX.themeSignal ? () => LVX.themeSignal.value : 'light';
 
         return div({ class: 'content', style: 'display: inline-block' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme },
+                div({ 'data-theme': themeValue },
                     wrapperEl
                 )
             )

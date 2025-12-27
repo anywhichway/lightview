@@ -119,6 +119,22 @@ const globalState = state.get('app');
 // Get or create
 const settings = state.get('settings', { notifications: true });</code></pre>
 
+        <h2>Stored State</h2>
+        <p>
+            You can store named state objects in Storage objects (e.g. sessionStorage or localStorage) for persistence.
+            It will be saved any time there is a change. Objects are automatically
+            serialized to JSON and deserialized back to objects.
+        </p>
+        <pre><code>const user = state({name:'Guest', theme:'dark'}, {name:'user', storage:sessionStorage});
+
+// Retrieve it elsewhere (even in another file)
+const sameUser = state.get('user');
+
+// Get or create with default value
+// If 'user' exists, returns it. If not, creates it with default value.
+const score = state.get('user', {storage:sessionStorage, defaultValue:{name:'Guest', theme:'dark'}});</code></pre>
+        <p>Note: Manually updating the object in storage will not trigger updates.</p>
+
         <h2>Signal vs State</h2>
         <table class="api-table">
             <thead>

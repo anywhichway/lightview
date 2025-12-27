@@ -68,11 +68,11 @@ const Modal = (props = {}, ...children) => {
     if (usesShadow) {
         const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
 
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const themeValue = LVX.themeSignal ? () => LVX.themeSignal.value : 'light';
 
         return div({ class: 'contents' },
             shadowDOM({ mode: 'open', adoptedStyleSheets },
-                div({ 'data-theme': currentTheme },
+                div({ 'data-theme': themeValue },
                     modalEl
                 )
             )
@@ -138,10 +138,9 @@ Modal.close = (id) => {
     document.getElementById(id)?.close?.();
 };
 
-const tags = window.Lightview.tags;
-tags.Modal = Modal;
-tags['Modal.Box'] = Modal.Box;
-tags['Modal.Action'] = Modal.Action;
-tags['Modal.Backdrop'] = Modal.Backdrop;
+window.Lightview.tags.Modal = Modal;
+window.Lightview.tags['Modal.Box'] = Modal.Box;
+window.Lightview.tags['Modal.Action'] = Modal.Action;
+window.Lightview.tags['Modal.Backdrop'] = Modal.Backdrop;
 
 export default Modal;
