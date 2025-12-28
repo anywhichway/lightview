@@ -7,98 +7,27 @@
     const isStandardSrcTag = (tagName) => STANDARD_SRC_TAGS.includes(tagName) || tagName.startsWith('lv-');
     const STANDARD_HREF_TAGS = ['a', 'area', 'base', 'link'];
 
-    /**
-     * Check if a string is a valid HTML tag name
-     * @param {string} name - The tag name to check
-     * @returns {boolean}
-     */
-    const isValidTagName = (name) => {
-        if (typeof name !== 'string' || name.length === 0 || name === 'children') {
-            return false;
-        }
-        // Non-strict mode: accept anything that looks reasonable
-        return true;
-    };
+    const isValidTagName = (name) => typeof name === 'string' && name.length > 0 && name !== 'children';
 
-    /**
-     * Check if an object is in Object DOM syntax
-     * Object DOM: { div: { class: "foo", children: [...] } }
-     * vDOM: { tag: "div", attributes: {...}, children: [...] }
-     * @param {any} obj 
-     * @returns {boolean}
-     */
     const isObjectDOM = (obj) => {
-        if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) return false;
-        if (obj.tag || obj.domEl) return false; // Already vDOM or live element
-
+        if (typeof obj !== 'object' || obj === null || Array.isArray(obj) || obj.tag || obj.domEl) return false;
         const keys = Object.keys(obj);
-        if (keys.length === 0) return false;
-
-        // Object DOM has exactly one key (the tag name or component name) whose value is an object
-        // That object may contain attributes and optionally a 'children' property
-        if (keys.length === 1) {
-            const tag = keys[0];
-            const value = obj[tag];
-            if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
-
-            // Otherwise check if it's a valid tag name
-            return isValidTagName(tag);
-        }
-
-        return false;
+        return keys.length === 1 && isValidTagName(keys[0]) && typeof obj[keys[0]] === 'object';
     };
 
-    /**
-     * Convert Object DOM syntax to vDOM syntax (recursive)
-     * @param {any} obj - Object in Object DOM format or any child
-     * @returns {any} - Converted to vDOM format
-     */
     const convertObjectDOM = (obj) => {
-        // Not an object or array - return as-is (strings, numbers, functions, etc.)
         if (typeof obj !== 'object' || obj === null) return obj;
+        if (Array.isArray(obj)) return obj.map(convertObjectDOM);
+        if (obj.tag) return { ...obj, children: obj.children ? convertObjectDOM(obj.children) : [] };
+        if (obj.domEl || !isObjectDOM(obj)) return obj;
 
-        // Array - recursively convert children
-        if (Array.isArray(obj)) {
-            return obj.map(convertObjectDOM);
-        }
+        const tagKey = Object.keys(obj)[0];
+        const content = obj[tagKey];
+        const LV = window.Lightview;
+        const tag = (LV?.tags?._customTags?.[tagKey]) || tagKey;
+        const { children, ...attributes } = content;
 
-        // Already vDOM format - recurse into children only
-        if (obj.tag) {
-            return {
-                ...obj,
-                children: obj.children ? convertObjectDOM(obj.children) : []
-            };
-        }
-
-        // Live element - pass through
-        if (obj.domEl) return obj;
-
-        // Check for Object DOM syntax
-        if (isObjectDOM(obj)) {
-            const tagKey = Object.keys(obj)[0];
-            const content = obj[tagKey];
-
-            // Access custom registry via Lightview.tags._customTags if available
-            let tag = tagKey;
-            if (typeof window !== 'undefined' && window.Lightview && window.Lightview.tags) {
-                const customTags = window.Lightview.tags._customTags || {};
-                if (customTags[tagKey]) {
-                    tag = customTags[tagKey];
-                }
-            }
-
-            // Extract children and attributes
-            const { children, ...attributes } = content;
-
-            return {
-                tag,
-                attributes,
-                children: children ? convertObjectDOM(children) : []
-            };
-        }
-
-        // Unknown object format - return as-is
-        return obj;
+        return { tag, attributes, children: children ? convertObjectDOM(children) : [] };
     };
 
     // ============= COMPONENT CONFIGURATION =============
@@ -385,21 +314,16 @@
         return v;
     };
 
-    // Shared proxy handler helpers (uses Lightview.signal internally)
     const proxyGet = (target, prop, receiver, signals) => {
         const LV = window.Lightview;
-        if (!signals.has(prop)) {
-            signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
-        }
+        if (!signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
         const val = signals.get(prop).value;
         return typeof val === 'object' && val !== null ? state(val) : val;
     };
 
     const proxySet = (target, prop, value, receiver, signals) => {
         const LV = window.Lightview;
-        if (!signals.has(prop)) {
-            signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
-        }
+        if (!signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
         const success = Reflect.set(target, prop, value, receiver);
         if (success) signals.get(prop).value = value;
         return success;
@@ -508,85 +432,43 @@
         });
     };
 
-    /**
-     * Create a deeply reactive proxy for an object or array
-     * @param {Object|Array} obj - The object to make reactive
-     * @returns {Proxy} - A reactive proxy
-     */
     const state = (obj, optionsOrName) => {
         if (typeof obj !== 'object' || obj === null) return obj;
 
-        let name = typeof optionsOrName === 'string' ? optionsOrName : optionsOrName?.name;
+        const name = typeof optionsOrName === 'string' ? optionsOrName : optionsOrName?.name;
         const storage = optionsOrName?.storage;
 
-        let loadedData = null;
         if (name && storage) {
             try {
                 const item = storage.getItem(name);
-                if (item) loadedData = JSON.parse(item);
-            } catch (e) { /* ignore */ }
+                if (item) {
+                    const loaded = JSON.parse(item);
+                    Array.isArray(obj) && Array.isArray(loaded) ? (obj.length = 0, obj.push(...loaded)) : Object.assign(obj, loaded);
+                }
+            } catch (e) { /* Storage access denied or corrupted JSON */ }
         }
 
-        let proxy;
-        if (stateCache.has(obj)) {
-            proxy = stateCache.get(obj);
-            // If we have loaded data for an existing proxy, update it
-            if (loadedData) {
-                if (Array.isArray(proxy) && Array.isArray(loadedData)) {
-                    proxy.length = 0;
-                    proxy.push(...loadedData);
-                } else if (!Array.isArray(proxy) && !Array.isArray(loadedData)) {
-                    Object.assign(proxy, loadedData);
-                }
-            }
-        } else {
-            // Apply loaded data to raw object before proxying (if no proxy yet)
-            if (loadedData) {
-                if (Array.isArray(obj) && Array.isArray(loadedData)) {
-                    obj.length = 0;
-                    obj.push(...loadedData);
-                } else if (!Array.isArray(obj) && !Array.isArray(loadedData)) {
-                    Object.assign(obj, loadedData);
-                }
-            }
-
-            // Don't proxy objects with internal slots (RegExp, Map, Set, etc.)
-            const isSpecialObject = obj instanceof RegExp ||
-                obj instanceof Map || obj instanceof Set ||
-                obj instanceof WeakMap || obj instanceof WeakSet;
-
-            if (isSpecialObject) return obj;
-
-            const isArray = Array.isArray(obj);
-            const isDate = obj instanceof Date;
+        let proxy = stateCache.get(obj);
+        if (!proxy) {
+            const isArray = Array.isArray(obj), isDate = obj instanceof Date;
+            const isSpecial = isArray || isDate;
             const monitor = isArray ? "length" : isDate ? "getTime" : null;
 
-            proxy = isArray || isDate ? createSpecialProxy(obj, monitor) : new Proxy(obj, {
-                get(target, prop, receiver) {
-                    const signals = getOrSet(stateSignals, target, () => new Map());
-                    return proxyGet(target, prop, receiver, signals);
-                },
-                set(target, prop, value, receiver) {
-                    const signals = getOrSet(stateSignals, target, () => new Map());
-                    return proxySet(target, prop, value, receiver, signals);
-                }
-            });
-
-            stateCache.set(obj, proxy);
+            if (isSpecial || !(obj instanceof RegExp || obj instanceof Map || obj instanceof Set || obj instanceof WeakMap || obj instanceof WeakSet)) {
+                proxy = isSpecial ? createSpecialProxy(obj, monitor) : new Proxy(obj, {
+                    get(t, p, r) { return proxyGet(t, p, r, getOrSet(stateSignals, t, () => new Map())); },
+                    set(t, p, v, r) { return proxySet(t, p, v, r, getOrSet(stateSignals, t, () => new Map())); }
+                });
+                stateCache.set(obj, proxy);
+            } else return obj;
         }
 
-        if (name && storage && typeof window !== 'undefined' && window.Lightview && window.Lightview.effect) {
+        if (name && storage && window.Lightview?.effect) {
             window.Lightview.effect(() => {
-                try {
-                    const json = JSON.stringify(proxy);
-                    storage.setItem(name, json);
-                } catch (e) { /* ignore */ }
+                try { storage.setItem(name, JSON.stringify(proxy)); } catch (e) { /* Persistence failed */ }
             });
         }
-
-        if (name) {
-            stateRegistry.set(name, proxy);
-        }
+        if (name) stateRegistry.set(name, proxy);
         return proxy;
     };
 
@@ -597,76 +479,53 @@
         return stateRegistry.get(name);
     };
 
-    // Template literal processing: converts "${...}" strings to reactive functions
-    const processTemplateChild = (child, { state, signal }) => {
-        if (typeof child === 'string' && child.includes('${')) {
-            const template = child;
-            return () => {
-                try {
-                    return new Function('state', 'signal', 'return `' + template + '`')(state, signal);
-                } catch (e) {
-                    return "";
-                }
-            };
+    // Template compilation: unified logic for creating reactive functions
+    const compileTemplate = (code) => {
+        try {
+            const isSingle = code.trim().startsWith('${') && code.trim().endsWith('}') && !code.trim().includes('${', 2);
+            const body = isSingle ? 'return ' + code.trim().slice(2, -1) : 'return `' + code.replace(/\\/g, '\\\\').replace(/`/g, '\\`') + '`';
+            return new Function('state', 'signal', body);
+        } catch (e) {
+            return () => "";
         }
-        return child; // No transformation needed
+    };
+
+    const processTemplateChild = (child, LV) => {
+        if (typeof child === 'string' && child.includes('${')) {
+            const fn = compileTemplate(child);
+            return () => fn(LV.state, LV.signal);
+        }
+        return child;
     };
 
     const domToElements = (domNodes, element, parentTagName = null) => {
-        // Check if we're inside a script or style element - preserve raw content
-        const isRawContent = parentTagName === 'script' || parentTagName === 'style';
+        const isRaw = parentTagName === 'script' || parentTagName === 'style';
+        const LV = window.Lightview;
 
         return domNodes.map(node => {
             if (node.nodeType === Node.TEXT_NODE) {
                 const text = node.textContent;
-
-                // For script/style content, always return raw text
-                if (isRawContent) {
-                    return text;
-                }
-
-                // Skip formatting whitespace/empty text nodes if they don't contain template syntax
+                if (isRaw) return text;
                 if (!text.trim() && !text.includes('${')) return null;
-
                 if (text.includes('${')) {
-                    return () => {
-                        try {
-                            const LV = window.Lightview;
-                            return new Function('state', 'signal', 'return `' + text + '`')(LV.state, LV.signal);
-                        } catch (e) {
-                            return "";
-                        }
-                    };
+                    const fn = compileTemplate(text);
+                    return () => fn(LV.state, LV.signal);
                 }
                 return text;
             }
             if (node.nodeType !== Node.ELEMENT_NODE) return null;
 
-            const tagName = node.tagName.toLowerCase();
-            const attributes = {};
-
-            // Skip template processing for script/style attributes too
-            const skipTemplateProcessing = tagName === 'script' || tagName === 'style';
+            const tagName = node.tagName.toLowerCase(), attributes = {};
+            const skip = tagName === 'script' || tagName === 'style';
 
             for (let attr of node.attributes) {
-                const value = attr.value;
-                if (!skipTemplateProcessing && value.includes('${')) {
-                    attributes[attr.name] = () => {
-                        try {
-                            const LV = window.Lightview;
-                            return new Function('state', 'signal', 'return `' + value + '`')(LV.state, LV.signal);
-                        } catch (e) {
-                            return "";
-                        }
-                    };
-                } else {
-                    attributes[attr.name] = value;
-                }
+                const val = attr.value;
+                attributes[attr.name] = (!skip && val.includes('${')) ? (() => {
+                    const fn = compileTemplate(val);
+                    return () => fn(LV.state, LV.signal);
+                })() : val;
             }
-
-            // Pass the current tag name so children know their parent context
-            const children = domToElements(Array.from(node.childNodes), element, tagName);
-            return element(tagName, attributes, children);
+            return element(tagName, attributes, domToElements(Array.from(node.childNodes), element, tagName));
         }).filter(n => n !== null);
     };
 
@@ -763,286 +622,94 @@
         return nodesToRemove.length > 0;
     };
 
+    const insert = (elements, parent, location, markerId, { element, setupChildren }) => {
+        const isSibling = location === 'beforebegin' || location === 'afterend';
+        const isOuter = location === 'outerhtml';
+        const target = (isSibling || isOuter) ? parent.parentElement : parent;
+        if (!target) return console.warn(`LightviewX: No parent for ${location}`);
+
+        const frag = document.createDocumentFragment();
+        frag.appendChild(createMarker(markerId, false));
+        elements.forEach(c => {
+            if (typeof c === 'string') frag.appendChild(document.createTextNode(c));
+            else if (c.domEl) frag.appendChild(c.domEl);
+            else if (c instanceof Node) frag.appendChild(c);
+            else {
+                const v = window.Lightview?.hooks.processChild?.(c) || c;
+                if (v.tag) {
+                    const n = element(v.tag, v.attributes || {}, v.children || []);
+                    if (n?.domEl) frag.appendChild(n.domEl);
+                }
+            }
+        });
+        frag.appendChild(createMarker(markerId, true));
+
+        if (isOuter) target.replaceChild(frag, parent);
+        else if (location === 'beforebegin') target.insertBefore(frag, parent);
+        else if (location === 'afterend') target.insertBefore(frag, parent.nextSibling);
+        else if (location === 'afterbegin') parent.insertBefore(frag, parent.firstChild);
+        else if (location === 'beforeend') parent.appendChild(frag);
+
+        executeScripts(target);
+    };
+
     const handleSrcAttribute = async (el, src, tagName, { element, setupChildren }) => {
-        // Skip standard src tags
         if (STANDARD_SRC_TAGS.includes(tagName)) return;
+        const isPath = (s) => /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom))$/i.test(s);
 
-        const isPath = (s) => /^(https?:|\.|\/|\w)/.test(s) || /\.(html|json|vdom|odom)$/.test(s);
-
-        let content = null;
-        let isJson = false;
-        let isHtml = false;
-        let rawContent = '';
-
+        let content = null, isJson = false, isHtml = false, raw = '';
         if (isPath(src)) {
             try {
-                const url = new URL(src, document.baseURI);
-                const res = await fetch(url.href);
+                const res = await fetch(new URL(src, document.baseURI));
                 if (res.ok) {
-                    const ext = url.pathname.split('.').pop().toLowerCase();
-
-                    if (ext === 'vdom' || ext === 'odom') {
-                        isJson = true;
-                    } else if (ext === 'html') {
-                        isHtml = true;
-                    }
-
-                    if (isJson) {
-                        content = await res.json();
-                        rawContent = JSON.stringify(content);
-                    } else {
-                        content = await res.text();
-                        rawContent = content;
-                    }
+                    const ext = new URL(src, document.baseURI).pathname.split('.').pop().toLowerCase();
+                    isJson = (ext === 'vdom' || ext === 'odom');
+                    isHtml = (ext === 'html');
+                    content = isJson ? await res.json() : await res.text();
+                    raw = isJson ? JSON.stringify(content) : content;
                 }
-            } catch {
-                // Fetch failed, try selector
-            }
+            } catch (e) { /* Fetch failed, maybe selector */ }
         }
 
         let elements = [];
         if (content !== null) {
-            if (isJson) {
-                elements = Array.isArray(content) ? content : [content];
-            } else if (isHtml) {
-                // Check if escape attribute is set - if so, add as escaped text instead of parsing
-                const shouldEscape = el.domEl.getAttribute('escape') === 'true';
-                if (shouldEscape) {
-                    elements = [content];
-                } else {
-                    const parser = new DOMParser();
-                    // Remove explicit <head> content to prevent collecting metadata
-                    // while preserving nodes that the parser auto-moves to head (e.g. styles outside head)
-                    const contentWithoutHead = content.replace(/<head[^>]*>[\s\S]*?<\/head>/i, '');
-                    const doc = parser.parseFromString(contentWithoutHead, 'text/html');
-
-                    // Collect all resulting nodes (auto-moved head nodes + body nodes)
-                    const allNodes = [...Array.from(doc.head.childNodes), ...Array.from(doc.body.childNodes)];
-                    elements = domToElements(allNodes, element);
+            if (isJson) elements = Array.isArray(content) ? content : [content];
+            else if (isHtml) {
+                if (el.domEl.getAttribute('escape') === 'true') elements = [content];
+                else {
+                    const doc = new DOMParser().parseFromString(content.replace(/<head[^>]*>[\s\S]*?<\/head>/i, ''), 'text/html');
+                    elements = domToElements([...Array.from(doc.head.childNodes), ...Array.from(doc.body.childNodes)], element);
                 }
-            } else {
-                // Treat as text
-                elements = [content];
-            }
+            } else elements = [content];
         } else {
             try {
-                const selected = document.querySelectorAll(src);
-                if (selected.length > 0) {
-                    elements = domToElements(Array.from(selected), element);
-                    // For selector content, create a string representation for hashing
-                    rawContent = Array.from(selected).map(n => n.outerHTML || n.textContent).join('');
+                const sel = document.querySelectorAll(src);
+                if (sel.length) {
+                    elements = domToElements(Array.from(sel), element);
+                    raw = Array.from(sel).map(n => n.outerHTML || n.textContent).join('');
                 }
-            } catch {
-                // Invalid selector
-            }
+            } catch (e) { /* Invalid selector */ }
         }
 
-        if (elements.length === 0) return;
+        if (!elements.length) return;
+        const loc = (el.domEl.getAttribute('location') || 'innerhtml').toLowerCase();
+        const hash = hashContent(raw);
+        const markerId = `${loc}-${hash.slice(0, 8)}`;
 
-        // Get location attribute (default to 'innerhtml')
-        const location = (el.domEl.getAttribute('location') || 'innerhtml').toLowerCase();
+        let track = getOrSet(insertedContentMap, el.domEl, () => ({}));
+        if (track[loc] === hash) return;
+        if (track[loc]) removeInsertedContent(el.domEl, `${loc}-${track[loc].slice(0, 8)}`);
+        track[loc] = hash;
 
-        // Generate content hash for deduplication
-        const contentHash = hashContent(rawContent);
-        const markerId = `${location}-${contentHash.slice(0, 8)}`;
-
-        // Check if same content was already inserted
-        let tracking = insertedContentMap.get(el.domEl);
-        if (!tracking) {
-            tracking = {};
-            insertedContentMap.set(el.domEl, tracking);
-        }
-
-        if (tracking[location] === contentHash) {
-            // Same content already inserted at this location - no-op
-            return;
-        }
-
-        // Different content or first insert - remove old content if any
-        if (tracking[location]) {
-            const oldMarkerId = `${location}-${tracking[location].slice(0, 8)}`;
-            removeInsertedContent(el.domEl, oldMarkerId);
-        }
-
-        // Update tracking
-        tracking[location] = contentHash;
-
-        // Check for shadow DOM via location attribute
-        if (location === 'shadow') {
-            if (!el.domEl.shadowRoot) {
-                el.domEl.attachShadow({ mode: 'open' });
-            }
+        if (loc === 'shadow') {
+            if (!el.domEl.shadowRoot) el.domEl.attachShadow({ mode: 'open' });
             setupChildren(elements, el.domEl.shadowRoot);
             executeScripts(el.domEl.shadowRoot);
-            return;
-        }
-
-        // Handle different location modes
-        switch (location) {
-            case 'beforebegin':
-            case 'afterend': {
-                // Insert as siblings - need to use DOM insertion
-                const parent = el.domEl.parentElement;
-                if (!parent) {
-                    console.warn('Cannot use beforebegin/afterend without parent element');
-                    return;
-                }
-
-                const fragment = document.createDocumentFragment();
-                fragment.appendChild(createMarker(markerId, false));
-
-                elements.forEach(childEl => {
-                    if (typeof childEl === 'string') {
-                        fragment.appendChild(document.createTextNode(childEl));
-                    } else if (childEl.domEl) {
-                        fragment.appendChild(childEl.domEl);
-                    } else if (childEl instanceof Node) {
-                        fragment.appendChild(childEl);
-                    } else {
-                        // Convert Object DOM to vDOM if needed
-                        let vdom = childEl;
-                        if (typeof window !== 'undefined' && window.Lightview && window.Lightview.hooks.processChild) {
-                            vdom = window.Lightview.hooks.processChild(childEl) || childEl;
-                        }
-
-                        if (vdom.tag) {
-                            const created = element(vdom.tag, vdom.attributes || {}, vdom.children || []);
-                            if (created && created.domEl) {
-                                fragment.appendChild(created.domEl);
-                            }
-                        }
-                    }
-                });
-
-                fragment.appendChild(createMarker(markerId, true));
-
-                if (location === 'beforebegin') {
-                    el.domEl.parentElement.insertBefore(fragment, el.domEl);
-                } else {
-                    el.domEl.parentElement.insertBefore(fragment, el.domEl.nextSibling);
-                }
-                // Execute scripts after insertion
-                executeScripts(parent);
-                break;
-            }
-
-            case 'afterbegin': {
-                // Prepend to children
-                const fragment = document.createDocumentFragment();
-                fragment.appendChild(createMarker(markerId, false));
-
-                elements.forEach(childEl => {
-                    if (typeof childEl === 'string') {
-                        fragment.appendChild(document.createTextNode(childEl));
-                    } else if (childEl.domEl) {
-                        fragment.appendChild(childEl.domEl);
-                    } else if (childEl instanceof Node) {
-                        fragment.appendChild(childEl);
-                    } else {
-                        // Convert Object DOM to vDOM if needed
-                        let vdom = childEl;
-                        if (typeof window !== 'undefined' && window.Lightview && window.Lightview.hooks.processChild) {
-                            vdom = window.Lightview.hooks.processChild(childEl) || childEl;
-                        }
-
-                        if (vdom.tag) {
-                            const created = element(vdom.tag, vdom.attributes || {}, vdom.children || []);
-                            if (created && created.domEl) {
-                                fragment.appendChild(created.domEl);
-                            }
-                        }
-                    }
-                });
-
-                fragment.appendChild(createMarker(markerId, true));
-                el.domEl.insertBefore(fragment, el.domEl.firstChild);
-                // Execute scripts after insertion
-                executeScripts(el.domEl);
-                break;
-            }
-
-            case 'beforeend': {
-                // Append to children
-                el.domEl.appendChild(createMarker(markerId, false));
-
-                elements.forEach(childEl => {
-                    if (typeof childEl === 'string') {
-                        el.domEl.appendChild(document.createTextNode(childEl));
-                    } else if (childEl.domEl) {
-                        el.domEl.appendChild(childEl.domEl);
-                    } else if (childEl instanceof Node) {
-                        el.domEl.appendChild(childEl);
-                    } else {
-                        // Convert Object DOM to vDOM if needed
-                        let vdom = childEl;
-                        if (typeof window !== 'undefined' && window.Lightview && window.Lightview.hooks.processChild) {
-                            vdom = window.Lightview.hooks.processChild(childEl) || childEl;
-                        }
-
-                        if (vdom.tag) {
-                            const created = element(vdom.tag, vdom.attributes || {}, vdom.children || []);
-                            if (created && created.domEl) {
-                                el.domEl.appendChild(created.domEl);
-                            }
-                        }
-                    }
-                });
-
-                el.domEl.appendChild(createMarker(markerId, true));
-                // Execute scripts after insertion
-                executeScripts(el.domEl);
-                break;
-            }
-
-            case 'outerhtml': {
-                // Replace the element entirely
-                const parent = el.domEl.parentElement;
-                if (!parent) {
-                    console.warn('Cannot use outerhtml without parent element');
-                    return;
-                }
-
-                const fragment = document.createDocumentFragment();
-                fragment.appendChild(createMarker(markerId, false));
-
-                elements.forEach(childEl => {
-                    if (typeof childEl === 'string') {
-                        fragment.appendChild(document.createTextNode(childEl));
-                    } else if (childEl.domEl) {
-                        fragment.appendChild(childEl.domEl);
-                    } else if (childEl instanceof Node) {
-                        fragment.appendChild(childEl);
-                    } else {
-                        // Convert Object DOM to vDOM if needed
-                        let vdom = childEl;
-                        if (typeof window !== 'undefined' && window.Lightview && window.Lightview.hooks.processChild) {
-                            vdom = window.Lightview.hooks.processChild(childEl) || childEl;
-                        }
-
-                        if (vdom.tag) {
-                            const created = element(vdom.tag, vdom.attributes || {}, vdom.children || []);
-                            if (created && created.domEl) {
-                                fragment.appendChild(created.domEl);
-                            }
-                        }
-                    }
-                });
-
-                fragment.appendChild(createMarker(markerId, true));
-                parent.replaceChild(fragment, el.domEl);
-                // Execute scripts after insertion
-                executeScripts(parent);
-                break;
-            }
-
-            case 'innerhtml':
-            default: {
-                // Replace all children (original behavior)
-                el.children = elements;
-                // Execute scripts after children are set
-                executeScripts(el.domEl);
-                break;
-            }
+        } else if (loc === 'innerhtml') {
+            el.children = elements;
+            executeScripts(el.domEl);
+        } else {
+            insert(elements, el.domEl, loc, markerId, { element, setupChildren });
         }
     };
 
@@ -1178,54 +845,19 @@
     const activateReactiveSyntax = (root, LV) => {
         if (!root || !LV) return;
 
-        // Helper to compile and bind effect
         const bindEffect = (node, codeStr, isAttr = false, attrName = null) => {
-            if (processedNodes.has(node) && !isAttr) return; // Skip if node fully processed (for text)
-            // For attributes, we might process same element multiple times for diff attributes, 
-            // but the effect is per attribute so it's fine.
-            // We'll mark text nodes as processed. Attributes don't strictly need it if we trust the scanner not to duplicate.
-
+            if (processedNodes.has(node) && !isAttr) return;
             if (!isAttr) processedNodes.add(node);
 
-            try {
-                // Determine if it's a single expression or a template string
-                // Single expression: "${...}" with no surrounding text and only one ${
-                const isSingleExpr = codeStr.trim().startsWith('${') &&
-                    codeStr.trim().endsWith('}') &&
-                    (codeStr.indexOf('${', 2) === -1);
-
-                let fnBody;
-                if (isSingleExpr) {
-                    // Extract expression: remove leading ${ and trailing }
-                    const expr = codeStr.trim().slice(2, -1);
-                    fnBody = 'return ' + expr;
-                } else {
-                    // Escape backticks and backslashes for the template literal
-                    const escaped = codeStr.replace(/\\/g, '\\\\').replace(/`/g, '\\`');
-                    fnBody = 'return `' + escaped + '`';
-                }
-
-                const fn = new Function('state', 'signal', fnBody);
-
-                LV.effect(() => {
-                    try {
-                        const val = fn(LV.state, LV.signal);
-                        if (isAttr) {
-                            if (val === null || val === undefined || val === false) {
-                                node.removeAttribute(attrName);
-                            } else {
-                                node.setAttribute(attrName, val);
-                            }
-                        } else {
-                            node.textContent = val !== undefined ? val : '';
-                        }
-                    } catch (e) {
-                        // Silent fail
-                    }
-                });
-            } catch (e) {
-                console.warn('Lightview: Failed to compile template literal', e);
-            }
+            const fn = compileTemplate(codeStr);
+            LV.effect(() => {
+                try {
+                    const val = fn(LV.state, LV.signal);
+                    if (isAttr) {
+                        (val === null || val === undefined || val === false) ? node.removeAttribute(attrName) : node.setAttribute(attrName, val);
+                    } else node.textContent = val !== undefined ? val : '';
+                } catch (e) { /* Effect execution failed */ }
+            });
         };
 
         // 1. Find Text Nodes containing '${'
