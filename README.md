@@ -11,16 +11,19 @@ A lightweight reactive UI library with signal-based reactivity and a clean API. 
 
 Access the full documentaion at [lightview.dev](/index.html).
 
+This NPM package is both the library and the website supporting the library. The website is built using Lightview. The core library files are in the root directory. The Website entry point is index.html and the restr of the site is under ./docs. The site is served by a Cloudflare pages deployment.
+
 **Core**: ~6KB | **With Hypermedia Extensions and Component Library Support**: ~18KB total
 
 Fast: This [gallery of components](/docs/components) loads in about 1 second: 
 
 ## Modular Architecture
 
-Lightview is split into two files:
+Lightview is split into three files:
 
 - **`lightview.js`** - Core reactivity (signals, state, effects, elements)
 - **`lightview-x.js`** - Hypermedia extension (src fetching, href navigation, template literals, named registries, Object DOM syntax, UI component library support)
+- **`lightview-router.js`** - Router (src fetching, href navigation, template literals, named registries, Object DOM syntax, UI component library support)
 
 ### API Behavior
 
@@ -49,6 +52,11 @@ Lightview is split into two files:
 <!-- Full features (hypermedia + templates) -->
 <script src="lightview.js"></script>
 <script src="lightview-x.js"></script>
+
+<!-- Full features (hypermedia + templates + router) -->
+<script src="lightview.js"></script>
+<script src="lightview-x.js"></script>
+<script src="lightview-router.js"></script>
 ```
 
 ## Core Concepts
@@ -56,11 +64,11 @@ Lightview is split into two files:
 **Lightview** provides four ways to build UIs:
 
 1. **Tagged API** - Concise, Bau.js-style syntax: `tags.div(...)`
-2. **Element Function** - Explicit: `element('div', {}, [...])`
-3. **vDOM Syntax** - JSON data structures: `{ tag: "div", attributes: {}, children: [] }`
-4. **Object DOM Syntax** *(lightview-x)* - Compact: `{ div: { class: "foo", children: [] } }`
+2. **vDOM Syntax** - JSON data structures: `{ tag: "div", attributes: {}, children: [] }`
+3. **Object DOM Syntax** *(lightview-x)* - Compact: `{ div: { class: "foo", children: [] } }`
+4. **HTML** *(lightview-x)* - Custom HTML elements.
 
-All four approaches use the same underlying reactive system based on **signals**.
+All four approaches use the same underlying reactive system based on **signals** and **state**.
 
 ## Installation
 
@@ -91,25 +99,7 @@ const app = div({ class: 'container' },
 document.body.appendChild(app.domEl);
 ```
 
-### Style 2: Element Function
-
-```javascript
-const { signal, element } = new Lightview();
-
-const count = signal(0);
-
-const app = element('div', { class: 'container' }, [
-  element('h1', {}, ['Counter App']),
-  element('p', {}, [() => `Count: ${count.value}`]),
-  element('button', { 
-    onclick: () => count.value++ 
-  }, ['Increment'])
-]);
-
-document.body.appendChild(app.domEl);
-```
-
-### Style 3: vDOM Syntax (Plain JSON)
+### Style 2: vDOM Syntax (Plain JSON)
 
 ```javascript
 const { signal, element } = new Lightview();
@@ -138,7 +128,7 @@ const app = element('div', { class: 'container' }, [
 document.body.appendChild(app.domEl);
 ```
 
-### Style 4: Object DOM Syntax (lightview-x)
+### Style 3: Object DOM Syntax (lightview-x)
 
 Object DOM syntax provides a more compact way to define elements. Instead of `{ tag, attributes, children }`, you use `{ tag: { ...attributes, children } }`.
 

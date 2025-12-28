@@ -142,7 +142,7 @@ const { tags, $ } = Lightview;
 const { div, h1, p, style } = tags;
 
 // 1. Build UI using Tagged Functions
-// These functions return standard DOM elements
+// These functions return Lightview elements (access raw DOM via .domEl)
 const App = div({ class: 'hero' },
     h1('Welcome to Lightview'),
     p('Lightview is a tiny library for building modern web interfaces.')
@@ -171,11 +171,11 @@ $('#app').content(style({}, \`
                 
                 <h4>Key Concepts:</h4>
                 <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
-                    <li style="margin-bottom: 0.75rem;"><code>tags</code> — Every HTML tag is available as a function. <code>div(...)</code> returns a real <code>HTMLDivElement</code>.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>tags</code> — Every HTML tag is available as a function. <code>div(...)</code> returns a virtual proxy; the real DOM element is accessible via <code>.domEl</code>.</li>
                     <li style="margin-bottom: 0.75rem;"><code>$(selector)</code> — A powerful utility for selecting elements and manipulating them.</li>
-                    <li style="margin-bottom: 0.75rem;"><code>.content(node, location)</code> — Replaces or appends content. Locations like <code>'beforeend'</code> allow injecting styles or scripts dynamicly.</li>
+                    <li style="margin-bottom: 0.75rem;"><code>.content(node, location)</code> — Replaces or appends content. It automatically unboxes <code>.domEl</code> for you.</li>
                 </ul>
-                <p>This approach results in standard, lightweight DOM elements with no overhead.</p>
+                <p>Lightview elements are thin proxies over standard DOM elements, providing reactivity with minimal overhead.</p>
             `
             },
             2: {
