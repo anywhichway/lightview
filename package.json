@@ -1,6 +1,6 @@
 {
   "name": "lightview",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "A lightweight reactive UI library with features of Bau, Juris, and HTMX",
   "main": "lightview.js",
   "directories": {
@@ -15,7 +15,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Simon Y. Blackwell, AnyWhichWay LLC",
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
