@@ -1,9 +1,17 @@
 (() => {
+    /**
+     * LIGHTVIEW CORE
+     * A minimalist library for signals-based reactivity and functional UI components.
+     */
+
     // ============= SIGNALS =============
 
     let currentEffect = null;
 
 
+    /**
+     * Helper to get a value from a Map or create and set it if it doesn't exist.
+     */
     const getOrSet = (map, key, factory) => {
         let v = map.get(key);
         if (!v) {
@@ -18,6 +26,11 @@
 
     const signalRegistry = new Map();
 
+    /**
+     * Creates a reactive signal.
+     * @param {*} initialValue - The initial value of the signal.
+     * @param {Object|string} [optionsOrName] - Optional name (for registry) or options object.
+     */
     const signal = (initialValue, optionsOrName) => {
         let name = typeof optionsOrName === 'string' ? optionsOrName : optionsOrName?.name;
         const storage = optionsOrName?.storage;
@@ -80,19 +93,29 @@
         return signalRegistry.get(name);
     };
 
+    /**
+     * Creates a side-effect that automatically tracks and re-runs when its signal dependencies change.
+     * @param {Function} fn - The function to execute as an effect.
+     */
     const effect = (fn) => {
         const execute = () => {
-            if (!execute.active) return;
+            if (!execute.active || execute.running) return;
             // Cleanup old dependencies
             execute.dependencies.forEach(dep => dep.delete(execute));
             execute.dependencies.clear();
 
+            execute.running = true;
             currentEffect = execute;
-            fn();
-            currentEffect = null;
+            try {
+                fn();
+            } finally {
+                currentEffect = null;
+                execute.running = false;
+            }
         };
 
         execute.active = true;
+        execute.running = false;
         execute.dependencies = new Set();
         execute.stop = () => {
             execute.dependencies.forEach(dep => dep.delete(execute));
@@ -103,12 +126,18 @@
         return execute;
     };
 
+    /**
+     * Assocates an effect with a DOM node for automatic cleanup when the node is removed.
+     */
     const trackEffect = (node, effectFn) => {
         const state = getOrSet(nodeState, node, nodeStateFactory);
         if (!state.effects) state.effects = [];
         state.effects.push(effectFn);
     };
 
+    /**
+     * Creates a read-only signal derived from other signals.
+     */
     const computed = (fn) => {
         const sig = signal(undefined);
         effect(() => {
@@ -198,6 +227,9 @@
 
     const domToElement = new WeakMap();
 
+    /**
+     * Wraps a native DOM element in a Lightview reactive proxy.
+     */
     const wrapDomElement = (domNode, tag, attributes = {}, children = []) => {
         const el = {
             tag,
@@ -210,6 +242,10 @@
         return proxy;
     };
 
+    /**
+     * The core virtual-DOM-to-real-DOM factory.
+     * Handles tag functions (components), shadow DOM directives, and SVG namespaces.
+     */
     const element = (tag, attributes = {}, children = []) => {
         if (customTags[tag]) tag = customTags[tag];
         // If tag is a function (component), call it and process the result
@@ -288,6 +324,9 @@
         return null;
     };
 
+    /**
+     * Internal proxy to intercept 'attributes' and 'children' updates on an element.
+     */
     const makeReactive = (el) => {
         const domNode = el.domEl;
 
@@ -321,6 +360,9 @@
         }
     };
 
+    /**
+     * Processes attributes, handling event listeners, reactive bindings, and special 'onmount' hooks.
+     */
     const makeReactiveAttributes = (attributes, domNode) => {
         const reactiveAttrs = {};
 
@@ -385,6 +427,10 @@
      * @param {HTMLElement|ShadowRoot} targetNode - Where to append children
      * @param {boolean} clearExisting - Whether to clear existing content
      * @returns {Array} - Processed child elements
+     */
+    /**
+     * Core child processing logic. Recursively handles strings, arrays, 
+     * reactive functions, vDOM objects, and Shadow DOM markers.
      */
     const processChildren = (children, targetNode, clearExisting = true) => {
         if (clearExisting && targetNode.innerHTML !== undefined) {
@@ -485,6 +531,9 @@
     };
 
     // ============= EXPORTS =============
+    /**
+     * Enhances an existing DOM element with Lightview reactivity.
+     */
     const enhance = (selectorOrNode, options = {}) => {
         const domNode = typeof selectorOrNode === 'string'
             ? document.querySelector(selectorOrNode)
@@ -527,6 +576,9 @@
         return el;
     };
 
+    /**
+     * Query selector helper that adds a .content() method for easy DOM manipulation.
+     */
     const $ = (cssSelectorOrElement, startingDomEl = document.body) => {
         const el = typeof cssSelectorOrElement === 'string' ? startingDomEl.querySelector(cssSelectorOrElement) : cssSelectorOrElement;
         if (!el) return null;
@@ -574,6 +626,10 @@
     };
 
     const customTags = {}
+    /**
+     * Proxy for accessing or registering tags/components.
+     * e.g., Lightview.tags.div(...) or Lightview.tags.MyComponent = ...
+     */
     const tags = new Proxy({}, {
         get(_, tag) {
             if (tag === "_customTags") return { ...customTags };

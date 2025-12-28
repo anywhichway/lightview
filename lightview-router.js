@@ -1,364 +1,159 @@
 (() => {
+    /**
+     * LIGHTVIEW ROUTER
+     * A lightweight, pipeline-based History API router with middleware support.
+     */
     // ============= LIGHTVIEW ROUTER =============
     // Pipeline-based History API router with middleware support
 
     /**
-     * Shim function for individual pages
-     * Redirects direct page access to the shell with a load parameter
-     * @param {string} shellPath - Relative path to the shell (e.g., '/index.html')
+     * Shell-based routing helper. If the 'content' element is missing, 
+     * redirects to a shell path with the current path in the 'load' query parameter.
      */
     const base = (shellPath) => {
-        if (typeof window === 'undefined') return;
-
-        // Check if we're in the shell or loaded directly
-        const inShell = document.getElementById('content') !== null;
-        if (inShell) return;
-
-        // Get current path relative to domain root
-        const currentPath = window.location.pathname;
-
-        // Build shell URL with load parameter
-        const shellUrl = new URL(shellPath, window.location.href);
-        shellUrl.searchParams.set('load', currentPath);
-
-        // Redirect to shell
-        window.location.href = shellUrl.toString();
+        if (typeof window === 'undefined' || document.getElementById('content')) return;
+        const url = new URL(shellPath, window.location.href);
+        url.searchParams.set('load', window.location.pathname);
+        window.location.href = url.toString();
     };
 
     /**
-     * Create a new Router instance
+     * Creates a new router instance.
+     * @param {Object} options - Router configuration.
      */
     const router = (options = {}) => {
-        const {
-            base = '',
-            contentEl = null,
-            notFound = null,
-            debug = false,
-            onResponse = null,
-            onStart = null
-        } = options;
-
+        const { base = '', contentEl, notFound, debug, onResponse, onStart } = options;
         const chains = [];
 
         /**
-         * Normalize a path by removing base and trailing slashes
+         * Normalizes paths by adding leading slash and removing trailing slash.
          */
-        const normalizePath = (path) => {
-            if (!path) return '/';
-
-            // Handle full URLs
-            if (path.startsWith('http') || path.startsWith('//')) {
-                try {
-                    const url = new URL(path, window.location.origin);
-                    path = url.pathname;
-                } catch (e) {
-                    // Invalid URL, treat as path
-                }
-            }
-
-            if (base && path.startsWith(base)) {
-                path = path.slice(base.length);
-            }
-            if (!path.startsWith('/')) {
-                path = '/' + path;
-            }
-            if (path.length > 1 && path.endsWith('/')) {
-                path = path.slice(0, -1);
-            }
-            return path;
+        const normalizePath = (p) => {
+            if (!p) return '/';
+            try { if (p.startsWith('http') || p.startsWith('//')) p = new URL(p, window.location.origin).pathname; } catch (e) { /* Invalid URL */ }
+            if (base && p.startsWith(base)) p = p.slice(base.length);
+            return p.replace(/\/+$/, '').replace(/^([^/])/, '/$1') || '/';
         };
 
-        /**
-         * Convert a matcher (string/regexp) into a function
-         * Returns: (input) => params OR null (if no match)
-         */
         const createMatcher = (pattern) => {
-            if (pattern instanceof RegExp) {
-                return (ctx) => {
-                    const path = typeof ctx === 'string' ? ctx : ctx.path;
-                    const match = path.match(pattern);
-                    return match ? { match, ...ctx } : null;
-                };
-            }
-
-            if (typeof pattern === 'string') {
-                return (ctx) => {
-                    const path = typeof ctx === 'string' ? ctx : ctx.path;
-
-                    // Specific check: if pattern is exactly '*', match everything
-                    if (pattern === '*') return { path, wildcard: path, ...ctx };
-
-                    // Exact match
-                    if (pattern === path) return { path, ...ctx };
-
-                    // Wildcard /api/*
-                    if (pattern.includes('*')) {
-                        const regexStr = '^' + pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\\\*/g, '(.*)') + '$';
-                        const regex = new RegExp(regexStr);
-                        const match = path.match(regex);
-                        if (match) {
-                            return { path, wildcard: match[1], ...ctx };
-                        }
-                    }
-
-                    // Named params /user/:id
-                    if (pattern.includes(':')) {
-                        const keys = [];
-                        const regexStr = '^' + pattern.replace(/:([^/]+)/g, (_, key) => {
-                            keys.push(key);
-                            return '([^/]+)';
-                        }) + '$';
-                        const match = path.match(new RegExp(regexStr));
-
-                        if (match) {
-                            const params = {};
-                            keys.forEach((key, i) => {
-                                params[key] = match[i + 1];
-                            });
-                            return { path, params, ...ctx };
-                        }
-                    }
-
-                    return null;
-                };
-            }
-
-            return pattern; // Already a function
-        };
-
-        /**
-         * Convert a replacement string into a function
-         * Returns: (ctx) => updated context with new path
-         */
-        const createReplacer = (pattern) => {
+            if (typeof pattern === 'function') return pattern;
             return (ctx) => {
-                let newPath = pattern;
-                if (ctx.wildcard && newPath.includes('*')) {
-                    newPath = newPath.replace('*', ctx.wildcard);
+                const { path } = ctx;
+                if (pattern instanceof RegExp) {
+                    const m = path.match(pattern);
+                    return m ? { ...ctx, match: m } : null;
                 }
-                if (ctx.params) {
-                    Object.entries(ctx.params).forEach(([key, val]) => {
-                        newPath = newPath.replace(':' + key, val);
-                    });
+                if (pattern === '*' || pattern === path) return { ...ctx, wildcard: path };
+
+                const keys = [];
+                const regexStr = '^' + pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+                    .replace(/\\\*/g, '(.*)')
+                    .replace(/:([^/]+)/g, (_, k) => (keys.push(k), '([^/]+)')) + '$';
+                const m = path.match(new RegExp(regexStr));
+                if (m) {
+                    const params = {};
+                    keys.forEach((k, i) => params[k] = m[i + 1]);
+                    return { ...ctx, params, wildcard: m[1] };
                 }
-                // Return updated context instead of just string
-                return { ...ctx, path: newPath };
+                return null;
             };
         };
 
-        /**
-         * Default fetch handler - fetches the current path and returns Response
-         * Uses contentEl from context (allows middleware to override target)
-         */
-        const defaultFetchHandler = async (ctx) => {
-            const path = typeof ctx === 'string' ? ctx : ctx.path;
+        const createReplacer = (pat) => (ctx) => ({
+            ...ctx,
+            path: pat.replace(/\*|:([^/]+)/g, (m, k) => (k ? ctx.params?.[k] : ctx.wildcard) || m)
+        });
+
+        const fetchHandler = async (ctx) => {
             try {
-                const res = await fetch(path);
+                const res = await fetch(ctx.path);
                 if (res.ok) return res;
-            } catch (e) {
-                if (debug) console.error('[Router] Fetch error:', e);
-            }
+            } catch (e) { if (debug) console.error('[Router] Fetch error:', e); }
             return null;
         };
 
         /**
-         * Register a route chain
-         * usage: router.use(pattern, replacement, handler, ...)
-         * 
-         * If contentEl is set and the chain ends with a string (path) or has no handlers,
-         * the router automatically appends a fetch handler.
+         * Adds a route or middleware to the router's pipeline.
          */
         const use = (...args) => {
-            if (args.length === 0) return;
-            const chain = [];
-            const firstArg = args[0];
-
-            if (typeof firstArg !== 'function') {
-                chain.push(createMatcher(firstArg));
-            } else {
-                chain.push(firstArg);
-            }
-
-            let hasCustomHandler = false;
-            for (let i = 1; i < args.length; i++) {
-                const arg = args[i];
-                if (typeof arg === 'string') {
-                    chain.push(createReplacer(arg));
-                } else if (typeof arg === 'function') {
-                    chain.push(arg);
-                    hasCustomHandler = true;
-                }
-            }
-
-            // If contentEl is set and no custom handler provided, append default fetch
-            if (contentEl && !hasCustomHandler) {
-                chain.push(defaultFetchHandler);
-            }
-
+            const chain = args.map((arg, i) => (i === 0 && typeof arg !== 'function') ? createMatcher(arg) : (typeof arg === 'string' ? createReplacer(arg) : arg));
+            if (contentEl && !chain.some(f => f.name === 'fetchHandler' || args.some(a => typeof a === 'function'))) chain.push(fetchHandler);
             chains.push(chain);
             return routerInstance;
         };
 
         /**
-         * Execute routing for a given path
+         * Processes a path through the registered chains.
          */
-        const route = async (rawPath) => {
-            let currentPath = normalizePath(rawPath);
-            // Include contentEl in context for middleware to access/override
-            let context = { path: currentPath, contentEl };
-
-            if (debug) console.log(`[Router] Routing: ${currentPath}`);
+        const route = async (raw) => {
+            let ctx = { path: normalizePath(raw), contentEl };
+            if (debug) console.log(`[Router] Routing: ${ctx.path}`);
 
             for (const chain of chains) {
-                let chainResult = context;
-                let chainFailed = false;
-
+                let res = ctx, failed = false;
                 for (const fn of chain) {
                     try {
-                        const result = await fn(chainResult);
-
-                        if (result instanceof Response) return result;
-                        if (!result) {
-                            chainFailed = true;
-                            break;
-                        }
-
-                        chainResult = result;
-                    } catch (err) {
-                        console.error('[Router] Error in route chain:', err);
-                        chainFailed = true;
-                        break;
-                    }
+                        res = await fn(res);
+                        if (res instanceof Response) return res;
+                        if (!res) { failed = true; break; }
+                    } catch (e) { console.error('[Router] Chain error:', e); failed = true; break; }
                 }
-
-                if (!chainFailed) {
-                    // Fallthrough with updated context
-                    if (typeof chainResult === 'string') {
-                        context = { path: chainResult, contentEl };
-                        if (debug) console.log(`[Router] Path updated to: ${chainResult}`);
-                    } else if (chainResult && chainResult.path) {
-                        context = chainResult;
-                        // Ensure contentEl is preserved if not in result
-                        if (!context.contentEl) context.contentEl = contentEl;
-                    }
-                }
+                if (!failed) ctx = typeof res === 'string' ? { ...ctx, path: res } : { ...ctx, ...res };
             }
-
-            if (notFound) return notFound(context);
-            return null;
+            return notFound ? notFound(ctx) : null;
         };
 
         const handleRequest = async (path) => {
             if (onStart) onStart(path);
+            const res = await route(path);
+            if (!res) return console.warn(`[Router] No route: ${path}`);
 
-            const response = await route(path);
-
-            if (!response) {
-                console.warn(`[Router] No route handled path: ${path}`);
-                return null;
-            }
-
-            // Auto-render to contentEl if provided and response is OK
-            if (response.ok && contentEl) {
-                const html = await response.text();
-                contentEl.innerHTML = html;
-
-                // Re-execute scripts in the loaded content
-                const scripts = contentEl.querySelectorAll('script');
-                scripts.forEach(script => {
-                    const newScript = document.createElement('script');
-                    if (script.type) newScript.type = script.type;
-                    if (script.src) {
-                        newScript.src = script.src;
-                    } else {
-                        newScript.textContent = script.textContent;
-                    }
-                    script.parentNode.replaceChild(newScript, script);
+            if (res.ok && contentEl) {
+                contentEl.innerHTML = await res.text();
+                contentEl.querySelectorAll('script').forEach(s => {
+                    const n = document.createElement('script');
+                    [...s.attributes].forEach(a => n.setAttribute(a.name, a.value));
+                    n.textContent = s.textContent;
+                    s.replaceWith(n);
                 });
             }
-
-            // Call onResponse AFTER auto-render for post-render logic (analytics, scroll, etc.)
-            if (onResponse) {
-                await onResponse(response, path);
-            }
-
-            return response;
+            if (onResponse) await onResponse(res, path);
+            return res;
         };
 
+        /**
+         * Navigates to a new path and updates the browser history.
+         */
         const navigate = (path) => {
-            path = normalizePath(path);
-            let fullPath = base + path;
-            return handleRequest(fullPath).then((response) => {
-                let dest = response?.url;
-                if (dest && (dest.startsWith('http') || dest.startsWith('//'))) {
-                    try {
-                        const u = new URL(dest, window.location.origin);
-                        dest = u.pathname + u.search + u.hash;
-                    } catch (e) { }
-                }
-                // Fallback to intent if response has no URL
-                if (!dest) dest = fullPath;
+            const p = normalizePath(path);
+            return handleRequest(base + p).then(r => {
+                let dest = r?.url ? new URL(r.url, window.location.origin).pathname : base + p;
                 window.history.pushState({ path: dest }, '', dest);
-            }).catch((err) => {
-                console.error('[Router] Error handling request:', err);
-            })
+            }).catch(e => console.error('[Router] Nav error:', e));
         };
 
+        /**
+         * Starts the router by handling the initial path and setting up event listeners.
+         */
         const start = async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const loadPath = urlParams.get('load');
-
-            window.addEventListener('popstate', (e) => {
-                const path = e.state?.path || normalizePath(window.location.pathname);
-                handleRequest(path);
-            });
-
-            document.addEventListener('click', (e) => {
-                const link = e.target.closest('a[href]');
-                if (!link) return;
-                const href = link.getAttribute('href');
-                if (
-                    !href || href.startsWith('http') || href.startsWith('//') ||
-                    href.startsWith('#') || href.startsWith('mailto:') ||
-                    link.target === '_blank'
-                ) return;
-
+            const load = new URLSearchParams(window.location.search).get('load');
+            window.onpopstate = (e) => handleRequest(e.state?.path || normalizePath(window.location.pathname));
+            document.onclick = (e) => {
+                const a = e.target.closest('a[href]');
+                if (!a || a.target === '_blank' || /^(http|#|mailto|tel)/.test(a.getAttribute('href'))) return;
                 e.preventDefault();
-                const url = new URL(href, document.baseURI);
-                const path = normalizePath(url.pathname);
-                navigate(path);
-            });
-
-            if (loadPath) {
-                window.history.replaceState({ path: loadPath }, '', loadPath);
-                handleRequest(loadPath);
-            } else {
-                const initialPath = normalizePath(window.location.pathname);
-                window.history.replaceState({ path: initialPath }, '', base + initialPath);
-                handleRequest(initialPath);
-            }
-
-            return routerInstance;
+                navigate(normalizePath(new URL(a.href, document.baseURI).pathname));
+            };
+            const init = load || normalizePath(window.location.pathname);
+            window.history.replaceState({ path: init }, '', base + init);
+            return handleRequest(init).then(() => routerInstance);
         };
 
-        const routerInstance = {
-            use,
-            navigate,
-            start
-        };
-
+        const routerInstance = { use, navigate, start };
         return routerInstance;
     };
 
-    const LightviewRouter = {
-        base,
-        router
-    };
-
-    if (typeof module !== 'undefined' && module.exports) {
-        module.exports = LightviewRouter;
-    }
-    if (typeof window !== 'undefined') {
-        window.LightviewRouter = LightviewRouter;
-    }
+    const LightviewRouter = { base, router };
+    if (typeof module !== 'undefined' && module.exports) module.exports = LightviewRouter;
+    else if (typeof window !== 'undefined') window.LightviewRouter = LightviewRouter;
 })();

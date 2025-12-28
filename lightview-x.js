@@ -1,4 +1,16 @@
 (() => {
+    /**
+     * LIGHTVIEW-X
+     * Hypermedia and Extended Reactivity for Lightview.
+     * 
+     * Adds:
+     * - src attribute fetching (HTMX-style loading)
+     * - href navigation (Single Page App behavior for non-standard links)
+     * - DOM-to-element conversion (Template literals support)
+     * - Object DOM syntax
+     * - Deeply reactive state
+     * - CSS Shadow DOM integration
+     */
     // ============= LIGHTVIEW-X =============
     // Hypermedia extension for Lightview
     // Adds: src attribute fetching, href navigation, DOM-to-element conversion, template literals, named registries, Object DOM syntax
@@ -9,12 +21,18 @@
 
     const isValidTagName = (name) => typeof name === 'string' && name.length > 0 && name !== 'children';
 
+    /**
+     * Detects if an object follows the Object DOM syntax: { tag: { attr: val, children: [...] } }
+     */
     const isObjectDOM = (obj) => {
         if (typeof obj !== 'object' || obj === null || Array.isArray(obj) || obj.tag || obj.domEl) return false;
         const keys = Object.keys(obj);
         return keys.length === 1 && isValidTagName(keys[0]) && typeof obj[keys[0]] === 'object';
     };
 
+    /**
+     * Converts Object DOM syntax into standard Lightview VDOM { tag, attributes, children }
+     */
     const convertObjectDOM = (obj) => {
         if (typeof obj !== 'object' || obj === null) return obj;
         if (Array.isArray(obj)) return obj.map(convertObjectDOM);
@@ -109,7 +127,7 @@
      */
     const setTheme = (themeName) => {
         if (!themeName) return;
-        // Determine base theme (light or dark) for the main document
+
         // Determine base theme (light or dark) for the main document
         // const darkThemes = ['dark', 'aqua', 'black', 'business', 'coffee', 'dim', 'dracula', 'forest', 'halloween', 'luxury', 'night', 'sunset', 'synthwave'];
         // const baseTheme = darkThemes.includes(themeName) ? 'dark' : 'light';
@@ -291,6 +309,10 @@
     const stateRegistry = new Map();
 
     // ============= STATE (Deep Reactivity) =============
+    /**
+     * Provides deeply reactive state by wrapping objects/arrays in Proxies.
+     * Automatically tracks changes via signals.
+     */
     // Build method lists dynamically from prototypes
     const protoMethods = (proto, test) => Object.getOwnPropertyNames(proto).filter(k => typeof proto[k] === 'function' && test(k));
     const DATE_TRACKING = protoMethods(Date.prototype, k => /^(to|get|valueOf)/.test(k));
@@ -329,6 +351,10 @@
         return success;
     };
 
+    /**
+     * Creates a specialized proxy for complex objects like Date and Array 
+     * that require monitoring specific properties (e.g., 'length' or 'time').
+     */
     const createSpecialProxy = (obj, monitor, trackingProps = []) => {
         const LV = window.Lightview;
         // Get or create the signals map for this object
@@ -498,6 +524,10 @@
         return child;
     };
 
+    /**
+     * Converts standard DOM nodes into Lightview reactive elements.
+     * This is used to transform HTML templates (with template literals) into live VDOM.
+     */
     const domToElements = (domNodes, element, parentTagName = null) => {
         const isRaw = parentTagName === 'script' || parentTagName === 'style';
         const LV = window.Lightview;
@@ -653,6 +683,10 @@
         executeScripts(target);
     };
 
+    /**
+     * Handles the 'src' attribute on non-standard tags.
+     * Loads content from a URL or selector and injects it into the element.
+     */
     const handleSrcAttribute = async (el, src, tagName, { element, setupChildren }) => {
         if (STANDARD_SRC_TAGS.includes(tagName)) return;
         const isPath = (s) => /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom))$/i.test(s);
@@ -730,6 +764,10 @@
         return { selector: targetStr, location: null };
     };
 
+    /**
+     * Intercepts clicks on elements with 'href' attributes that are not standard links.
+     * Enables HTMX-like SPA navigation by loading the href content into a target element.
+     */
     const handleNonStandardHref = (e, { domToElement, wrapDomElement }) => {
         const clickedEl = e.target.closest('[href]');
         if (!clickedEl) return;
