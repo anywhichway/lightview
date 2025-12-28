@@ -334,7 +334,7 @@ $('#app').content(App);`,
             },
             4: {
                 options: {
-                    allowSameOrigin: true,
+                    //allowSameOrigin: true,
                     autoRun: true
                 },
                 code: `// STEP 4: HYPERMEDIA + OBJECT DOM SYNTAX (requires lightview-x)
@@ -639,6 +639,12 @@ $('#app').content(App);`,
             conceptsContainer.appendChild(conceptsEl);
 
             // 4. Initialize Examplify
+            const useOrigin = (data.options?.allowSameOrigin && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+                ? (window.location.hostname === 'localhost'
+                    ? window.location.origin.replace('localhost', '127.0.0.1')
+                    : window.location.origin.replace('127.0.0.1', 'localhost'))
+                : (data.options?.allowSameOrigin ? 'https://sandbox.lightview.dev' : null);
+
             // Check if step uses modules (looking for import statement)
             const isModule = data.code.includes('import ');
 
@@ -647,6 +653,7 @@ $('#app').content(App);`,
                 html: '<div id="app" style="padding: 1rem;"></div>',
                 location: 'afterEnd',
                 type: isModule ? 'module' : 'text/javascript',
+                useOrigin,
                 ...data.options || {}
             });
 

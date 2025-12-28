@@ -3,13 +3,15 @@ var examplifyIdCounter = window.examplifyIdCounter || 0;
 window.examplifyIdCounter = examplifyIdCounter;
 
 function examplify(target, options = {}) {
-    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false, language = 'js', autoRun = false } = options;
+    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false, useOrigin = null, language = 'js', autoRun = false } = options;
     const originalContent = target.textContent;
     const autoResize = !height; // Auto-resize if no explicit height is provided
     const iframeId = `examplify-${++examplifyIdCounter}`;
 
     // State
     let isRunning = false;
+    let sandboxReady = false;
+    let pendingContent = null;
 
     // 2. Create controls above the target
     const controls = document.createElement('div');
@@ -47,7 +49,9 @@ function examplify(target, options = {}) {
     iframe.style.background = '#f9fafb'; // Light gray placeholder
     iframe.style.border = '1px solid #e5e7eb';
     iframe.style.transition = 'opacity 0.2s ease-in, height 0.2s ease-out';
-    iframe.sandbox = `${allowSameOrigin ? 'allow-same-origin ' : ''}allow-scripts`;
+    const sandboxFlags = ['allow-scripts'];
+    if (allowSameOrigin) sandboxFlags.push('allow-same-origin');
+    iframe.sandbox = sandboxFlags.join(' ');
 
     if (height) iframe.style.height = height;
     if (minHeight) iframe.style.minHeight = typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
@@ -56,6 +60,11 @@ function examplify(target, options = {}) {
     // Set initial placeholder height if not specified, to show it exists
     if (!height && !iframe.style.minHeight) {
         iframe.style.height = '100px';
+    }
+
+    // If using an external origin, set src immediately to avoid sandbox warnings
+    if (useOrigin) {
+        iframe.src = useOrigin + '/docs/assets/js/examplify-sandbox.html?id=' + iframeId;
     }
 
     // Insert elements
@@ -288,16 +297,29 @@ function examplify(target, options = {}) {
     function run() {
         const content = getIframeContent(target.textContent);
         iframe.style.background = '#fff';
-        iframe.srcdoc = content;
+
+        if (useOrigin) {
+            if (sandboxReady) {
+                iframe.contentWindow.postMessage({ type: 'examplify-load-content', content: content, id: iframeId }, '*');
+            } else {
+                pendingContent = content;
+                // iframe.src is already set in the initialization phase
+            }
+        } else {
+            iframe.srcdoc = content;
+        }
         isRunning = true;
     }
 
     // Initialize: auto-run or show placeholder
     if (autoRun) {
         run();
-    } else {
+    } else if (!useOrigin) {
+        // Only use srcdoc for local placeholders when not using a separate origin
         iframe.srcdoc = getPlaceholderContent();
     }
+    // Note: if useOrigin is set, the sandbox page itself will handle being blank or showing placeholder 
+    // until we post the content to it.
 
     // Event Listeners
     const runBtn = controls.querySelector('.examplify-run');
@@ -357,6 +379,14 @@ function examplify(target, options = {}) {
 
         if (event.data.type === 'examplify-run-click') {
             run();
+        }
+
+        if (event.data.type === 'examplify-sandbox-ready' && useOrigin) {
+            sandboxReady = true;
+            if (pendingContent) {
+                iframe.contentWindow.postMessage({ type: 'examplify-load-content', content: pendingContent, id: iframeId }, '*');
+                pendingContent = null;
+            }
         }
     });
 

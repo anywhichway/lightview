@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Examplify Sandbox</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9fafb;
+            color: #6b7280;
+            cursor: pointer;
+            user-select: none;
+            font-family: system-ui, -apple-system, sans-serif;
+            transition: color 0.2s;
+        }
+
+        body:hover {
+            color: #374151;
+        }
+
+        .content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        #placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="placeholder">
+        <div class="content">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+            </svg>
+            <span>Click to run</span>
+        </div>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const iframeId = urlParams.get('id');
+
+        document.getElementById('placeholder').onclick = () => {
+            parent.postMessage({ type: 'examplify-run-click', id: iframeId }, '*');
+        };
+
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'examplify-load-content') {
+                // Replace the entire document content
+                document.open();
+                document.write(event.data.content);
+                document.close();
+            }
+        });
+        // Signal to parent that we are ready to receive content
+        parent.postMessage({ type: 'examplify-sandbox-ready', id: iframeId }, '*');
+    </script>
+</body>
+
+</html>
