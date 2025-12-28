@@ -159,6 +159,11 @@ function examplify(target, options = {}) {
     function getIframeContent(codeContent) {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const themeAttr = currentTheme ? ` data-theme="${currentTheme}"` : '';
+
+        const path = window.location.pathname;
+        const baseDir = path.substring(0, path.lastIndexOf('/') + 1);
+        const baseTag = useOrigin ? `<base href="${useOrigin}${baseDir}">` : '';
+
         const autoResizeScript = autoResize ? `
             <script>
                 const frameId = '${iframeId}';
@@ -193,6 +198,7 @@ function examplify(target, options = {}) {
         return `<!DOCTYPE html>
 <html${themeAttr}>
 <head>
+    ${baseTag}
     <style>
         /* Hide body until stylesheets are loaded to prevent FOUC */
         body { 
