@@ -1,21 +1,15 @@
-<!-- SEO-friendly SPA Shim -->
-<script src="./lightview-router.js"></script>
-<script>
-    if (window.LightviewRouter) {
-        LightviewRouter.base('index.html');
-    }
-</script>
+
 # Lightview: README.md
 
 A lightweight reactive UI library with signal-based reactivity and a clean API. Build dynamic UIs with automatic DOM synchronization.
 
-Access the full documentaion at [lightview.dev](/index.html).
+Access the full documentaion at [lightview.dev](https://lightview.dev).
 
 This NPM package is both the library and the website supporting the library. The website is built using Lightview. The core library files are in the root directory. The Website entry point is index.html and the restr of the site is under ./docs. The site is served by a Cloudflare pages deployment.
 
-**Core**: ~6KB | **With Hypermedia Extensions and Component Library Support**: ~18KB total
+**Core**: ~8KB | **With Hypermedia Extensions and Component Library Support**: ~18KB total
 
-Fast: This [gallery of components](/docs/components) loads in about 1 second: 
+Fast: This [gallery of components](https://lightview.dev/docs/components/) loads in about 1 second: 
 
 ## Modular Architecture
 
