@@ -194,17 +194,7 @@
     };
 
     // ============= REACTIVE UI =============
-    const SVG_TAGS = new Set([
-        'svg', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'g', 'defs', 'marker',
-        'pattern', 'mask', 'image', 'text', 'tspan', 'foreignObject', 'use', 'symbol', 'clipPath',
-        'linearGradient', 'radialGradient', 'stop', 'filter', 'animate', 'animateMotion',
-        'animateTransform', 'mpath', 'desc', 'metadata', 'title', 'feBlend', 'feColorMatrix',
-        'feComponentTransfer', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting',
-        'feDisplacementMap', 'feDistantLight', 'feDropShadow', 'feFlood', 'feFuncA', 'feFuncB',
-        'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode',
-        'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight',
-        'feTile', 'feTurbulence', 'view'
-    ]);
+    let inSVG = false;
 
     const domToElement = new WeakMap();
 
@@ -233,13 +223,19 @@
             return createShadowDOMMarker(attributes, children);
         }
 
-        const isSvg = SVG_TAGS.has(tag.toLowerCase());
-        const domNode = isSvg
+        const isSVG = tag.toLowerCase() === 'svg';
+        const wasInSVG = inSVG;
+        if (isSVG) inSVG = true;
+
+        const domNode = inSVG
             ? document.createElementNS('http://www.w3.org/2000/svg', tag)
             : document.createElement(tag);
+
         const proxy = wrapDomElement(domNode, tag, attributes, children);
         proxy.attributes = attributes;
         proxy.children = children;
+
+        if (isSVG) inSVG = wasInSVG;
         return proxy;
     };
 
@@ -309,26 +305,17 @@
         });
     };
 
-    // Boolean attributes that should be present/absent rather than having a value
-    const BOOLEAN_ATTRIBUTES = new Set([
-        'disabled', 'checked', 'readonly', 'required', 'hidden', 'autofocus',
-        'autoplay', 'controls', 'loop', 'muted', 'default', 'defer', 'async',
-        'novalidate', 'formnovalidate', 'open', 'selected', 'multiple', 'reversed',
-        'ismap', 'nomodule', 'playsinline', 'allowfullscreen', 'inert'
-    ]);
+    // Properties that should be set directly on the DOM node object rather than as attributes
+    const NODE_PROPERTIES = new Set(['value', 'checked', 'selected', 'selectedIndex', 'className', 'innerHTML', 'innerText']);
 
     // Set attribute with proper handling of boolean attributes and undefined/null values
     const setAttributeValue = (domNode, key, value) => {
-        const isBooleanAttr = BOOLEAN_ATTRIBUTES.has(key.toLowerCase());
+        const isBool = typeof domNode[key] === 'boolean';
 
-        if (value === null || value === undefined) {
+        if (NODE_PROPERTIES.has(key) || isBool) {
+            domNode[key] = isBool ? (value !== null && value !== undefined && value !== false && value !== 'false') : value;
+        } else if (value === null || value === undefined) {
             domNode.removeAttribute(key);
-        } else if (isBooleanAttr) {
-            if (value && value !== 'false') {
-                domNode.setAttribute(key, '');
-            } else {
-                domNode.removeAttribute(key);
-            }
         } else {
             domNode.setAttribute(key, value);
         }
@@ -410,17 +397,13 @@
         const isSpecialElement = targetNode.tagName &&
             (targetNode.tagName.toLowerCase() === 'script' || targetNode.tagName.toLowerCase() === 'style');
 
-        for (let child of children) {
+        const flatChildren = children.flat(Infinity);
+
+        for (let child of flatChildren) {
             // Allow extensions to transform children (e.g., template literals)
             // BUT skip for script/style elements which need raw content
             if (Lightview.hooks.processChild && !isSpecialElement) {
                 child = Lightview.hooks.processChild(child) ?? child;
-            }
-
-            // Handle nested arrays (flattening)
-            if (Array.isArray(child)) {
-                childElements.push(...processChildren(child, targetNode, false));
-                continue;
             }
 
             // Handle shadowDOM markers - attach shadow to parent and process shadow children
@@ -437,45 +420,40 @@
 
             const type = typeof child;
             if (type === 'function') {
-                const result = child();
-                // Determine if the result implies complex content (DOM/vDOM/Array)
-                // Treat as complex if it's an object (including arrays) but not null
-                const isComplex = result && (typeof result === 'object' || Array.isArray(result));
+                const startMarker = document.createComment('lv:s');
+                const endMarker = document.createComment('lv:e');
+                targetNode.appendChild(startMarker);
+                targetNode.appendChild(endMarker);
 
-                if (isComplex) {
-                    // Reactive element, vDOM object, or list of items
-                    // Use a stable wrapper div to hold the reactive content
-                    const wrapper = document.createElement('span');
-                    wrapper.style.display = 'contents';
-                    targetNode.appendChild(wrapper);
+                let runner;
+                const update = () => {
+                    // 1. Cleanup: Remove everything between markers
+                    while (startMarker.nextSibling && startMarker.nextSibling !== endMarker) {
+                        startMarker.nextSibling.remove();
+                        // Note: MutationObserver handles cleanupNode(removedNode)
+                    }
 
-                    let runner;
-                    const update = () => {
-                        const val = child();
-                        // Check if wrapper is still in the DOM (skip check on first run)
-                        if (runner && !wrapper.parentNode) {
-                            runner.stop();
-                            return;
-                        }
-                        const childrenToProcess = Array.isArray(val) ? val : [val];
-                        // processChildren handles clearing existing content via 3rd arg=true
-                        processChildren(childrenToProcess, wrapper, true);
-                    };
+                    // 2. Execution: Get new value and process it
+                    const val = child();
+                    if (val === undefined || val === null) return;
 
-                    runner = effect(update);
-                    trackEffect(wrapper, runner);
-                    childElements.push(child);
-                } else {
-                    // Reactive text node for primitives
-                    const textNode = document.createTextNode('');
-                    targetNode.appendChild(textNode);
-                    const runner = effect(() => {
-                        const val = child();
-                        textNode.textContent = val !== undefined ? val : '';
-                    });
-                    trackEffect(textNode, runner);
-                    childElements.push(child);
-                }
+                    // 3. Render: Process children into a fragment and insert before endMarker
+                    const fragment = document.createDocumentFragment();
+                    const childrenToProcess = Array.isArray(val) ? val : [val];
+
+                    // Stop the runner if the markers are no longer in the DOM
+                    if (runner && !startMarker.isConnected) {
+                        runner.stop();
+                        return;
+                    }
+
+                    processChildren(childrenToProcess, fragment, false);
+                    endMarker.parentNode.insertBefore(fragment, endMarker);
+                };
+
+                runner = effect(update);
+                trackEffect(startMarker, runner);
+                childElements.push(child);
             } else if (['string', 'number', 'boolean', 'symbol'].includes(type)) {
                 // Static text
                 targetNode.appendChild(document.createTextNode(child));
@@ -574,37 +552,19 @@
                     }
                 });
 
-                if (location === 'shadow') {
-                    let shadow = el.shadowRoot;
-                    if (!shadow) {
-                        shadow = el.attachShadow({ mode: 'open' });
-                    }
-                    shadow.innerHTML = '';
-                    array.forEach(item => {
-                        shadow.appendChild(item);
-                    });
-                    return el;
-                }
+                const target = location === 'shadow' ? (el.shadowRoot || el.attachShadow({ mode: 'open' })) : el;
 
-                if (location === 'inner') {
-                    el.innerHTML = '';
-                    array.forEach(item => {
-                        el.appendChild(item);
-                    });
-                    return el;
+                if (location === 'inner' || location === 'shadow') {
+                    target.replaceChildren(...array);
+                } else if (location === 'outer') {
+                    target.replaceWith(...array);
+                } else if (location === 'afterbegin') {
+                    target.prepend(...array);
+                } else if (location === 'beforeend') {
+                    target.append(...array);
+                } else {
+                    array.forEach(item => el.insertAdjacentElement(location, item));
                 }
-
-                if (location === 'outer') {
-                    el.replaceWith(...array);
-                    return el;
-                }
-
-                if (location === 'afterbegin' || location === 'afterend') {
-                    array.reverse();
-                }
-                array.forEach(item => {
-                    el.insertAdjacentElement(location, item);
-                });
                 return el;
             },
             configurable: true,
@@ -626,7 +586,7 @@
                     attributes = arg0;
                     children = args.slice(1);
                 }
-                return element(customTags[tag] || tag, attributes, children.flat());
+                return element(customTags[tag] || tag, attributes, children);
             };
 
             // Lift static methods/properties from the component onto the wrapper
