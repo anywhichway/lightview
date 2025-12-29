@@ -166,12 +166,14 @@
 /* ============= Main Content ============= */
 .gallery-main {
     flex: 1;
-    margin-left: var(--gallery-sidebar-width);
+    margin-left: 0;
     transition: margin-left var(--gallery-transition-slow);
 }
 
-.gallery-main.sidebar-closed {
-    margin-left: 0;
+@media (min-width: 1025px) {
+    .gallery-main.sidebar-open {
+        margin-left: var(--gallery-sidebar-width);
+    }
 }
 
 /* ============= Header ============= */

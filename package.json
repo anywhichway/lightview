@@ -19,6 +19,8 @@
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
+    "acorn": "^8.15.0",
+    "acorn-walk": "^8.3.4",
     "wrangler": "^4.54.0"
   },
   "dependencies": {

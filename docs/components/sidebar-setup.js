@@ -45,7 +45,7 @@ export function initSidebar() {
      */
     function updateSidebarUI() {
         sidebar.className = `gallery-sidebar ${sidebarOpen.value ? 'open' : 'closed'}`;
-        main.className = `gallery-main ${sidebarOpen.value ? '' : 'sidebar-closed'}`;
+        main.className = `gallery-main ${sidebarOpen.value ? 'sidebar-open' : ''}`;
         overlay.className = `sidebar-overlay ${sidebarOpen.value ? 'active' : ''}`;
         toggleIcon.setAttribute('class', `toggle-icon ${sidebarOpen.value ? '' : 'rotated'}`);
     }

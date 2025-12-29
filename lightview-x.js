@@ -524,6 +524,33 @@
         return child;
     };
 
+    const transformTextNode = (node, isRaw, LV) => {
+        const text = node.textContent;
+        if (isRaw) return text;
+        if (!text.trim() && !text.includes('${')) return null;
+        if (text.includes('${')) {
+            const fn = compileTemplate(text);
+            return () => fn(LV.state, LV.signal);
+        }
+        return text;
+    };
+
+    const transformElementNode = (node, element, domToElements) => {
+        const tagName = node.tagName.toLowerCase();
+        const attributes = {};
+        const skip = tagName === 'script' || tagName === 'style';
+        const LV = window.Lightview;
+
+        for (let attr of node.attributes) {
+            const val = attr.value;
+            attributes[attr.name] = (!skip && val.includes('${')) ? (() => {
+                const fn = compileTemplate(val);
+                return () => fn(LV.state, LV.signal);
+            })() : val;
+        }
+        return element(tagName, attributes, domToElements(Array.from(node.childNodes), element, tagName));
+    };
+
     /**
      * Converts standard DOM nodes into Lightview reactive elements.
      * This is used to transform HTML templates (with template literals) into live VDOM.
@@ -533,29 +560,9 @@
         const LV = window.Lightview;
 
         return domNodes.map(node => {
-            if (node.nodeType === Node.TEXT_NODE) {
-                const text = node.textContent;
-                if (isRaw) return text;
-                if (!text.trim() && !text.includes('${')) return null;
-                if (text.includes('${')) {
-                    const fn = compileTemplate(text);
-                    return () => fn(LV.state, LV.signal);
-                }
-                return text;
-            }
-            if (node.nodeType !== Node.ELEMENT_NODE) return null;
-
-            const tagName = node.tagName.toLowerCase(), attributes = {};
-            const skip = tagName === 'script' || tagName === 'style';
-
-            for (let attr of node.attributes) {
-                const val = attr.value;
-                attributes[attr.name] = (!skip && val.includes('${')) ? (() => {
-                    const fn = compileTemplate(val);
-                    return () => fn(LV.state, LV.signal);
-                })() : val;
-            }
-            return element(tagName, attributes, domToElements(Array.from(node.childNodes), element, tagName));
+            if (node.nodeType === Node.TEXT_NODE) return transformTextNode(node, isRaw, LV);
+            if (node.nodeType === Node.ELEMENT_NODE) return transformElementNode(node, element, domToElements);
+            return null;
         }).filter(n => n !== null);
     };
 
