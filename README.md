@@ -7,7 +7,7 @@ Access the full documentaion at [lightview.dev](https://lightview.dev).
 
 This NPM package is both the library and the website supporting the library. The website is built using Lightview. The core library files are in the root directory. The Website entry point is index.html and the restr of the site is under ./docs. The site is served by a Cloudflare pages deployment.
 
-**Core**: ~7.5KB | **Additional Hypermedia Extensions and Component Library Support**: ~15KB | **Router**: ~3KB
+**Core**: ~7.5KB | **Additional Hypermedia Extensions and Component Library Support**: ~15.5KB | **Router**: ~3KB
 
 Fast: This [gallery of components](https://lightview.dev/docs/components/) loads in about 1 second: 
 

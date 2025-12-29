@@ -683,55 +683,54 @@
         executeScripts(target);
     };
 
-    /**
-     * Handles the 'src' attribute on non-standard tags.
-     * Loads content from a URL or selector and injects it into the element.
-     */
-    const handleSrcAttribute = async (el, src, tagName, { element, setupChildren }) => {
-        if (STANDARD_SRC_TAGS.includes(tagName)) return;
-        const isPath = (s) => /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom))$/i.test(s);
+    const isPath = (s) => /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom))$/i.test(s);
 
-        let content = null, isJson = false, isHtml = false, raw = '';
-        if (isPath(src)) {
-            try {
-                const res = await fetch(new URL(src, document.baseURI));
-                if (res.ok) {
-                    const ext = new URL(src, document.baseURI).pathname.split('.').pop().toLowerCase();
-                    isJson = (ext === 'vdom' || ext === 'odom');
-                    isHtml = (ext === 'html');
-                    content = isJson ? await res.json() : await res.text();
-                    raw = isJson ? JSON.stringify(content) : content;
-                }
-            } catch (e) { /* Fetch failed, maybe selector */ }
+    const fetchContent = async (src) => {
+        try {
+            const url = new URL(src, document.baseURI);
+            const res = await fetch(url);
+            if (!res.ok) return null;
+            const ext = url.pathname.split('.').pop().toLowerCase();
+            const isJson = (ext === 'vdom' || ext === 'odom');
+            const isHtml = (ext === 'html');
+            const content = isJson ? await res.json() : await res.text();
+            return {
+                content,
+                isJson,
+                isHtml,
+                raw: isJson ? JSON.stringify(content) : content
+            };
+        } catch (e) {
+            return null;
         }
+    };
 
-        let elements = [];
-        if (content !== null) {
-            if (isJson) elements = Array.isArray(content) ? content : [content];
-            else if (isHtml) {
-                if (el.domEl.getAttribute('escape') === 'true') elements = [content];
-                else {
-                    const doc = new DOMParser().parseFromString(content.replace(/<head[^>]*>[\s\S]*?<\/head>/i, ''), 'text/html');
-                    elements = domToElements([...Array.from(doc.head.childNodes), ...Array.from(doc.body.childNodes)], element);
-                }
-            } else elements = [content];
-        } else {
-            try {
-                const sel = document.querySelectorAll(src);
-                if (sel.length) {
-                    elements = domToElements(Array.from(sel), element);
-                    raw = Array.from(sel).map(n => n.outerHTML || n.textContent).join('');
-                }
-            } catch (e) { /* Invalid selector */ }
+    const parseElements = (content, isJson, isHtml, el, element) => {
+        if (isJson) return Array.isArray(content) ? content : [content];
+        if (isHtml) {
+            if (el.domEl.getAttribute('escape') === 'true') return [content];
+            const doc = new DOMParser().parseFromString(content.replace(/<head[^>]*>[\s\S]*?<\/head>/i, ''), 'text/html');
+            return domToElements([...Array.from(doc.head.childNodes), ...Array.from(doc.body.childNodes)], element);
         }
+        return [content];
+    };
 
-        if (!elements.length) return;
-        const loc = (el.domEl.getAttribute('location') || 'innerhtml').toLowerCase();
-        const hash = hashContent(raw);
+    const elementsFromSelector = (selector, element) => {
+        try {
+            const sel = document.querySelectorAll(selector);
+            if (!sel.length) return null;
+            return {
+                elements: domToElements(Array.from(sel), element),
+                raw: Array.from(sel).map(n => n.outerHTML || n.textContent).join('')
+            };
+        } catch (e) {
+            return null;
+        }
+    };
+
+    const updateTargetContent = (el, elements, raw, loc, hash, { element, setupChildren }) => {
         const markerId = `${loc}-${hash.slice(0, 8)}`;
-
         let track = getOrSet(insertedContentMap, el.domEl, () => ({}));
-        if (track[loc] === hash) return;
         if (track[loc]) removeInsertedContent(el.domEl, `${loc}-${track[loc].slice(0, 8)}`);
         track[loc] = hash;
 
@@ -745,6 +744,40 @@
         } else {
             insert(elements, el.domEl, loc, markerId, { element, setupChildren });
         }
+    };
+
+    /**
+     * Handles the 'src' attribute on non-standard tags.
+     * Loads content from a URL or selector and injects it into the element.
+     */
+    const handleSrcAttribute = async (el, src, tagName, { element, setupChildren }) => {
+        if (STANDARD_SRC_TAGS.includes(tagName)) return;
+
+        let elements = [], raw = '';
+        if (isPath(src)) {
+            const result = await fetchContent(src);
+            if (result) {
+                elements = parseElements(result.content, result.isJson, result.isHtml, el, element);
+                raw = result.raw;
+            }
+        }
+
+        if (!elements.length) {
+            const result = elementsFromSelector(src, element);
+            if (result) {
+                elements = result.elements;
+                raw = result.raw;
+            }
+        }
+
+        if (!elements.length) return;
+
+        const loc = (el.domEl.getAttribute('location') || 'innerhtml').toLowerCase();
+        const hash = hashContent(raw);
+        const track = getOrSet(insertedContentMap, el.domEl, () => ({}));
+
+        if (track[loc] === hash) return;
+        updateTargetContent(el, elements, raw, loc, hash, { element, setupChildren });
     };
 
     // Valid location values for content insertion
@@ -948,46 +981,48 @@
         }
     };
 
+    const processAddedNode = (node, nodesToProcess, nodesToActivate) => {
+        if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
+            nodesToActivate.push(node);
+        }
+
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+        // Check the added node itself for src
+        nodesToProcess.push(node);
+
+        // Check descendants with src attribute
+        const selector = '[src]:not(' + STANDARD_SRC_TAGS.join('):not(') + ')';
+        const descendants = node.querySelectorAll(selector);
+        for (const desc of descendants) {
+            if (!desc.tagName.toLowerCase().startsWith('lv-')) {
+                nodesToProcess.push(desc);
+            }
+        }
+    };
+
+    const collectNodesFromMutations = (mutations) => {
+        const nodesToProcess = [];
+        const nodesToActivate = [];
+
+        for (const mutation of mutations) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(node => processAddedNode(node, nodesToProcess, nodesToActivate));
+            } else if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                nodesToProcess.push(mutation.target);
+            }
+        }
+        return { nodesToProcess, nodesToActivate };
+    };
+
     /**
      * Setup MutationObserver to watch for added nodes with src attributes OR reactive syntax
      * @param {Object} LV - Lightview instance
      */
     const setupSrcObserver = (LV) => {
         const observer = new MutationObserver((mutations) => {
-            // Collect all nodes to process
-            const nodesToProcess = [];
-            const nodesToActivate = [];
+            const { nodesToProcess, nodesToActivate } = collectNodesFromMutations(mutations);
 
-            for (const mutation of mutations) {
-                // Handle added nodes
-                if (mutation.type === 'childList') {
-                    for (const node of mutation.addedNodes) {
-                        if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
-                            nodesToActivate.push(node);
-                        }
-
-                        if (node.nodeType !== Node.ELEMENT_NODE) continue;
-
-                        // Check the added node itself for src
-                        nodesToProcess.push(node);
-
-                        // Check descendants with src attribute
-                        const selector = '[src]:not(' + STANDARD_SRC_TAGS.join('):not(') + ')';
-                        const descendants = node.querySelectorAll(selector);
-                        for (const desc of descendants) {
-                            if (desc.tagName.toLowerCase().startsWith('lv-')) continue;
-                            nodesToProcess.push(desc);
-                        }
-                    }
-                }
-
-                // Handle attribute changes
-                if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
-                    nodesToProcess.push(mutation.target);
-                }
-            }
-
-            // Batch processing
             if (nodesToProcess.length > 0 || nodesToActivate.length > 0) {
                 requestAnimationFrame(() => {
                     nodesToActivate.forEach(node => activateReactiveSyntax(node, LV));
