@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -74,7 +74,7 @@
 
                             <!-- Tabs -->
                             <script>
-                                window.switchBasicPieTab = (tabId) => {
+                                globalThis.switchBasicPieTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`basic-pie-tab-btn-${t}`);
@@ -222,7 +222,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchLabelsPieTab = (tabId) => {
+                                globalThis.switchLabelsPieTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`labels-pie-tab-btn-${t}`);
@@ -404,7 +404,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchSpacingPieTab = (tabId) => {
+                                globalThis.switchSpacingPieTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`spacing-pie-tab-btn-${t}`);
@@ -593,7 +593,7 @@ $('#example').content(charts);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchColorPieTab = (tabId) => {
+                                globalThis.switchColorPieTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`color-pie-tab-btn-${t}`);

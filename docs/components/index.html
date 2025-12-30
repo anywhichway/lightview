@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -52,7 +52,7 @@
                                 style (Object DOM and HTML requires <code>lightview-x</code>):</p>
 
                             <script>
-                                window.switchUsageSyntaxTab = (tabId) => {
+                                globalThis.switchUsageSyntaxTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`usage-tab-${t}`);
@@ -226,7 +226,7 @@ $('#example').content(app);</code></pre>
     document.querySelector('.gallery-layout').classList.add('js-ready');
 
     // Info icon helper (shared via window)
-    window.InfoIcon = () => svg(
+    globalThis.InfoIcon = () => svg(
         { xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", class: "info-icon", style: "stroke: currentColor;" },
         path({ "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" })
     );

@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -275,7 +275,7 @@ appRouter.use(notFound({
     // Good for post-render logic like analytics or scroll position
     onResponse: (response, path) => {
         document.getElementById('spinner').style.display = 'none';
-        window.scrollTo(0, 0);
+        globalThis.scrollTo(0, 0);
         // Run additional logic here (analytics, etc.)
     }
 });</code></pre>

@@ -1,10 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
-        window.location.replace('/docs/components/toggle');
+    if (globalThis.LightviewRouter) {
+        globalThis.location.replace('/docs/components/toggle');
     } else {
-        window.location.href = 'toggle.html';
+        globalThis.location.href = 'toggle.html';
     }
 </script>
 

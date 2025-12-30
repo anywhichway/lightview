@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -56,7 +56,7 @@
 
             // Wait for Lightview if loaded async
             const init = () => {
-                if (!window.Lightview) return setTimeout(init, 50);
+                if (!globalThis.Lightview) return setTimeout(init, 50);
 
                 const { tags, $ } = Lightview;
                 const { div, span, p, Button, Card } = tags;

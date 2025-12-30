@@ -14,8 +14,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Progress = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -66,11 +66,11 @@ const Progress = (props = {}, ...children) => {
     return progressEl;
 };
 
-window.Lightview.tags.Progress = Progress;
+globalThis.Lightview.tags.Progress = Progress;
 
 // Register as Custom Element
-if (window.LightviewX?.createCustomElement) {
-    const ProgressElement = window.LightviewX.createCustomElement(Progress);
+if (globalThis.LightviewX?.createCustomElement) {
+    const ProgressElement = globalThis.LightviewX.createCustomElement(Progress);
     if (!customElements.get('lv-progress')) {
         customElements.define('lv-progress', ProgressElement);
     }

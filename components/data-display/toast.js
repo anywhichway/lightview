@@ -13,8 +13,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Toast = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -67,6 +67,6 @@ const Toast = (props = {}, ...children) => {
     return toastEl;
 };
 
-window.Lightview.tags.Toast = Toast;
+globalThis.Lightview.tags.Toast = Toast;
 
 export default Toast;

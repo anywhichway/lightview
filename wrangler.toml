@@ -1,6 +1,10 @@
 name = "lightview"
 compatibility_date = "2024-01-01"
 
+# Enable eval() and new Function() for SSR script processing
+[unsafe]
+eval = true
+
 # [build]
 # command = "npm run build"
 
@@ -8,5 +12,7 @@ compatibility_date = "2024-01-01"
 # Note: Static asset headers are now defined in _headers file
 # and the build directory is specified in the deploy command or dashboard.
 
-[assets]
-directory = "./dist"
+# Assets directory is set via the `wrangler pages dev <directory>` command
+# Uncomment below for Workers mode (not Pages mode):
+# [assets]
+# directory = "./dist"

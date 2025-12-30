@@ -1,6 +1,6 @@
 // Unique ID counter for iframe identification
-var examplifyIdCounter = window.examplifyIdCounter || 0;
-window.examplifyIdCounter = examplifyIdCounter;
+var examplifyIdCounter = globalThis.examplifyIdCounter || 0;
+globalThis.examplifyIdCounter = examplifyIdCounter;
 
 function examplify(target, options = {}) {
     const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false, useOrigin = null, language = 'js', autoRun = false } = options;
@@ -160,7 +160,7 @@ function examplify(target, options = {}) {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const themeAttr = currentTheme ? ` data-theme="${currentTheme}"` : '';
 
-        const path = window.location.pathname;
+        const path = globalThis.location.pathname;
         const baseDir = path.substring(0, path.lastIndexOf('/') + 1);
         const baseTag = useOrigin ? `<base href="${useOrigin}${baseDir}">` : '';
 
@@ -177,7 +177,7 @@ function examplify(target, options = {}) {
                     parent.postMessage({ type: 'examplify-resize', id: frameId, height: height }, '*');
                 }
                 
-                window.addEventListener('load', () => {
+                globalThis.addEventListener('load', () => {
                     sendHeight();
                     setTimeout(sendHeight, 300);
                     setTimeout(sendHeight, 1000);
@@ -213,7 +213,7 @@ function examplify(target, options = {}) {
     ${styles ? styles.map(href => `<link rel="stylesheet" href="${href}">`).join('\n') : ''}
     <script>
         // Synchronously create the stylesheet-ready promise before any modules execute
-        window.__stylesheetsReady = (function() {
+        globalThis.__stylesheetsReady = (function() {
             return new Promise(resolve => {
                 // Use requestAnimationFrame to ensure DOM is ready for querying
                 requestAnimationFrame(() => {
@@ -248,9 +248,9 @@ function examplify(target, options = {}) {
     ${scripts ? scripts.map(src => `<script src="${src}"></script>`).join('\n') : ''}
     <script type="module">
         // Wait for stylesheets before initializing Lightview components
-        await window.__stylesheetsReady;
-        if (window.LightviewX) {
-            await window.LightviewX.initComponents({ shadowDefault: true });
+        await globalThis.__stylesheetsReady;
+        if (globalThis.LightviewX) {
+            await globalThis.LightviewX.initComponents({ shadowDefault: true });
         }
     </script>
 </head>
@@ -270,7 +270,7 @@ function examplify(target, options = {}) {
         };
         ${type === 'module' ? codeContent : `
             // Wait for stylesheets before running example code
-            window.__stylesheetsReady.then(async () => {
+            globalThis.__stylesheetsReady.then(async () => {
                 ${codeContent}
             });
         `}
@@ -278,7 +278,7 @@ function examplify(target, options = {}) {
     ${autoResizeScript}
     <script>
         // Reveal body and signal ready only after stylesheets are loaded
-        window.__stylesheetsReady.then(() => {
+        globalThis.__stylesheetsReady.then(() => {
             document.body.classList.add('styles-ready');
             setTimeout(() => {
                 parent.postMessage({ type: 'examplify-ready', id: '${iframeId}' }, '*');
@@ -286,11 +286,11 @@ function examplify(target, options = {}) {
         });
 
         // Listen for theme changes from parent
-        window.addEventListener('message', (event) => {
+        globalThis.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'theme-change' && event.data.theme) {
                 document.documentElement.setAttribute('data-theme', event.data.theme);
-                if (window.LightviewX && typeof window.LightviewX.setTheme === 'function') {
-                    window.LightviewX.setTheme(event.data.theme);
+                if (globalThis.LightviewX && typeof globalThis.LightviewX.setTheme === 'function') {
+                    globalThis.LightviewX.setTheme(event.data.theme);
                 }
             }
         });
@@ -375,7 +375,7 @@ function examplify(target, options = {}) {
     }
 
     // Global Message Listener (for resizing and run click)
-    window.addEventListener('message', (event) => {
+    globalThis.addEventListener('message', (event) => {
         if (!event.data || event.data.id !== iframeId) return;
 
         if (event.data.type === 'examplify-resize' && autoResize) {

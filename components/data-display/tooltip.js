@@ -15,8 +15,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Tooltip = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -69,6 +69,6 @@ const Tooltip = (props = {}, ...children) => {
     return tooltipEl;
 };
 
-window.Lightview.tags.Tooltip = Tooltip;
+globalThis.Lightview.tags.Tooltip = Tooltip;
 
 export default Tooltip;

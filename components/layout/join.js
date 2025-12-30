@@ -12,8 +12,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Join = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -61,7 +61,7 @@ const Join = (props = {}, ...children) => {
  * Join Item - each joined element should have this class
  */
 Join.Item = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { as = 'button', class: className = '', ...rest } = props;
@@ -73,6 +73,6 @@ Join.Item = (props = {}, ...children) => {
     }, ...children);
 };
 
-window.Lightview.tags.Join = Join;
+globalThis.Lightview.tags.Join = Join;
 
 export default Join;

@@ -8,10 +8,6 @@
   },
   "scripts": {
     "dev": "wrangler pages dev . --port 3000",
-    "preview": "npm run build && wrangler pages dev ./dist --port 8788",
-    "build": "node build.js",
-    "watch": "node watch.js",
-    "deploy": "npm run build && wrangler pages deploy dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -24,6 +20,7 @@
     "wrangler": "^4.54.0"
   },
   "dependencies": {
+    "linkedom": "^0.18.12",
     "marked": "^17.0.1"
   }
 }

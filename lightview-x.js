@@ -41,7 +41,7 @@
 
         const tagKey = Object.keys(obj)[0];
         const content = obj[tagKey];
-        const LV = window.Lightview;
+        const LV = typeof window !== 'undefined' ? globalThis.Lightview : null;
         const tag = (LV?.tags?._customTags?.[tagKey]) || tagKey;
         const { children, ...attributes } = content;
 
@@ -115,7 +115,7 @@
     };
 
     // Theme Signal
-    const themeSignal = typeof window !== 'undefined' && window.Lightview ? window.Lightview.signal(
+    const themeSignal = typeof window !== 'undefined' && globalThis.Lightview ? globalThis.Lightview.signal(
         (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme')) ||
         getSavedTheme() ||
         'light'
@@ -131,7 +131,9 @@
         // Determine base theme (light or dark) for the main document
         // const darkThemes = ['dark', 'aqua', 'black', 'business', 'coffee', 'dim', 'dracula', 'forest', 'halloween', 'luxury', 'night', 'sunset', 'synthwave'];
         // const baseTheme = darkThemes.includes(themeName) ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', themeName);
+        if (typeof document !== 'undefined') {
+            document.documentElement.setAttribute('data-theme', themeName);
+        }
 
         // Update signal
         if (themeSignal && themeSignal.value !== themeName) {
@@ -140,7 +142,9 @@
 
         // Persist preference
         try {
-            localStorage.setItem('lightview-theme', themeName);
+            if (typeof localStorage !== 'undefined') {
+                localStorage.setItem('lightview-theme', themeName);
+            }
         } catch (e) {
             // Ignore storage errors
         }
@@ -337,17 +341,19 @@
     };
 
     const proxyGet = (target, prop, receiver, signals) => {
-        const LV = window.Lightview;
-        if (!signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
-        const val = signals.get(prop).value;
+        const LV = typeof window !== 'undefined' ? globalThis.Lightview : (typeof globalThis !== 'undefined' ? globalThis.Lightview : null);
+        if (LV && !signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
+        const signal = signals.get(prop);
+        const val = signal ? signal.value : Reflect.get(target, prop, receiver);
         return typeof val === 'object' && val !== null ? state(val) : val;
     };
 
     const proxySet = (target, prop, value, receiver, signals) => {
-        const LV = window.Lightview;
-        if (!signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
+        const LV = typeof window !== 'undefined' ? globalThis.Lightview : (typeof globalThis !== 'undefined' ? globalThis.Lightview : null);
+        if (LV && !signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
         const success = Reflect.set(target, prop, value, receiver);
-        if (success) signals.get(prop).value = value;
+        const signal = signals.get(prop);
+        if (success && signal) signal.value = value;
         return success;
     };
 
@@ -356,7 +362,7 @@
      * that require monitoring specific properties (e.g., 'length' or 'time').
      */
     const createSpecialProxy = (obj, monitor, trackingProps = []) => {
-        const LV = window.Lightview;
+        const LV = globalThis.Lightview;
         // Get or create the signals map for this object
         const signals = getOrSet(stateSignals, obj, () => new Map());
 
@@ -489,8 +495,9 @@
             } else return obj;
         }
 
-        if (name && storage && window.Lightview?.effect) {
-            window.Lightview.effect(() => {
+        if (name && storage && (typeof window !== 'undefined' ? globalThis.Lightview?.effect : globalThis.Lightview?.effect)) {
+            const effect = (typeof window !== 'undefined' ? globalThis.Lightview.effect : globalThis.Lightview.effect);
+            effect(() => {
                 try { storage.setItem(name, JSON.stringify(proxy)); } catch (e) { /* Persistence failed */ }
             });
         }
@@ -539,7 +546,7 @@
         const tagName = node.tagName.toLowerCase();
         const attributes = {};
         const skip = tagName === 'script' || tagName === 'style';
-        const LV = window.Lightview;
+        const LV = typeof window !== 'undefined' ? globalThis.Lightview : (typeof globalThis !== 'undefined' ? globalThis.Lightview : null);
 
         for (let attr of node.attributes) {
             const val = attr.value;
@@ -557,7 +564,7 @@
      */
     const domToElements = (domNodes, element, parentTagName = null) => {
         const isRaw = parentTagName === 'script' || parentTagName === 'style';
-        const LV = window.Lightview;
+        const LV = globalThis.Lightview;
 
         return domNodes.map(node => {
             if (node.nodeType === Node.TEXT_NODE) return transformTextNode(node, isRaw, LV);
@@ -672,7 +679,7 @@
             else if (c.domEl) frag.appendChild(c.domEl);
             else if (c instanceof Node) frag.appendChild(c);
             else {
-                const v = window.Lightview?.hooks.processChild?.(c) || c;
+                const v = globalThis.Lightview?.hooks.processChild?.(c) || c;
                 if (v.tag) {
                     const n = element(v.tag, v.attributes || {}, v.children || []);
                     if (n?.domEl) frag.appendChild(n.domEl);
@@ -837,18 +844,18 @@
         if (targetAttr.startsWith('_')) {
             switch (targetAttr) {
                 case '_self':
-                    window.location.href = href;
+                    globalThis.location.href = href;
                     break;
                 case '_parent':
-                    window.parent.location.href = href;
+                    globalThis.parent.location.href = href;
                     break;
                 case '_top':
-                    window.top.location.href = href;
+                    globalThis.top.location.href = href;
                     break;
                 case '_blank':
                 default:
                     // _blank or any custom _name opens a new window/tab
-                    window.open(href, targetAttr);
+                    globalThis.open(href, targetAttr);
                     break;
             }
             return;
@@ -1049,8 +1056,8 @@
     };
 
     // Auto-register with Lightview if available
-    if (typeof window !== 'undefined' && window.Lightview) {
-        const LV = window.Lightview;
+    if (typeof window !== 'undefined' && globalThis.Lightview) {
+        const LV = globalThis.Lightview;
 
         // Extend Lightview with simple named signal getter/setter if needed (already in Core now)
         // But for template literals we use processTemplateChild which needs access to registries
@@ -1198,25 +1205,24 @@
                     props.useShadow = false;
 
                     // Render component with a slot for children
-                    const slot = window.Lightview.tags.slot();
+                    const slot = globalThis.Lightview.tags.slot();
                     const result = Component(props, slot);
 
                     // Use Lightview's internal setupChildren to render the result
                     // This handles vDOM, DOM nodes, strings, and reactive content
-                    window.Lightview.internals.setupChildren([result], this.themeWrapper);
+                    globalThis.Lightview.internals.setupChildren([result], this.themeWrapper);
                 };
 
-                // Initial render
-                this.render();
-
-                // Observe attribute changes on self to trigger re-render
-                this.attrObserver = new MutationObserver((mutations) => {
-                    // Only re-render if actual attributes changed
-                    this.render();
-                });
-                this.attrObserver.observe(this, {
-                    attributes: true
-                });
+                if (typeof MutationObserver !== 'undefined' && typeof HTMLElement !== 'undefined') {
+                    // Observe attribute changes on self to trigger re-render
+                    this.attrObserver = new MutationObserver((mutations) => {
+                        // Only re-render if actual attributes changed
+                        this.render();
+                    });
+                    this.attrObserver.observe(this, {
+                        attributes: true
+                    });
+                }
             }
 
             disconnectedCallback() {
@@ -1250,7 +1256,7 @@
         module.exports = LightviewX;
     }
     if (typeof window !== 'undefined') {
-        window.LightviewX = LightviewX;
+        globalThis.LightviewX = LightviewX;
     }
 
     // Initialize component hook to use Object DOM
@@ -1263,9 +1269,9 @@
             }
         } catch (e) { /* ignore */ }
 
-        window.addEventListener('load', () => {
-            if (window.Lightview) {
-                window.Lightview.hooks.processChild = (child) => {
+        globalThis.addEventListener('load', () => {
+            if (globalThis.Lightview) {
+                globalThis.Lightview.hooks.processChild = (child) => {
                     // Convert Object DOM syntax if applicable
                     if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
                         return convertObjectDOM(child);
@@ -1276,8 +1282,8 @@
         });
 
         // Immediate check in case load already fired or script is defer
-        if (window.Lightview) {
-            window.Lightview.hooks.processChild = (child) => {
+        if (typeof window !== 'undefined' && globalThis.Lightview) {
+            globalThis.Lightview.hooks.processChild = (child) => {
                 // Convert Object DOM syntax if applicable
                 if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
                     return convertObjectDOM(child);
@@ -1285,5 +1291,15 @@
                 return child;
             };
         }
+    }
+
+    // Server-side initialization if globally available
+    if (typeof globalThis !== 'undefined' && globalThis.Lightview) {
+        globalThis.Lightview.hooks.processChild = (child) => {
+            if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
+                return convertObjectDOM(child);
+            }
+            return child;
+        };
     }
 })();

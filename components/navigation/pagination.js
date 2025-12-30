@@ -15,8 +15,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Pagination = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -100,6 +100,6 @@ const Pagination = (props = {}, ...children) => {
     return paginationEl;
 };
 
-window.Lightview.tags.Pagination = Pagination;
+globalThis.Lightview.tags.Pagination = Pagination;
 
 export default Pagination;

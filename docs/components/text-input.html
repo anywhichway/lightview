@@ -1,10 +1,10 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
-        window.location.replace('/docs/components/input');
+    if (globalThis.LightviewRouter) {
+        globalThis.location.replace('/docs/components/input');
     } else {
-        window.location.href = 'input.html';
+        globalThis.location.href = 'input.html';
     }
 </script>
 

@@ -32,8 +32,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Checkbox = (props = {}) => {
-    const { tags, signal } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags, signal } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) {
         console.error('Lightview not found');
@@ -239,11 +239,11 @@ const Checkbox = (props = {}) => {
 };
 
 // Auto-register
-window.Lightview.tags.Checkbox = Checkbox;
+globalThis.Lightview.tags.Checkbox = Checkbox;
 
 // Register as Custom Element
-if (window.LightviewX?.createCustomElement) {
-    const CheckboxElement = window.LightviewX.createCustomElement(Checkbox);
+if (globalThis.LightviewX?.createCustomElement) {
+    const CheckboxElement = globalThis.LightviewX.createCustomElement(Checkbox);
     if (!customElements.get('lv-checkbox')) {
         customElements.define('lv-checkbox', CheckboxElement);
     }

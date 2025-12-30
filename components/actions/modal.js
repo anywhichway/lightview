@@ -15,8 +15,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Modal = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -86,7 +86,7 @@ const Modal = (props = {}, ...children) => {
  * Modal Box - the content container
  */
 Modal.Box = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -101,7 +101,7 @@ Modal.Box = (props = {}, ...children) => {
  * Modal Action - container for action buttons  
  */
 Modal.Action = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -116,7 +116,7 @@ Modal.Action = (props = {}, ...children) => {
  * Modal Backdrop - click to close
  */
 Modal.Backdrop = (props = {}) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     return tags.form({ method: 'dialog', class: 'modal-backdrop' },
@@ -138,9 +138,9 @@ Modal.close = (id) => {
     document.getElementById(id)?.close?.();
 };
 
-window.Lightview.tags.Modal = Modal;
-window.Lightview.tags['Modal.Box'] = Modal.Box;
-window.Lightview.tags['Modal.Action'] = Modal.Action;
-window.Lightview.tags['Modal.Backdrop'] = Modal.Backdrop;
+globalThis.Lightview.tags.Modal = Modal;
+globalThis.Lightview.tags['Modal.Box'] = Modal.Box;
+globalThis.Lightview.tags['Modal.Action'] = Modal.Action;
+globalThis.Lightview.tags['Modal.Backdrop'] = Modal.Backdrop;
 
 export default Modal;

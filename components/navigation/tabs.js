@@ -13,8 +13,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Tabs = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -70,7 +70,7 @@ const Tabs = (props = {}, ...children) => {
  * Tab Item
  */
 Tabs.Tab = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const {
@@ -103,7 +103,7 @@ Tabs.Tab = (props = {}, ...children) => {
  * Tab Content - for lifted tabs with content panels
  */
 Tabs.Content = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -115,7 +115,7 @@ Tabs.Content = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Tabs = Tabs;
 tags['Tabs.Tab'] = Tabs.Tab;
 tags['Tabs.Content'] = Tabs.Content;

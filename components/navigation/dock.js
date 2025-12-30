@@ -12,8 +12,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Dock = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -61,7 +61,7 @@ const Dock = (props = {}, ...children) => {
  * Dock Item
  */
 Dock.Item = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const {
@@ -84,7 +84,7 @@ Dock.Item = (props = {}, ...children) => {
  * Dock Label
  */
 Dock.Label = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -95,7 +95,7 @@ Dock.Label = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Dock = Dock;
 tags['Dock.Item'] = Dock.Item;
 tags['Dock.Label'] = Dock.Label;

@@ -685,10 +685,10 @@
         module.exports = Lightview;
     }
     if (typeof window !== 'undefined') {
-        window.Lightview = Lightview;
+        globalThis.Lightview = Lightview;
 
         // Global click handler delegates to hook if registered
-        window.addEventListener('click', (e) => {
+        globalThis.addEventListener('click', (e) => {
             // Support fragment navigation piercing Shadow DOM
             // Use composedPath() to find the actual clicked element, even inside shadow roots
             const path = e.composedPath();
@@ -715,46 +715,48 @@
         });
 
         // Automatic Cleanup & Lifecycle Hooks
-        const walkNodes = (node, fn) => {
-            fn(node);
-            node.childNodes?.forEach(n => walkNodes(n, fn));
-            if (node.shadowRoot) walkNodes(node.shadowRoot, fn);
-        };
+        if (typeof MutationObserver !== 'undefined') {
+            const walkNodes = (node, fn) => {
+                fn(node);
+                node.childNodes?.forEach(n => walkNodes(n, fn));
+                if (node.shadowRoot) walkNodes(node.shadowRoot, fn);
+            };
 
-        const cleanupNode = (node) => walkNodes(node, n => {
-            const s = nodeState.get(n);
-            if (s) {
-                s.effects?.forEach(e => e.stop());
-                s.onunmount?.(n);
-                nodeState.delete(n);
-            }
-        });
-
-        const mountNode = (node) => walkNodes(node, n => {
-            nodeState.get(n)?.onmount?.(n);
-        });
-
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.removedNodes.forEach(cleanupNode);
-                mutation.addedNodes.forEach(mountNode);
+            const cleanupNode = (node) => walkNodes(node, n => {
+                const s = nodeState.get(n);
+                if (s) {
+                    s.effects?.forEach(e => e.stop());
+                    s.onunmount?.(n);
+                    nodeState.delete(n);
+                }
             });
-        });
 
-        // Wait for DOM to be ready before observing
-        const startObserving = () => {
-            if (document.body) {
-                observer.observe(document.body, {
-                    childList: true,
-                    subtree: true
+            const mountNode = (node) => walkNodes(node, n => {
+                nodeState.get(n)?.onmount?.(n);
+            });
+
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.removedNodes.forEach(cleanupNode);
+                    mutation.addedNodes.forEach(mountNode);
                 });
-            }
-        };
+            });
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', startObserving);
-        } else {
-            startObserving();
+            // Wait for DOM to be ready before observing
+            const startObserving = () => {
+                if (document.body) {
+                    observer.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
+                }
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', startObserving);
+            } else {
+                startObserving();
+            }
         }
     }
 })();

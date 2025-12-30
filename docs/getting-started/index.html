@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -19,6 +19,7 @@
             <button class="btn btn-secondary step-btn" onclick="switchStep(3)">3. State</button>
             <button class="btn btn-secondary step-btn" onclick="switchStep(4)">4. Hypermedia</button>
             <button class="btn btn-secondary step-btn" onclick="switchStep(5)">5. Components</button>
+            <button class="btn btn-secondary step-btn" onclick="switchStep(6)">6. SSR</button>
         </div>
 
         <!-- Tutorial Layout: Preview on top, Code & Concepts below -->
@@ -593,6 +594,83 @@ $('#app').content(App);`,
                     <li style="margin-bottom: 0.75rem;"><strong>Computed</strong> — <code>computed(() => ...)</code> creates derived values that reactively update based on other signals.</li>
                 </ul>
                 <p><strong>Next:</strong> Explore the <a href="/docs/components">Components</a> library!</p>`
+            },
+            6: {
+                options: {
+                    autoRun: false
+                },
+                previewSrc: '../examples/ssr-demo.html',
+                code: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>SSR & Hydration Demo</title>
+    <script src="/lightview.js"><\/script>
+    <script src="/lightview-x.js"><\/script>
+
+    <!-- This script runs ONLY on the server -->
+    <script runat="server">
+        const timestamp = new Date().toLocaleTimeString();
+        const userAgent = request.headers.get('user-agent') || 'Unknown';
+        document.title = \`SSR Demo - Generated at \${timestamp}\`;
+
+        const { tags } = Lightview;
+        $('#server-info').content([
+            tags.p({ style: 'font-weight: 600;' }, \`Server Timestamp: \${timestamp}\`),
+            tags.p({ style: 'font-size: 0.8rem;' }, \`Edge Node: \${userAgent.slice(0, 50)}...\`)
+        ]);
+    <\/script>
+</head>
+<body>
+    <div id="server-info"><!-- Filled by runat="server" --></div>
+    <div id="hydration-badge"><!-- Filled by runat="server/client" --></div>
+
+    <!-- This script runs on both Server and Client -->
+    <script runat="server/client">
+        const { signal, tags, $ } = Lightview;
+        const count = signal(0);
+
+        if (typeof isServer !== 'undefined' && isServer) {
+            $('#hydration-badge').content(
+                tags.div({}, 'PRE-RENDERED (SERVER)')
+            );
+        }
+
+        $('#counter-box').content([
+            tags.h3('Isomorphic Counter'),
+            tags.button({ onclick: () => count.value++ }, 'Increment'),
+            tags.span(() => count.value)
+        ]);
+
+        // Client-side hydration transition
+        if (typeof window !== 'undefined') {
+            setTimeout(() => {
+                $('#hydration-badge').content(
+                    tags.div({}, 'HYDRATED (CLIENT)')
+                );
+            }, 1500);
+        }
+    <\/script>
+
+    <div id="counter-box"><!-- Filled by script --></div>
+</body>
+</html>`,
+                concepts: `<h3 style="margin-top: 0; color: var(--site-primary);">Step 6: Server-Side Rendering (SSR)</h3>
+                <p>Lightview supports powerful "at the edge" pre-processing using the <code>runat</code> attribute on scripts.</p>
+                
+                <h4>Execution Models:</h4>
+                <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
+                    <li style="margin-bottom: 0.75rem;"><strong><code>runat="server"</code></strong> — Execution happens ONLY on the server. The script is removed from final HTML.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong><code>runat="server/client"</code></strong> — The script runs on the server to pre-populate content, then runs again on the client for interactivity.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong><code>runat="client"</code></strong> — Standard browser-only behavior (default).</li>
+                </ul>
+
+                <h4>The <code>isServer</code> Global:</h4>
+                <p>When running in <code>runat="server"</code> or <code>runat="server/client"</code>, the server provides a global <code>isServer</code> boolean. This allows you to write conditional logic for server-only operations.</p>
+                
+                <h4>Server Context:</h4>
+                <p>Server scripts have access to <code>request</code> object with headers, URL, and other request metadata.</p>
+                
+                <p><strong>Try it:</strong> <a href="/docs/examples/ssr-demo.html" target="_blank" style="color: var(--site-primary);">View the full SSR Demo</a></p>`
             }
         };
 
@@ -639,10 +717,10 @@ $('#app').content(App);`,
             conceptsContainer.appendChild(conceptsEl);
 
             // 4. Initialize Examplify
-            const useOrigin = (data.options?.allowSameOrigin && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
-                ? (window.location.hostname === 'localhost'
-                    ? window.location.origin.replace('localhost', '127.0.0.1')
-                    : window.location.origin.replace('127.0.0.1', 'localhost'))
+            const useOrigin = (data.options?.allowSameOrigin && (globalThis.location.hostname === 'localhost' || globalThis.location.hostname === '127.0.0.1'))
+                ? (globalThis.location.hostname === 'localhost'
+                    ? globalThis.location.origin.replace('localhost', '127.0.0.1')
+                    : globalThis.location.origin.replace('127.0.0.1', 'localhost'))
                 : (data.options?.allowSameOrigin ? 'https://sandbox.lightview.dev' : null);
 
             // Check if step uses modules (looking for import statement)
@@ -660,7 +738,15 @@ $('#app').content(App);`,
 
 
             // Move iframe to preview container
-            if (exResult && exResult.iframe) {
+            if (data.previewSrc) {
+                // Use external file for preview (e.g., SSR demo)
+                const iframe = document.createElement('iframe');
+                iframe.src = data.previewSrc;
+                iframe.style.width = '100%';
+                iframe.style.border = 'none';
+                iframe.style.height = '100%';
+                previewEl.appendChild(iframe);
+            } else if (exResult && exResult.iframe) {
                 previewEl.appendChild(exResult.iframe);
                 exResult.iframe.style.width = '100%';
                 exResult.iframe.style.border = 'none';
@@ -669,7 +755,7 @@ $('#app').content(App);`,
         });
 
         // Step switching logic
-        window.switchStep = function (step) {
+        globalThis.switchStep = function (step) {
             // Update buttons
             stepBtns.forEach((btn, i) => {
                 const btnStep = i + 1;

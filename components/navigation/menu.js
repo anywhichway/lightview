@@ -14,8 +14,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Menu = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -66,7 +66,7 @@ const Menu = (props = {}, ...children) => {
  * Menu Item
  */
 Menu.Item = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const {
@@ -92,7 +92,7 @@ Menu.Item = (props = {}, ...children) => {
  * Menu Title
  */
 Menu.Title = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -104,7 +104,7 @@ Menu.Title = (props = {}, ...children) => {
  * Menu Dropdown (submenu)
  */
 Menu.Dropdown = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { label, open = false, class: className = '', ...rest } = props;
@@ -117,7 +117,7 @@ Menu.Dropdown = (props = {}, ...children) => {
     return tags.li({}, details);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Menu = Menu;
 tags['Menu.Item'] = Menu.Item;
 tags['Menu.Title'] = Menu.Title;

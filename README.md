@@ -315,7 +315,7 @@ const app2 = div(
 
 ```javascript
 // Define component globally
-window.Alert = (props) => ({
+globalThis.Alert = (props) => ({
     div: {
         class: `alert alert-${props.type || 'info'}`,
         children: [props.message]

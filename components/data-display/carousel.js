@@ -14,8 +14,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Carousel = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -70,7 +70,7 @@ const Carousel = (props = {}, ...children) => {
  * Carousel Item
  */
 Carousel.Item = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { id, src, alt = '', class: className = '', ...rest } = props;
@@ -87,7 +87,7 @@ Carousel.Item = (props = {}, ...children) => {
     return tags.div({ id, class: classes.join(' '), ...rest }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Carousel = Carousel;
 tags['Carousel.Item'] = Carousel.Item;
 

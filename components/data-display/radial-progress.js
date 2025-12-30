@@ -15,8 +15,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const RadialProgress = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -75,11 +75,11 @@ const RadialProgress = (props = {}, ...children) => {
     return radialEl;
 };
 
-window.Lightview.tags.RadialProgress = RadialProgress;
+globalThis.Lightview.tags.RadialProgress = RadialProgress;
 
 // Register as Custom Element
-if (window.LightviewX?.createCustomElement) {
-    const RadialProgressElement = window.LightviewX.createCustomElement(RadialProgress);
+if (globalThis.LightviewX?.createCustomElement) {
+    const RadialProgressElement = globalThis.LightviewX.createCustomElement(RadialProgress);
     if (!customElements.get('lv-radial-progress')) {
         customElements.define('lv-radial-progress', RadialProgressElement);
     }

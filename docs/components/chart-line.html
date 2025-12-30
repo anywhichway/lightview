@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -72,7 +72,7 @@
 
                             <!-- Tabs -->
                             <script>
-                                window.switchBasicLineTab = (tabId) => {
+                                globalThis.switchBasicLineTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`basic-line-tab-btn-${t}`);
@@ -281,7 +281,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchMultipleLineTab = (tabId) => {
+                                globalThis.switchMultipleLineTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`multiple-line-tab-btn-${t}`);
@@ -495,7 +495,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchAxesLineTab = (tabId) => {
+                                globalThis.switchAxesLineTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`axes-line-tab-btn-${t}`);
@@ -651,7 +651,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchStyledLineTab = (tabId) => {
+                                globalThis.switchStyledLineTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`styled-line-tab-btn-${t}`);

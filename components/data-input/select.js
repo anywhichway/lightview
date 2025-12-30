@@ -33,8 +33,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Select = (props = {}) => {
-    const { tags, signal } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags, signal } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) {
         console.error('Lightview not found');
@@ -274,11 +274,11 @@ const Select = (props = {}) => {
 };
 
 // Auto-register
-window.Lightview.tags.Select = Select;
+globalThis.Lightview.tags.Select = Select;
 
 // Register as Custom Element
-if (window.LightviewX?.createCustomElement) {
-    const SelectElement = window.LightviewX.createCustomElement(Select);
+if (globalThis.LightviewX?.createCustomElement) {
+    const SelectElement = globalThis.LightviewX.createCustomElement(Select);
     if (!customElements.get('lv-select')) {
         customElements.define('lv-select', SelectElement);
     }

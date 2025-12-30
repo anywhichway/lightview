@@ -15,8 +15,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Divider = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -67,6 +67,6 @@ const Divider = (props = {}, ...children) => {
     return dividerEl;
 };
 
-window.Lightview.tags.Divider = Divider;
+globalThis.Lightview.tags.Divider = Divider;
 
 export default Divider;

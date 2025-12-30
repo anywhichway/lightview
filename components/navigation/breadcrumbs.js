@@ -12,8 +12,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Breadcrumbs = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -70,7 +70,7 @@ const Breadcrumbs = (props = {}, ...children) => {
  * Breadcrumbs Item
  */
 Breadcrumbs.Item = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { href, class: className = '', ...rest } = props;
@@ -85,7 +85,7 @@ Breadcrumbs.Item = (props = {}, ...children) => {
 };
 
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Breadcrumbs = Breadcrumbs;
 tags['Breadcrumbs.Item'] = Breadcrumbs.Item;
 export default Breadcrumbs;

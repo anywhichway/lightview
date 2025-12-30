@@ -13,8 +13,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Accordion = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -61,7 +61,7 @@ const Accordion = (props = {}, ...children) => {
  * Accordion Item
  */
 Accordion.Item = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { div, input } = tags;
@@ -93,7 +93,7 @@ Accordion.Item = (props = {}, ...children) => {
  * Accordion Title
  */
 Accordion.Title = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -108,7 +108,7 @@ Accordion.Title = (props = {}, ...children) => {
  * Accordion Content
  */
 Accordion.Content = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -119,7 +119,7 @@ Accordion.Content = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Accordion = Accordion;
 tags['Accordion.Item'] = Accordion.Item;
 tags['Accordion.Title'] = Accordion.Title;

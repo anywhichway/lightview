@@ -35,8 +35,8 @@ if (typeof document !== 'undefined') {
 }
 
 const Chart = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -115,7 +115,7 @@ const Chart = (props = {}, ...children) => {
  * Chart Head (thead)
  */
 Chart.Head = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
     return tags.thead(props, ...children);
 };
@@ -124,7 +124,7 @@ Chart.Head = (props = {}, ...children) => {
  * Chart Body (tbody)
  */
 Chart.Body = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
     return tags.tbody(props, ...children);
 };
@@ -133,7 +133,7 @@ Chart.Body = (props = {}, ...children) => {
  * Chart Row (tr)
  */
 Chart.Row = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
     return tags.tr(props, ...children);
 };
@@ -142,7 +142,7 @@ Chart.Row = (props = {}, ...children) => {
  * Chart Label (th scope="row")
  */
 Chart.Label = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { scope = 'row', ...rest } = props;
@@ -159,7 +159,7 @@ Chart.Label = (props = {}, ...children) => {
  * @param {string} props.tooltip - Tooltip text
  */
 Chart.Data = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const {
@@ -208,7 +208,7 @@ Chart.Data = (props = {}, ...children) => {
     }, ...content);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 
 tags.Chart = Chart;
 tags['Chart.Head'] = Chart.Head;

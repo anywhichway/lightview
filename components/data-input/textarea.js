@@ -37,8 +37,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Textarea = (props = {}) => {
-    const { tags, signal } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags, signal } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) {
         console.error('Lightview not found');
@@ -282,6 +282,6 @@ const Textarea = (props = {}) => {
 };
 
 // Auto-register
-window.Lightview.tags.Textarea = Textarea;
+globalThis.Lightview.tags.Textarea = Textarea;
 
 export default Textarea;

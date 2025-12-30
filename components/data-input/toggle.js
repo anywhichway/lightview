@@ -29,8 +29,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM
  */
 const Toggle = (props = {}) => {
-    const { tags, signal } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags, signal } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) {
         console.error('Lightview not found');
@@ -188,11 +188,11 @@ const Toggle = (props = {}) => {
 };
 
 // Auto-register
-window.Lightview.tags.Toggle = Toggle;
+globalThis.Lightview.tags.Toggle = Toggle;
 
 // Register as Custom Element
-if (window.LightviewX?.createCustomElement) {
-    const ToggleElement = window.LightviewX.createCustomElement(Toggle);
+if (globalThis.LightviewX?.createCustomElement) {
+    const ToggleElement = globalThis.LightviewX.createCustomElement(Toggle);
     if (!customElements.get('lv-toggle')) {
         customElements.define('lv-toggle', ToggleElement);
     }

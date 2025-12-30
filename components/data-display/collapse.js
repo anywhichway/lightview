@@ -14,8 +14,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Collapse = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -69,7 +69,7 @@ const Collapse = (props = {}, ...children) => {
  * Collapse Title
  */
 Collapse.Title = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -84,7 +84,7 @@ Collapse.Title = (props = {}, ...children) => {
  * Collapse Content
  */
 Collapse.Content = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -95,7 +95,7 @@ Collapse.Content = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Collapse = Collapse;
 tags['Collapse.Title'] = Collapse.Title;
 tags['Collapse.Content'] = Collapse.Content;

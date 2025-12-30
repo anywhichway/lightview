@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -72,7 +72,7 @@
 
                             <!-- Tabs -->
                             <script>
-                                window.switchReactiveSyntaxTab = (tabId) => {
+                                globalThis.switchReactiveSyntaxTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`reactive-tab-btn-${t}`);

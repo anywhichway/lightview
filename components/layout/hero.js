@@ -13,8 +13,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Hero = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -77,7 +77,7 @@ const Hero = (props = {}, ...children) => {
  * Hero Content
  */
 Hero.Content = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { position = 'center', center, class: className = '', ...rest } = props;
@@ -94,14 +94,14 @@ Hero.Content = (props = {}, ...children) => {
  * Hero Overlay
  */
 Hero.Overlay = (props = {}) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
     return tags.div({ class: `hero-overlay bg-opacity-60 ${className}`.trim(), ...rest });
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Hero = Hero;
 tags['Hero.Content'] = Hero.Content;
 tags['Hero.Overlay'] = Hero.Overlay;

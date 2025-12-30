@@ -12,8 +12,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Diff = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -60,7 +60,7 @@ const Diff = (props = {}, ...children) => {
  * Diff Item 1
  */
 Diff.Item1 = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { src, alt = '', class: className = '', ...rest } = props;
@@ -78,7 +78,7 @@ Diff.Item1 = (props = {}, ...children) => {
  * Diff Item 2
  */
 Diff.Item2 = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { src, alt = '', class: className = '', ...rest } = props;
@@ -96,13 +96,13 @@ Diff.Item2 = (props = {}, ...children) => {
  * Diff Resizer
  */
 Diff.Resizer = (props = {}) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     return tags.div({ class: 'diff-resizer', ...props });
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Diff = Diff;
 tags['Diff.Item1'] = Diff.Item1;
 tags['Diff.Item2'] = Diff.Item2;
