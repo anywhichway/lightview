@@ -14,5 +14,5 @@ eval = true
 
 # Assets directory is set via the `wrangler pages dev <directory>` command
 # Uncomment below for Workers mode (not Pages mode):
-# [assets]
+[assets]
 directory = "./dist"
