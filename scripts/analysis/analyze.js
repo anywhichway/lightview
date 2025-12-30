@@ -16,7 +16,11 @@ const path = require('path');
 const TARGET_FILES = [
     '../../lightview.js',
     '../../lightview-x.js',
-    '../../lightview-router.js'
+    '../../lightview-router.js',
+    '../../node_modules/react/cjs/react.development.js',
+    '../../node_modules/@grucloud/bau/bau.js',
+    '../../node_modules/htmx.org/dist/htmx.js',
+    '../../node_modules/juris/juris.js'
 ];
 
 // --- METRIC CALCULATORS ---
@@ -90,13 +94,20 @@ const getCognitiveComplexity = (fnNode, fnName) => {
         }
         return s;
     };
-    score += traverse(fnNode.body, 0);
-    score += findRecursion(fnNode.body);
+    if (fnNode.body) {
+        score += traverse(fnNode.body, 0);
+        score += findRecursion(fnNode.body);
+    }
     return score;
 };
 
 const calculateHalstead = (code) => {
-    const tokens = [...acorn.tokenizer(code, { ecmaVersion: 'latest' })];
+    let tokens = [];
+    try {
+        tokens = [...acorn.tokenizer(code, { ecmaVersion: 'latest' })];
+    } catch (e) {
+        // Fallback or skip if tokenization fails for complex files
+    }
     const operators = new Set(['(', ')', '[', ']', '{', '}', '.', ',', ';', ':', '?', '...', '=', '+=', '-=', '*=', '/=', '==', '===', '!=', '!==', '<', '>', '<=', '>=', '+', '-', '*', '/', '%', '++', '--', '&&', '||', '??', '!', 'typeof', 'let', 'const', 'var', 'if', 'else', 'for', 'while', 'return']);
     let N1 = 0, N2 = 0; const n1set = new Set(), n2set = new Set();
     tokens.forEach(t => {
@@ -124,7 +135,16 @@ const analyzeFile = (filePath) => {
     if (!fs.existsSync(fullPath)) return { error: `File not found: ${filePath}` };
 
     const code = fs.readFileSync(fullPath, 'utf8');
-    const ast = acorn.parse(code, { ecmaVersion: 'latest', sourceType: 'script' });
+    let ast;
+    try {
+        ast = acorn.parse(code, { ecmaVersion: 'latest', sourceType: 'script' });
+    } catch (e) {
+        try {
+            ast = acorn.parse(code, { ecmaVersion: 'latest', sourceType: 'module' });
+        } catch (e2) {
+            return { error: `AST Parse Error: ${e2.message}` };
+        }
+    }
     const sloc = getSLOC(code);
     const fileHalstead = calculateHalstead(code);
 
@@ -175,24 +195,39 @@ const generateReport = () => {
     const summaries = [];
 
     TARGET_FILES.forEach(file => {
+        console.log(`Analyzing ${file}...`);
         const data = analyzeFile(file);
         if (data.error) {
             md += `### !! Error analyzing ${file}: ${data.error}\n\n`;
+            summaries.push({
+                name: path.basename(file),
+                sloc: '-',
+                fns: '-',
+                mi: 'Error',
+                cog: 'Error',
+                status: "❌ Error"
+            });
             return;
         }
 
-        const avgCC = data.results.reduce((a, b) => a + b.cc, 0) / (data.fnCount || 1);
-        const avgCog = data.results.reduce((a, b) => a + b.cog, 0) / (data.fnCount || 1);
-        const avgMI = data.results.reduce((a, b) => a + b.mi, 0) / (data.fnCount || 1);
-        const maxCog = Math.max(...data.results.map(r => r.cog), 0);
+        const miScores = data.results.map(r => r.mi);
+        const cogScores = data.results.map(r => r.cog);
+
+        const minMI = miScores.length ? Math.min(...miScores) : 0;
+        const avgMI = miScores.length ? miScores.reduce((a, b) => a + b, 0) / miScores.length : 0;
+        const maxMI = miScores.length ? Math.max(...miScores) : 0;
+
+        const minCog = cogScores.length ? Math.min(...cogScores) : 0;
+        const avgCog = cogScores.length ? cogScores.reduce((a, b) => a + b, 0) / cogScores.length : 0;
+        const maxCog = cogScores.length ? Math.max(...cogScores) : 0;
 
         summaries.push({
             name: data.fileName,
             sloc: data.sloc,
             fns: data.fnCount,
-            avgMI: avgMI.toFixed(1),
-            avgCog: avgCog.toFixed(1),
-            maxCog,
+            mi: `${minMI.toFixed(1)} / ${avgMI.toFixed(1)} / ${maxMI.toFixed(1)}`,
+            cog: `${minCog.toFixed(0)} / ${avgCog.toFixed(1)} / ${maxCog.toFixed(0)}`,
+            avgMI,
             status: avgMI > 80 ? "✅ Excellent" : (avgMI > 65 ? "⚖️ Good" : "⚠️ Attention")
         });
 
@@ -216,9 +251,12 @@ const generateReport = () => {
         md += "\n---\n\n";
     });
 
-    let summaryHeader = "## Executive Summary\n\n| File | SLOC | Fns | Avg MI | Avg Cog | Max Cog | Status |\n| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n";
-    summaries.forEach(s => {
-        summaryHeader += `| \`${s.name}\` | ${s.sloc} | ${s.fns} | ${s.avgMI} | ${s.avgCog} | ${s.maxCog} | ${s.status} |\n`;
+    let summaryHeader = "## Executive Summary\n\n| File | Functions | Maintainability (min/avg/max) | Cognitive (min/avg/max) | Status |\n| :--- | :--- | :--- | :--- | :--- |\n";
+    summaries.sort((a, b) => {
+        // Optional: sort by status or name. Let's keep TARGET_FILES order if possible, or sort by name.
+        return 0; // Keep order of TARGET_FILES
+    }).forEach(s => {
+        summaryHeader += `| \`${s.name}\` | ${s.fns} | ${s.mi} | ${s.cog} | ${s.status} |\n`;
     });
 
     fs.writeFileSync(path.resolve(__dirname, 'latest_metrics.md'), md.replace("# Codebase Ethics & Complexity Report", "# Metrics Report\n\n" + summaryHeader));

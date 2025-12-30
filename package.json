@@ -19,8 +19,12 @@
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
+    "@grucloud/bau": "^0.106.0",
     "acorn": "^8.15.0",
     "acorn-walk": "^8.3.4",
+    "htmx.org": "^2.0.8",
+    "juris": "^0.9.0",
+    "react": "^19.2.3",
     "wrangler": "^4.54.0"
   },
   "dependencies": {

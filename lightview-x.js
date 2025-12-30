@@ -41,7 +41,7 @@
 
         const tagKey = Object.keys(obj)[0];
         const content = obj[tagKey];
-        const LV = globalThis.Lightview;
+        const LV = typeof window !== 'undefined' ? globalThis.Lightview : (typeof globalThis !== 'undefined' ? globalThis.Lightview : null);
         const tag = (LV?.tags?._customTags?.[tagKey]) || tagKey;
         const { children, ...attributes } = content;
 
@@ -131,7 +131,9 @@
         // Determine base theme (light or dark) for the main document
         // const darkThemes = ['dark', 'aqua', 'black', 'business', 'coffee', 'dim', 'dracula', 'forest', 'halloween', 'luxury', 'night', 'sunset', 'synthwave'];
         // const baseTheme = darkThemes.includes(themeName) ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', themeName);
+        if (typeof document !== 'undefined') {
+            document.documentElement.setAttribute('data-theme', themeName);
+        }
 
         // Update signal
         if (themeSignal && themeSignal.value !== themeName) {
@@ -140,7 +142,9 @@
 
         // Persist preference
         try {
-            localStorage.setItem('lightview-theme', themeName);
+            if (typeof localStorage !== 'undefined') {
+                localStorage.setItem('lightview-theme', themeName);
+            }
         } catch (e) {
             // Ignore storage errors
         }
@@ -337,17 +341,19 @@
     };
 
     const proxyGet = (target, prop, receiver, signals) => {
-        const LV = globalThis.Lightview;
-        if (!signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
-        const val = signals.get(prop).value;
+        const LV = typeof window !== 'undefined' ? globalThis.Lightview : (typeof globalThis !== 'undefined' ? globalThis.Lightview : null);
+        if (LV && !signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
+        const signal = signals.get(prop);
+        const val = signal ? signal.value : Reflect.get(target, prop, receiver);
         return typeof val === 'object' && val !== null ? state(val) : val;
     };
 
     const proxySet = (target, prop, value, receiver, signals) => {
-        const LV = globalThis.Lightview;
-        if (!signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
+        const LV = typeof window !== 'undefined' ? globalThis.Lightview : (typeof globalThis !== 'undefined' ? globalThis.Lightview : null);
+        if (LV && !signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
         const success = Reflect.set(target, prop, value, receiver);
-        if (success) signals.get(prop).value = value;
+        const signal = signals.get(prop);
+        if (success && signal) signal.value = value;
         return success;
     };
 
@@ -539,7 +545,7 @@
         const tagName = node.tagName.toLowerCase();
         const attributes = {};
         const skip = tagName === 'script' || tagName === 'style';
-        const LV = globalThis.Lightview;
+        const LV = typeof window !== 'undefined' ? globalThis.Lightview : (typeof globalThis !== 'undefined' ? globalThis.Lightview : null);
 
         for (let attr of node.attributes) {
             const val = attr.value;
@@ -1206,17 +1212,16 @@
                     globalThis.Lightview.internals.setupChildren([result], this.themeWrapper);
                 };
 
-                // Initial render
-                this.render();
-
-                // Observe attribute changes on self to trigger re-render
-                this.attrObserver = new MutationObserver((mutations) => {
-                    // Only re-render if actual attributes changed
-                    this.render();
-                });
-                this.attrObserver.observe(this, {
-                    attributes: true
-                });
+                if (typeof MutationObserver !== 'undefined' && typeof HTMLElement !== 'undefined') {
+                    // Observe attribute changes on self to trigger re-render
+                    this.attrObserver = new MutationObserver((mutations) => {
+                        // Only re-render if actual attributes changed
+                        this.render();
+                    });
+                    this.attrObserver.observe(this, {
+                        attributes: true
+                    });
+                }
             }
 
             disconnectedCallback() {
@@ -1276,7 +1281,7 @@
         });
 
         // Immediate check in case load already fired or script is defer
-        if (globalThis.Lightview) {
+        if (typeof window !== 'undefined' && globalThis.Lightview) {
             globalThis.Lightview.hooks.processChild = (child) => {
                 // Convert Object DOM syntax if applicable
                 if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
@@ -1285,5 +1290,15 @@
                 return child;
             };
         }
+    }
+
+    // Server-side initialization if globally available
+    if (typeof globalThis !== 'undefined' && globalThis.Lightview) {
+        globalThis.Lightview.hooks.processChild = (child) => {
+            if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
+                return convertObjectDOM(child);
+            }
+            return child;
+        };
     }
 })();
