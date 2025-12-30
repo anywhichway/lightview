@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSR & Hydration Demo - Lightview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="/lightview.js"></script>
+    <script src="/lightview-x.js"></script>
+
+    <!-- This script runs ONLY on the server -->
+    <script runat="server">
+        // Access server-only context
+        const timestamp = new Date().toLocaleTimeString();
+        const userAgent = request.headers.get('user-agent') || 'Unknown';
+
+        // Manipulate DOM before it reaches the client
+        document.title = `SSR Demo - Generated at ${timestamp}`;
+
+        // Use Lightview $ to inject content
+        const { tags } = Lightview;
+        $('#server-info').content([
+            tags.p({ style: 'margin: 0; font-weight: 600; color: #334155;' }, `Server Timestamp: ${timestamp}`),
+            tags.p({ style: 'margin: 0.5rem 0 0; font-size: 0.8125rem; color: #94a3b8;' }, `Edge Node detected: ${userAgent.slice(0, 50)}...`)
+        ]);
+
+        console.log('[Server] Successfully pre-rendered content.');
+    </script>
+</head>
+
+<body
+    style="font-family: 'Outfit', sans-serif; padding: 2rem; background: #f8fafc; color: #1e293b; max-width: 800px; margin: 0 auto; line-height: 1.5;">
+
+    <div
+        style="background: white; padding: 2.5rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+        <h1
+            style="margin-top: 0; font-size: 2.25rem; font-weight: 800; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">
+            SSR & Hydration
+        </h1>
+
+        <p style="color: #64748b; font-size: 1.125rem; margin-bottom: 2rem;">
+            Experience Lightview's "Edge" pre-processing. The content below is generated at the edge and then hydrated
+            in your browser.
+        </p>
+
+        <div id="server-info"
+            style="padding: 1.25rem; background: #f1f5f9; border-radius: 1rem; border: 1px solid #e2e8f0; margin-bottom: 2rem;">
+            <!-- Filled by runat="server" script -->
+        </div>
+
+        <div id="hydration-badge" style="margin-bottom: 1.5rem;">
+            <!-- Filled by runat="server/client" script -->
+        </div>
+
+        <!-- This script runs on both Server and Client -->
+        <script runat="server/client">
+            const { signal, tags, $ } = Lightview;
+
+            // Define a signal. On server, this will set the initial value in the HTML.
+            const count = signal(0);
+
+            if (typeof isServer !== 'undefined' && isServer) {
+                $('#hydration-badge').content(
+                    tags.div({ style: 'display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #fee2e2; color: #991b1b; border-radius: 2rem; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.025em; border: 1px solid #fecaca;' }, [
+                        tags.span({ style: 'width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: inline-block;' }),
+                        'PRE-RENDERED (SERVER)'
+                    ])
+                );
+            }
+
+            // Standard Lightview UI logic
+            $('#counter-box').content([
+                tags.h3({ style: 'margin-top: 0; margin-bottom: 0.5rem;' }, 'Isomorphic Counter'),
+                tags.p({ style: 'color: #64748b; margin-bottom: 1.5rem;' }, 'Events are handled on the client, but the structure was built at the edge.'),
+                tags.div({ style: 'display: flex; gap: 1.5rem; align-items: center;' }, [
+                    tags.button({
+                        style: 'padding: 0.75rem 1.5rem; cursor: pointer; background: #3b82f6; color: white; border: none; border-radius: 0.75rem; font-weight: 600; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);',
+                        onclick: (e) => {
+                            count.value++;
+                            e.target.style.transform = 'scale(0.95)';
+                            setTimeout(() => e.target.style.transform = 'scale(1)', 100);
+                        }
+                    }, 'Increment'),
+                    tags.span({ style: 'font-size: 2.5rem; font-weight: 800; color: #1e293b; min-width: 3rem; text-align: center;' }, () => count.value)
+                ])
+            ]);
+
+            // Client-side hydration transition
+            if (typeof window !== 'undefined') {
+                setTimeout(() => {
+                    $('#hydration-badge').content(
+                        tags.div({ style: 'display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #dcfce7; color: #166534; border-radius: 2rem; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.025em; border: 1px solid #bbf7d0; transition: all 0.3s ease-out;' }, [
+                            tags.span({ style: 'width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block;' }),
+                            'HYDRATED (CLIENT)'
+                        ])
+                    );
+                }, 1500);
+            }
+        </script>
+
+        <div id="counter-box"
+            style="padding: 2rem; border-radius: 1.25rem; background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%); border: 1px solid #dbeafe;">
+            <!-- Filled by script -->
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>
