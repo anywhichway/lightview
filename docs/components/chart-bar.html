@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -71,7 +71,7 @@
 
                             <!-- Tabs -->
                             <script>
-                                window.switchBasicBarTab = (tabId) => {
+                                globalThis.switchBasicBarTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`basic-bar-tab-btn-${t}`);
@@ -247,7 +247,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchMultipleBarTab = (tabId) => {
+                                globalThis.switchMultipleBarTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`multiple-bar-tab-btn-${t}`);
@@ -449,7 +449,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchAxesBarTab = (tabId) => {
+                                globalThis.switchAxesBarTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`axes-bar-tab-btn-${t}`);
@@ -607,7 +607,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchSpacingBarTab = (tabId) => {
+                                globalThis.switchSpacingBarTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`spacing-bar-tab-btn-${t}`);

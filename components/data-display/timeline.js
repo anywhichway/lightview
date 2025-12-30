@@ -14,8 +14,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Timeline = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -67,7 +67,7 @@ const Timeline = (props = {}, ...children) => {
  * Timeline Item
  */
 Timeline.Item = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     return tags.li(props, ...children);
@@ -77,7 +77,7 @@ Timeline.Item = (props = {}, ...children) => {
  * Timeline Start
  */
 Timeline.Start = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -92,7 +92,7 @@ Timeline.Start = (props = {}, ...children) => {
  * Timeline Middle (icon)
  */
 Timeline.Middle = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -107,7 +107,7 @@ Timeline.Middle = (props = {}, ...children) => {
  * Timeline End
  */
 Timeline.End = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', box = false, ...rest } = props;
@@ -123,7 +123,7 @@ Timeline.End = (props = {}, ...children) => {
  * Timeline HR (connector line)
  */
 Timeline.Hr = (props = {}) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { color, class: className = '', ...rest } = props;
@@ -135,7 +135,7 @@ Timeline.Hr = (props = {}) => {
     return tags.hr({ class: classes.join(' ') || undefined, ...rest });
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Timeline = Timeline;
 tags['Timeline.Item'] = Timeline.Item;
 tags['Timeline.Start'] = Timeline.Start;

@@ -14,8 +14,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Dropdown = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -72,7 +72,7 @@ const Dropdown = (props = {}, ...children) => {
  * Dropdown Trigger - the element that toggles the dropdown
  */
 Dropdown.Trigger = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -89,7 +89,7 @@ Dropdown.Trigger = (props = {}, ...children) => {
  * Dropdown Content - the menu that appears
  */
 Dropdown.Content = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -105,13 +105,13 @@ Dropdown.Content = (props = {}, ...children) => {
  * Dropdown Item
  */
 Dropdown.Item = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     return tags.li(props, tags.a({}, ...children));
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Dropdown = Dropdown;
 tags['Dropdown.Trigger'] = Dropdown.Trigger;
 tags['Dropdown.Content'] = Dropdown.Content;

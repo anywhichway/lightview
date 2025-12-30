@@ -168,8 +168,8 @@
         })();
 
         // Expose globally
-        window.toggleMobileNav = mobileNav.toggle;
-        window.closeMobileNav = mobileNav.close;
+        globalThis.toggleMobileNav = mobileNav.toggle;
+        globalThis.closeMobileNav = mobileNav.close;
 
         // Initialize
         mobileNav.init();
@@ -256,7 +256,7 @@
                 // On Start (Loading UI)
                 onStart: (path) => {
                     // Close mobile nav if open
-                    if (window.closeMobileNav) window.closeMobileNav();
+                    if (globalThis.closeMobileNav) globalThis.closeMobileNav();
 
                     contentEl.innerHTML = `
                         <div class="loading-spinner">
@@ -268,8 +268,8 @@
 
                 // On Response - called AFTER auto-render for post-render logic
                 onResponse: (response, path) => {
-                    if (window.closeMobileNav) window.closeMobileNav(); // Ensure menu closes on navigation
-                    window.scrollTo(0, 0);
+                    if (globalThis.closeMobileNav) globalThis.closeMobileNav(); // Ensure menu closes on navigation
+                    globalThis.scrollTo(0, 0);
                 }
             });
 

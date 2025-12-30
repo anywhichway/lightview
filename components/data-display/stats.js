@@ -13,8 +13,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Stats = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -64,7 +64,7 @@ const Stats = (props = {}, ...children) => {
  * Stat Item
  */
 Stats.Stat = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -76,7 +76,7 @@ Stats.Stat = (props = {}, ...children) => {
  * Stat Figure (icon/image container)
  */
 Stats.Figure = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -91,7 +91,7 @@ Stats.Figure = (props = {}, ...children) => {
  * Stat Title
  */
 Stats.Title = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -106,7 +106,7 @@ Stats.Title = (props = {}, ...children) => {
  * Stat Value
  */
 Stats.Value = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -121,7 +121,7 @@ Stats.Value = (props = {}, ...children) => {
  * Stat Desc
  */
 Stats.Desc = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -136,7 +136,7 @@ Stats.Desc = (props = {}, ...children) => {
  * Stat Actions
  */
 Stats.Actions = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -147,7 +147,7 @@ Stats.Actions = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Stats = Stats;
 tags['Stats.Stat'] = Stats.Stat;
 tags['Stats.Figure'] = Stats.Figure;

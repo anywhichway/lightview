@@ -15,8 +15,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Table = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -70,7 +70,7 @@ const Table = (props = {}, ...children) => {
  * Table Head
  */
 Table.Head = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     return tags.thead(props, ...children);
@@ -80,7 +80,7 @@ Table.Head = (props = {}, ...children) => {
  * Table Body
  */
 Table.Body = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     return tags.tbody(props, ...children);
@@ -90,7 +90,7 @@ Table.Body = (props = {}, ...children) => {
  * Table Row
  */
 Table.Row = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { hover = false, active = false, class: className = '', ...rest } = props;
@@ -107,7 +107,7 @@ Table.Row = (props = {}, ...children) => {
  * Table Header Cell
  */
 Table.Th = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     return tags.th(props, ...children);
@@ -117,7 +117,7 @@ Table.Th = (props = {}, ...children) => {
  * Table Data Cell
  */
 Table.Td = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     return tags.td(props, ...children);
@@ -127,13 +127,13 @@ Table.Td = (props = {}, ...children) => {
  * Table Foot
  */
 Table.Foot = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     return tags.tfoot(props, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 
 tags.Table = Table;
 tags['Table.Head'] = Table.Head;

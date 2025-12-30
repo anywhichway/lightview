@@ -31,8 +31,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM
  */
 const FileInput = (props = {}) => {
-    const { tags, signal } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags, signal } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) {
         console.error('Lightview not found');
@@ -219,6 +219,6 @@ const FileInput = (props = {}) => {
 };
 
 // Auto-register
-window.Lightview.tags.FileInput = FileInput;
+globalThis.Lightview.tags.FileInput = FileInput;
 
 export default FileInput;

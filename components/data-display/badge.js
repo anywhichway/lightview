@@ -14,8 +14,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Badge = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -69,11 +69,11 @@ const Badge = (props = {}, ...children) => {
     return badgeEl;
 };
 
-window.Lightview.tags.Badge = Badge;
+globalThis.Lightview.tags.Badge = Badge;
 
 // Register as Custom Element
-if (window.LightviewX?.createCustomElement) {
-    const BadgeElement = window.LightviewX.createCustomElement(Badge);
+if (globalThis.LightviewX?.createCustomElement) {
+    const BadgeElement = globalThis.LightviewX.createCustomElement(Badge);
     if (!customElements.get('lv-badge')) {
         customElements.define('lv-badge', BadgeElement);
     }

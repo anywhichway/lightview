@@ -14,8 +14,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Skeleton = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -61,6 +61,6 @@ const Skeleton = (props = {}, ...children) => {
     return skeletonEl;
 };
 
-window.Lightview.tags.Skeleton = Skeleton;
+globalThis.Lightview.tags.Skeleton = Skeleton;
 
 export default Skeleton;

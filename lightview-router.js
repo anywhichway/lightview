@@ -12,9 +12,9 @@
      */
     const base = (shellPath) => {
         if (typeof window === 'undefined' || document.getElementById('content')) return;
-        const url = new URL(shellPath, window.location.href);
-        url.searchParams.set('load', window.location.pathname);
-        window.location.href = url.toString();
+        const url = new URL(shellPath, globalThis.location.href);
+        url.searchParams.set('load', globalThis.location.pathname);
+        globalThis.location.href = url.toString();
     };
 
     /**
@@ -30,7 +30,7 @@
          */
         const normalizePath = (p) => {
             if (!p) return '/';
-            try { if (p.startsWith('http') || p.startsWith('//')) p = new URL(p, window.location.origin).pathname; } catch (e) { /* Invalid URL */ }
+            try { if (p.startsWith('http') || p.startsWith('//')) p = new URL(p, globalThis.location.origin).pathname; } catch (e) { /* Invalid URL */ }
             if (base && p.startsWith(base)) p = p.slice(base.length);
             return p.replace(/\/+$/, '').replace(/^([^/])/, '/$1') || '/';
         };
@@ -127,8 +127,8 @@
         const navigate = (path) => {
             const p = normalizePath(path);
             return handleRequest(base + p).then(r => {
-                let dest = r?.url ? new URL(r.url, window.location.origin).pathname : base + p;
-                window.history.pushState({ path: dest }, '', dest);
+                let dest = r?.url ? new URL(r.url, globalThis.location.origin).pathname : base + p;
+                globalThis.history.pushState({ path: dest }, '', dest);
             }).catch(e => console.error('[Router] Nav error:', e));
         };
 
@@ -136,16 +136,16 @@
          * Starts the router by handling the initial path and setting up event listeners.
          */
         const start = async () => {
-            const load = new URLSearchParams(window.location.search).get('load');
-            window.onpopstate = (e) => handleRequest(e.state?.path || normalizePath(window.location.pathname));
+            const load = new URLSearchParams(globalThis.location.search).get('load');
+            globalThis.onpopstate = (e) => handleRequest(e.state?.path || normalizePath(globalThis.location.pathname));
             document.onclick = (e) => {
                 const a = e.target.closest('a[href]');
                 if (!a || a.target === '_blank' || /^(http|#|mailto|tel)/.test(a.getAttribute('href'))) return;
                 e.preventDefault();
                 navigate(normalizePath(new URL(a.href, document.baseURI).pathname));
             };
-            const init = load || normalizePath(window.location.pathname);
-            window.history.replaceState({ path: init }, '', base + init);
+            const init = load || normalizePath(globalThis.location.pathname);
+            globalThis.history.replaceState({ path: init }, '', base + init);
             return handleRequest(init).then(() => routerInstance);
         };
 
@@ -155,5 +155,5 @@
 
     const LightviewRouter = { base, router };
     if (typeof module !== 'undefined' && module.exports) module.exports = LightviewRouter;
-    else if (typeof window !== 'undefined') window.LightviewRouter = LightviewRouter;
+    else if (typeof window !== 'undefined') globalThis.LightviewRouter = LightviewRouter;
 })();

@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -73,7 +73,7 @@
 
                             <!-- Tabs -->
                             <script>
-                                window.switchBasicAreaTab = (tabId) => {
+                                globalThis.switchBasicAreaTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`basic-area-tab-btn-${t}`);
@@ -227,7 +227,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchMultipleAreaTab = (tabId) => {
+                                globalThis.switchMultipleAreaTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`multiple-area-tab-btn-${t}`);
@@ -405,7 +405,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchAxesAreaTab = (tabId) => {
+                                globalThis.switchAxesAreaTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`axes-area-tab-btn-${t}`);
@@ -559,7 +559,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchStyledAreaTab = (tabId) => {
+                                globalThis.switchStyledAreaTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`styled-area-tab-btn-${t}`);

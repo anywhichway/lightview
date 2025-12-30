@@ -20,8 +20,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Avatar = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -142,7 +142,7 @@ const Avatar = (props = {}, ...children) => {
  * Avatar Group
  */
 Avatar.Group = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -153,17 +153,17 @@ Avatar.Group = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Avatar = Avatar;
 tags['Avatar.Group'] = Avatar.Group;
 
 // Register as Custom Elements
-if (window.LightviewX?.createCustomElement) {
+if (globalThis.LightviewX?.createCustomElement) {
     if (!customElements.get('lv-avatar')) {
-        customElements.define('lv-avatar', window.LightviewX.createCustomElement(Avatar));
+        customElements.define('lv-avatar', globalThis.LightviewX.createCustomElement(Avatar));
     }
     if (!customElements.get('lv-avatar-group')) {
-        customElements.define('lv-avatar-group', window.LightviewX.createCustomElement(Avatar.Group));
+        customElements.define('lv-avatar-group', globalThis.LightviewX.createCustomElement(Avatar.Group));
     }
 }
 

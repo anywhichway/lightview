@@ -12,8 +12,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Chat = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -60,7 +60,7 @@ const Chat = (props = {}, ...children) => {
  * Chat Image
  */
 Chat.Image = (props = {}) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { src, alt = 'Avatar', class: className = '', ...rest } = props;
@@ -76,7 +76,7 @@ Chat.Image = (props = {}) => {
  * Chat Header
  */
 Chat.Header = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -91,7 +91,7 @@ Chat.Header = (props = {}, ...children) => {
  * Chat Bubble
  */
 Chat.Bubble = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { color, class: className = '', ...rest } = props;
@@ -107,7 +107,7 @@ Chat.Bubble = (props = {}, ...children) => {
  * Chat Footer
  */
 Chat.Footer = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -118,7 +118,7 @@ Chat.Footer = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Chat = Chat;
 tags['Chat.Image'] = Chat.Image;
 tags['Chat.Header'] = Chat.Header;

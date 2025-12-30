@@ -27,8 +27,8 @@ import '../daisyui.js';
  * @param {Function} props.onChange - Change handler
  */
 const Radio = (props = {}) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) {
         console.error('Lightview not found');
@@ -137,8 +137,8 @@ const Radio = (props = {}) => {
  * @param {boolean} props.useShadow - Render in Shadow DOM
  */
 const RadioGroup = (props = {}) => {
-    const { tags, signal } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags, signal } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) {
         console.error('Lightview not found');
@@ -319,16 +319,16 @@ const RadioGroup = (props = {}) => {
 };
 
 // Auto-register
-window.Lightview.tags.Radio = Radio;
-window.Lightview.tags.RadioGroup = RadioGroup;
+globalThis.Lightview.tags.Radio = Radio;
+globalThis.Lightview.tags.RadioGroup = RadioGroup;
 
 // Register as Custom Elements
-if (window.LightviewX?.createCustomElement) {
-    const RadioElement = window.LightviewX.createCustomElement(Radio);
+if (globalThis.LightviewX?.createCustomElement) {
+    const RadioElement = globalThis.LightviewX.createCustomElement(Radio);
     if (!customElements.get('lv-radio')) {
         customElements.define('lv-radio', RadioElement);
     }
-    const RadioGroupElement = window.LightviewX.createCustomElement(RadioGroup);
+    const RadioGroupElement = globalThis.LightviewX.createCustomElement(RadioGroup);
     if (!customElements.get('lv-radio-group')) {
         customElements.define('lv-radio-group', RadioGroupElement);
     }

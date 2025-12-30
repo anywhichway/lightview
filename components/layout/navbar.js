@@ -12,8 +12,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Navbar = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -60,7 +60,7 @@ const Navbar = (props = {}, ...children) => {
  * Navbar Start
  */
 Navbar.Start = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -75,7 +75,7 @@ Navbar.Start = (props = {}, ...children) => {
  * Navbar Center
  */
 Navbar.Center = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -90,7 +90,7 @@ Navbar.Center = (props = {}, ...children) => {
  * Navbar End
  */
 Navbar.End = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -101,7 +101,7 @@ Navbar.End = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Navbar = Navbar;
 tags['Navbar.Start'] = Navbar.Start;
 tags['Navbar.Center'] = Navbar.Center;

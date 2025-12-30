@@ -12,8 +12,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Kbd = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -52,11 +52,11 @@ const Kbd = (props = {}, ...children) => {
     return kbdEl;
 };
 
-window.Lightview.tags.Kbd = Kbd;
+globalThis.Lightview.tags.Kbd = Kbd;
 
 // Register as Custom Element
-if (window.LightviewX?.createCustomElement) {
-    const KbdElement = window.LightviewX.createCustomElement(Kbd);
+if (globalThis.LightviewX?.createCustomElement) {
+    const KbdElement = globalThis.LightviewX.createCustomElement(Kbd);
     if (!customElements.get('lv-kbd')) {
         customElements.define('lv-kbd', KbdElement);
     }

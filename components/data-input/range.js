@@ -32,8 +32,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM
  */
 const Range = (props = {}) => {
-    const { tags, signal } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags, signal } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) {
         console.error('Lightview not found');
@@ -199,6 +199,6 @@ const Range = (props = {}) => {
 };
 
 // Auto-register
-window.Lightview.tags.Range = Range;
+globalThis.Lightview.tags.Range = Range;
 
 export default Range;

@@ -20,8 +20,8 @@ import '../daisyui.js';
  * @param {...children} children - Button content
  */
 const Button = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) {
         console.error('Lightview not found');
@@ -137,11 +137,11 @@ const Button = (props = {}, ...children) => {
 };
 
 
-window.Lightview.tags.Button = Button;
+globalThis.Lightview.tags.Button = Button;
 
 // Register as Custom Element
-if (window.LightviewX?.createCustomElement) {
-    const ButtonElement = window.LightviewX.createCustomElement(Button);
+if (globalThis.LightviewX?.createCustomElement) {
+    const ButtonElement = globalThis.LightviewX.createCustomElement(Button);
     if (!customElements.get('lv-button')) {
         customElements.define('lv-button', ButtonElement);
     }

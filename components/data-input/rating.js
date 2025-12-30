@@ -25,8 +25,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM
  */
 const Rating = (props = {}) => {
-    const { tags, signal } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags, signal } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) {
         console.error('Lightview not found');
@@ -214,6 +214,6 @@ const Rating = (props = {}) => {
 };
 
 // Auto-register
-window.Lightview.tags.Rating = Rating;
+globalThis.Lightview.tags.Rating = Rating;
 
 export default Rating;

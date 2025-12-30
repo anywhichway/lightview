@@ -13,8 +13,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Swap = (props = {}, ...children) => {
-    const { tags, signal } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags, signal } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -84,7 +84,7 @@ const Swap = (props = {}, ...children) => {
  * Swap On - visible when active
  */
 Swap.On = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -99,7 +99,7 @@ Swap.On = (props = {}, ...children) => {
  * Swap Off - visible when inactive
  */
 Swap.Off = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -110,7 +110,7 @@ Swap.Off = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Swap = Swap;
 tags['Swap.On'] = Swap.On;
 tags['Swap.Off'] = Swap.Off;

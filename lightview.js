@@ -685,10 +685,10 @@
         module.exports = Lightview;
     }
     if (typeof window !== 'undefined') {
-        window.Lightview = Lightview;
+        globalThis.Lightview = Lightview;
 
         // Global click handler delegates to hook if registered
-        window.addEventListener('click', (e) => {
+        globalThis.addEventListener('click', (e) => {
             // Support fragment navigation piercing Shadow DOM
             // Use composedPath() to find the actual clicked element, even inside shadow roots
             const path = e.composedPath();

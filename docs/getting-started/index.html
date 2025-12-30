@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -639,10 +639,10 @@ $('#app').content(App);`,
             conceptsContainer.appendChild(conceptsEl);
 
             // 4. Initialize Examplify
-            const useOrigin = (data.options?.allowSameOrigin && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
-                ? (window.location.hostname === 'localhost'
-                    ? window.location.origin.replace('localhost', '127.0.0.1')
-                    : window.location.origin.replace('127.0.0.1', 'localhost'))
+            const useOrigin = (data.options?.allowSameOrigin && (globalThis.location.hostname === 'localhost' || globalThis.location.hostname === '127.0.0.1'))
+                ? (globalThis.location.hostname === 'localhost'
+                    ? globalThis.location.origin.replace('localhost', '127.0.0.1')
+                    : globalThis.location.origin.replace('127.0.0.1', 'localhost'))
                 : (data.options?.allowSameOrigin ? 'https://sandbox.lightview.dev' : null);
 
             // Check if step uses modules (looking for import statement)
@@ -669,7 +669,7 @@ $('#app').content(App);`,
         });
 
         // Step switching logic
-        window.switchStep = function (step) {
+        globalThis.switchStep = function (step) {
             // Update buttons
             stepBtns.forEach((btn, i) => {
                 const btnStep = i + 1;

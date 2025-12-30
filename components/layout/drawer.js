@@ -14,8 +14,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Drawer = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -73,7 +73,7 @@ const Drawer = (props = {}, ...children) => {
  * Drawer Content - main content area
  */
 Drawer.Content = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -88,7 +88,7 @@ Drawer.Content = (props = {}, ...children) => {
  * Drawer Side - sidebar content
  */
 Drawer.Side = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -103,7 +103,7 @@ Drawer.Side = (props = {}, ...children) => {
  * Drawer Overlay - click to close
  */
 Drawer.Overlay = (props = {}) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { for: forId, class: className = '', ...rest } = props;
@@ -120,7 +120,7 @@ Drawer.Overlay = (props = {}) => {
  * Drawer Button - toggle button
  */
 Drawer.Button = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { for: forId, class: className = '', ...rest } = props;
@@ -132,7 +132,7 @@ Drawer.Button = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Drawer = Drawer;
 tags['Drawer.Content'] = Drawer.Content;
 tags['Drawer.Side'] = Drawer.Side;

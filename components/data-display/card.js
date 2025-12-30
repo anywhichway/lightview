@@ -15,8 +15,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Card = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -78,7 +78,7 @@ const Card = (props = {}, ...children) => {
  * Card Body
  */
 Card.Body = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -93,7 +93,7 @@ Card.Body = (props = {}, ...children) => {
  * Card Title
  */
 Card.Title = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -108,7 +108,7 @@ Card.Title = (props = {}, ...children) => {
  * Card Actions
  */
 Card.Actions = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const {
@@ -127,7 +127,7 @@ Card.Actions = (props = {}, ...children) => {
  * Card Figure (for images)
  */
 Card.Figure = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { src, alt = '', class: className = '', ...rest } = props;
@@ -141,7 +141,7 @@ Card.Figure = (props = {}, ...children) => {
     return tags.figure({ class: className, ...rest }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Card = Card;
 tags['Card.Body'] = Card.Body;
 tags['Card.Title'] = Card.Title;

@@ -12,8 +12,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Footer = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -61,7 +61,7 @@ const Footer = (props = {}, ...children) => {
  * Footer Title
  */
 Footer.Title = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', ...rest } = props;
@@ -76,7 +76,7 @@ Footer.Title = (props = {}, ...children) => {
  * Footer Nav - Navigation section within footer
  */
 Footer.Nav = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const { class: className = '', style = '', ...rest } = props;
@@ -92,7 +92,7 @@ Footer.Nav = (props = {}, ...children) => {
     }, ...children);
 };
 
-const tags = window.Lightview.tags;
+const tags = globalThis.Lightview.tags;
 tags.Footer = Footer;
 tags['Footer.Title'] = Footer.Title;
 tags['Footer.Nav'] = Footer.Nav;

@@ -14,8 +14,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Loading = (props = {}) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -62,11 +62,11 @@ const Loading = (props = {}) => {
     return loadingEl;
 };
 
-window.Lightview.tags.Loading = Loading;
+globalThis.Lightview.tags.Loading = Loading;
 
 // Register as Custom Element
-if (window.LightviewX?.createCustomElement) {
-    const LoadingElement = window.LightviewX.createCustomElement(Loading);
+if (globalThis.LightviewX?.createCustomElement) {
+    const LoadingElement = globalThis.LightviewX.createCustomElement(Loading);
     if (!customElements.get('lv-loading')) {
         customElements.define('lv-loading', LoadingElement);
     }

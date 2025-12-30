@@ -15,8 +15,8 @@ import '../daisyui.js';
  * @param {boolean} props.useShadow - Render in Shadow DOM with isolated DaisyUI styles
  */
 const Alert = (props = {}, ...children) => {
-    const { tags } = window.Lightview || {};
-    const LVX = window.LightviewX || {};
+    const { tags } = globalThis.Lightview || {};
+    const LVX = globalThis.LightviewX || {};
 
     if (!tags) return null;
 
@@ -78,7 +78,7 @@ const Alert = (props = {}, ...children) => {
 };
 
 function getAlertIcon(type) {
-    const { tags } = window.Lightview || {};
+    const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
     const icons = {
@@ -99,11 +99,11 @@ function getAlertIcon(type) {
     });
 }
 
-window.Lightview.tags.Alert = Alert;
+globalThis.Lightview.tags.Alert = Alert;
 
 // Register as Custom Element
-if (window.LightviewX?.createCustomElement) {
-    const AlertElement = window.LightviewX.createCustomElement(Alert);
+if (globalThis.LightviewX?.createCustomElement) {
+    const AlertElement = globalThis.LightviewX.createCustomElement(Alert);
     if (!customElements.get('lv-alert')) {
         customElements.define('lv-alert', AlertElement);
     }

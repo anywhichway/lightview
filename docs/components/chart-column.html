@@ -1,7 +1,7 @@
 <!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js"></script>
 <script>
-    if (window.LightviewRouter) {
+    if (globalThis.LightviewRouter) {
         LightviewRouter.base('/index.html');
     }
 </script>
@@ -71,7 +71,7 @@
 
                             <!-- Tabs -->
                             <script>
-                                window.switchBasicColumnTab = (tabId) => {
+                                globalThis.switchBasicColumnTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`basic-column-tab-btn-${t}`);
@@ -216,7 +216,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchMultipleColumnTab = (tabId) => {
+                                globalThis.switchMultipleColumnTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`multiple-column-tab-btn-${t}`);
@@ -398,7 +398,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchAxesColumnTab = (tabId) => {
+                                globalThis.switchAxesColumnTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`axes-column-tab-btn-${t}`);
@@ -555,7 +555,7 @@ $('#example').content(chart);</code></pre>
 
                             <!-- Tabs -->
                             <script>
-                                window.switchSpacingColumnTab = (tabId) => {
+                                globalThis.switchSpacingColumnTab = (tabId) => {
                                     const tabs = ['tagged', 'vdom', 'object'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`spacing-column-tab-btn-${t}`);
