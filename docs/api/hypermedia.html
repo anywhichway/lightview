@@ -1,10 +1,5 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="/lightview-router.js"></script>
-<script>
-    if (globalThis.LightviewRouter) {
-        LightviewRouter.base('/index.html');
-    }
-</script>
+<script src="/lightview-router.js?base=/index.html"></script>
 
 <div class="docs-layout">
     <aside class="docs-sidebar" src="./nav.html"></aside>
@@ -12,13 +7,18 @@
     <main class="docs-content">
         <h1>Hypermedia</h1>
         <p>
-            HTMX vibes, built right in. Load HTML fragments, fetch vDOM/Object DOM, clone templates - all with the
-            <code>src</code>
-            attribute.
+            HTM-style patterns, built right in. Load HTML fragments, fetch vDOM/Object DOM, clone templates - all with
+            the
+            <code>src</code> and <code>href</code> attributes.
             <em>Requires lightview-x.js</em>
         </p>
+        <p>
+            If you look at the source for the navigation to the left, you will see that this page is built using a
+            hypermedia approach.
+        </p>
 
-        <h2>Fetching HTML</h2>
+        <h2 id="fetching-content">Fetching Content</h2>
+        <h3 id="html">HTML</h3>
         <p>
             Point <code>src</code> at an HTML file and Lightview loads it as children:
         </p>
@@ -33,9 +33,45 @@ const app = div(
 
 // The HTML is fetched, parsed, and made reactive automatically!</code></pre>
 
-        <h2>Fetching vDOM & Object DOM</h2>
         <p>
-            Files with <code>.vdom</code> or <code>.odom</code> extensions are parsed as JSON and converted to elements:
+            By default, Lightview enforces a <strong>Same-Domain security policy</strong> for all remote fetches.
+            Content can only be fetched from the same domain or its subdomains. External domains are blocked to prevent
+            Cross-Site Scripting (XSS) and unauthorized data ingestion. Different ports on the same host (e.g.,
+            localhost:3000 and localhost:4000) are <strong>allowed</strong> by default.
+        </p>
+        <p>
+            <strong>Relative Paths:</strong> Any URL that does not specify a protocol (e.g., <code>./data.html</code>,
+            <code>/api/user</code>) is automatically considered valid. This ensures reliability in sandboxed
+            environments (like iframes) where the global origin might be reported as <code>null</code>.
+        </p>
+
+        <h4>Controlling Access with validateUrl</h4>
+        <p>
+            You can customize or disable this security policy using the <code>validateUrl</code> hook. This hook is
+            checked before any <code>src</code> fetch or non-standard <code>href</code> navigation.
+        </p>
+
+        <pre><code>// Allow specific external CDNs
+Lightview.hooks.validateUrl = (url) => {
+    const target = new URL(url, location.origin);
+    const allowed = ['trusted-api.com', 'cdn.content.org', 'localhost'];
+    return allowed.includes(target.hostname) || target.hostname.endsWith('.mysite.com');
+};
+
+// Disable security (Not recommended for production)
+Lightview.hooks.validateUrl = () => true;</code></pre>
+
+        <h4>Dangerous Protocol Blocking</h4>
+        <p>
+            Lightview automatically blocks dangerous URI protocols in <code>src</code> and <code>href</code> attributes,
+            including <code>javascript:</code>, <code>vbscript:</code>, and certain <code>data:</code> types. If a
+            dangerous protocol is detected, the action is cancelled and a warning is logged to the console.
+        </p>
+
+        <h3 id="vdom-object-dom">vDOM and Object DOM</h3>
+        <p>
+            Files with <code>.vdom</code> or <code>.odom</code> extensions are parsed as JSON and converted to elements.
+            Any <a href="#template-literals">Template Literals</a> within the JSON values are automatically resolved.
         </p>
         <pre><code>// /api/cards.vdom
 [
@@ -63,11 +99,15 @@ div({ src: '.card-template' })</code></pre>
     &lt;/div&gt;
 &lt;/template&gt;</code></pre>
 
-        <h2>Interactive href & Navigation</h2>
+        <h2 id="href-navigation">HREF Navigation</h2>
         <p>
             Add <code>href</code> to any element to make it interactive. The behavior depends on the <code>target</code>
             attribute:
         </p>
+        <p><strong>Note:</strong> The same <a href="#fetching-content">src Fetch Security</a> controls (same-domain
+            policy
+            and protocol
+            blocking) apply to all interactive <code>href</code> navigations.</p>
 
         <h3>1. Self-Loading (Default)</h3>
         <p>If no target is specified, clicking sets the element's own <code>src</code> to the <code>href</code> value:
@@ -112,9 +152,72 @@ div({
         <p><strong>Smart Replacement:</strong> Lightview tracks inserted content. Fetching the same content to the same
             location is a no-op. Fetching different content replaces the previous content at that specific location.</p>
 
-        <h2>HTML Template Literals</h2>
+        <h3>5. Hash Scrolling</h3>
+        <p>If an <code>href</code> or <code>src</code> includes a hash (e.g., <code>/page.html#section-1</code>),
+            Lightview will automatically
+            attempt to scroll to the element with that ID after the content is loaded and injected. This works for both
+            standard document targets and Shadow DOM targets (where it searches within the specific
+            <code>shadowRoot</code>).
+        </p>
+        <pre><code>// Scrolls to #details within the loaded content
+button({ href: '/api/items.html#details', target: '#content' }, 'View Details')</code></pre>
+
+        <h2 id="event-gating">Declarative Event Gating (lv-before)</h2>
         <p>
-            External HTML can reference named signals or state with template syntax:
+            The <code>lv-before</code> attribute provides a declarative way to intercept, filter, and modify events
+            <em>before</em> they reach your standard handlers (like <code>onclick</code>) or trigger native browser
+            behavior.
+        </p>
+        <div class="alert alert-info">
+            <p>
+                <strong>Important:</strong> Custom gating functions must be defined in the <code>globalThis</code> scope
+                (e.g., <code>window.myGate = ...</code>) to be accessible to the declarative parser.
+            </p>
+        </div>
+
+        <h3>1. Selection & Exclusions</h3>
+        <p>You must specify which events to gate by name, or use <code>*</code> to gate all common (sensible) UI and
+            form events. You can
+            also exclude specific events:</p>
+        <pre><code>&lt;!-- Gate only clicks --&gt;
+&lt;button lv-before="click myGate()"&gt;Click Me&lt;/button&gt;
+
+&lt;!-- Gate all common events EXCEPT keyboard events --&gt;
+&lt;div lv-before="* !keydown !keyup logInteraction()"&gt;...&lt;/div&gt;</code></pre>
+
+        <h3>2. Rate Limiting (Throttle & Debounce)</h3>
+        <p>Lightview-X provides built-in "Gate Modifiers" for common timing patterns. These return <code>true</code>
+            only when the timing condition is met, effectively filtering the event stream.</p>
+        <pre><code>&lt;!-- Prevent button spam (only 1 click per second) --&gt;
+&lt;button lv-before="click throttle(1000)" onclick="saveData()"&gt;Save&lt;/button&gt;
+
+&lt;!-- Wait for 500ms of silence before processing input --&gt;
+&lt;input lv-before="input debounce(500)" oninput="search(this.value)"&gt;</code></pre>
+
+        <h3>3. Sequence & Async Pipelines</h3>
+        <p>You can chain multiple gates in a space-separated list. They execute sequentially and can be asynchronous.
+            If any function returns <code>false</code>, <code>null</code>, or <code>undefined</code>, the entire event
+            is aborted.</p>
+        <p><strong>Parsing Note:</strong> Expressions are fundamentally space-separated. However, spaces within single
+            quotes (<code>'</code>), double quotes (<code>"</code>), or parentheses (<code>()</code>) are preserved.
+            This allows you to pass strings with spaces to your gate functions, such as confirmation messages.</p>
+        <pre><code>&lt;!-- Chained: Throttled first, then a confirmation --&gt;
+&lt;button lv-before="click throttle(2000) confirm('Really delete?')" 
+        onclick="doDelete()"&gt;Delete&lt;/button&gt;</code></pre>
+
+        <h3>4. Context & Arguments</h3>
+        <p>Inside an <code>lv-before</code> expression, <code>this</code> refers to the current element. You can pass
+            the
+            native
+            <code>event</code> object, as well as <code>state</code> and <code>signal</code> registries, to your
+            custom gate functions.
+        </p>
+        <pre><code>&lt;!-- Pass event to a custom logic function --&gt;
+&lt;button lv-before="click validateClick(event)" onclick="proceed()"&gt;...&lt;/button&gt;</code></pre>
+
+        <h2 id="template-literals">Template Literals</h2>
+        <p>
+            External HTML, .vdom and .odom files, can reference named signals or state with template syntax:
         </p>
         <pre><code>// main.js - Register named signals and state
 const count = signal(0, 'count');
@@ -130,7 +233,7 @@ div({ src: '/partials/dashboard.html' })</code></pre>
     &lt;p&gt;Theme: ${state.get('userPrefs').theme}&lt;/p&gt;
 &lt;/div&gt;</code></pre>
 
-        <h2>Shadow DOM</h2>
+        <h2 id="shadow-dom">Shadow DOM</h2>
         <p>
             Load content into shadow DOM for style isolation using <code>location="shadow"</code> or the
             <code>:shadow</code> suffix:
@@ -141,24 +244,53 @@ div({ src: '/components/widget.html', location: 'shadow' })
 // Option B: target suffix
 button({ href: '/components/widget.html', target: '#container:shadow' }, 'Load Widget')</code></pre>
 
-        <h2>Building HTMX-style Apps</h2>
+        <h2 id="htmx-style-apps">HTMX-style Apps</h2>
         <p>
-            Combine <code>src</code> and <code>href</code> for hypermedia-driven UIs:
+            Combine <code>src</code> and <code>href</code> for hypermedia-driven UIs. You can use <code>lv-before</code>
+            for confirmation or validation before navigation.
         </p>
+
+        <h3>Using Tag Functions</h3>
         <pre><code>const { tags } = Lightview;
 const { div, nav, button, main } = tags;
 
 const app = div({ class: 'app' },
     nav({ class: 'sidebar' },
-        button({ href: '/pages/dashboard.html' }, '📊 Dashboard'),
-        button({ href: '/pages/settings.html' }, '⚙️ Settings'),
-        button({ href: '/pages/profile.html' }, '👤 Profile')
+        button({ 
+            href: '/pages/dashboard.html', 
+            target: '#content' 
+        }, '📊 Dashboard'),
+        button({ 
+            href: '/pages/settings.html', 
+            target: '#content',
+            'lv-before': "click confirm('Go to settings?')" // Event gate
+        }, '⚙️ Settings')
     ),
     main({ 
         id: 'content',
         src: '/pages/dashboard.html'  // Initial content
     })
-);
+);</code></pre>
+
+        <h3>Using Plain HTML (Lightview Syntax)</h3>
+        <pre><code>&lt;div class="app"&gt;
+    &lt;nav class="sidebar"&gt;
+        &lt;button href="/pages/dashboard.html" target="#content"&gt;📊 Dashboard&lt;/button&gt;
+        &lt;button href="/pages/settings.html" target="#content" 
+                lv-before="click confirm('Go to settings?')"&gt;⚙️ Settings&lt;/button&gt;
+    &lt;/nav&gt;
+    &lt;main id="content" src="/pages/dashboard.html"&gt;&lt;/main&gt;
+&lt;/div&gt;</code></pre>
+
+        <h3>Using HTMX</h3>
+        <pre><code>&lt;div class="app"&gt;
+    &lt;nav class="sidebar"&gt;
+        &lt;button hx-get="/pages/dashboard.html" hx-target="#content"&gt;📊 Dashboard&lt;/button&gt;
+        &lt;button hx-get="/pages/settings.html" hx-target="#content" 
+                hx-confirm="Go to settings?"&gt;⚙️ Settings&lt;/button&gt;
+    &lt;/nav&gt;
+    &lt;main id="content" hx-get="/pages/dashboard.html" hx-trigger="load"&gt;&lt;/main&gt;
+&lt;/div&gt;</code></pre>
 
 
     </main>

@@ -279,6 +279,10 @@
     const processComponentResult = (result) => {
         if (!result) return null;
 
+        if (Lightview.hooks.processChild) {
+            result = Lightview.hooks.processChild(result) ?? result;
+        }
+
         // Already a Lightview element
         if (result.domEl) return result;
 
@@ -307,18 +311,6 @@
         // vDOM object with tag property
         if (typeof result === 'object' && result.tag) {
             return element(result.tag, result.attributes || {}, result.children || []);
-        }
-
-        // Object DOM syntax will be handled by processChild hook in lightview-x
-        // But we can do basic detection here
-        if (typeof result === 'object') {
-            const keys = Object.keys(result);
-            if (keys.length === 1 && typeof result[keys[0]] === 'object') {
-                const tag = keys[0];
-                const content = result[tag];
-                const { children, ...attributes } = content;
-                return element(tag, attributes, children || []);
-            }
         }
 
         return null;
@@ -350,6 +342,12 @@
     // Set attribute with proper handling of boolean attributes and undefined/null values
     const setAttributeValue = (domNode, key, value) => {
         const isBool = typeof domNode[key] === 'boolean';
+
+        // Sanitize href/src attributes to prevent javascript: and other dangerous protocols
+        if ((key === 'href' || key === 'src') && typeof value === 'string' && /^(javascript|vbscript|data:text\/html|data:application\/javascript)/i.test(value)) {
+            console.warn(`[Lightview] Blocked dangerous protocol in ${key}: ${value}`);
+            value = 'javascript:void(0)'; // Safer fallback than # which might trigger scroll or router
+        }
 
         if (NODE_PROPERTIES.has(key) || isBool) {
             domNode[key] = isBool ? (value !== null && value !== undefined && value !== false && value !== 'false') : value;
@@ -670,7 +668,8 @@
         // Extension hooks
         hooks: {
             onNonStandardHref: null,
-            processChild: null
+            processChild: null,
+            validateUrl: null
         },
         // Internals exposed for extensions
         internals: {
@@ -704,7 +703,12 @@
 
                     if (target) {
                         e.preventDefault();
-                        target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                target.style.scrollMarginTop = 'calc(var(--site-nav-height, 0px) + 2rem)';
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+                            });
+                        });
                     }
                 }
             }

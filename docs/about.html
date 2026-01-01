@@ -1,10 +1,5 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="/lightview-router.js"></script>
-<script>
-    if (globalThis.LightviewRouter) {
-        LightviewRouter.base('/index.html');
-    }
-</script>
+<script src="/lightview-router.js?base=/index.html"></script>
 
 <div class="section">
     <div class="section-content" style="max-width: 800px;">
@@ -104,7 +99,8 @@
             <div class="feature-card">
                 <h3 class="feature-title">🪶 Keep It Light</h3>
                 <p class="feature-description">
-                    Life's too short for heavy frameworks. Although Lightview is not tiny (core is 8K), I tried to keep
+                    Life's too short for heavy frameworks. Although Lightview is not tiny (core is 7.75K), I tried to
+                    keep
                     it lean and modular so your apps stay fast.
                 </p>
             </div>
@@ -139,6 +135,144 @@
             <li><strong>HTMX</strong> — Hypermedia as the engine of application state</li>
             <li><strong>Juris.js</strong> — Simplicity and progressive enhancement</li>
         </ul>
+
+        <h2 id="comparison">Library Comparison</h2>
+        <p>
+            Lightview occupies a unique space, combining the hypermedia power of HTMX with the reactive component model
+            of modern libraries, all without a build step.
+        </p>
+
+        <h3>Features</h3>
+        <div class="overflow-x-auto">
+            <table class="table w-full">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Lightview</th>
+                        <th>React</th>
+                        <th>HTMX</th>
+                        <th>Bau.js</th>
+                        <th>Juris.js</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Bundle Size</strong></td>
+                        <td>~7.75KB<sup>1</sup></td>
+                        <td>~33KB</td>
+                        <td>~15KB</td>
+                        <td>~2KB</td>
+                        <td>~50KB</td>
+                    </tr>
+                    <tr>
+                        <td><strong>No Build Step Required</strong></td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                        <td>✅</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multiple Syntaxes</strong></td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Native Hypermedia</strong></td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Custom Elements</strong></td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Event Gating</strong></td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Reactive Capabilities</h3>
+        <div class="overflow-x-auto">
+            <table class="table w-full">
+                <thead>
+                    <tr>
+                        <th>Capability</th>
+                        <th>Lightview</th>
+                        <th>React</th>
+                        <th>HTMX</th>
+                        <th>Bau.js</th>
+                        <th>Juris.js</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Signal/Proxy Based</strong></td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Deep Reactivity</strong></td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                        <td>✅</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Auto Array Mutations</strong></td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                        <td>❌</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Auto Date Mutations</strong></td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Auto Resource Cleanup</strong></td>
+                        <td>✅</td>
+                        <td>✅</td>
+                        <td>❌</td>
+                        <td>✅</td>
+                        <td>✅</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="text-xs text-secondary italic" style="margin-top: 1rem;">
+            <sup>1</sup> Bundle size for Lightview core. Add ~20KB for Lightview-X (hypermedia, template literals, and
+            components) and ~3KB for the router.
+        </p>
+
+
+
 
         <h2>License</h2>
         <p>

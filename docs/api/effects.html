@@ -1,11 +1,5 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="/lightview-router.js"></script>
-<script>
-    if (globalThis.LightviewRouter) {
-        LightviewRouter.base('/index.html');
-    }
-</script>
-
+<script src="/lightview-router.js?base=/index.html"></script>
 <div class="docs-layout">
     <aside class="docs-sidebar" src="./nav.html"></aside>
     <main class="docs-content">

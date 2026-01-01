@@ -1,10 +1,5 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="/lightview-router.js"></script>
-<script>
-    if (globalThis.LightviewRouter) {
-        LightviewRouter.base('/index.html');
-    }
-</script>
+<script src="/lightview-router.js?base=/index.html"></script>
 
 <link rel="stylesheet" href="../components/index.css">
 
@@ -98,9 +93,11 @@ $('#example').content(app);</code></pre>
                     type: 'module',
                     minHeight: 120
                 });
-            </script><code contenteditable="true">const { signal, element, $ } = Lightview;
+            </script><code contenteditable="true">const { signal, element, $, tags } = Lightview;
+const { div } = tags;
 const count = signal(0);
-const app = { tag:'div', attributes: { class: 'container' }, children: [
+// will accept either a function or string as tag, function avoids typos better
+const app = { tag:div, attributes: { class: 'container' }, children: [
     { tag: 'h1', attributes: {}, children: ['Hello Lightview'] },
     { tag: 'p', attributes: {}, children: [() => `Count: ${count.value}`] },
     { tag: 'button', attributes: { onclick: () => count.value++ }, children: ['Click me'] }
@@ -118,7 +115,6 @@ $('#example').content(app);</code></pre>
                     minHeight: 120
                 });
             </script><code contenteditable="true">const { signal, tags, $ } = Lightview;
-const { div } = tags;
 const count = signal(0);
 const app = { div: { class: 'container', children: [
     { h1: { children: ['Hello Lightview'] } },

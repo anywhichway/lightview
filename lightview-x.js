@@ -22,6 +22,55 @@
     const isValidTagName = (name) => typeof name === 'string' && name.length > 0 && name !== 'children';
 
     /**
+     * Checks if a URL/string uses a dangerous protocol like javascript: or data: (for navigation).
+     */
+    const isDangerousProtocol = (url) => {
+        if (!url || typeof url !== 'string') return false;
+        const normalized = url.trim().toLowerCase();
+        // Specifically block javascript, vbscript, and data (when used for HTML/navigation)
+        return normalized.startsWith('javascript:') ||
+            normalized.startsWith('vbscript:') ||
+            normalized.startsWith('data:text/html') ||
+            normalized.startsWith('data:application/javascript');
+    };
+
+    /**
+     * Validates a URL before fetching content.
+     * Default implementation allows same domain and its subdomains (ignoring port).
+     */
+    const validateUrl = (url) => {
+        if (!url) return false;
+        // If it doesn't look like a full URL (no protocol), assume it's relative and valid
+        // This avoids issues in sandboxed iframes where location.origin might be 'null'
+        if (!/^[a-z][a-z0-9+.-]*:/i.test(url)) return true;
+
+        try {
+            const base = (typeof document !== 'undefined') ? document.baseURI : globalThis.location.origin;
+            // If base is 'null' (sandboxed iframe), new URL(url, 'null') will throw if url is absolute
+            // But if it's absolute, we don't strictly need the base.
+            const target = new URL(url, base === 'null' ? undefined : base);
+            const current = globalThis.location;
+
+            // Allow same origin (matches protocol, host, and port)
+            if (target.origin === current.origin && target.origin !== 'null') return true;
+
+            // Allow same hostname (matches host, ignores port/protocol)
+            // This specifically allows different ports on the same host (e.g., localhost:3000 -> localhost:4000)
+            if (target.hostname && target.hostname === current.hostname) return true;
+
+            // Allow subdomains
+            if (target.hostname && current.hostname && target.hostname.endsWith('.' + current.hostname)) return true;
+
+            // Support local file protocol
+            if (current.protocol === 'file:' && target.protocol === 'file:') return true;
+
+            return false;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    /**
      * Detects if an object follows the Object DOM syntax: { tag: { attr: val, children: [...] } }
      */
     const isObjectDOM = (obj) => {
@@ -696,10 +745,15 @@
         executeScripts(target);
     };
 
-    const isPath = (s) => /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom))$/i.test(s);
+    const isPath = (s) => typeof s === 'string' && !isDangerousProtocol(s) && /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom))$/i.test(s);
 
     const fetchContent = async (src) => {
         try {
+            const LV = globalThis.Lightview;
+            if (LV?.hooks?.validateUrl && !LV.hooks.validateUrl(src)) {
+                console.warn(`[LightviewX] Fetch blocked by validateUrl hook: ${src}`);
+                return null;
+            }
             const url = new URL(src, document.baseURI);
             const res = await fetch(url);
             if (!res.ok) return null;
@@ -741,21 +795,38 @@
         }
     };
 
-    const updateTargetContent = (el, elements, raw, loc, hash, { element, setupChildren }) => {
-        const markerId = `${loc}-${hash.slice(0, 8)}`;
+    const updateTargetContent = (el, elements, raw, loc, contentHash, { element, setupChildren }, targetHash = null) => {
+        const markerId = `${loc}-${contentHash.slice(0, 8)}`;
         let track = getOrSet(insertedContentMap, el.domEl, () => ({}));
         if (track[loc]) removeInsertedContent(el.domEl, `${loc}-${track[loc].slice(0, 8)}`);
-        track[loc] = hash;
+        track[loc] = contentHash;
+
+        const performScroll = (root) => {
+            if (!targetHash) return;
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const id = targetHash.startsWith('#') ? targetHash.slice(1) : targetHash;
+                    const target = root.getElementById ? root.getElementById(id) : root.querySelector(`#${id}`);
+                    if (target) {
+                        target.style.scrollMarginTop = 'calc(var(--site-nav-height, 0px) + 2rem)';
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+                    }
+                });
+            });
+        };
 
         if (loc === 'shadow') {
             if (!el.domEl.shadowRoot) el.domEl.attachShadow({ mode: 'open' });
             setupChildren(elements, el.domEl.shadowRoot);
             executeScripts(el.domEl.shadowRoot);
+            performScroll(el.domEl.shadowRoot);
         } else if (loc === 'innerhtml') {
             el.children = elements;
             executeScripts(el.domEl);
+            performScroll(document);
         } else {
             insert(elements, el.domEl, loc, markerId, { element, setupChildren });
+            performScroll(document);
         }
     };
 
@@ -766,8 +837,11 @@
     const handleSrcAttribute = async (el, src, tagName, { element, setupChildren }) => {
         if (STANDARD_SRC_TAGS.includes(tagName)) return;
 
-        let elements = [], raw = '';
+        let elements = [], raw = '', targetHash = null;
         if (isPath(src)) {
+            if (src.includes('#')) {
+                [src, targetHash] = src.split('#');
+            }
             const result = await fetchContent(src);
             if (result) {
                 elements = parseElements(result.content, result.isJson, result.isHtml, el, element);
@@ -786,11 +860,29 @@
         if (!elements.length) return;
 
         const loc = (el.domEl.getAttribute('location') || 'innerhtml').toLowerCase();
-        const hash = hashContent(raw);
+        const contentHash = hashContent(raw);
         const track = getOrSet(insertedContentMap, el.domEl, () => ({}));
 
-        if (track[loc] === hash) return;
-        updateTargetContent(el, elements, raw, loc, hash, { element, setupChildren });
+        if (track[loc] === contentHash) {
+            // If already loaded but we have a new hash, we should still scroll
+            if (targetHash) {
+                const root = loc === 'shadow' ? el.domEl.shadowRoot : document;
+                if (root) {
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            const id = targetHash.startsWith('#') ? targetHash.slice(1) : targetHash;
+                            const target = root.getElementById ? root.getElementById(id) : root.querySelector?.(`#${id}`);
+                            if (target) {
+                                target.style.scrollMarginTop = 'calc(var(--site-nav-height, 0px) + 2rem)';
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+                            }
+                        });
+                    });
+                }
+            }
+            return;
+        }
+        updateTargetContent(el, elements, raw, loc, contentHash, { element, setupChildren }, targetHash);
     };
 
     // Valid location values for content insertion
@@ -824,6 +916,11 @@
         e.preventDefault();
 
         const href = clickedEl.getAttribute('href');
+        const LV = globalThis.Lightview;
+        if (href && (isDangerousProtocol(href) || (LV?.hooks?.validateUrl && !LV.hooks.validateUrl(href)))) {
+            console.warn(`[LightviewX] Navigation or fetch blocked by security policy: ${href}`);
+            return;
+        }
         const targetAttr = clickedEl.getAttribute('target');
 
         // Case 1: No target attribute - existing behavior (load into self)
@@ -883,6 +980,197 @@
         } catch (err) {
             console.warn('Invalid target selector:', selector, err);
         }
+    };
+
+
+
+    // ============= LV-BEFORE (Event Gating) =============
+    const gateStates = new WeakMap();
+    const BYPASS_FLAG = '__lv_passed';
+    const RESUME_FLAG = '__lv_resume';
+
+    const SENSIBLE_EVENTS = [
+        'click', 'dblclick', 'mousedown', 'mouseup', 'contextmenu',
+        'submit', 'reset', 'change', 'input', 'invalid',
+        'keydown', 'keyup', 'keypress',
+        'touchstart', 'touchend'
+    ];
+    const CAPTURE_EVENTS = ['focus', 'blur'];
+
+    const getGateState = (el, key) => {
+        let elState = gateStates.get(el);
+        if (!elState) {
+            elState = new Map();
+            gateStates.set(el, elState);
+        }
+        let state = elState.get(key);
+        if (!state) {
+            state = {};
+            elState.set(key, state);
+        }
+        return state;
+    };
+
+    /**
+     * Gate implementation for throttle.
+     * Returns true if enough time has passed since the last successful run for this specific element/event/index.
+     */
+    const gateThrottle = function (ms) {
+        const event = arguments[arguments.length - 1];
+        if (event?.[RESUME_FLAG]) return true;
+        const key = `throttle-${event?.type || 'all'}-${ms}`;
+        const state = getGateState(this, key);
+        const now = Date.now();
+        if (now - (state.last || 0) >= ms) {
+            state.last = now;
+            return true;
+        }
+        return false;
+    };
+
+    /**
+     * Gate implementation for debounce.
+     * Returns true only after the specified delay has passed without further calls.
+     */
+    const gateDebounce = function (ms) {
+        const event = arguments[arguments.length - 1];
+        const key = `debounce-${event?.type || 'all'}-${ms}`;
+        const state = getGateState(this, key);
+
+        if (state.timer) clearTimeout(state.timer);
+
+        if (event?.[RESUME_FLAG] && state.passed) {
+            state.passed = false;
+            return true;
+        }
+
+        state.timer = setTimeout(() => {
+            state.passed = true;
+            const newEvent = new event.constructor(event.type, event);
+            newEvent[RESUME_FLAG] = true;
+            this.dispatchEvent(newEvent);
+        }, ms);
+
+        return false;
+    };
+
+    /**
+     * Parses the lv-before attribute value into event filters and gate functions.
+     */
+    const parseBeforeAttribute = (attrValue) => {
+        // Smart tokenizer that respects parentheses and quotes
+        const tokens = [];
+        let current = '', depth = 0, inQuote = null;
+        for (let i = 0; i < attrValue.length; i++) {
+            const char = attrValue[i];
+            if (inQuote) {
+                current += char;
+                if (char === inQuote && attrValue[i - 1] !== '\\') inQuote = null;
+            } else if (char === "'" || char === '"') {
+                inQuote = char;
+                current += char;
+            } else if (char === '(') {
+                depth++;
+                current += char;
+            } else if (char === ')') {
+                depth--;
+                current += char;
+            } else if (/\s/.test(char) && depth === 0) {
+                if (current) tokens.push(current);
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        if (current) tokens.push(current);
+
+        const events = [];
+        const exclusions = [];
+        const calls = [];
+
+        let i = 0;
+        while (i < tokens.length) {
+            const token = tokens[i];
+            if (!token || token.includes('(')) break; // Start of function calls or empty
+            if (token.startsWith('!')) exclusions.push(token.slice(1));
+            else events.push(token);
+            i++;
+        }
+
+        while (i < tokens.length) {
+            if (tokens[i]) calls.push(tokens[i]);
+            i++;
+        }
+
+        return { events, exclusions, calls };
+    };
+
+    /**
+     * Global interceptor for lv-before gating.
+     */
+    const globalBeforeInterceptor = async (e) => {
+        if (e[BYPASS_FLAG]) return;
+
+        const target = e.target.closest?.('[lv-before]');
+        if (!target) return;
+
+        const { events, exclusions, calls } = parseBeforeAttribute(target.getAttribute('lv-before'));
+
+        // Check if event matches the selection
+        const isExcluded = exclusions.includes(e.type);
+        const isIncluded = events.includes('*') || events.includes(e.type);
+        if (isExcluded || !isIncluded) return;
+
+        // Pass 1: Stop the event
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        // Run the pipeline
+        for (const callStr of calls) {
+            try {
+                // Parse call (e.g., "throttle(1000)")
+                const match = callStr.match(/^([\w\.]+)\((.*)\)$/);
+                if (!match) continue;
+
+                const funcName = match[1];
+                const argsStr = match[2];
+
+                // Search for function in: global scope, LightviewX
+                const LV = globalThis.Lightview;
+                const LVX = globalThis.LightviewX;
+
+                // Enhanced function lookup supporting dotted paths
+                let fn = funcName.split('.').reduce((obj, key) => obj?.[key], globalThis);
+
+                if (!fn && funcName === 'throttle') fn = gateThrottle;
+                if (!fn && funcName === 'debounce') fn = gateDebounce;
+                if (!fn && LVX && LVX[funcName]) fn = LVX[funcName];
+
+                if (typeof fn !== 'function') {
+                    console.warn(`LightviewX: lv-before function '${funcName}' not found`);
+                    continue;
+                }
+
+                // Eval arguments in context
+                const evalArgs = new Function('event', 'state', 'signal', `return [${argsStr}]`);
+                const args = evalArgs.call(target, e, LV?.state || {}, LV?.signal || {});
+
+                // Inject event as last argument for built-ins and detection
+                args.push(e);
+
+                let result = fn.apply(target, args);
+                if (result instanceof Promise) result = await result;
+                if (result === false || result === null || result === undefined) return; // Abort
+            } catch (err) {
+                console.error(`LightviewX: Error executing lv-before gate '${callStr}':`, err);
+                return; // Abort on error
+            }
+        }
+
+        // Pass 2: Success! Re-dispatch with bypass flag
+        const finalEvent = new e.constructor(e.type, e);
+        finalEvent[BYPASS_FLAG] = true;
+        target.dispatchEvent(finalEvent);
     };
 
 
@@ -1099,6 +1387,10 @@
             });
         };
 
+        // Register lv-before listeners
+        SENSIBLE_EVENTS.forEach(ev => window.addEventListener(ev, globalBeforeInterceptor, true));
+        CAPTURE_EVENTS.forEach(ev => window.addEventListener(ev, globalBeforeInterceptor, true));
+
         // Extend template literal processor to existing processChild hook
         const existingProcessChild = LV.hooks.processChild;
         LV.hooks.processChild = (child) => {
@@ -1242,6 +1534,9 @@
         setTheme,
         registerStyleSheet,
         registerThemeSheet,
+        // Gate modifiers
+        throttle: gateThrottle,
+        debounce: gateDebounce,
         // Component initialization
         initComponents,
         componentConfig,
@@ -1277,6 +1572,9 @@
                     }
                     return child;
                 };
+                if (!globalThis.Lightview.hooks.validateUrl) {
+                    globalThis.Lightview.hooks.validateUrl = validateUrl;
+                }
             }
         });
 
@@ -1289,6 +1587,9 @@
                 }
                 return child;
             };
+            if (!globalThis.Lightview.hooks.validateUrl) {
+                globalThis.Lightview.hooks.validateUrl = validateUrl;
+            }
         }
     }
 
@@ -1300,5 +1601,8 @@
             }
             return child;
         };
+        if (!globalThis.Lightview.hooks.validateUrl) {
+            globalThis.Lightview.hooks.validateUrl = validateUrl;
+        }
     }
 })();

@@ -1,10 +1,5 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="/lightview-router.js"></script>
-<script>
-    if (globalThis.LightviewRouter) {
-        LightviewRouter.base('/index.html');
-    }
-</script>
+<script src="/lightview-router.js?base=/index.html"></script>
 
 
 
@@ -19,6 +14,7 @@
             <button class="btn btn-secondary step-btn" onclick="switchStep(3)">3. State</button>
             <button class="btn btn-secondary step-btn" onclick="switchStep(4)">4. Hypermedia</button>
             <button class="btn btn-secondary step-btn" onclick="switchStep(5)">5. Components</button>
+            <button class="btn btn-secondary step-btn" onclick="switchStep(6)">6. Gating</button>
         </div>
 
         <!-- Tutorial Layout: Preview on top, Code & Concepts below -->
@@ -334,7 +330,7 @@ $('#app').content(App);`,
             },
             4: {
                 options: {
-                    //allowSameOrigin: true,
+                    allowSameOrigin: true,
                     autoRun: true
                 },
                 code: `// STEP 4: HYPERMEDIA + OBJECT DOM SYNTAX (requires lightview-x)
@@ -512,7 +508,7 @@ $('#app').content(App);`,
                         <strong style="color: #c2410c;">🔶 Object DOM JSON</strong>
                         <ul style="margin: 0.25rem 0 0; padding-left: 1.25rem; color: var(--site-text-secondary);">
                             <li><strong>Pros:</strong> Extremely compact, human-readable JSON, expressive.</li>
-                            <li><strong>Cons:</strong> Non-standard structure, requires understanding the syntax mapping.</li>
+                            <li><strong>Cons:</strong> Non-standard structure, requires understanding the syntax mapping. Must load lightview-x.js</li>
                         </ul>
                     </div>
                 </div>
@@ -593,6 +589,94 @@ $('#app').content(App);`,
                     <li style="margin-bottom: 0.75rem;"><strong>Computed</strong> — <code>computed(() => ...)</code> creates derived values that reactively update based on other signals.</li>
                 </ul>
                 <p><strong>Next:</strong> Explore the <a href="/docs/components">Components</a> library!</p>`
+            },
+            6: {
+                options: {
+                    allowSameOrigin: true,
+                    autoRun: true
+                },
+                code: `// STEP 6: GATING EVENTS (lv-before)
+const { tags, signal, $ } = Lightview;
+const { div, h3, button, input, style } = tags;
+
+// 1. Logic for our example
+const message = signal('Type something or click the button...');
+const callCount = signal(0);
+
+// Global confirmation function used by lv-before
+window.confirmAction = function(msg,event) {
+    if(confirm(msg)) {
+        console.log('Allowed:',this,event);
+        return true;
+    }
+    console.log('Blocked:',this,event);
+    return false;
+}
+
+const App = div({ class: 'gating-demo' },
+    h3('Event Gating & Rate Limiting'),
+    
+    // Throttle: Only allows 1 click per 2 seconds
+    div({ class: 'demo-section' },
+        div('1. Throttled Button (2s delay):'),
+        button({ 
+            class: 'btn-throttle',
+            // Intercept click and apply throttle gate
+            'lv-before': 'click throttle(2000)',
+            onclick: () => callCount.value++
+        }, 'Spam Me!'),
+        div({ class: 'counter' }, () => 'Actual clicks allowed: ' + callCount.value)
+    ),
+
+    // Debounce: Waits for 500ms of silence
+    div({ class: 'demo-section' },
+        div('2. Debounced Search (500ms delay):'),
+        input({ 
+            class: 'search-input',
+            placeholder: 'Type fast...',
+            // Wait for silence before letting oninput fire
+            'lv-before': 'input debounce(500)',
+            oninput: (e) => message.value = 'Search triggered: "' + e.target.value + '"'
+        }),
+        div({ class: 'message' }, () => message.value)
+    ),
+
+    // Conditional Gate: Chaining a confirmation
+    div({ class: 'demo-section' },
+        div('3. Chained Gates (Throttle + Confirm):'),
+        button({ 
+            class: 'btn-confirm',
+            'lv-before': 'click throttle(3000) confirmAction("Are you sure you want to delete?",event)',
+            onclick: () => message.value = 'Item deleted (not really)!'
+        }, 'Delete Item')
+    ),
+
+    style({ children: [
+        \`.gating-demo { font-family: system-ui, sans-serif; padding: 1rem; }
+.demo-section { margin-bottom: 1.5rem; padding: 1rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
+.demo-section div:first-child { font-weight: bold; margin-bottom: 0.5rem; color: #475569; }
+button { padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: 500; }
+.btn-throttle { background: #3b82f6; }
+.btn-confirm { background: #ef4444; }
+.search-input { width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; }
+.counter, .message { margin-top: 0.5rem; font-size: 0.9rem; font-family: monospace; color: #6366f1; }\`
+    ]})
+);
+
+$('#app').content(App);`,
+                concepts: `<h3 style="margin-top: 0; color: var(--site-primary);">Step 6: Declarative Event Gating</h3>
+                <p>Use <code>lv-before</code> to control how and when your event handlers are executed.</p>
+                
+                <h4>Key Concepts:</h4>
+                <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">
+                    <li style="margin-bottom: 0.75rem;"><strong>Event Selection</strong> — You must specify which events to gate by name (e.g., <code>click</code>) or use <code>*</code> for all common UI and form events.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Declarative Middleware</strong> — <code>lv-before</code> acts as a gatekeeper. It runs before your <code>onclick</code> or <code>oninput</code>.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Built-in Modifiers</strong> — Use <code>throttle(ms)</code> and <code>debounce(ms)</code> for rate limiting without writing complex wrapper functions.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Chaining</strong> — You can chain multiple gates (e.g., <code>click throttle(2000) confirmAction(...)</code>). If any gate returns false (or aborts), the final handler never fires. Spaces are used as separators, but are ignored inside quotes and parentheses.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Context</strong> — Gates are standard functions. They have access to <code>this</code> (the element) and can accept arguments like <code>event</code>.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Write your own</strong> — Write your own functions and add the to <code>globalThis</code> to make them available to all templates. They have access to <code>this</code> (the element) and can accept arguments like <code>event</code>.</li>
+                </ul>
+                <p><strong>Try it:</strong> Click the blue button rapidly, or type quickly into the search box to see the limiters in action!</p>`
             }
         };
 
@@ -639,10 +723,9 @@ $('#app').content(App);`,
             conceptsContainer.appendChild(conceptsEl);
 
             // 4. Initialize Examplify
+            // Simplified: Use same origin for localhost to avoid connectivity issues with 127.0.0.1
             const useOrigin = (data.options?.allowSameOrigin && (globalThis.location.hostname === 'localhost' || globalThis.location.hostname === '127.0.0.1'))
-                ? (globalThis.location.hostname === 'localhost'
-                    ? globalThis.location.origin.replace('localhost', '127.0.0.1')
-                    : globalThis.location.origin.replace('127.0.0.1', 'localhost'))
+                ? null
                 : (data.options?.allowSameOrigin ? 'https://sandbox.lightview.dev' : null);
 
             // Check if step uses modules (looking for import statement)

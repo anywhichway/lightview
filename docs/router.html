@@ -1,19 +1,16 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="/lightview-router.js"></script>
-<script>
-    if (globalThis.LightviewRouter) {
-        LightviewRouter.base('/index.html');
-    }
-</script>
+<script src="/lightview-router.js?base=/index.html"></script>
 
-<div class="section">
-    <div class="section-content" style="max-width: 800px;">
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="/docs/router-nav.html"></aside>
+
+    <main class="docs-content">
         <h1>Lightview Router</h1>
         <p class="text-secondary" style="font-size: 1.125rem;">
             A lightweight, pipeline-based History API router with middleware support.
         </p>
 
-        <h2>Overview</h2>
+        <h2 id="overview">Overview</h2>
         <p>
             The Lightview Router provides a simple yet powerful way to handle client-side routing in your application.
             It supports standard routes, wildcards, named parameters, and middleware pipelines.
@@ -31,7 +28,7 @@
             <li>Markdown rendering</li>
         </ul>
 
-        <h2>Basic Usage</h2>
+        <h2 id="basic-usage">Basic Usage</h2>
         <p>Initialize the router with a target element and define your routes.</p>
 
         <div class="code-block">
@@ -60,7 +57,7 @@ appRouter.use('/docs/*');
 appRouter.start();</code></pre>
         </div>
 
-        <h2>Middleware & Pipelines</h2>
+        <h2 id="middleware">Middleware & Pipelines</h2>
         <p>
             Lightview Router uses a "chain of responsibility" pattern. When you register a route, you can provide
             multiple handlers.
@@ -128,7 +125,7 @@ const loadPage = async (ctx) => {
 );</code></pre>
         </div>
 
-        <h2>Advanced Usage</h2>
+        <h2 id="advanced-usage">Advanced Usage</h2>
 
         <h3>Functional Arguments</h3>
         <p>
@@ -174,7 +171,42 @@ const loadPage = async (ctx) => {
 );</code></pre>
         </div>
 
-        <h2>API Reference</h2>
+        <h2 id="seo-advantages">SEO Advantages</h2>
+        <p>
+            Lightview Router is designed to be SEO-friendly even in Single Page Applications. By placing a small shim
+            script at the top of your content-rich pages, you can ensure that deep links work correctly and that search
+            engines can crawl your site effectively.
+        </p>
+
+        <h3>The Shim Approach</h3>
+        <p>
+            Add the following script tag to the <code>&lt;head&gt;</code> of any HTML page that you want to be
+            deep-linkable:
+        </p>
+        <div class="code-block">
+            <pre><code>&lt;script src="/lightview-router.js?base=/index.html"&gt;&lt;/script&gt;</code></pre>
+        </div>
+        <p>
+            When a user visits a deep link directly (e.g., <code>/docs/router.html</code>), this script
+            executes immediately. If it's not already at the "base" page, it redirects the browser to the base page
+            while preserving the current path in a query string. The router then restores the correct content on the
+            base page. The crawlers can simply process the HTML on the page being visited.
+        </p>
+
+        <p>This approach ensures:</p>
+        <ul>
+            <li><strong>Indexability</strong>: Each page is a real HTML file that crawlers can find and index.</li>
+            <li><strong>Deep Linking</strong>: Direct links to any page work seamlessly for users.</li>
+            <li><strong>Performance</strong>: The redirect happens before the rest of the page loads, making it nearly
+                instantaneous.</li>
+        </ul>
+
+        <p>
+            <em>Note: This documentation website uses this exact approach to handle its routing and search engine
+                optimization.</em>
+        </p>
+
+        <h2 id="api-reference">API Reference</h2>
 
         <h3><code>LightviewRouter.router(options)</code></h3>
         <p>Creates a new router instance.</p>
@@ -186,7 +218,7 @@ const loadPage = async (ctx) => {
             <li><code>onResponse</code> (function): Callback when a handler returns a response.</li>
         </ul>
 
-        <h2>Built-in Middleware</h2>
+        <h2 id="built-in-middleware">Built-in Middleware</h2>
 
         <h3><code>localeHandler(ctx)</code></h3>
         <p>
@@ -246,6 +278,17 @@ appRouter.use(notFound({
             <pre><code>router.navigate('/profile/settings');</code></pre>
         </div>
 
+        <h3>Hash Scrolling</h3>
+        <p>
+            The router fully supports fragment identifiers (hashes). When navigating to a URL with a hash, the router
+            will automatically scroll the corresponding element into view after the content has been fetched and
+            rendered.
+        </p>
+        <div class="code-block">
+            <pre><code>// Navigates and scrolls to #usage header
+router.navigate('/docs/router.html#usage');</code></pre>
+        </div>
+
         <h3>Context Object</h3>
         <p>Handlers receive a <code>context</code> object containing:</p>
         <ul>
@@ -256,7 +299,7 @@ appRouter.use(notFound({
                 target).</li>
         </ul>
 
-        <h2>Advanced Configuration</h2>
+        <h2 id="advanced-configuration">Advanced Configuration</h2>
         <p>
             The <code>router()</code> constructor accepts an options object for lifecycle hooks and error handling.
         </p>
@@ -281,5 +324,5 @@ appRouter.use(notFound({
 });</code></pre>
         </div>
 
-    </div>
+    </main>
 </div>

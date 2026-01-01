@@ -1,0 +1,144 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="/lightview-router.js"></script>
+<script>
+    if (globalThis.LightviewRouter) {
+        LightviewRouter.base('/index.html');
+    }
+</script>
+
+<div class="section">
+    <div class="section-content" style="max-width: 900px;">
+        <h1>Syntaxes</h1>
+        <p class="text-secondary" style="font-size: 1.125rem;">
+            One reactive engine, four ways to build your UI.
+        </p>
+
+        <p>
+            Lightview is uniquely flexible. It doesn't force you into a single way of describing your DOM. Whether you
+            prefer concise JavaScript functions, structured JSON, or standard HTML, the same signal-based reactivity
+            powers it all.
+        </p>
+
+        <h2>Comparison at a Glance</h2>
+        <div class="overflow-x-auto">
+            <table class="table w-full">
+                <thead>
+                    <tr>
+                        <th>Syntax</th>
+                        <th>Style</th>
+                        <th>Best For</th>
+                        <th>Requirement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tagged API</strong></td>
+                        <td><code>div(h1('Title'))</code></td>
+                        <td>Application logic, dynamic UIs</td>
+                        <td>Core</td>
+                    </tr>
+                    <tr>
+                        <td><strong>vDOM</strong></td>
+                        <td><code>{ tag: 'div', ... }</code></td>
+                        <td>Serialization, data-driven UI</td>
+                        <td>Core</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Object DOM</strong></td>
+                        <td><code>{ div: { ... } }</code></td>
+                        <td>Concise templates, config files</td>
+                        <td>Lightview X</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Custom Elements</strong></td>
+                        <td><code>&lt;lv-button&gt;</code></td>
+                        <td>Progressive enhancement, CMS</td>
+                        <td>Lightview X</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <hr style="margin: 3rem 0; border: none; border-top: 1px solid var(--site-border);">
+
+        <h2 id="tagged-api">1. Tagged API</h2>
+        <p>
+            Inspired by Bau.js, this is the most concise way to build UIs in JavaScript. Every HTML tag is available as
+            a function.
+        </p>
+        <pre><code>const { tags, signal, $ } = Lightview;
+const { div, p, button } = tags;
+
+const count = signal(0);
+
+const app = div({ class: 'container' },
+    p(() => `Count: ${count.value}`),
+    button({ onclick: () => count.value++ }, 'Increment')
+);
+
+$('body').content(app);</code></pre>
+        <p><strong>Pros:</strong> Extremely readable, feels like "HTML in JS" without a compiler, full IDE autocomplete.
+        </p>
+
+        <h2 id="vdom">2. vDOM Syntax</h2>
+        <p>
+            Represent your UI as plain JavaScript objects. This is the underlying format for all non-string elements in
+            Lightview.
+        </p>
+        <pre><code>const { signal, $ } = Lightview;
+
+const count = signal(0);
+
+const app = { 
+    tag: 'div', 
+    attributes: { class: 'container' }, 
+    children: [
+        { tag: 'p', children: [() => `Count: ${count.value}`] },
+        { tag: 'button', attributes: { onclick: () => count.value++ }, children: ['Increment'] }
+    ] 
+};
+
+$('body').content(app);</code></pre>
+        <p><strong>Pros:</strong> Unambiguous, easy to serialize/deserialize as JSON, perfect for programmatic
+            generation.</p>
+
+        <h2 id="object-dom">3. Object DOM</h2>
+        <p>
+            A more compact JSON representation provided by <strong>Lightview X</strong>. It uses the tag name as a key
+            to reduce verbosity.
+        </p>
+        <pre><code>const { signal, $ } = Lightview;
+
+const count = signal(0);
+
+const app = { 
+    div: { 
+        class: 'container', 
+        children: [
+            { p: { children: [() => `Count: ${count.value}`] } },
+            { button: { onclick: () => count.value++, children: ['Increment'] } }
+        ] 
+    } 
+};
+
+$('body').content(app);</code></pre>
+        <p><strong>Pros:</strong> Highly readable for templates stored in JSON, significantly less boilerplate than
+            standard vDOM.</p>
+
+        <h2 id="custom-elements">4. HTML Custom Elements</h2>
+        <p>
+            Use standard HTML tags to instantiate Lightview components. Ideal for multi-page apps or content managed by
+            a CMS.
+        </p>
+        <pre><code>&lt;!-- Requires registered components &amp; Lightview X --&gt;
+&lt;lv-card&gt;
+    &lt;h3 slot="title"&gt;User Profile&lt;/h3&gt;
+    &lt;lv-badge color="primary"&gt;Admin&lt;/lv-badge&gt;
+    &lt;p&gt;Active since 2024&lt;/p&gt;
+    &lt;lv-button onclick="alert('Clicked!')"&gt;Settings&lt;/lv-button&gt;
+&lt;/lv-card&gt;</code></pre>
+        <p><strong>Pros:</strong> Familiar HTML syntax, framework-agnostic, excellent for progressive enhancement of
+            server-rendered pages.</p>
+
+    </div>
+</div>

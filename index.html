@@ -32,6 +32,7 @@
             <div class="nav-links">
                 <a href="/docs/" class="nav-link">Home</a>
                 <a href="/docs/getting-started/" class="nav-link">Get Started</a>
+                <a href="/docs/syntax.html" class="nav-link">Syntax</a>
                 <a href="/docs/api/" class="nav-link">API</a>
                 <a href="/docs/styles/" class="nav-link">Styles</a>
                 <a href="/docs/components/" class="nav-link">Components</a>
@@ -78,7 +79,6 @@
                     </div>
                     <div class="footer-column">
                         <h4>Resources</h4>
-                        <a href="/docs/playground/">Playground</a>
 
                         <a href="https://github.com/anywhichway/lightview" target="_blank" rel="noopener">GitHub</a>
                     </div>
@@ -278,9 +278,9 @@
             appRouter.use('/docs', '/docs/index.html');
             appRouter.use('/docs/index.html');
             appRouter.use('/docs/getting-started', '/docs/getting-started/index.html');
+            appRouter.use('/docs/syntax.html');
             appRouter.use('/docs/about/', '/docs/about.html');
             appRouter.use('/docs/styles/', '/docs/styles/index.html');
-            appRouter.use('/docs/playground/', '/docs/playground.html');
             appRouter.use('/docs/api/', '/docs/api/index.html');
             appRouter.use('/docs/components/', '/docs/components/index.html');
             appRouter.use('/docs/examples/', '/docs/examples/index.html');

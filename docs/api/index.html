@@ -1,10 +1,5 @@
 <!-- SEO-friendly SPA Shim -->
-<script src="/lightview-router.js"></script>
-<script>
-    if (globalThis.LightviewRouter) {
-        LightviewRouter.base('/index.html');
-    }
-</script>
+<script src="/lightview-router.js?base=/index.html"></script>
 
 </script>
 
@@ -101,12 +96,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><a href="./hypermedia.html"><code>src="..."</code></a></td>
+                    <td><a href="./hypermedia.html#fetching-content"><code>src="..."</code></a></td>
                     <td>Attribute to automatically fetch HTML or JSON representing HTML and inject it into the element.
                     </td>
                 </tr>
                 <tr>
-                    <td><a href="./hypermedia.html"><code>href="..."</code></a></td>
+                    <td><a href="./hypermedia.html#href-navigation"><code>href="..."</code></a></td>
                     <td>Attribute for SPA navigation and src injection on any element. Supports targeting content
                         before, at the start of, and the end of or after other elements via CSS selectors.</td>
                 </tr>
@@ -154,10 +149,10 @@ const { state } = LightviewX; // Deep state (lightview-x)</code></pre>
                     Side effects. Do things when state changes.
                 </p>
             </a>
-            <a href="./elements" class="feature-card" style="text-decoration: none; color: inherit;">
-                <h3 class="feature-title">Elements</h3>
+            <a href="/docs/syntax.html" class="feature-card" style="text-decoration: none; color: inherit;">
+                <h3 class="feature-title">Syntax Styles</h3>
                 <p class="feature-description">
-                    Three ways to build UI, tag functions, vDOM, and Object DOM. Pick your favorite.
+                    Four ways to build UI: tag functions, vDOM, Object DOM, and Custom Elements.
                 </p>
             </a>
             <a href="./enhance" class="feature-card" style="text-decoration: none; color: inherit;">
@@ -169,7 +164,7 @@ const { state } = LightviewX; // Deep state (lightview-x)</code></pre>
             <a href="./hypermedia.html" class="feature-card" style="text-decoration: none; color: inherit;">
                 <h3 class="feature-title">Hypermedia</h3>
                 <p class="feature-description">
-                    Fetch content with src. HTMX vibes, built in.
+                    Fetch content with src. HTM-style patterns, built in.
                 </p>
             </a>
         </div>

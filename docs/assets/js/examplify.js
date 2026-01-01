@@ -49,7 +49,7 @@ function examplify(target, options = {}) {
     iframe.style.background = '#f9fafb'; // Light gray placeholder
     iframe.style.border = '1px solid #e5e7eb';
     iframe.style.transition = 'opacity 0.2s ease-in, height 0.2s ease-out';
-    const sandboxFlags = ['allow-scripts'];
+    const sandboxFlags = ['allow-scripts', 'allow-modals', 'allow-forms', 'allow-popups'];
     if (allowSameOrigin) sandboxFlags.push('allow-same-origin');
     iframe.sandbox = sandboxFlags.join(' ');
 

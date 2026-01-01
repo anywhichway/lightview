@@ -30,26 +30,32 @@
          */
         const normalizePath = (p) => {
             if (!p) return '/';
+            let hash = '';
+            if (p.includes('#')) {
+                [p, hash] = p.split('#');
+                hash = '#' + hash;
+            }
             try { if (p.startsWith('http') || p.startsWith('//')) p = new URL(p, globalThis.location.origin).pathname; } catch (e) { /* Invalid URL */ }
             if (base && p.startsWith(base)) p = p.slice(base.length);
-            return p.replace(/\/+$/, '').replace(/^([^/])/, '/$1') || '/';
+            return (p.replace(/\/+$/, '').replace(/^([^/])/, '/$1') || '/') + hash;
         };
 
         const createMatcher = (pattern) => {
             if (typeof pattern === 'function') return pattern;
             return (ctx) => {
                 const { path } = ctx;
+                const pathOnly = path.split('#')[0];
                 if (pattern instanceof RegExp) {
-                    const m = path.match(pattern);
+                    const m = pathOnly.match(pattern);
                     return m ? { ...ctx, match: m } : null;
                 }
-                if (pattern === '*' || pattern === path) return { ...ctx, wildcard: path };
+                if (pattern === '*' || pattern === pathOnly) return { ...ctx, wildcard: pathOnly };
 
                 const keys = [];
                 const regexStr = '^' + pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
                     .replace(/\\\*/g, '(.*)')
                     .replace(/:([^/]+)/g, (_, k) => (keys.push(k), '([^/]+)')) + '$';
-                const m = path.match(new RegExp(regexStr));
+                const m = pathOnly.match(new RegExp(regexStr));
                 if (m) {
                     const params = {};
                     keys.forEach((k, i) => params[k] = m[i + 1]);
@@ -59,14 +65,18 @@
             };
         };
 
-        const createReplacer = (pat) => (ctx) => ({
-            ...ctx,
-            path: pat.replace(/\*|:([^/]+)/g, (m, k) => (k ? ctx.params?.[k] : ctx.wildcard) || m)
-        });
+        const createReplacer = (pat) => (ctx) => {
+            const [path, hash] = ctx.path.split('#');
+            return {
+                ...ctx,
+                path: pat.replace(/\*|:([^/]+)/g, (m, k) => (k ? ctx.params?.[k] : ctx.wildcard) || m) + (hash ? '#' + hash : '')
+            };
+        };
 
         const fetchHandler = async (ctx) => {
             try {
-                const res = await fetch(ctx.path);
+                const pathOnly = ctx.path.split('#')[0];
+                const res = await fetch(pathOnly);
                 if (res.ok) return res;
             } catch (e) { if (debug) console.error('[Router] Fetch error:', e); }
             return null;
@@ -116,6 +126,22 @@
                     n.textContent = s.textContent;
                     s.replaceWith(n);
                 });
+
+                // Handle hash scrolling if present in the target path
+                const urlParts = path.split('#');
+                const hash = urlParts.length > 1 ? '#' + urlParts[1] : '';
+                if (hash) {
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            const id = hash.slice(1);
+                            const target = document.getElementById(id);
+                            if (target) {
+                                target.style.scrollMarginTop = 'calc(var(--site-nav-height, 0px) + 2rem)';
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+                            }
+                        });
+                    });
+                }
             }
             if (onResponse) await onResponse(res, path);
             return res;
@@ -128,6 +154,10 @@
             const p = normalizePath(path);
             return handleRequest(base + p).then(r => {
                 let dest = r?.url ? new URL(r.url, globalThis.location.origin).pathname : base + p;
+                // If the original path had a hash, ensure it's preserved in the history state
+                if (p.includes('#') && !dest.includes('#')) {
+                    dest += '#' + p.split('#')[1];
+                }
                 globalThis.history.pushState({ path: dest }, '', dest);
             }).catch(e => console.error('[Router] Nav error:', e));
         };
@@ -137,14 +167,20 @@
          */
         const start = async () => {
             const load = new URLSearchParams(globalThis.location.search).get('load');
-            globalThis.onpopstate = (e) => handleRequest(e.state?.path || normalizePath(globalThis.location.pathname));
+            globalThis.onpopstate = (e) => handleRequest(e.state?.path || normalizePath(globalThis.location.pathname + globalThis.location.hash));
             document.onclick = (e) => {
                 const a = e.target.closest('a[href]');
                 if (!a || a.target === '_blank' || /^(http|#|mailto|tel)/.test(a.getAttribute('href'))) return;
-                e.preventDefault();
-                navigate(normalizePath(new URL(a.href, document.baseURI).pathname));
+
+                // Only intercept internal links
+                const url = new URL(a.href, document.baseURI);
+                if (url.origin === globalThis.location.origin) {
+                    e.preventDefault();
+                    const fullPath = url.pathname + url.search + url.hash;
+                    navigate(normalizePath(fullPath));
+                }
             };
-            const init = load || normalizePath(globalThis.location.pathname);
+            const init = load || normalizePath(globalThis.location.pathname + globalThis.location.hash);
             globalThis.history.replaceState({ path: init }, '', base + init);
             return handleRequest(init).then(() => routerInstance);
         };
@@ -155,5 +191,18 @@
 
     const LightviewRouter = { base, router };
     if (typeof module !== 'undefined' && module.exports) module.exports = LightviewRouter;
-    else if (typeof window !== 'undefined') globalThis.LightviewRouter = LightviewRouter;
+    else if (typeof window !== 'undefined') {
+        globalThis.LightviewRouter = LightviewRouter;
+
+        // Auto-initialize base path from script URL if present
+        // Use case: <script src="/lightview-router.js?base=/index.html"></script>
+        try {
+            const script = document.currentScript;
+            if (script && script.src.includes('?')) {
+                const params = new URL(script.src).searchParams;
+                const b = params.get('base');
+                if (b) LightviewRouter.base(b);
+            }
+        } catch (e) { /* ignore */ }
+    }
 })();
