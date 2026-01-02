@@ -6,7 +6,9 @@
 
     // ============= SIGNALS =============
 
-    let currentEffect = null;
+    const core = {
+        currentEffect: null
+    };
 
 
     /**
@@ -24,7 +26,7 @@
     const nodeState = new WeakMap();
     const nodeStateFactory = () => ({ effects: [], onmount: null, onunmount: null });
 
-    const signalRegistry = new Map();
+    const registry = new Map();
 
     /**
      * Creates a reactive signal.
@@ -57,9 +59,9 @@
 
         Object.defineProperty(f, 'value', {
             get() {
-                if (currentEffect) {
-                    subscribers.add(currentEffect);
-                    currentEffect.dependencies.add(subscribers);
+                if (core.currentEffect) {
+                    subscribers.add(core.currentEffect);
+                    core.currentEffect.dependencies.add(subscribers);
                 }
                 return value;
             },
@@ -80,18 +82,22 @@
         });
 
         if (name) {
-            signalRegistry.set(name, f);
+            if (registry.has(name)) {
+                throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+            }
+            registry.set(name, f);
         }
 
         return f;
     };
 
-    signal.get = (name, defaultValue) => {
-        if (!signalRegistry.has(name) && defaultValue !== undefined) {
+    const get = (name, defaultValue) => {
+        if (!registry.has(name) && defaultValue !== undefined) {
             return signal(defaultValue, name);
         }
-        return signalRegistry.get(name);
+        return registry.get(name);
     };
+    signal.get = get;
 
     /**
      * Creates a side-effect that automatically tracks and re-runs when its signal dependencies change.
@@ -105,11 +111,11 @@
             execute.dependencies.clear();
 
             execute.running = true;
-            currentEffect = execute;
+            core.currentEffect = execute;
             try {
                 fn();
             } finally {
-                currentEffect = null;
+                core.currentEffect = null;
                 execute.running = false;
             }
         };
@@ -661,6 +667,8 @@
         signal,
         computed,
         effect,
+        get,
+        registry,
         element, // do not document this
         enhance,
         tags,
@@ -673,6 +681,7 @@
         },
         // Internals exposed for extensions
         internals: {
+            core,
             domToElement,
             wrapDomElement,
             setupChildren

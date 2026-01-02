@@ -1,0 +1,11 @@
+{
+  "tag": "div",
+  "attributes": { "class": "profile vdom" },
+  "children": [
+    { "tag": "h2", "children": ["$/app/user/name"] },
+    { "tag": "p", "children": ["Age: ", "$/app/user/age"] },
+    { "tag": "p", "children": ["Account: ", "$/app/user/account/type"] },
+    { "tag": "p", "children": ["VIP Status: ", "$if(/app/user/isVip, 'Yes', 'No')"] },
+    { "tag": "p", "children": ["Location: ", "$/app/user/details/city"] }
+  ]
+}

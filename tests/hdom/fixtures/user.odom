@@ -1,0 +1,18 @@
+{
+  "div": {
+    "class": "profile odom",
+    "children": [
+      { "h2": { "children": ["$/app/user/name"] } },
+      { "div": {
+          "class": "stats",
+          "children": [
+            { "span": { "children": ["Score: ", "$/app/user/score"] } },
+            { "span": { "children": ["Level: ", "$/app/user/level"] } },
+            { "span": { "children": ["Activity Total: ", "$/app/user/activity/sum(purchases...)"] } },
+            { "span": { "children": ["With Discount: ", "$/app/user/activity/*(../discount, sum(purchases...))"] } }
+          ]
+        }
+      }
+    ]
+  }
+}

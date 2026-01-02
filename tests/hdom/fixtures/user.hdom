@@ -1,0 +1,14 @@
+{
+  "div": {
+    "class": "hdom-card",
+    "children": [
+      "Welcome, ",
+      "$/app/user/name",
+      " ",
+      "$if(/app/user/isVip, '(VIP)', '(Guest)')",
+      " - Discount: ",
+      "$*(/app/user/discount, 2)",
+      "%"
+    ]
+  }
+}

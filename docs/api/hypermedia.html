@@ -217,7 +217,8 @@ button({ href: '/api/items.html#details', target: '#content' }, 'View Details')<
 
         <h2 id="template-literals">Template Literals</h2>
         <p>
-            External HTML, .vdom and .odom files, can reference named signals or state with template syntax:
+            External HTML, <code>.vdom</code> and <code>.odom</code> files, can reference named signals or state with
+            template syntax:
         </p>
         <pre><code>// main.js - Register named signals and state
 const count = signal(0, 'count');
@@ -225,13 +226,39 @@ const userName = signal('Guest', 'userName');
 const userPrefs = state({ theme: 'dark', lang: 'en' }, 'userPrefs');
 
 // Load template that uses them
-div({ src: '/partials/dashboard.html' })</code></pre>
+div({ src: '/partials/dashboard.html' })
+div({ src: '/partials/dashboard.vdom' })
+div({ src: '/partials/dashboard.odom' })</code></pre>
+
         <pre><code>&lt;!-- /partials/dashboard.html --&gt;
 &lt;div class="dashboard"&gt;
     &lt;h1&gt;Welcome, ${signal.get('userName').value}!&lt;/h1&gt;
     &lt;p&gt;You have ${signal.get('count').value} notifications.&lt;/p&gt;
     &lt;p&gt;Theme: ${state.get('userPrefs').theme}&lt;/p&gt;
 &lt;/div&gt;</code></pre>
+
+        <pre><code>// /partials/dashboard.vdom (JSON Array)
+[
+    { 
+        "tag": "div", 
+        "attributes": { "class": "dashboard" }, 
+        "children": [
+             { "tag": "h1", "children": ["Welcome, ${signal.get('userName').value}!"] },
+             { "tag": "p", "children": ["Theme: ${state.get('userPrefs').theme}"] }
+        ]
+    }
+]</code></pre>
+
+        <pre><code>// /partials/dashboard.odom (Object DOM)
+{
+    "div": {
+        "class": "dashboard",
+        "children": [
+             { "h1": { "children": ["Welcome, ${signal.get('userName').value}!"] } },
+             { "p": { "children": ["Theme: ${state.get('userPrefs').theme}"] } }
+        ]
+    }
+}</code></pre>
 
         <h2 id="shadow-dom">Shadow DOM</h2>
         <p>

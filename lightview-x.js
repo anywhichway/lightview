@@ -358,8 +358,9 @@
         }
     };
 
-    // Named registries for state (used by template literals)
-    const stateRegistry = new Map();
+    // Registry shared with core Lightview
+    const getLV = () => (globalThis.Lightview || (typeof window !== 'undefined' ? window.Lightview : null));
+    const getRegistry = () => getLV()?.registry || new Map();
 
     // ============= STATE (Deep Reactivity) =============
     /**
@@ -389,16 +390,29 @@
         return v;
     };
 
+    // Map from proxy -> parent proxy
+    const parents = new WeakMap();
+
     const proxyGet = (target, prop, receiver, signals) => {
-        const LV = typeof window !== 'undefined' ? globalThis.Lightview : (typeof globalThis !== 'undefined' ? globalThis.Lightview : null);
+        const LV = getLV();
+        // Return parent if explicitly requested
+        if (prop === '__parent__') return parents.get(receiver);
+
         if (LV && !signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
         const signal = signals.get(prop);
         const val = signal ? signal.value : Reflect.get(target, prop, receiver);
-        return typeof val === 'object' && val !== null ? state(val) : val;
+
+        if (typeof val === 'object' && val !== null) {
+            const childProxy = state(val);
+            // Link child proxy to its parent (receiver)
+            parents.set(childProxy, receiver);
+            return childProxy;
+        }
+        return val;
     };
 
     const proxySet = (target, prop, value, receiver, signals) => {
-        const LV = typeof window !== 'undefined' ? globalThis.Lightview : (typeof globalThis !== 'undefined' ? globalThis.Lightview : null);
+        const LV = getLV();
         if (LV && !signals.has(prop)) signals.set(prop, LV.signal(Reflect.get(target, prop, receiver)));
         const success = Reflect.set(target, prop, value, receiver);
         const signal = signals.get(prop);
@@ -432,6 +446,8 @@
 
         return new Proxy(obj, {
             get(target, prop, receiver) {
+                if (prop === '__parent__') return parents.get(receiver);
+
                 const value = target[prop];
 
                 // If accessing a method, wrap it appropriately
@@ -458,6 +474,9 @@
                                 const wrappedElement = typeof element === 'object' && element !== null
                                     ? state(element)
                                     : element;
+                                if (wrappedElement && typeof wrappedElement === 'object') {
+                                    parents.set(wrappedElement, receiver);
+                                }
                                 return originalCallback.call(this, wrappedElement, index, array);
                             };
                         }
@@ -537,27 +556,41 @@
 
             if (isSpecial || !(obj instanceof RegExp || obj instanceof Map || obj instanceof Set || obj instanceof WeakMap || obj instanceof WeakSet)) {
                 proxy = isSpecial ? createSpecialProxy(obj, monitor) : new Proxy(obj, {
-                    get(t, p, r) { return proxyGet(t, p, r, getOrSet(stateSignals, t, () => new Map())); },
+                    get(t, p, r) {
+                        if (p === '__parent__') return parents.get(r);
+                        return proxyGet(t, p, r, getOrSet(stateSignals, t, () => new Map()));
+                    },
                     set(t, p, v, r) { return proxySet(t, p, v, r, getOrSet(stateSignals, t, () => new Map())); }
                 });
                 stateCache.set(obj, proxy);
             } else return obj;
         }
 
-        if (name && storage && globalThis.Lightview?.effect) {
-            globalThis.Lightview.effect(() => {
+        if (name && storage && getLV()?.effect) {
+            getLV().effect(() => {
                 try { storage.setItem(name, JSON.stringify(proxy)); } catch (e) { /* Persistence failed */ }
             });
         }
-        if (name) stateRegistry.set(name, proxy);
+        if (name) {
+            const registry = getRegistry();
+            if (registry.has(name)) {
+                // Already registered - could be a name collision
+                if (registry.get(name) !== proxy) {
+                    throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+                }
+            } else {
+                registry.set(name, proxy);
+            }
+        }
         return proxy;
     };
 
     state.get = (name, defaultValue) => {
-        if (!stateRegistry.has(name) && defaultValue !== undefined) {
+        const registry = getRegistry();
+        if (!registry.has(name) && defaultValue !== undefined) {
             return state(defaultValue, name);
         }
-        return stateRegistry.get(name);
+        return registry.get(name);
     };
 
     // Template compilation: unified logic for creating reactive functions
@@ -745,7 +778,7 @@
         executeScripts(target);
     };
 
-    const isPath = (s) => typeof s === 'string' && !isDangerousProtocol(s) && /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom))$/i.test(s);
+    const isPath = (s) => typeof s === 'string' && !isDangerousProtocol(s) && /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom|hdomc?))$/i.test(s);
 
     const fetchContent = async (src) => {
         try {
@@ -758,13 +791,16 @@
             const res = await fetch(url);
             if (!res.ok) return null;
             const ext = url.pathname.split('.').pop().toLowerCase();
-            const isJson = (ext === 'vdom' || ext === 'odom');
+            const isJson = (ext === 'vdom' || ext === 'odom' || ext === 'hdom');
             const isHtml = (ext === 'html');
+            const isHdom = (ext === 'hdom' || ext === 'hdomc');
             const content = isJson ? await res.json() : await res.text();
             return {
                 content,
                 isJson,
                 isHtml,
+                isHdom,
+                ext,
                 raw: isJson ? JSON.stringify(content) : content
             };
         } catch (e) {
@@ -772,8 +808,27 @@
         }
     };
 
-    const parseElements = (content, isJson, isHtml, el, element) => {
+
+
+
+
+    const parseElements = (content, isJson, isHtml, el, element, isHdom = false, ext = '') => {
         if (isJson) return Array.isArray(content) ? content : [content];
+        if (isHdom && ext === 'hdomc') {
+            const parser = globalThis.LightviewHDOM?.parseHDOMC;
+            if (parser) {
+                try {
+                    const obj = parser(content);
+                    return Array.isArray(obj) ? obj : [obj];
+                } catch (e) {
+                    console.warn('LightviewX: Failed to parse .hdomc:', e);
+                    return [];
+                }
+            } else {
+                console.warn('LightviewX: HDOMC parser not found. Ensure lightview-hdom.js is loaded.');
+                return [];
+            }
+        }
         if (isHtml) {
             if (el.domEl.getAttribute('escape') === 'true') return [content];
             const doc = new DOMParser().parseFromString(content.replace(/<head[^>]*>[\s\S]*?<\/head>/i, ''), 'text/html');
@@ -844,7 +899,7 @@
             }
             const result = await fetchContent(src);
             if (result) {
-                elements = parseElements(result.content, result.isJson, result.isHtml, el, element);
+                elements = parseElements(result.content, result.isJson, result.isHtml, el, element, result.isHdom, result.ext);
                 raw = result.raw;
             }
         }
@@ -1391,15 +1446,32 @@
         SENSIBLE_EVENTS.forEach(ev => window.addEventListener(ev, globalBeforeInterceptor, true));
         CAPTURE_EVENTS.forEach(ev => window.addEventListener(ev, globalBeforeInterceptor, true));
 
-        // Extend template literal processor to existing processChild hook
-        const existingProcessChild = LV.hooks.processChild;
+        // Unified processChild hook for LightviewX
+        // Handles: Object DOM, HDOM Expressions, Template Literals
         LV.hooks.processChild = (child) => {
-            // First, use the existing hook (Object DOM conversion from lightview.js)
-            if (existingProcessChild) {
-                child = existingProcessChild(child) ?? child;
+            if (!child) return child;
+
+            // 1. Convert Object DOM syntax if applicable
+            if (typeof child === 'object' && !Array.isArray(child) && !child.tag && !child.domEl) {
+                child = convertObjectDOM(child);
             }
 
-            // Then process template literals
+            // 2. Handle HDOM expressions ($/..., $helper(...), $path)
+            // Checks if string starts with '$' and follows with non-digit to avoid matching currency like '$100'
+            if (typeof child === 'string' && child.startsWith('$') && isNaN(parseInt(child[1]))) {
+                const HDOM = globalThis.LightviewHDOM;
+                if (HDOM) return HDOM.parseExpression(child);
+            }
+
+            // 3. Handle object strings that look like ODOM/VDOM but are results of HDOM
+            if (typeof child === 'string' && (child.trim().startsWith('{') || child.trim().startsWith('['))) {
+                try {
+                    const parsed = new Function('return (' + child + ')')();
+                    if (typeof parsed === 'object' && parsed !== null) return parsed;
+                } catch (e) { /* Not an object string */ }
+            }
+
+            // 4. Process template literals (${...})
             return processTemplateChild(child, {
                 state: state,
                 signal: LV.signal
@@ -1514,6 +1586,9 @@
                         attributes: true
                     });
                 }
+
+                // Initial render
+                this.render();
             }
 
             disconnectedCallback() {
@@ -1543,7 +1618,12 @@
         shouldUseShadow,
         getAdoptedStyleSheets,
         preloadComponentCSS,
-        createCustomElement
+        preloadComponentCSS,
+        createCustomElement,
+        internals: {
+            handleSrcAttribute,
+            parseElements
+        }
     };
 
     if (typeof module !== 'undefined' && module.exports) {
@@ -1563,30 +1643,7 @@
             }
         } catch (e) { /* ignore */ }
 
-        globalThis.addEventListener('load', () => {
-            if (globalThis.Lightview) {
-                globalThis.Lightview.hooks.processChild = (child) => {
-                    // Convert Object DOM syntax if applicable
-                    if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
-                        return convertObjectDOM(child);
-                    }
-                    return child;
-                };
-                if (!globalThis.Lightview.hooks.validateUrl) {
-                    globalThis.Lightview.hooks.validateUrl = validateUrl;
-                }
-            }
-        });
-
-        // Immediate check in case load already fired or script is defer
         if (typeof window !== 'undefined' && globalThis.Lightview) {
-            globalThis.Lightview.hooks.processChild = (child) => {
-                // Convert Object DOM syntax if applicable
-                if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
-                    return convertObjectDOM(child);
-                }
-                return child;
-            };
             if (!globalThis.Lightview.hooks.validateUrl) {
                 globalThis.Lightview.hooks.validateUrl = validateUrl;
             }
@@ -1595,12 +1652,6 @@
 
     // Server-side initialization if globally available
     if (typeof globalThis !== 'undefined' && globalThis.Lightview) {
-        globalThis.Lightview.hooks.processChild = (child) => {
-            if (typeof child === 'object' && child !== null && !Array.isArray(child)) {
-                return convertObjectDOM(child);
-            }
-            return child;
-        };
         if (!globalThis.Lightview.hooks.validateUrl) {
             globalThis.Lightview.hooks.validateUrl = validateUrl;
         }

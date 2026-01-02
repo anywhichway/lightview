@@ -1,0 +1,12 @@
+{
+  // User profile container
+  div: {
+    class: profile-compiled, /* Styles are applied via index.css */
+    children: [
+      { h2: { children: [$/app/user/name] } },
+      // Status paragraph
+      { p: { children: [$/app/user/status] } },
+      { p: { children: ["Tier: ", "$if(/app/user/isVip, 'Platinum', 'Gold')"] } }
+    ]
+  }
+}
