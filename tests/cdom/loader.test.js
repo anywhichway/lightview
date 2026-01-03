@@ -4,11 +4,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Lightview from '../../lightview.js';
 import LightviewX from '../../lightview-x.js';
-import LightviewHDOM from '../../lightview-hdom.js';
+import LightviewCDOM from '../../lightview-cdom.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-describe('HDOM Full Loader Tests', () => {
+describe('cdom Full Loader Tests', () => {
     let handleSrc;
 
     beforeEach(() => {
@@ -16,7 +16,7 @@ describe('HDOM Full Loader Tests', () => {
         globalThis.__DEBUG__ = true;
         globalThis.Lightview = Lightview;
         globalThis.LightviewX = LightviewX;
-        globalThis.LightviewHDOM = LightviewHDOM;
+        globalThis.LightviewCDOM = LightviewCDOM;
 
         if (typeof document !== 'undefined') {
             document.body.innerHTML = '';
@@ -62,7 +62,7 @@ describe('HDOM Full Loader Tests', () => {
 
     const cleanHTML = (html) => html.replace(/<!--lv:[se]-->/g, '').replace(/\s+/g, ' ').trim();
 
-    it('should load and parse user.vdom with HDOM expressions', async () => {
+    it('should load and parse user.vdom with cdom expressions', async () => {
         const container = Lightview.tags.div({ src: '/user.vdom' });
         await handleSrc(container, '/user.vdom', 'div', {
             element: Lightview.element,
@@ -77,7 +77,7 @@ describe('HDOM Full Loader Tests', () => {
         expect(html).toContain('Location: NYC');
     });
 
-    it('should load and parse user.odom with HDOM expressions', async () => {
+    it('should load and parse user.odom with cdom expressions', async () => {
         const container = Lightview.tags.div({ src: '/user.odom' });
         await handleSrc(container, '/user.odom', 'div', {
             element: Lightview.element,
@@ -94,28 +94,29 @@ describe('HDOM Full Loader Tests', () => {
         expect(html).toContain('With Discount: 300');
     });
 
-    it('should load and parse user.hdom (JSON ODOM file)', async () => {
-        const container = Lightview.tags.div({ src: '/user.hdom' });
-        await handleSrc(container, '/user.hdom', 'div', {
+    it('should load and parse user.cdom (JSON ODOM file)', async () => {
+        const container = Lightview.tags.div({ src: '/user.cdom' });
+        await handleSrc(container, '/user.cdom', 'div', {
             element: Lightview.element,
             setupChildren: Lightview.internals.setupChildren
         });
 
         const html = cleanHTML(container.domEl.innerHTML);
-        expect(html).toContain('hdom-card');
+        expect(html).toContain('cdom-card');
         expect(html).toContain('Welcome, Alice');
         expect(html).toContain('(VIP)');
         expect(html).toContain('Discount: 20%');
     });
 
-    it('should load and parse user.hdomc (Unquoted Properties/Expressions)', async () => {
-        const container = Lightview.tags.div({ src: '/user.hdomc' });
-        await handleSrc(container, '/user.hdomc', 'div', {
+    it('should load and parse user.cdomc (Unquoted Properties/Expressions)', async () => {
+        const container = Lightview.tags.div({ src: '/user.cdomc' });
+        await handleSrc(container, '/user.cdomc', 'div', {
             element: Lightview.element,
             setupChildren: Lightview.internals.setupChildren
         });
 
         const html = cleanHTML(container.domEl.innerHTML);
+        if (__DEBUG__) console.log('ACTUAL HTML:', html);
         expect(html).toContain('profile-compiled');
         expect(html).toContain('Alice');
         expect(html).toContain('Available');

@@ -6,7 +6,7 @@
       { h2: { children: [$/app/user/name] } },
       // Status paragraph
       { p: { children: [$/app/user/status] } },
-      { p: { children: ["Tier: ", "$if(/app/user/isVip, 'Platinum', 'Gold')"] } }
+      { p: { children: ["Tier: ", $if(/app/user/isVip, 'Platinum', 'Gold')] } }
     ]
   }
 }

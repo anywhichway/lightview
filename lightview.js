@@ -292,13 +292,21 @@
         // Already a Lightview element
         if (result.domEl) return result;
 
+        const type = typeof result;
         // DOM node - wrap it
-        if (result instanceof HTMLElement) {
+        if (type === 'object' && result instanceof HTMLElement) {
             return wrapDomElement(result, result.tagName.toLowerCase(), {}, []);
         }
 
+        // String object - wrap in span and treat as plain text (avoids parsing/evaluation)
+        if (type === 'object' && result instanceof String) {
+            const span = document.createElement('span');
+            span.textContent = result.toString();
+            return wrapDomElement(span, 'span', {}, []);
+        }
+
         // HTML string - parse and wrap
-        if (typeof result === 'string') {
+        if (type === 'string') {
             const template = document.createElement('template');
             template.innerHTML = result.trim();
             const content = template.content;
@@ -487,24 +495,29 @@
                     const val = child();
                     if (val === undefined || val === null) return;
 
-                    // 3. Render: Process children into a fragment and insert before endMarker
-                    const fragment = document.createDocumentFragment();
-                    const childrenToProcess = Array.isArray(val) ? val : [val];
-
                     // Stop the runner if the markers are no longer in the DOM
                     if (runner && !startMarker.isConnected) {
                         runner.stop();
                         return;
                     }
+                    if (typeof val === 'object' && val instanceof String) {
+                        // insert as text node
+                        const textNode = document.createTextNode(val);
+                        endMarker.parentNode.insertBefore(textNode, endMarker);
+                    } else {
+                        // 3. Render: Process children into a fragment and insert before endMarker
+                        const fragment = document.createDocumentFragment();
+                        const childrenToProcess = Array.isArray(val) ? val : [val];
 
-                    processChildren(childrenToProcess, fragment, false);
-                    endMarker.parentNode.insertBefore(fragment, endMarker);
+                        processChildren(childrenToProcess, fragment, false);
+                        endMarker.parentNode.insertBefore(fragment, endMarker);
+                    }
                 };
 
                 runner = effect(update);
                 trackEffect(startMarker, runner);
                 childElements.push(child);
-            } else if (['string', 'number', 'boolean', 'symbol'].includes(type)) {
+            } else if (['string', 'number', 'boolean', 'symbol'].includes(type) || (child && type === 'object' && child instanceof String)) {
                 // Static text
                 targetNode.appendChild(document.createTextNode(child));
                 childElements.push(child);

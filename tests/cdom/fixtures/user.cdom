@@ -1,6 +1,6 @@
 {
   "div": {
-    "class": "hdom-card",
+    "class": "cdom-card",
     "children": [
       "Welcome, ",
       "$/app/user/name",

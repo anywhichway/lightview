@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
     /**
      * LIGHTVIEW-X
      * Hypermedia and Extended Reactivity for Lightview.
@@ -778,7 +778,7 @@
         executeScripts(target);
     };
 
-    const isPath = (s) => typeof s === 'string' && !isDangerousProtocol(s) && /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom|hdomc?))$/i.test(s);
+    const isPath = (s) => typeof s === 'string' && !isDangerousProtocol(s) && /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom|cdomc?))$/i.test(s);
 
     const fetchContent = async (src) => {
         try {
@@ -791,15 +791,15 @@
             const res = await fetch(url);
             if (!res.ok) return null;
             const ext = url.pathname.split('.').pop().toLowerCase();
-            const isJson = (ext === 'vdom' || ext === 'odom' || ext === 'hdom');
+            const isJson = (ext === 'vdom' || ext === 'odom' || ext === 'cdom');
             const isHtml = (ext === 'html');
-            const isHdom = (ext === 'hdom' || ext === 'hdomc');
+            const isCdom = (ext === 'cdom' || ext === 'cdomc');
             const content = isJson ? await res.json() : await res.text();
             return {
                 content,
                 isJson,
                 isHtml,
-                isHdom,
+                isCdom,
                 ext,
                 raw: isJson ? JSON.stringify(content) : content
             };
@@ -812,20 +812,20 @@
 
 
 
-    const parseElements = (content, isJson, isHtml, el, element, isHdom = false, ext = '') => {
+    const parseElements = (content, isJson, isHtml, el, element, isCdom = false, ext = '') => {
         if (isJson) return Array.isArray(content) ? content : [content];
-        if (isHdom && ext === 'hdomc') {
-            const parser = globalThis.LightviewHDOM?.parseHDOMC;
+        if (isCdom && ext === 'cdomc') {
+            const parser = globalThis.LightviewCDOM?.parseCDOMC;
             if (parser) {
                 try {
                     const obj = parser(content);
                     return Array.isArray(obj) ? obj : [obj];
                 } catch (e) {
-                    console.warn('LightviewX: Failed to parse .hdomc:', e);
+                    console.warn('LightviewX: Failed to parse .cdomc:', e);
                     return [];
                 }
             } else {
-                console.warn('LightviewX: HDOMC parser not found. Ensure lightview-hdom.js is loaded.');
+                console.warn('LightviewX: CDOMC parser not found. Ensure lightview-cdom.js is loaded.');
                 return [];
             }
         }
@@ -899,7 +899,7 @@
             }
             const result = await fetchContent(src);
             if (result) {
-                elements = parseElements(result.content, result.isJson, result.isHtml, el, element, result.isHdom, result.ext);
+                elements = parseElements(result.content, result.isJson, result.isHtml, el, element, result.isCdom, result.ext);
                 raw = result.raw;
             }
         }
@@ -1456,14 +1456,14 @@
                 child = convertObjectDOM(child);
             }
 
-            // 2. Handle HDOM expressions ($/..., $helper(...), $path)
+            // 2. Handle CDOM expressions ($/..., $helper(...), $path)
             // Checks if string starts with '$' and follows with non-digit to avoid matching currency like '$100'
             if (typeof child === 'string' && child.startsWith('$') && isNaN(parseInt(child[1]))) {
-                const HDOM = globalThis.LightviewHDOM;
-                if (HDOM) return HDOM.parseExpression(child);
+                const CDOM = globalThis.LightviewCDOM;
+                if (CDOM) return CDOM.parseExpression(child);
             }
 
-            // 3. Handle object strings that look like ODOM/VDOM but are results of HDOM
+            // 3. Handle object strings that look like ODOM/VDOM but are results of CDOM
             if (typeof child === 'string' && (child.trim().startsWith('{') || child.trim().startsWith('['))) {
                 try {
                     const parsed = new Function('return (' + child + ')')();

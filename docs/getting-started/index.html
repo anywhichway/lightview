@@ -352,7 +352,7 @@ $('#app').content(App);`,
             // Fetch source code for display
             try {
                 const text = await fetch(file).then(r => r.text());
-                sourceCode.value = text;
+                sourceCode.value = new String(text);
             } catch (e) {
                 sourceCode.value = 'Error loading source';
             }
@@ -444,7 +444,7 @@ $('#app').content(App);`,
                                             class: 'source-code', children: [
                                                 () => sourceCode.value
                                             ]
-                                        }
+    }
                                     }
                                 ]
                             }
@@ -453,9 +453,11 @@ $('#app').content(App);`,
                 }
             },
 
-            // Styles
-            { style: { children: [
-        \`.reviews-container { width: 100%; box-sizing: border-box; font-family: system-ui, sans-serif; }
+    // Styles
+    {
+        style: {
+            children: [
+                \`.reviews-container { width: 100%; box-sizing: border-box; font-family: system-ui, sans-serif; }
 .reviews-header { margin-bottom: 1rem; }
 .reviews-title { margin: 0 0 0.5rem; }
 .reviews-subtitle { color: #6b7280; margin: 0 0 0.75rem; font-size: 0.9em; }

@@ -1,12 +1,20 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import Lightview from '../../lightview.js';
 import LightviewX from '../../lightview-x.js';
-import { resolvePath, parseExpression, registerHelper } from '../../hdom/parser.js';
-import { registerMathHelpers } from '../../hdom/helpers/math.js';
-import { registerLogicHelpers } from '../../hdom/helpers/logic.js';
-import { registerStringHelpers } from '../../hdom/helpers/string.js';
+import { resolvePath, parseExpression, registerHelper } from '../../cdom/parser.js';
+import { registerMathHelpers } from '../../cdom/helpers/math.js';
+import { registerLogicHelpers } from '../../cdom/helpers/logic.js';
+import { registerStringHelpers } from '../../cdom/helpers/string.js';
+import { registerArrayHelpers } from '../../cdom/helpers/array.js';
+import { registerCompareHelpers } from '../../cdom/helpers/compare.js';
+import { registerConditionalHelpers } from '../../cdom/helpers/conditional.js';
+import { registerDateTimeHelpers } from '../../cdom/helpers/datetime.js';
+import { registerFormatHelpers } from '../../cdom/helpers/format.js';
+import { registerLookupHelpers } from '../../cdom/helpers/lookup.js';
+import { registerStatsHelpers } from '../../cdom/helpers/stats.js';
+import { registerStateHelpers } from '../../cdom/helpers/state.js';
 
-describe('HDOM Parser', () => {
+describe('cdom Parser', () => {
     beforeEach(() => {
         // Clear registry before each test
         Lightview.registry.clear();
@@ -14,6 +22,14 @@ describe('HDOM Parser', () => {
         registerMathHelpers(registerHelper);
         registerLogicHelpers(registerHelper);
         registerStringHelpers(registerHelper);
+        registerArrayHelpers(registerHelper);
+        registerCompareHelpers(registerHelper);
+        registerConditionalHelpers(registerHelper);
+        registerDateTimeHelpers(registerHelper);
+        registerFormatHelpers(registerHelper);
+        registerLookupHelpers(registerHelper);
+        registerStatsHelpers(registerHelper);
+        registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
 
         // Attach to global for the parser to find it
         globalThis.Lightview = Lightview;

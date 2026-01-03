@@ -6,8 +6,10 @@
     }
 </script>
 
-<div class="section">
-    <div class="section-content" style="max-width: 900px;">
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="/docs/syntax-nav.html"></aside>
+
+    <main class="docs-content">
         <h1>Syntaxes</h1>
         <p class="text-secondary" style="font-size: 1.125rem;">
             One reactive engine, four ways to build your UI.
@@ -19,7 +21,7 @@
             powers it all.
         </p>
 
-        <h2>Comparison at a Glance</h2>
+        <h2 id="overview">Comparison at a Glance</h2>
         <div class="overflow-x-auto">
             <table class="table w-full">
                 <thead>
@@ -44,7 +46,7 @@
                         <td>Core</td>
                     </tr>
                     <tr>
-                        <td><strong>Object DOM</strong></td>
+                        <td><strong>oDOM (Object DOM)</strong></td>
                         <td><code>{ div: { ... } }</code></td>
                         <td>Concise templates, config files</td>
                         <td>Lightview X</td>
@@ -102,7 +104,7 @@ $('body').content(app);</code></pre>
         <p><strong>Pros:</strong> Unambiguous, easy to serialize/deserialize as JSON, perfect for programmatic
             generation.</p>
 
-        <h2 id="object-dom">3. Object DOM</h2>
+        <h2 id="object-dom">3. oDOM</h2>
         <p>
             A more compact JSON representation provided by <strong>Lightview X</strong>. It uses the tag name as a key
             to reduce verbosity.
@@ -140,5 +142,5 @@ $('body').content(app);</code></pre>
         <p><strong>Pros:</strong> Familiar HTML syntax, framework-agnostic, excellent for progressive enhancement of
             server-rendered pages.</p>
 
-    </div>
+    </main>
 </div>

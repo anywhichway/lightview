@@ -1,29 +1,47 @@
 /**
- * LIGHTVIEW HDOM PARSER
+ * LIGHTVIEW CDOM PARSER
  * Responsible for resolving reactive paths and expressions.
  */
 
 const helpers = new Map();
+const helperOptions = new Map();
 
 /**
  * Registers a global helper function.
  */
-export const registerHelper = (name, fn) => {
+export const registerHelper = (name, fn, options = {}) => {
     helpers.set(name, fn);
+    if (options) helperOptions.set(name, options);
 };
 
 const getLV = () => globalThis.Lightview || null;
 const getRegistry = () => getLV()?.registry || null;
 
 /**
+ * Represents a mutable target (a property on an object).
+ * Allows cdom-bind and mutation helpers to work with plain object properties 
+ * by treating them as if they had a .value property.
+ */
+export class BindingTarget {
+    constructor(parent, key) {
+        this.parent = parent;
+        this.key = key;
+        this.isBindingTarget = true; // Marker for duck-typing when instanceof fails
+    }
+    get value() { return this.parent[this.key]; }
+    set value(v) { this.parent[this.key] = v; }
+    get __parent__() { return this.parent; }
+}
+
+/**
  * Unwraps a signal-like value to its raw value.
  * This should be used to establish reactive dependencies within a computed context.
  */
-const unwrapSignal = (val) => {
+export const unwrapSignal = (val) => {
     if (val && typeof val === 'function' && 'value' in val) {
         return val.value;
     }
-    if (val && typeof val === 'object' && 'value' in val && typeof val.get === 'function') {
+    if (val && typeof val === 'object' && !(globalThis.Node && val instanceof globalThis.Node) && 'value' in val) {
         return val.value;
     }
     return val;
@@ -52,15 +70,19 @@ const traverse = (root, segments) => {
  */
 const traverseAsContext = (root, segments) => {
     let current = root;
-    for (const segment of segments) {
+    for (let i = 0; i < segments.length; i++) {
+        const segment = segments[i];
         if (!segment) continue;
-        current = unwrapSignal(current);
-        if (current == null) return undefined;
-
         const key = segment.startsWith('[') ? segment.slice(1, -1) : segment;
-        current = current[key];
+
+        const unwrapped = unwrapSignal(current);
+        if (unwrapped == null) return undefined;
+
+        if (i === segments.length - 1) {
+            return new BindingTarget(unwrapped, key);
+        }
+        current = unwrapped[key];
     }
-    // Don't unwrap the final result - we want the proxy
     return current;
 };
 
@@ -95,16 +117,18 @@ export const resolvePath = (path, context) => {
         return traverse(context?.__parent__, path.slice(3).split('/'));
     }
 
-    // Path with slashes but no prefix - treat as relative
-    if (path.includes('/')) {
-        return traverse(context, path.split('/'));
+    // Path with separators - treat as relative
+    if (path.includes('/') || path.includes('.')) {
+        return traverse(context, path.split(/[\/.]/));
     }
 
     // Check if it's a single word that exists in the context
     const unwrappedContext = unwrapSignal(context);
-    if (unwrappedContext && typeof unwrappedContext === 'object' && path in unwrappedContext) {
-        // Use traverse with one segment to ensure signal unwrapping if context[path] is a signal
-        return traverse(unwrappedContext, [path]);
+    if (unwrappedContext && typeof unwrappedContext === 'object') {
+        if (path in unwrappedContext || unwrappedContext[path] !== undefined) {
+            // Use traverse with one segment to ensure signal unwrapping if context[path] is a signal
+            return traverse(unwrappedContext, [path]);
+        }
     }
 
     // Return as literal
@@ -114,7 +138,7 @@ export const resolvePath = (path, context) => {
 /**
  * Like resolvePath, but preserves proxy/signal wrappers for use as evaluation context.
  */
-const resolvePathAsContext = (path, context) => {
+export const resolvePathAsContext = (path, context) => {
     if (typeof path !== 'string') return path;
 
     const registry = getRegistry();
@@ -124,36 +148,54 @@ const resolvePathAsContext = (path, context) => {
 
     // Global absolute path: $/something
     if (path.startsWith('$/')) {
-        const [rootName, ...rest] = path.slice(2).split('/');
+        const segments = path.slice(2).split(/[\/.]/);
+        const rootName = segments.shift();
         const rootSignal = registry?.get(rootName);
         if (!rootSignal) return undefined;
 
-        return traverseAsContext(rootSignal, rest);
+        return traverseAsContext(rootSignal, segments);
     }
 
     // Relative path from current context
     if (path.startsWith('./')) {
-        return traverseAsContext(context, path.slice(2).split('/'));
+        return traverseAsContext(context, path.slice(2).split(/[\/.]/));
     }
 
     // Parent path
     if (path.startsWith('../')) {
-        return traverseAsContext(context?.__parent__, path.slice(3).split('/'));
+        return traverseAsContext(context?.__parent__, path.slice(3).split(/[\/.]/));
     }
 
-    // Path with slashes but no prefix
-    if (path.includes('/')) {
-        return traverseAsContext(context, path.split('/'));
+    // Path with separators
+    if (path.includes('/') || path.includes('.')) {
+        return traverseAsContext(context, path.split(/[\/.]/));
     }
 
     // Single property access
     const unwrappedContext = unwrapSignal(context);
-    if (unwrappedContext && typeof unwrappedContext === 'object' && path in unwrappedContext) {
-        return unwrappedContext[path]; // Return the property which might be a proxy
+    if (unwrappedContext && typeof unwrappedContext === 'object') {
+        // If it looks like a variable name, assume it's a property on the context
+        if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(path)) {
+            return new BindingTarget(unwrappedContext, path);
+        }
     }
 
     return path;
 };
+
+/**
+ * Represents a lazy value that will be resolved later with a specific context.
+ * Used for iteration placeholders like '_' and '$event'.
+ */
+class LazyValue {
+    constructor(fn) {
+        this.fn = fn;
+        this.isLazy = true;
+    }
+    resolve(context) {
+        return this.fn(context);
+    }
+}
 
 /**
  * Helper to resolve an argument which could be a literal, a path, or an explosion.
@@ -177,8 +219,31 @@ const resolveArgument = (arg, context, globalMode = false) => {
     if (arg === 'false') return { value: false, isLiteral: true };
     if (arg === 'null') return { value: null, isLiteral: true };
 
-    // 4. Expression / Nested Function
-    // 4. Expression / Nested Function
+    // 4. Placeholder / Lazy Evaluation (_)
+    if (arg === '_' || arg.startsWith('_/') || arg.startsWith('_.')) {
+        return {
+            value: new LazyValue((item) => {
+                if (arg === '_') return item;
+                const path = arg.startsWith('_.') ? arg.slice(2) : arg.slice(2);
+                return resolvePath(path, item);
+            }),
+            isLazy: true
+        };
+    }
+
+    // 5. Event Placeholder ($event)
+    if (arg === '$event' || arg.startsWith('$event/') || arg.startsWith('$event.')) {
+        return {
+            value: new LazyValue((event) => {
+                if (arg === '$event') return event;
+                const path = arg.startsWith('$event.') ? arg.slice(7) : arg.slice(7);
+                return resolvePath(path, event);
+            }),
+            isLazy: true
+        };
+    }
+
+    // 6. Expression / Nested Function
     if (arg.includes('(')) {
         // Nested function call - recursively resolve
         let nestedExpr = arg;
@@ -189,14 +254,17 @@ const resolveArgument = (arg, context, globalMode = false) => {
         }
 
         const val = resolveExpression(nestedExpr, context);
+        if (val instanceof LazyValue) {
+            return { value: val, isLazy: true };
+        }
         return { value: val, isSignal: false }; // Already resolved in current effect
     }
 
-    // 5. Explosion operator
+    // 7. Explosion operator
     const isExplosion = arg.endsWith('...');
     const pathStr = isExplosion ? arg.slice(0, -3) : arg;
 
-    // 6. Path resolution
+    // 8. Path resolution
     let normalizedPath;
     if (pathStr.startsWith('/')) {
         normalizedPath = '$' + pathStr;
@@ -230,12 +298,14 @@ const resolveArgument = (arg, context, globalMode = false) => {
         return { value: undefined, isExplosion: true };
     }
 
-    const value = resolvePath(normalizedPath, context);
+    const value = resolvePathAsContext(normalizedPath, context);
     return { value, isExplosion: false };
 };
 
+
+
 /**
- * Core logic to resolve an HDOM expression.
+ * Core logic to resolve an CDOM expression.
  * This can be called recursively and will register all accessed dependencies
  * against the currently active Lightview effect.
  */
@@ -248,7 +318,13 @@ export const resolveExpression = (expr, context) => {
         const argsStr = expr.slice(funcStart + 1, -1);
 
         const segments = fullPath.split('/');
-        const funcName = segments.pop().replace(/^\$/, '');
+        let funcName = segments.pop().replace(/^\$/, '');
+
+        // Handle case where path ends in / (like $/ for division helper)
+        if (funcName === '' && (segments.length > 0 || fullPath === '/')) {
+            funcName = '/';
+        }
+
         const navPath = segments.join('/');
 
         const isGlobalExpr = expr.startsWith('$/') || expr.startsWith('$');
@@ -260,9 +336,11 @@ export const resolveExpression = (expr, context) => {
 
         const helper = helpers.get(funcName);
         if (!helper) {
-            globalThis.console?.warn(`LightviewHDOM: Helper "${funcName}" not found.`);
+            globalThis.console?.warn(`LightviewCDOM: Helper "${funcName}" not found.`);
             return expr;
         }
+
+        const options = helperOptions.get(funcName) || {};
 
         // Split arguments respecting quotes and parentheses
         const argsList = [];
@@ -283,18 +361,36 @@ export const resolveExpression = (expr, context) => {
         if (current) argsList.push(current.trim());
 
         const resolvedArgs = [];
-        for (const arg of argsList) {
+        let hasLazy = false;
+        for (let i = 0; i < argsList.length; i++) {
+            const arg = argsList[i];
             const useGlobalMode = isGlobalExpr && (navPath === '$' || !navPath);
             const res = resolveArgument(arg, baseContext, useGlobalMode);
 
-            // resolvedArgs should be raw values
-            let val = unwrapSignal(res.value);
+            if (res.isLazy) hasLazy = true;
+
+            // For mutation helpers, skip unwrapping for specific arguments (usually the first)
+            const shouldUnwrap = !(options.pathAware && i === 0);
+
+            let val = shouldUnwrap ? unwrapSignal(res.value) : res.value;
 
             if (res.isExplosion && Array.isArray(val)) {
-                resolvedArgs.push(...val.map(unwrapSignal));
+                resolvedArgs.push(...val.map(v => shouldUnwrap ? unwrapSignal(v) : v));
             } else {
                 resolvedArgs.push(val);
             }
+        }
+
+        if (hasLazy) {
+            // Return a new LazyValue that resolves all its lazy arguments
+            return new LazyValue((contextOverride) => {
+                const finalArgs = resolvedArgs.map((arg, i) => {
+                    const shouldUnwrap = !(options.pathAware && i === 0);
+                    const resolved = arg instanceof LazyValue ? arg.resolve(contextOverride) : arg;
+                    return shouldUnwrap ? unwrapSignal(resolved) : resolved;
+                });
+                return helper(...finalArgs);
+            });
         }
 
         const result = helper(...resolvedArgs);
@@ -305,7 +401,7 @@ export const resolveExpression = (expr, context) => {
 };
 
 /**
- * Parses an HDOM expression into a reactive signal.
+ * Parses an CDOM expression into a reactive signal.
  */
 export const parseExpression = (expr, context) => {
     const LV = getLV();
@@ -315,10 +411,10 @@ export const parseExpression = (expr, context) => {
 };
 
 /**
- * Parses HDOMC (Concise HDOM) content into a JSON object.
+ * Parses CDOMC (Concise CDOM) content into a JSON object.
  * Supports unquoted keys/values and strictly avoids 'eval'.
  */
-export const parseHDOMC = (input) => {
+export const parseCDOMC = (input) => {
     let i = 0;
     const len = input.length;
 
@@ -363,7 +459,7 @@ export const parseHDOMC = (input) => {
         let res = '';
         while (i < len) {
             const char = input[i++];
-            if (char === quote) return res;
+            if (char === quote) return new String(res);
             if (char === '\\') {
                 const next = input[i++];
                 if (next === 'n') res += '\n';
@@ -395,7 +491,7 @@ export const parseHDOMC = (input) => {
             }
 
             // Structural characters that end a word (at depth 0)
-            if (/[\s:,{}\[\]"'`]/.test(char)) {
+            if (/[\s:,{}\[\]"'`()]/.test(char)) {
                 // Special case: if we see '(', we are entering a function call word
                 if (char === '(') {
                     depth++;

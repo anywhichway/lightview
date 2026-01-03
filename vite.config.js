@@ -8,7 +8,7 @@ export default defineConfig({
             entry: {
                 'lightview': resolve(__dirname, 'lightview.js'),
                 'lightview-x': resolve(__dirname, 'lightview-x.js'),
-                'lightview-hdom': resolve(__dirname, 'lightview-hdom.js'),
+                'lightview-cdom': resolve(__dirname, 'lightview-cdom.js'),
                 'lightview-all': resolve(__dirname, 'lightview-all.js')
             },
             name: 'Lightview',
@@ -24,7 +24,7 @@ export default defineConfig({
                 globals: {
                     'lightview': 'Lightview',
                     'lightview-x': 'LightviewX',
-                    'lightview-hdom': 'LightviewHDOM'
+                    'lightview-cdom': 'LightviewCDOM'
                 },
                 extend: true
             }

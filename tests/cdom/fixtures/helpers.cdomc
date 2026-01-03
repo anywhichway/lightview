@@ -1,0 +1,62 @@
+{
+  div: {
+    id: helpers-root,
+    children: [
+      // Math
+      { div: { id: math, children: [
+        { span: { class: add, children: ["add: ", $+(10, 5)] } },
+        { span: { class: sub, children: ["sub: ", $-(10, 5)] } },
+        { span: { class: mul, children: ["mul: ", $*(10, 5)] } },
+        { span: { class: div, children: ["div: ", $/(10, 5)] } }
+      ]}},
+
+      // Logic
+      { div: { id: logic, children: [
+        { span: { class: and, children: ["and: ", $&&(true, true)] } },
+        { span: { class: or, children: ["or: ", $||(false, true)] } },
+        { span: { class: not, children: ["not: ", $!(false)] } }
+      ]}},
+
+      // String
+      { div: { id: string, children: [
+        { span: { class: upper, children: ["upper: ", $upper('hello')] } },
+        { span: { class: lower, children: ["lower: ", $lower('HELLO')] } },
+        { span: { class: concat, children: ["concat: ", $concat('Hello', ' ', 'World')] } }
+      ]}},
+
+      // Compare
+      { div: { id: compare, children: [
+        { span: { class: eq, children: ["eq: ", $==(5, 5)] } },
+        { span: { class: gt, children: ["gt: ", $>(10, 5)] } },
+        { span: { class: lt, children: ["lt: ", $<(5, 10)] } }
+      ]}},
+
+      // Conditional
+      { div: { id: conditional, children: [
+        { span: { class: if-true, children: ["if-true: ", $if(true, 'Yes', 'No')] } },
+        { span: { class: if-false, children: ["if-false: ", $if(false, 'Yes', 'No')] } }
+      ]}},
+
+      // Array (using global state data)
+      { div: { id: array, children: [
+        { span: { class: join, children: ["join: ", $join(/data/list, '-')] } },
+        { span: { class: len, children: ["len: ", $len(/data/list)] } },
+        { span: { class: first, children: ["first: ", $first(/data/list)] } }
+      ]}},
+
+      // Stats
+      { div: { id: stats, children: [
+        { span: { class: sum, children: ["sum: ", $sum(/data/numbers...)] } },
+        { span: { class: avg, children: ["avg: ", $avg(/data/numbers...)] } },
+        { span: { class: max, children: ["max: ", $max(/data/numbers...)] } },
+        { span: { class: min, children: ["min: ", $min(/data/numbers...)] } }
+      ]}},
+
+      // Format
+      { div: { id: format, children: [
+        { span: { class: currency, children: ["currency: ", $currency(1234.56, 'USD')] } },
+        { span: { class: percent, children: ["percent: ", $percent(0.125)] } }
+      ]}}
+    ]
+  }
+}
