@@ -465,112 +465,98 @@ signal(false, 'btnLoading');
                         </table>
                     </div>
 
-                    <!-- Visual Gallery (Static) -->
+                    <!-- Custom Element Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Button Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-button&gt;</code> custom elements.
+                    </p>
 
-                    <!-- Colors -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                    <div id="colors-demo" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                    <script type="module" src="/components/actions/button.js"></script>
+
+                    <!-- All Colors -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Colors</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                        <lv-button>Default</lv-button>
+                        <lv-button color="neutral">Neutral</lv-button>
+                        <lv-button color="primary">Primary</lv-button>
+                        <lv-button color="secondary">Secondary</lv-button>
+                        <lv-button color="accent">Accent</lv-button>
+                        <lv-button color="info">Info</lv-button>
+                        <lv-button color="success">Success</lv-button>
+                        <lv-button color="warning">Warning</lv-button>
+                        <lv-button color="error">Error</lv-button>
+                        <lv-button color="ghost">Ghost</lv-button>
+                        <lv-button color="link">Link</lv-button>
                     </div>
 
                     <!-- Variants -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Variants</h2>
-                    <div id="variants-demo" style="margin-bottom: 2rem;"></div>
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Variants</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                        <div>
+                            <h4 class="text-sm font-medium" style="margin-bottom: 0.5rem; opacity: 0.8;">Outline</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                <lv-button variant="outline">Default</lv-button>
+                                <lv-button variant="outline" color="primary">Primary</lv-button>
+                                <lv-button variant="outline" color="secondary">Secondary</lv-button>
+                                <lv-button variant="outline" color="accent">Accent</lv-button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium" style="margin-bottom: 0.5rem; opacity: 0.8;">Soft</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                <lv-button variant="soft" color="primary">Primary</lv-button>
+                                <lv-button variant="soft" color="secondary">Secondary</lv-button>
+                                <lv-button variant="soft" color="accent">Accent</lv-button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium" style="margin-bottom: 0.5rem; opacity: 0.8;">Ghost & Link
+                            </h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                <lv-button color="ghost">Ghost</lv-button>
+                                <lv-button color="link">Link</lv-button>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Sizes -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-                    <div id="sizes-demo"
-                        style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem; margin-bottom: 2rem;">
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Sizes</h3>
+                    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                        <lv-button size="xs" color="primary">Extra Small</lv-button>
+                        <lv-button size="sm" color="primary">Small</lv-button>
+                        <lv-button color="primary">Medium</lv-button>
+                        <lv-button size="lg" color="primary">Large</lv-button>
                     </div>
 
                     <!-- States -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">States</h2>
-                    <div id="states-demo" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">States</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                        <lv-button color="primary">Normal</lv-button>
+                        <lv-button color="primary" active="true">Active</lv-button>
+                        <lv-button color="primary" disabled="true">Disabled</lv-button>
+                        <lv-button color="primary" loading="true">Loading</lv-button>
                     </div>
 
                     <!-- Special Shapes -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Special Shapes</h2>
-                    <div id="shapes-demo" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Special Shapes</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                        <lv-button variant="wide" color="primary">Wide Button</lv-button>
+                        <lv-button variant="square" color="primary">⊗</lv-button>
+                        <lv-button variant="circle" color="secondary">✓</lv-button>
                     </div>
 
-                    <script type="module">
-                        await import('/components/actions/button.js');
-                        const { tags, $ } = Lightview;
-                        const { div, h3, svg, path, Button } = tags;
-
-                        // Helper to create X icon SVG Component
-                        const XIcon = () => svg(
-                            { xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", style: "width: 1.5rem; height: 1.5rem; stroke: currentColor;" },
-                            path({ "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M6 18L18 6M6 6l12 12" })
-                        );
-
-                        // Colors Demo
-                        $('#colors-demo').content([
-                            Button({ useShadow: true }, "Default"),
-                            Button({ color: "neutral" }, "Neutral"),
-                            Button({ color: "primary" }, "Primary"),
-                            Button({ color: "secondary" }, "Secondary"),
-                            Button({ color: "accent" }, "Accent"),
-                            Button({ color: "info" }, "Info"),
-                            Button({ color: "success" }, "Success"),
-                            Button({ color: "warning" }, "Warning"),
-                            Button({ color: "error" }, "Error")
-                        ]);
-
-                        // Variants Demo
-                        $('#variants-demo').content([
-                            div({ style: "margin-bottom: 1rem;" },
-                                h3({ class: "font-semibold", style: "margin-bottom: 0.5rem;" }, "Outline"),
-                                div({ style: "display: flex; flex-wrap: wrap; gap: 0.5rem;" },
-                                    Button({ variant: "outline" }, "Default"),
-                                    Button({ variant: "outline", color: "primary" }, "Primary"),
-                                    Button({ variant: "outline", color: "secondary" }, "Secondary"),
-                                    Button({ variant: "outline", color: "accent" }, "Accent")
-                                )
-                            ),
-                            div({ style: "margin-bottom: 1rem;" },
-                                h3({ class: "font-semibold", style: "margin-bottom: 0.5rem;" }, "Soft"),
-                                div({ style: "display: flex; flex-wrap: wrap; gap: 0.5rem;" },
-                                    Button({ variant: "soft" }, "Default"),
-                                    Button({ variant: "soft", color: "primary" }, "Primary"),
-                                    Button({ variant: "soft", color: "secondary" }, "Secondary"),
-                                    Button({ variant: "soft", color: "accent" }, "Accent")
-                                )
-                            ),
-                            div({},
-                                h3({ class: "font-semibold", style: "margin-bottom: 0.5rem;" }, "Ghost & Link"),
-                                div({ style: "display: flex; flex-wrap: wrap; gap: 0.5rem;" },
-                                    Button({ color: "ghost" }, "Ghost"),
-                                    Button({ color: "link" }, "Link")
-                                )
-                            )
-                        ]);
-
-                        // Sizes Demo
-                        $('#sizes-demo').content([
-                            Button({ color: "primary", size: "xs" }, "Extra Small"),
-                            Button({ color: "primary", size: "sm" }, "Small"),
-                            Button({ color: "primary" }, "Medium"),
-                            Button({ color: "primary", size: "lg" }, "Large")
-                        ]);
-
-                        // States Demo
-                        $('#states-demo').content([
-                            Button({ color: "primary" }, "Normal"),
-                            Button({ color: "primary", active: true }, "Active"),
-                            Button({ color: "primary", disabled: true }, "Disabled"),
-                            Button({ color: "primary", loading: true }, "Loading")
-                        ]);
-
-                        // Special Shapes Demo
-                        $('#shapes-demo').content([
-                            Button({ variant: "wide" }, "Wide"),
-                            Button({ variant: "block" }, "Block (Full Width)"),
-                            Button({ variant: "square" }, XIcon()),
-                            Button({ variant: "circle" }, XIcon())
-                        ]);
-                    </script>
-
-
+                    <!-- Mixed Combinations -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Mixed Combinations</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;">
+                        <lv-button size="xs" color="success">Tiny Success</lv-button>
+                        <lv-button size="sm" variant="outline" color="info">Small Outline</lv-button>
+                        <lv-button variant="soft" color="warning">Soft Warning</lv-button>
+                        <lv-button size="lg" color="error">Large Error</lv-button>
+                        <lv-button variant="outline" color="secondary" glass="true">Glass Effect</lv-button>
+                        <lv-button size="sm" variant="soft" color="accent">Soft Accent</lv-button>
+                        <lv-button color="ghost" size="xs">Tiny Ghost</lv-button>
+                        <lv-button variant="wide" color="primary">Wide Primary</lv-button>
+                    </div>
 
                 </div>
             </div>

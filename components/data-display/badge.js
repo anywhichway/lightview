@@ -71,9 +71,17 @@ const Badge = (props = {}, ...children) => {
 
 globalThis.Lightview.tags.Badge = Badge;
 
-// Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
-    const BadgeElement = globalThis.LightviewX.createCustomElement(Badge);
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const BadgeElement = globalThis.LightviewX.customElementWrapper(Badge, {
+        attributeMap: {
+            color: String,
+            size: String,
+            variant: String
+        },
+        childElements: {} // No child components for Badge, uses slot
+    });
+
     if (!customElements.get('lv-badge')) {
         customElements.define('lv-badge', BadgeElement);
     }

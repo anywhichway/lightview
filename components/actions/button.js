@@ -139,9 +139,22 @@ const Button = (props = {}, ...children) => {
 
 globalThis.Lightview.tags.Button = Button;
 
-// Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
-    const ButtonElement = globalThis.LightviewX.createCustomElement(Button);
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const ButtonElement = globalThis.LightviewX.customElementWrapper(Button, {
+        attributeMap: {
+            color: String,
+            size: String,
+            variant: String,
+            disabled: Boolean,
+            loading: Boolean,
+            active: Boolean,
+            glass: Boolean,
+            noAnimation: Boolean
+        },
+        childElements: {} // No child components for Button, uses slot
+    });
+
     if (!customElements.get('lv-button')) {
         customElements.define('lv-button', ButtonElement);
     }

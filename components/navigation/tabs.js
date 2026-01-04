@@ -1,9 +1,9 @@
-/**
- * Lightview Tabs Component (DaisyUI)
- * @see https://daisyui.com/components/tab/
- */
+import('/components/daisyui.js');
 
-import '../daisyui.js';
+/**
+ * Tabs Component - Refactored to use single implementation
+ * Custom elements delegate to functional component for rendering
+ */
 
 /**
  * Tabs Component
@@ -132,6 +132,8 @@ Tabs.Tab = (props = {}, ...children) => {
     const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
+    const { button } = tags;
+
     const {
         active = false,
         disabled = false,
@@ -149,7 +151,7 @@ Tabs.Tab = (props = {}, ...children) => {
         return classes.join(' ');
     };
 
-    return tags.button({
+    return button({
         role: 'tab',
         class: typeof active === 'function' || typeof disabled === 'function'
             ? () => getClasses()
@@ -159,17 +161,25 @@ Tabs.Tab = (props = {}, ...children) => {
 };
 
 /**
- * Tab Content - for lifted tabs with content panels
+ * Tab Content Panel
  */
 Tabs.Content = (props = {}, ...children) => {
     const { tags } = globalThis.Lightview || {};
     if (!tags) return null;
 
-    const { class: className = '', ...rest } = props;
+    const { div } = tags;
 
-    return tags.div({
+    const {
+        class: className = '',
+        ...rest
+    } = props;
+
+    const classes = ['tab-content', 'bg-base-100', 'border-base-300', 'p-6'];
+    if (className) classes.push(className);
+
+    return div({
         role: 'tabpanel',
-        class: `tab-content bg-base-100 border-base-300 p-6 ${className}`.trim(),
+        class: classes.join(' '),
         ...rest
     }, ...children);
 };
@@ -179,158 +189,145 @@ tags.Tabs = Tabs;
 tags['Tabs.Tab'] = Tabs.Tab;
 tags['Tabs.Content'] = Tabs.Content;
 
-// Register as Custom Elements using Hybrid Pattern
-// Pattern: Container has Shadow DOM, children do NOT
-if (globalThis.LightviewX && typeof customElements !== 'undefined') {
-    // lv-tabs: Real Web Component WITH Shadow DOM
-    class TabsElement extends HTMLElement {
+// Custom Element Factory - PROMOTED to LightviewX.customElementWrapper
+// This local copy will use the global when lightview-x.js is rebuilt
+function customElementWrapper(Component, config = {}) {
+    const {
+        attributeMap = {},
+        childElements = {}
+    } = config;
+
+    return class extends HTMLElement {
         constructor() {
             super();
             this.attachShadow({ mode: 'open' });
         }
 
-        async connectedCallback() {
-            const LVX = globalThis.LightviewX || {};
-
-            // Sync theme from document
-            const themeWrapper = document.createElement('div');
-            themeWrapper.style.display = 'contents';
-
-            const syncTheme = () => {
-                const theme = document.documentElement.getAttribute('data-theme') || 'light';
-                themeWrapper.setAttribute('data-theme', theme);
-            };
-            syncTheme();
-
-            // Observe theme changes
-            this.themeObserver = new MutationObserver(syncTheme);
-            this.themeObserver.observe(document.documentElement, {
-                attributes: true,
-                attributeFilter: ['data-theme']
-            });
-
-            // Get adopted stylesheets (includes DaisyUI)
-            const adoptedStyleSheets = LVX.getAdoptedStyleSheets ? LVX.getAdoptedStyleSheets() : [];
-
-            // Apply stylesheets to shadow root
-            if (adoptedStyleSheets && adoptedStyleSheets.length > 0) {
-                try {
-                    this.shadowRoot.adoptedStyleSheets = adoptedStyleSheets;
-                } catch (e) {
-                    console.warn('Failed to adopt stylesheets', e);
-                }
-            }
-
-            // Direct link to DaisyUI
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = 'https://cdn.jsdelivr.net/npm/daisyui@5.5.14/daisyui.min.css';
-            this.shadowRoot.appendChild(link);
-
-            this.shadowRoot.appendChild(themeWrapper);
-
-            // Initial render
+        connectedCallback() {
             this.render();
 
-            // Observe light DOM children changes
-            this.childObserver = new MutationObserver(() => this.render());
-            this.childObserver.observe(this, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                attributeFilter: ['active', 'disabled']
-            });
+            // Observe attributes
+            const attrs = Object.keys(attributeMap);
+            if (attrs.length > 0) {
+                this.attrObserver = new MutationObserver(() => this.render());
+                this.attrObserver.observe(this, {
+                    attributes: true,
+                    attributeFilter: attrs
+                });
+            }
+
+            // Observe children if specified
+            if (Object.keys(childElements).length > 0) {
+                this.childObserver = new MutationObserver(() => this.render());
+                this.childObserver.observe(this, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true
+                });
+            }
         }
 
         disconnectedCallback() {
-            if (this.themeObserver) {
-                this.themeObserver.disconnect();
-            }
-            if (this.attrObserver) {
-                this.attrObserver.disconnect();
-            }
-            if (this.childObserver) {
-                this.childObserver.disconnect();
-            }
+            if (this.attrObserver) this.attrObserver.disconnect();
+            if (this.childObserver) this.childObserver.disconnect();
+        }
+
+        parseChildrenToVDOM() {
+            return Array.from(this.children).map(child => {
+                const tagName = child.tagName.toLowerCase();
+                const componentInfo = childElements[tagName];
+
+                if (!componentInfo) return null;
+
+                const { component, attributeMap = {}, innerHTML = false } = componentInfo;
+                const attributes = {};
+
+                // Parse attributes based on map
+                Object.entries(attributeMap).forEach(([attr, type]) => {
+                    const value = child.getAttribute(attr);
+                    if (value !== null) {
+                        if (type === Boolean) {
+                            attributes[attr] = value === 'true' || value === '';
+                        } else if (type === Number) {
+                            attributes[attr] = Number(value);
+                        } else {
+                            attributes[attr] = value;
+                        }
+                    }
+                });
+
+                // Copy event handlers
+                if (child.onclick) attributes.onclick = child.onclick.bind(child);
+
+                return {
+                    tag: component,
+                    attributes,
+                    children: innerHTML ? [child.innerHTML] : [child.textContent]
+                };
+            }).filter(Boolean);
         }
 
         render() {
-            const variant = this.getAttribute('variant');
-            const size = this.getAttribute('size');
-
-            const classes = ['tabs'];
-            if (variant === 'boxed') classes.push('tabs-box');
-            else if (variant === 'bordered') classes.push('tabs-border');
-            else if (variant === 'lifted') classes.push('tabs-lift');
-            if (size) classes.push(`tabs-${size}`);
-
-            // Process light DOM children
-            const tabElements = [];
-            const contentElements = [];
-
-            Array.from(this.children).forEach((child) => {
-                if (child.tagName === 'LV-TAB') {
-                    // Create proper button element
-                    const button = document.createElement('button');
-                    button.setAttribute('role', 'tab');
-                    button.className = 'tab';
-
-                    const active = child.getAttribute('active');
-                    const disabled = child.getAttribute('disabled');
-
-                    if (active === 'true' || active === '') {
-                        button.classList.add('tab-active');
+            // Build props from attributes
+            const props = { useShadow: true };
+            Object.entries(attributeMap).forEach(([attr, type]) => {
+                const value = this.getAttribute(attr);
+                if (value !== null) {
+                    if (type === Boolean) {
+                        props[attr] = value === 'true' || value === '';
+                    } else if (type === Number) {
+                        props[attr] = Number(value);
+                    } else {
+                        props[attr] = value;
                     }
-                    if (disabled === 'true' || disabled === '') {
-                        button.classList.add('tab-disabled');
-                        button.disabled = true;
-                    }
-
-                    // Copy content
-                    button.textContent = child.textContent;
-
-                    // Copy event handlers
-                    if (child.onclick) {
-                        button.onclick = child.onclick.bind(child);
-                    }
-
-                    tabElements.push(button);
-                } else if (child.tagName === 'LV-TAB-CONTENT') {
-                    const content = document.createElement('div');
-                    content.setAttribute('role', 'tabpanel');
-                    content.className = 'tab-content bg-base-100 border-base-300 p-6';
-                    content.innerHTML = child.innerHTML;
-                    contentElements.push(content);
                 }
             });
 
-            const themeWrapper = this.shadowRoot.querySelector('[data-theme]');
-            if (themeWrapper) {
-                const tablist = document.createElement('div');
-                tablist.setAttribute('role', 'tablist');
-                tablist.className = classes.join(' ');
+            const vdomChildren = this.parseChildrenToVDOM();
+            const result = Component(props, ...vdomChildren);
 
-                // Add tabs
-                tabElements.forEach(tab => tablist.appendChild(tab));
-
-                // Add content panels
-                contentElements.forEach(content => tablist.appendChild(content));
-
-                themeWrapper.innerHTML = '';
-                themeWrapper.appendChild(tablist);
+            // Use Lightview's internal rendering
+            if (globalThis.Lightview?.internals?.setupChildren) {
+                this.shadowRoot.innerHTML = '';
+                globalThis.Lightview.internals.setupChildren([result], this.shadowRoot);
             }
         }
 
         static get observedAttributes() {
-            return ['variant', 'size'];
+            return Object.keys(attributeMap);
         }
 
         attributeChangedCallback() {
-            if (this.shadowRoot.querySelector('[data-theme]')) {
-                this.render();
+            this.render();
+        }
+    };
+}
+
+// Register as Custom Elements using Factory
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    // Use global customElementWrapper from LightviewX (fallback to local if not rebuilt)
+    const wrapper = globalThis.LightviewX.customElementWrapper || customElementWrapper;
+    const TabsElement = wrapper(Tabs, {
+        attributeMap: {
+            variant: String,
+            size: String
+        },
+        childElements: {
+            'lv-tab': {
+                component: Tabs.Tab,
+                attributeMap: {
+                    active: Boolean,
+                    disabled: Boolean
+                },
+                innerHTML: false
+            },
+            'lv-tab-content': {
+                component: Tabs.Content,
+                attributeMap: {},
+                innerHTML: true
             }
         }
-    }
+    });
 
     // lv-tab: Custom Element WITHOUT Shadow DOM (just enhanced HTML)
     class TabElement extends HTMLElement {

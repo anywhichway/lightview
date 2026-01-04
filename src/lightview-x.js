@@ -1377,6 +1377,153 @@ const createCustomElement = (Component, options = {}) => {
     };
 };
 
+/**
+ * Custom Element Wrapper Factory
+ * Auto-generates custom element classes that wrap functional components
+ * @param {Function} Component - The functional component to wrap
+ * @param {Object} config - Configuration object
+ * @param {Object} config.attributeMap - Maps attribute names to their types (String, Boolean, Number)
+ * @param {Object} config.childElements - Maps child element tag names to their component info
+ * @returns {Class} - Custom element class
+ */
+const customElementWrapper = (Component, config = {}) => {
+    const {
+        attributeMap = {},
+        childElements = {}
+    } = config;
+
+    return class extends HTMLElement {
+        constructor() {
+            super();
+            this.attachShadow({ mode: 'open' });
+        }
+
+        connectedCallback() {
+            // Load DaisyUI stylesheet into shadow DOM
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://cdn.jsdelivr.net/npm/daisyui@5.5.14/daisyui.min.css';
+            this.shadowRoot.appendChild(link);
+
+            // Sync theme from document
+            const themeWrapper = document.createElement('div');
+            themeWrapper.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') || 'light');
+            themeWrapper.style.display = 'contents';
+            this.shadowRoot.appendChild(themeWrapper);
+            this.themeWrapper = themeWrapper;
+
+            // Observe theme changes
+            this.themeObserver = new MutationObserver(() => {
+                const theme = document.documentElement.getAttribute('data-theme') || 'light';
+                this.themeWrapper.setAttribute('data-theme', theme);
+            });
+            this.themeObserver.observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ['data-theme']
+            });
+
+            this.render();
+
+            // Observe attributes
+            const attrs = Object.keys(attributeMap);
+            if (attrs.length > 0) {
+                this.attrObserver = new MutationObserver(() => this.render());
+                this.attrObserver.observe(this, {
+                    attributes: true,
+                    attributeFilter: attrs
+                });
+            }
+
+            // Observe children if specified
+            if (Object.keys(childElements).length > 0) {
+                this.childObserver = new MutationObserver(() => this.render());
+                this.childObserver.observe(this, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true
+                });
+            }
+        }
+
+        disconnectedCallback() {
+            if (this.themeObserver) this.themeObserver.disconnect();
+            if (this.attrObserver) this.attrObserver.disconnect();
+            if (this.childObserver) this.childObserver.disconnect();
+        }
+
+        parseChildrenToVDOM() {
+            return Array.from(this.children).map(child => {
+                const tagName = child.tagName.toLowerCase();
+                const componentInfo = childElements[tagName];
+
+                if (!componentInfo) return null;
+
+                const { component, attributeMap = {}, innerHTML = false } = componentInfo;
+                const attributes = {};
+
+                // Parse attributes based on map
+                Object.entries(attributeMap).forEach(([attr, type]) => {
+                    const value = child.getAttribute(attr);
+                    if (value !== null) {
+                        if (type === Boolean) {
+                            attributes[attr] = value === 'true' || value === '';
+                        } else if (type === Number) {
+                            attributes[attr] = Number(value);
+                        } else {
+                            attributes[attr] = value;
+                        }
+                    }
+                });
+
+                // Copy event handlers
+                if (child.onclick) attributes.onclick = child.onclick.bind(child);
+
+                return {
+                    tag: component,
+                    attributes,
+                    children: innerHTML ? [child.innerHTML] : [child.textContent]
+                };
+            }).filter(Boolean);
+        }
+
+        render() {
+            // Build props from attributes
+            const props = { useShadow: false }; // Wrapper already created shadow DOM
+            Object.entries(attributeMap).forEach(([attr, type]) => {
+                const value = this.getAttribute(attr);
+                if (value !== null) {
+                    if (type === Boolean) {
+                        props[attr] = value === 'true' || value === '';
+                    } else if (type === Number) {
+                        props[attr] = Number(value);
+                    } else {
+                        props[attr] = value;
+                    }
+                }
+            });
+
+            const vdomChildren = this.parseChildrenToVDOM();
+            // If no child elements are mapped, use a slot to project light DOM
+            const children = Object.keys(childElements).length > 0 ? vdomChildren : [{ tag: globalThis.Lightview.tags.slot }];
+            const result = Component(props, ...children);
+
+            // Use Lightview's internal rendering
+            if (globalThis.Lightview?.internals?.setupChildren && this.themeWrapper) {
+                this.themeWrapper.innerHTML = '';
+                globalThis.Lightview.internals.setupChildren([result], this.themeWrapper);
+            }
+        }
+
+        static get observedAttributes() {
+            return Object.keys(attributeMap);
+        }
+
+        attributeChangedCallback() {
+            this.render();
+        }
+    };
+};
+
 // Export for module usage
 const LightviewX = {
     state,
@@ -1394,6 +1541,7 @@ const LightviewX = {
     getAdoptedStyleSheets,
     preloadComponentCSS,
     createCustomElement,
+    customElementWrapper,
     internals: {
         handleSrcAttribute,
         parseElements

@@ -101,9 +101,19 @@ function getAlertIcon(type) {
 
 globalThis.Lightview.tags.Alert = Alert;
 
-// Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
-    const AlertElement = globalThis.LightviewX.createCustomElement(Alert);
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const AlertElement = globalThis.LightviewX.customElementWrapper(Alert, {
+        attributeMap: {
+            color: String,
+            soft: Boolean,
+            dash: Boolean,
+            outline: Boolean,
+            icon: String
+        },
+        childElements: {} // No child components for Alert
+    });
+
     if (!customElements.get('lv-alert')) {
         customElements.define('lv-alert', AlertElement);
     }
