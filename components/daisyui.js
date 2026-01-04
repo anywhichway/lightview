@@ -3,7 +3,7 @@
  * This module ensures DaisyUI CSS is loaded and provides utilities for components
  */
 
-const DAISYUI_CDN = 'https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.8/dist/daisyui.min.css';
+const DAISYUI_CDN = 'https://cdn.jsdelivr.net/npm/daisyui@5.5.14/daisyui.min.css';
 const TAILWIND_CDN = 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4';
 
 let daisyLoaded = false;

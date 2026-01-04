@@ -6,16 +6,17 @@ export default defineConfig({
         lib: {
             // Define multiple entry points
             entry: {
-                'lightview': resolve(__dirname, 'lightview.js'),
-                'lightview-x': resolve(__dirname, 'lightview-x.js'),
-                'lightview-cdom': resolve(__dirname, 'lightview-cdom.js'),
-                'lightview-all': resolve(__dirname, 'lightview-all.js')
+                'lightview': resolve(__dirname, 'src/lightview.js'),
+                'lightview-x': resolve(__dirname, 'src/lightview-x.js'),
+                'lightview-cdom': resolve(__dirname, 'src/lightview-cdom.js'),
+                'lightview-all': resolve(__dirname, 'src/lightview-all.js')
             },
             name: 'Lightview',
             formats: ['iife', 'es'],
             fileName: (format, entryName) => `${entryName}.${format === 'iife' ? 'js' : 'mjs'}`
         },
-        outDir: 'dist',
+        outDir: 'build_tmp',
+        emptyOutDir: false,
         rollupOptions: {
             // Ensure components and docs are NOT part of the library bundle
             external: (id) => id.includes('/components/') || id.includes('/docs/'),

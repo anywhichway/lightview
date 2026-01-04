@@ -7,71 +7,64 @@
     <aside class="docs-sidebar" src="./nav.html"></aside>
 
     <main class="docs-content">
-        <h1>Creating Elements</h1>
+        <h1>Elements</h1>
         <p>
-            Lightview gives you three ways to build UI. Pick your favorite - or mix and match.
-            They all use the same reactive system under the hood.
+            Lightview is uniquely flexible. It doesn't force you into a single way of describing your DOM. Whether you
+            prefer concise JavaScript functions, structured JSON, or standard HTML, the same signal-based reactivity
+            powers it all.
         </p>
-        <h2>Comparison</h2>
+
+        <h2 id="comparison">Comparison</h2>
         <table class="api-table">
             <thead>
                 <tr>
+                    <th>Syntax</th>
                     <th>Style</th>
-                    <th>Pros</th>
-                    <th>Cons</th>
+                    <th>Best For</th>
+                    <th>Requirement</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td><strong>Tagged API</strong></td>
-                    <td>Most concise, natural to write</td>
-                    <td>Requires destructuring</td>
+                    <td><code>div(h1('Title'))</code></td>
+                    <td>Application logic, dynamic UIs</td>
+                    <td>Core</td>
                 </tr>
                 <tr>
                     <td><strong>vDOM</strong></td>
-                    <td>JSON serializable, easy to validate</td>
-                    <td>Most verbose</td>
+                    <td><code>{ tag: 'div', ... }</code></td>
+                    <td>Serialization, data-driven UI</td>
+                    <td>Core</td>
                 </tr>
                 <tr>
-                    <td><strong>Object DOM</strong></td>
-                    <td>Compact JSON, clean templates</td>
-                    <td>Harder to validate than explicit vDOM</td>
+                    <td><strong>Object DOM (oDOM)</strong></td>
+                    <td><code>{ div: { ... } }</code></td>
+                    <td>Concise templates, config files</td>
+                    <td>Lightview X</td>
+                </tr>
+                <tr>
+                    <td><strong>Custom Elements</strong></td>
+                    <td><code>&lt;lv-button&gt;</code></td>
+                    <td>Progressive enhancement, CMS</td>
+                    <td>Lightview X</td>
                 </tr>
             </tbody>
         </table>
-        <!-- Tabs -->
-        <script>
-            globalThis.switchSyntaxTab = (tabId) => {
-                const tabs = ['tagged', 'vdom', 'object'];
-                tabs.forEach(t => {
-                    const tabEl = document.getElementById(`tab-btn-${t}`);
-                    const contentEl = document.getElementById(`syntax-${t}`);
-                    if (t === tabId) {
-                        tabEl.classList.add('syntax-tab-active');
-                        contentEl.style.display = 'block';
-                    } else {
-                        tabEl.classList.remove('syntax-tab-active');
-                        contentEl.style.display = 'none';
-                    }
-                });
-            };
-        </script>
-        <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-            <button id="tab-btn-tagged" role="tab" class="syntax-tab syntax-tab-active"
-                onclick="switchSyntaxTab('tagged')">Tagged API</button>
-            <button id="tab-btn-vdom" role="tab" class="syntax-tab" onclick="switchSyntaxTab('vdom')">vDOM</button>
-            <button id="tab-btn-object" role="tab" class="syntax-tab" onclick="switchSyntaxTab('object')">Object
-                DOM</button>
-        </div>
 
-        <!-- Tagged Syntax -->
+        <h2 id="tagged-api">Tagged API</h2>
+        <p>
+            Inspired by Bau.js, this is the most concise way to build UIs in JavaScript. Every HTML tag is available as
+            a function.
+        </p>
         <div id="syntax-tagged">
             <pre><script>
                 examplify(document.currentScript.nextElementSibling, {
                     at: document.currentScript.parentElement,
                     scripts: ['/lightview.js', '/lightview-x.js'],
                     type: 'module',
-                    minHeight: 120
+                    minHeight: 120,
+                    autoRun: true
                 });
             </script><code contenteditable="true">const { signal, tags, $ } = Lightview;
 const { div, h1, p, button } = tags;
@@ -83,15 +76,22 @@ const app = div({ class: 'container' },
 );
 $('#example').content(app);</code></pre>
         </div>
+        <p><strong>Pros:</strong> Extremely readable, feels like "HTML in JS" without a compiler, full IDE autocomplete.
+        </p>
 
-        <!-- vDOM Syntax -->
-        <div id="syntax-vdom" style="display: none;">
+        <h2 id="vdom">vDOM Syntax</h2>
+        <p>
+            Represent your UI as plain JavaScript objects. This is the underlying format for all non-string elements in
+            Lightview.
+        </p>
+        <div id="syntax-vdom">
             <pre><script>
                 examplify(document.currentScript.nextElementSibling, {
                     at: document.currentScript.parentElement,
                     scripts: ['/lightview.js', '/lightview-x.js'],
                     type: 'module',
-                    minHeight: 120
+                    minHeight: 120,
+                    autoRun: true
                 });
             </script><code contenteditable="true">const { signal, element, $, tags } = Lightview;
 const { div } = tags;
@@ -104,15 +104,22 @@ const app = { tag:div, attributes: { class: 'container' }, children: [
 ]};
 $('#example').content(app);</code></pre>
         </div>
+        <p><strong>Pros:</strong> Unambiguous, easy to serialize/deserialize as JSON, perfect for programmatic
+            generation.</p>
 
-        <!-- Object DOM Syntax -->
-        <div id="syntax-object" style="display: none;">
+        <h2 id="object-dom">Object DOM (oDOM)</h2>
+        <p>
+            A more compact JSON representation provided by <strong>Lightview X</strong>. It uses the tag name as a key
+            to reduce verbosity.
+        </p>
+        <div id="syntax-object">
             <pre><script>
                 examplify(document.currentScript.nextElementSibling, {
                     at: document.currentScript.parentElement,
                     scripts: ['/lightview.js', '/lightview-x.js'],
                     type: 'module',
-                    minHeight: 120
+                    minHeight: 120,
+                    autoRun: true
                 });
             </script><code contenteditable="true">const { signal, tags, $ } = Lightview;
 const count = signal(0);
@@ -123,8 +130,64 @@ const app = { div: { class: 'container', children: [
 ]}};
 $('#example').content(app);</code></pre>
         </div>
+        <p><strong>Pros:</strong> Highly readable for templates stored in JSON, significantly less boilerplate than
+            standard vDOM.</p>
 
-        <h2>Attributes & Events</h2>
+        <h2 id="custom-elements">HTML Custom Elements</h2>
+        <p>
+            Use standard HTML tags to instantiate Lightview components. Ideal for multi-page apps or content managed by
+            a CMS.
+        </p>
+        <pre><code>&lt;!-- Requires registered components &amp; Lightview X --&gt;
+&lt;lv-card&gt;
+    &lt;h3 slot="title"&gt;User Profile&lt;/h3&gt;
+    &lt;lv-badge color="primary"&gt;Admin&lt;/lv-badge&gt;
+    &lt;p&gt;Active since 2024&lt;/p&gt;
+    &lt;lv-button onclick="alert('Clicked!')"&gt;Settings&lt;/lv-button&gt;
+&lt;/lv-card&gt;</code></pre>
+        <p><strong>Pros:</strong> Familiar HTML syntax, framework-agnostic, excellent for progressive enhancement of
+            server-rendered pages.</p>
+
+        <h2 id="pseudo-elements">Pseudo-elements</h2>
+        <p>
+            Lightview supports special "pseudo-elements" that perform specific tasks rather than creating a standard
+            HTML element.
+        </p>
+
+        <h3 id="shadowdom">shadowDOM</h3>
+        <p>
+            The <code>shadowDOM</code> tag allows you to attach a Shadow Root to the parent element and render children
+            inside it. This is useful for building encapsulated components without manual <code>attachShadow</code>
+            calls.
+        </p>
+        <pre><code>const { tags } = Lightview;
+const { div, shadowDOM, h2, p } = tags;
+
+const MyComponent = () => div(
+    shadowDOM({ mode: 'open', styles: ['/my-styles.css'] },
+        h2('Encapsulated Title'),
+        p('This content is inside the shadow root.')
+    )
+);</code></pre>
+
+        <h3 id="text">text</h3>
+        <p>
+            The <code>text</code> tag creates a single <code>Text</code> node containing the concatenated content of all
+            its children, separated by spaces. It supports reactivity, meaning if any child is a function, the text node
+            will update automatically.
+        </p>
+        <pre><code>const { tags, signal } = Lightview;
+const { div, text } = tags;
+
+const firstName = signal('John');
+const lastName = signal('Doe');
+
+const greeting = div(
+    text('Hello,', () => firstName.value, () => lastName.value, '!')
+);
+// Initial result: <div>Hello, John Doe !</div></code></pre>
+
+        <h2 id="attributes-events">Attributes & Events</h2>
         <p>
             Pass attributes as the first argument (Tagged API) or in the attributes object (others):
         </p>
@@ -150,7 +213,7 @@ button({
     onmouseleave: () => setHovered(false)
 })</code></pre>
 
-        <h2>Children</h2>
+        <h2 id="children">Children</h2>
         <p>
             Children can be strings, numbers, elements, arrays, or functions:
         </p>
@@ -163,7 +226,7 @@ button({
     condition && span('Conditional')        // Conditional (falsy = not rendered)
 )</code></pre>
 
-        <h2>The domEl Property</h2>
+        <h2 id="dom-el">The domEl Property</h2>
         <p>
             Every Lightview element has a <code>domEl</code> property - the actual DOM node:
         </p>
@@ -174,3 +237,6 @@ document.body.appendChild(myDiv.domEl);
 
 // You can also manipulate it directly
 myDiv.domEl.classList.add('another-class');</code></pre>
+
+    </main>
+</div>
