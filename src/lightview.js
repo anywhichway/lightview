@@ -585,6 +585,7 @@ const tags = new Proxy({}, {
 
 const Lightview = {
     signal,
+    get: signal.get,
     computed,
     effect,
     registry,

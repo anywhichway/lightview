@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import Lightview from '../../lightview.js';
-import LightviewX from '../../lightview-x.js';
+import Lightview from '../../src/lightview.js';
+import LightviewX from '../../src/lightview-x.js';
 import { resolvePath, parseExpression, registerHelper } from '../../cdom/parser.js';
 import { registerMathHelpers } from '../../cdom/helpers/math.js';
 import { registerLogicHelpers } from '../../cdom/helpers/logic.js';
