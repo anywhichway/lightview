@@ -2,9 +2,9 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import Lightview from '../../lightview.js';
-import LightviewX from '../../lightview-x.js';
-import LightviewCDOM from '../../lightview-cdom.js';
+import Lightview from '../../src/lightview.js';
+import LightviewX from '../../src/lightview-x.js';
+import LightviewCDOM from '../../src/lightview-cdom.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

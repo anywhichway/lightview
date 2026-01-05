@@ -1,0 +1,362 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="/lightview-router.js?base=/index.html"></script>
+
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="/docs/cdom-nav.html"></aside>
+
+    <main class="docs-content">
+        <h1>cDOM (Experimental)</h1>
+        <p class="text-secondary" style="font-size: 1.125rem;">
+            A declarative, expression-based way to build reactive UIs.
+        </p>
+
+        <h2 id="overview">Overview</h2>
+        <p>
+            The Computational DOM (cDOM) is a revolutionary way to describe user interfaces using reactive expressions
+            that feel as natural as spreadsheet formulas. Instead of writing complex JavaScript logic to update your UI,
+            you define the <em>relationships</em> between your data and your elements.
+        </p>
+
+        <p>
+            If you wish to explore the implementation further, you can visit the <a
+                href="https://github.com/anywhichway/lightview" target="_blank">GitHub repository</a>, browse the <a
+                href="https://github.com/anywhichway/lightview/tree/main/cdom" target="_blank">cdom directory</a>, and
+            check out the <a href="https://github.com/anywhichway/lightview/tree/main/tests/cdom" target="_blank">cdom
+                unit tests</a>.
+        </p>
+
+        <h2 id="advantages">Advantages</h2>
+        <div class="feature-grid" style="margin: 2rem 0;">
+            <div class="feature-card">
+                <h3 class="feature-title">🛡️ Enhanced Security</h3>
+                <p>
+                    cDOM strictly avoids <code>eval()</code> and direct HTML injection. By using a custom
+                    high-performance parser and a registry of pre-defined helper functions, it provides a safe sandbox
+                    for dynamic content, making it highly resistant to XSS attacks.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h3 class="feature-title">🤖 LLM Friendly</h3>
+                <p>
+                    Large Language Models excel at generating structured data and formulaic expressions. cDOM's
+                    declarative nature and concise syntax (CDOMC) make it far easier for AI to generate correct,
+                    bug-free UI components compared to traditional JavaScript-heavy frameworks.
+                </p>
+            </div>
+        </div>
+
+        <h2 id="how-it-works">How It Works</h2>
+        <p>
+            cDOM uses a powerful path-based resolution system to link UI elements directly to reactive state.
+        </p>
+        <p>
+            cDOM paths can range from simple property access to complex, nested transformations. Consider this example:
+        </p>
+        <div class="code-block" style="margin-bottom: 1.5rem;">
+            <pre><code>currency(sum(map(filter($/orders, eq(_/status, 'paid')), _/total)...))</code></pre>
+        </div>
+        <ul>
+            <li><strong>$/orders</strong>: Access the global <code>orders</code> collection.</li>
+            <li><strong>filter(..., eq(...))</strong>: Apply a filter to keep only "paid" orders using
+                <code>_/status</code>.
+            </li>
+            <li><strong>map(..., _/total)</strong>: Transform each order into its <code>total</code> value using
+                <code>_/total</code>.
+            </li>
+            <li><strong>...</strong>: The <strong>Explosion Operator</strong> expands the array of totals into
+                individual arguments for the <code>sum</code> function.</li>
+            <li><strong>sum(...)</strong>: Calculates the total of the exploded arguments.</li>
+            <li><strong>currency(...)</strong>: Formats the result as a currency string.</li>
+        </ul>
+
+        <h2 id="anatomy-of-a-path">Anatomy of a Path</h2>
+        <p>
+            A path in cDOM is a powerful string that describes how to navigate your reactive state and apply
+            transformations.
+        </p>
+        <ul>
+            <li><strong>Root/Prefix:</strong>
+                <ul>
+                    <li><code>helperName(...args)</code>: Call a registered helper function.</li>
+                    <li><code>$/&lt;name&gt;</code>: Access the global named signal or state registry.</li>
+                    <li><code>./</code>: Access the local context (inherited from parent).</li>
+                    <li><code>../</code>: Access the parent of the local context.</li>
+                    <li><code>/</code>: (Alias for global when not first item in path) Starts at the root of your state.
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Segments:</strong> Properties or indices (e.g., <code>cart/items/0/price</code> or
+                <code>cart[0]/name</code>).
+            </li>
+            <li><strong>Embedded Functions:</strong> Paths can contain function calls to transform data (e.g.,
+                <code>filter($/cart/items..., eq(_/status, 'paid'))</code>). Functions are executed and their results
+                can be passed to other helpers or used as element children.
+            </li>
+            <li><strong>Explosion Operator:</strong> <code>...</code> expands an array into multiple arguments for a
+                function or extracts a property from every item in an array (e.g., <code>$/items...name</code>).</li>
+            <li><strong>Placeholders:</strong>
+                <ul>
+                    <li><code>_</code>: Represents the current item during iteration (like in <code>map(_)</code>).
+                    </li>
+                    <li><code>$event</code>: Represents the event object in event handlers (e.g.,
+                        <code>cdom-on:click="set($/current, $event.target.value)"</code>).
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2 id="examples">Examples</h2>
+        <p>Representing a shopping cart total with reactive expressions:</p>
+
+        <div class="code-block">
+            <pre><code>// Example CDOM structure
+{ 
+    div: {
+        children: [
+            { h2: "Shopping Cart" }, // Static header
+            { ul: { 
+                // Map over the items in the cart: name - $price
+                children: "map($/cart/items, li(_/name, ' - $', _/price))" 
+            }},
+            { p: { 
+                class: "total",
+                // Calculate the total by summing item prices
+                children: ["Total: $", "sum(map($/cart/items, _/price)...)"]
+            }}
+        ]
+    }
+}</code></pre>
+        </div>
+
+        <h3 class="text-sm font-bold opacity-70" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Expected HTML Output
+        </h3>
+        <div class="code-block">
+            <pre><code>&lt;div&gt;
+    &lt;h2&gt;Shopping Cart&lt;/h2&gt;
+    &lt;ul&gt;
+        &lt;li&gt;Apple - $1.00&lt;/li&gt;
+        &lt;li&gt;Orange - $2.00&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;p class="total"&gt;Total: $3.00&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <h3 class="text-sm font-bold opacity-70" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Actual Rendering
+        </h3>
+        <div class="card bg-base-200"
+            style="margin-bottom: 2rem; border: 1px solid var(--site-border); border-radius: 0.5rem;">
+            <div class="card-body" style="padding: 1.5rem; color: var(--bc);">
+                <h2 style="margin-top: 0; font-size: 1.5rem; font-weight: bold; color: var(--bc);">Shopping Cart</h2>
+                <ul style="margin-bottom: 1rem; padding-left: 1.5rem; list-style-type: disc;">
+                    <li>Apple - $1.00</li>
+                    <li>Orange - $2.00</li>
+                </ul>
+                <p style="font-weight: bold; font-size: 1.125rem;">Total: $3.00</p>
+            </div>
+        </div>
+
+        <h2 id="comparison">Comparison to Excel</h2>
+        <p>
+            Think of your UI as a spreadsheet. In Excel, if Cell C1 has the formula <code>=A1+B1</code>, C1 updates
+            automatically whenever A1 or B1 changes.
+        </p>
+        <p>
+            cDOM brings this exact paradigm to the web. Every attribute and text node can be a "cell" that computes its
+            value based on other "cells" (reactive signals).
+        </p>
+
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Excel</th>
+                    <th>cDOM</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Reactive Unit</strong></td>
+                    <td>Cell</td>
+                    <td>Signal / State Proxy</td>
+                </tr>
+                <tr>
+                    <td><strong>Formulas</strong></td>
+                    <td><code>=SUM(A1:A10)</code></td>
+                    <td><code>sum($/items...)</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Path Resolution</strong></td>
+                    <td>Cell References (A1, $B$2)</td>
+                    <td>JSON Paths (./name, $/global)</td>
+                </tr>
+                <tr>
+                    <td><strong>Recalculation</strong></td>
+                    <td>Automatic on change</td>
+                    <td>Automatic on change</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="interaction">Events and Interaction</h2>
+        <p>
+            cDOM is designed to handle user interactions gracefully, whether in a traditional standalone application or
+            in
+            a dynamic, LLM-driven environment.
+        </p>
+
+        <h3 id="interaction-standalone">Manual Implementation (Standalone Apps)</h3>
+        <p>
+            Developers can use the <code>cdom-on:</code> directive to bind expressions directly to DOM events. This
+            allows for clear, declarative event handling that updates local state or calls helper functions.
+        </p>
+        <div class="code-block">
+            <pre><code>&lt;button cdom-on:click="increment($/count)"&gt;Click Me&lt;/button&gt;</code></pre>
+        </div>
+
+        <h3 id="interaction-llm">LLM-Generated Interaction</h3>
+        <p>
+            Because cDOM represents the UI as data, an LLM can easily generate event handlers to register its interest
+            in
+            specific user actions. Instead of writing complex JavaScript observers, the LLM simply includes event
+            handlers
+            that notify the server.
+        </p>
+        <div class="code-block">
+            <pre><code>// Example of an LLM 'registering' for a click event
+{ 
+    button: {
+        "cdom-on:click": "fetch('/api/notify', { method: 'POST', body: { $event } })",
+        children: ["Notify LLM"]
+    }
+}</code></pre>
+        </div>
+        <p>
+            By generating these attributes on specific elements, the LLM effectively "subscribes" to the behavioral data
+            it needs to reason about the user's next steps. The <code>$event</code> placeholder ensures the LLM receives
+            the
+            full context of the interaction.
+        </p>
+
+        <h3 id="interaction-lifecycle">The Interaction Lifecycle</h3>
+        <div class="feature-grid" style="margin: 2rem 0;">
+            <div class="feature-card">
+                <h4 class="feature-title">🤖 LLM-Driven Flow</h4>
+                <ol style="margin-top: 1rem; font-size: 0.9em; line-height: 1.6;">
+                    <li><strong>LLM</strong> generates the initial UI structure as JSON.</li>
+                    <li><strong>HTTP Server</strong> receives the JSON and serves it to the <strong>Client</strong>.
+                    </li>
+                    <li><strong>Client</strong> renders the cDOM and activates local reactivity.</li>
+                    <li><strong>User Interacts</strong> (e.g., clicks a 'notify' button).</li>
+                    <li><strong>Client</strong> sends the interaction data back to the <strong>HTTP Server</strong>.
+                    </li>
+                    <li><strong>HTTP Server</strong> relays the event context to the <strong>LLM</strong>.</li>
+                    <li><strong>LLM</strong> processes the event and sends a <strong>Patch/Update</strong> back to the
+                        <strong>HTTP Server</strong>.
+                    </li>
+                    <li><strong>HTTP Server</strong> relays the update to the <strong>Client</strong>.</li>
+                    <li><strong>Client</strong> merges the update, instantly refreshing the UI.</li>
+                </ol>
+            </div>
+            <div class="feature-card">
+                <h4 class="feature-title">🏠 Standalone Flow</h4>
+                <ol style="margin-top: 1rem; font-size: 0.9em; line-height: 1.6;">
+                    <li><strong>Static cDOM</strong> is defined in the Client's source code or local files.</li>
+                    <li><strong>Client</strong> activates the UI locally on page load.</li>
+                    <li><strong>User Interacts</strong> (e.g., clicks a local toggle).</li>
+                    <li><strong>Local State</strong> is updated immediately.</li>
+                    <li><strong>UI Recalculates</strong> based on reactive expressions (0 latency).</li>
+                    <li><strong>HTTP Server</strong> is only contacted for persistence or traditional API calls.</li>
+                </ol>
+            </div>
+        </div>
+
+        <h2 id="helpers">Helper Functions</h2>
+        <p>
+            cDOM comes with a rich set of built-in helpers that cover most common UI logic and data transformations.
+            Developers can also register their own custom functions to extend cDOM's capabilities:
+        </p>
+        <div class="code-block">
+            <pre><code>// Register a custom function
+cDOM.register(f, name=f.name);</code></pre>
+        </div>
+        <p>
+            For security and deterministic behavior, cDOM operates in a sandbox. It <strong>cannot</strong> access
+            <code>globalThis</code> or arbitrary window properties. Only functions explicitly registered via
+            <code>cDOM.register()</code> are available for use within cDOM expressions.
+        </p>
+
+        <h3 id="helpers-math">Math</h3>
+        <p>Basic arithmetic and mathematical operations.</p>
+        <div class="code-block">
+            <pre><code>+, add, -, sub, *, mul, /, div, round, ceil, floor, abs, mod, pow, sqrt</code></pre>
+        </div>
+
+        <h3 id="helpers-stats">Stats</h3>
+        <p>Aggregate results from arrays of numbers.</p>
+        <div class="code-block">
+            <pre><code>sum, avg, min, max, median, stdev, var</code></pre>
+        </div>
+
+        <h3 id="helpers-string">String</h3>
+        <p>Text manipulation and formatting.</p>
+        <div class="code-block">
+            <pre><code>upper, lower, trim, capitalize, titleCase, contains, startsWith, endsWith, replace, split, len, join, default</code></pre>
+        </div>
+
+        <h3 id="helpers-array">Array</h3>
+        <p>Collection processing and iteration.</p>
+        <div class="code-block">
+            <pre><code>count(len), map, filter, find, unique, sort, reverse, first, last, slice, flatten, join</code></pre>
+        </div>
+
+        <h3 id="helpers-logic">Logic & Comparison</h3>
+        <p>Boolean logic and value comparison.</p>
+        <div class="code-block">
+            <pre><code>if, and(&&), or(||), not(!), eq(==, ===), neq(!=), gt(>), lt(<), gte(>=), lte(<=), between, in</code></pre>
+        </div>
+
+        <h3 id="helpers-conditional">Conditional Aggregates</h3>
+        <p>Statistical functions that take a filter predicate.</p>
+        <div class="code-block">
+            <pre><code>sumIf, countIf, avgIf</code></pre>
+        </div>
+
+        <h3 id="helpers-formatting">Formatting</h3>
+        <p>Display helpers for various data types.</p>
+        <div class="code-block">
+            <pre><code>number, currency, percent, thousands</code></pre>
+        </div>
+
+        <h3 id="helpers-datetime">DateTime</h3>
+        <p>Date creation, parsing, and arithmetic.</p>
+        <div class="code-block">
+            <pre><code>now, today, date, formatDate, year, month, day, weekday, addDays, dateDiff</code></pre>
+        </div>
+
+        <h3 id="helpers-lookup">Lookup</h3>
+        <p>Data retrieval from indexed structures.</p>
+        <div class="code-block">
+            <pre><code>lookup, vlookup, index, match</code></pre>
+        </div>
+
+        <h3 id="helpers-mutation">State Mutation</h3>
+        <p>Directly modify reactive state from event handlers.</p>
+        <div class="code-block">
+            <pre><code>set, increment(++), decrement(--), toggle(!!), push, pop, assign, clear</code></pre>
+        </div>
+
+        <h3 id="helpers-network">Network</h3>
+        <p>Data fetching and network requests.</p>
+        <div class="code-block">
+            <pre><code>fetch(url, options?)</code></pre>
+        </div>
+        <p>
+            The <code>fetch</code> helper simplifies network requests by handling body serialization.
+            If the <code>body</code> is a non-null object, it is automatically stringified as JSON and the
+            <code>Content-Type</code> is set to <code>application/json</code> (if not already set).
+            Otherwise, the body is converted to a string and <code>Content-Type</code> is set to
+            <code>text/plain</code>.
+        </p>
+
+    </main>
+</div>

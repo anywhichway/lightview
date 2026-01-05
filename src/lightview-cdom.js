@@ -15,6 +15,7 @@ import { registerFormatHelpers } from '../cdom/helpers/format.js';
 import { registerLookupHelpers } from '../cdom/helpers/lookup.js';
 import { registerStatsHelpers } from '../cdom/helpers/stats.js';
 import { registerStateHelpers, set } from '../cdom/helpers/state.js';
+import { registerNetworkHelpers } from '../cdom/helpers/network.js';
 
 import { signal, effect, getRegistry } from './reactivity/signal.js';
 import { state } from './reactivity/state.js';
@@ -31,6 +32,7 @@ registerFormatHelpers(registerHelper);
 registerLookupHelpers(registerHelper);
 registerStatsHelpers(registerHelper);
 registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
+registerNetworkHelpers(registerHelper);
 
 const localStates = new WeakMap();
 
