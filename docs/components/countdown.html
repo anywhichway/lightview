@@ -167,9 +167,9 @@ const display = {
         style: 'display: flex; gap: 1.25rem',
         children: [
             { Countdown: { value: 15, class: 'font-mono text-4xl' } },
-            { span: { class: 'text-4xl', text: ':' } },
+            { span: { class: 'text-4xl', children: [':'] } },
             { Countdown: { value: 30, class: 'font-mono text-4xl' } },
-            { span: { class: 'text-4xl', text: ':' } },
+            { span: { class: 'text-4xl', children: [':'] } },
             { Countdown: { value: 45, class: 'font-mono text-4xl' } }
         ]
     }
@@ -389,8 +389,8 @@ const demo = {
                 div: {
                     style: 'display: flex; gap: 0.5rem',
                     children: [
-                        { Button: { color: () => running.value ? 'error' : 'primary', onclick: toggle, text: () => running.value ? 'Pause' : 'Start' } },
-                        { Button: { onclick: reset, text: 'Reset' } }
+                        { Button: { color: () => running.value ? 'error' : 'primary', onclick: toggle, children: [() => running.value ? 'Pause' : 'Start'] } },
+                        { Button: { onclick: reset, children: ['Reset'] } }
                     ]
                 }
             }
@@ -432,26 +432,26 @@ $('#example').content(demo);</code></pre>
                         style="display: grid; grid-auto-flow: column; grid-auto-columns: max-content; gap: 1.25rem; text-align: center; margin-bottom: 2rem;">
                         <div style="display: flex; flex-direction: column; padding: 0.5rem;"
                             class="bg-neutral rounded-box text-neutral-content">
-                            <span class="countdown font-mono text-5xl"><span id="cd-days"
-                                    style="--value:15;"></span></span>
+                            <span class="countdown font-mono text-5xl" style="line-height: 1.2em; height: 1.2em;"><span
+                                    id="cd-days" style="--value:15; height: 1.2em;"></span></span>
                             days
                         </div>
                         <div style="display: flex; flex-direction: column; padding: 0.5rem;"
                             class="bg-neutral rounded-box text-neutral-content">
-                            <span class="countdown font-mono text-5xl"><span id="cd-hours"
-                                    style="--value:10;"></span></span>
+                            <span class="countdown font-mono text-5xl" style="line-height: 1.2em; height: 1.2em;"><span
+                                    id="cd-hours" style="--value:10; height: 1.2em;"></span></span>
                             hours
                         </div>
                         <div style="display: flex; flex-direction: column; padding: 0.5rem;"
                             class="bg-neutral rounded-box text-neutral-content">
-                            <span class="countdown font-mono text-5xl"><span id="cd-min"
-                                    style="--value:24;"></span></span>
+                            <span class="countdown font-mono text-5xl" style="line-height: 1.2em; height: 1.2em;"><span
+                                    id="cd-min" style="--value:24; height: 1.2em;"></span></span>
                             min
                         </div>
                         <div style="display: flex; flex-direction: column; padding: 0.5rem;"
                             class="bg-neutral rounded-box text-neutral-content">
-                            <span class="countdown font-mono text-5xl"><span id="cd-sec"
-                                    style="--value:59;"></span></span>
+                            <span class="countdown font-mono text-5xl" style="line-height: 1.2em; height: 1.2em;"><span
+                                    id="cd-sec" style="--value:59; height: 1.2em;"></span></span>
                             sec
                         </div>
                     </div>

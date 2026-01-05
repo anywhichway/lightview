@@ -425,9 +425,11 @@ const demo = {
             {
                 p: {
                     style: 'font-family: monospace; font-size: 0.875rem;',
-                    text: () => progress.value >= 100
-                        ? '✓ Complete!'
-                        : `Downloading: ${Math.round(progress.value)}%`
+                    children: [
+                        () => progress.value >= 100
+                            ? '✓ Complete!'
+                            : `Downloading: ${Math.round(progress.value)}%`
+                    ]
                 }
             },
             {
@@ -436,7 +438,7 @@ const demo = {
                     size: 'sm',
                     disabled: () => isRunning.value,
                     onclick: startDownload,
-                    text: () => isRunning.value ? 'Downloading...' : 'Start Download'
+                    children: [() => isRunning.value ? 'Downloading...' : 'Start Download']
                 }
             }
         ]

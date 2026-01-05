@@ -30,12 +30,13 @@ const Countdown = (props = {}, ...children) => {
 
     const countdownEl = span({
         class: `countdown ${className}`.trim(),
+        style: 'line-height: 1.2em; height: 1.2em; vertical-align: middle;',
         ...rest
     },
         span({
             style: typeof value === 'function'
-                ? () => `--value:${getValue()};`
-                : `--value:${value};`
+                ? () => `--value:${getValue()}; height: 1.2em;`
+                : `--value:${value}; height: 1.2em;`
         })
     );
 

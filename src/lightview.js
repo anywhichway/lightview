@@ -428,6 +428,17 @@ const processChildren = (children, targetNode, clearExisting = true) => {
             // Static text
             targetNode.appendChild(document.createTextNode(child));
             childElements.push(child);
+        } else if (child instanceof Node) {
+            // Raw DOM node
+            const node = child.domEl || child;
+            if (node instanceof HTMLElement || node instanceof SVGElement) {
+                const wrapped = wrapDomElement(node, node.tagName.toLowerCase());
+                targetNode.appendChild(node);
+                childElements.push(wrapped);
+            } else {
+                targetNode.appendChild(node);
+                childElements.push(child);
+            }
         } else if (child && type === 'object' && child.tag) {
             // Child element (already wrapped or plain object) - tag can be string or function
             const childEl = child.domEl ? child : element(child.tag, child.attributes || {}, child.children || []);

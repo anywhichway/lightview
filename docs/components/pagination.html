@@ -214,20 +214,20 @@ const demo = {
             {
                 Join: {
                     children: [
-                        { Button: { class: 'join-item', onclick: () => { if (page.value > 1) page.value--; }, text: '«' } },
+                        { Button: { class: 'join-item', onclick: () => { if (page.value > 1) page.value--; }, children: ['«'] } },
                         ...Array.from({ length: totalPages }, (_, i) => ({
                             Button: {
                                 class: 'join-item',
                                 color: () => page.value === i + 1 ? 'primary' : undefined,
                                 onclick: () => { page.value = i + 1; },
-                                text: i + 1
+                                children: [i + 1]
                             }
                         })),
-                        { Button: { class: 'join-item', onclick: () => { if (page.value < totalPages) page.value++; }, text: '»' } }
+                        { Button: { class: 'join-item', onclick: () => { if (page.value < totalPages) page.value++; }, children: ['»'] } }
                     ]
                 }
             },
-            { span: { class: 'text-sm opacity-70', text: () => `Page ${page.value} of ${totalPages}` } }
+            { span: { class: 'text-sm opacity-70', children: [() => `Page ${page.value} of ${totalPages}`] } }
         ]
     }
 };

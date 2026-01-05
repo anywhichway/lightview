@@ -24,9 +24,22 @@ import '../daisyui.js';
  */
 const CHARTS_CSS_URL = 'https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css';
 
+// Register stylesheet for Shadow DOM usage (Adopted StyleSheets)
+// Using top-level await in module to ensure it's loaded before any component renders
+if (globalThis.LightviewX?.registerStyleSheet) {
+    await LightviewX.registerStyleSheet(CHARTS_CSS_URL);
+}
+
 // Auto-load charts.css for Global/Light DOM usage
 if (typeof document !== 'undefined') {
-    if (!document.querySelector(`link[href^="https://cdn.jsdelivr.net/npm/charts.css"]`)) {
+    if (!document.querySelector(`link[href^="${CHARTS_CSS_URL}"]`)) {
+        // Preload for better performance
+        const preload = document.createElement('link');
+        preload.rel = 'preload';
+        preload.as = 'style';
+        preload.href = CHARTS_CSS_URL;
+        document.head.appendChild(preload);
+
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = CHARTS_CSS_URL;
@@ -48,8 +61,8 @@ const Chart = (props = {}, ...children) => {
         labels = false,
         dataOnHover = false,
         primaryAxis = false,
+        secondaryAxesCount,
         secondaryAxis = false,
-        spacing,
         reverse = false,
         multiple = false,
         stacked = false,
@@ -65,10 +78,14 @@ const Chart = (props = {}, ...children) => {
     if (heading) classes.push('show-heading');
     if (primaryAxis) classes.push('show-primary-axis');
 
-    if (secondaryAxis === true) classes.push('show-10-secondary-axes');
-    else if (typeof secondaryAxis === 'string') classes.push(secondaryAxis);
+    if (secondaryAxesCount) {
+        classes.push(`show-${secondaryAxesCount}-secondary-axes`);
+    } else if (secondaryAxis === true) {
+        classes.push('show-10-secondary-axes');
+    } else if (typeof secondaryAxis === 'string') {
+        classes.push(secondaryAxis);
+    }
 
-    if (spacing) classes.push(`data-spacing-${spacing}`);
     if (reverse) classes.push('reverse');
     if (multiple) classes.push('multiple');
     if (stacked) classes.push('stacked');

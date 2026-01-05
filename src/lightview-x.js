@@ -92,7 +92,7 @@ const convertObjectDOM = (obj) => {
 // ============= COMPONENT CONFIGURATION =============
 // Global configuration for Lightview components
 
-const DAISYUI_CDN = 'https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css';
+const DAISYUI_CDN = 'https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css';
 
 // Component configuration (set by initComponents)
 const componentConfig = {
@@ -101,7 +101,8 @@ const componentConfig = {
     daisyStyleSheet: null,
     themeStyleSheet: null, // Global theme stylesheet
     componentStyleSheets: new Map(),
-    customStyleSheets: new Map() // Registry for named custom stylesheets
+    customStyleSheets: new Map(), // Registry for named custom stylesheets
+    customStyleSheetPromises: new Map() // Cache for pending stylesheet fetches
 };
 
 /**
@@ -111,36 +112,45 @@ const componentConfig = {
  * @returns {Promise<void>}
  */
 const registerStyleSheet = async (nameOrIdOrUrl, cssText) => {
-    if (componentConfig.customStyleSheets.has(nameOrIdOrUrl)) return;
+    if (componentConfig.customStyleSheets.has(nameOrIdOrUrl)) return componentConfig.customStyleSheets.get(nameOrIdOrUrl);
+    if (componentConfig.customStyleSheetPromises.has(nameOrIdOrUrl)) return componentConfig.customStyleSheetPromises.get(nameOrIdOrUrl);
 
-    try {
-        let finalCss = cssText;
+    const promise = (async () => {
+        try {
+            let finalCss = cssText;
 
-        if (finalCss === undefined) {
-            if (nameOrIdOrUrl.startsWith('#')) {
-                // ID selector - search synchronously
-                const el = document.querySelector(nameOrIdOrUrl);
-                if (el) {
-                    finalCss = el.textContent;
+            if (finalCss === undefined) {
+                if (nameOrIdOrUrl.startsWith('#')) {
+                    // ID selector - search synchronously
+                    const el = document.querySelector(nameOrIdOrUrl);
+                    if (el) {
+                        finalCss = el.textContent;
+                    } else {
+                        throw new Error(`Style block '${nameOrIdOrUrl}' not found`);
+                    }
                 } else {
-                    throw new Error(`Style block '${nameOrIdOrUrl}' not found`);
+                    // Assume URL
+                    const response = await fetch(nameOrIdOrUrl);
+                    if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+                    finalCss = await response.text();
                 }
-            } else {
-                // Assume URL
-                const response = await fetch(nameOrIdOrUrl);
-                if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
-                finalCss = await response.text();
             }
-        }
 
-        if (finalCss !== undefined) {
-            const sheet = new CSSStyleSheet();
-            sheet.replaceSync(finalCss);
-            componentConfig.customStyleSheets.set(nameOrIdOrUrl, sheet);
+            if (finalCss !== undefined) {
+                const sheet = new CSSStyleSheet();
+                sheet.replaceSync(finalCss);
+                componentConfig.customStyleSheets.set(nameOrIdOrUrl, sheet);
+                return sheet;
+            }
+        } catch (e) {
+            console.error(`LightviewX: Failed to register stylesheet '${nameOrIdOrUrl}':`, e);
+        } finally {
+            componentConfig.customStyleSheetPromises.delete(nameOrIdOrUrl);
         }
-    } catch (e) {
-        console.error(`LightviewX: Failed to register stylesheet '${nameOrIdOrUrl}':`, e);
-    }
+    })();
+
+    componentConfig.customStyleSheetPromises.set(nameOrIdOrUrl, promise);
+    return promise;
 };
 
 // Theme Signal
@@ -1399,11 +1409,28 @@ const customElementWrapper = (Component, config = {}) => {
         }
 
         connectedCallback() {
-            // Load DaisyUI stylesheet into shadow DOM
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = 'https://cdn.jsdelivr.net/npm/daisyui@5.5.14/daisyui.min.css';
-            this.shadowRoot.appendChild(link);
+            let adopted = false;
+            // Attempt to use pre-parsed adopted stylesheets for performance
+            if (componentConfig.daisyStyleSheet) {
+                try {
+                    const sheets = [componentConfig.daisyStyleSheet];
+                    if (componentConfig.themeStyleSheet) {
+                        sheets.push(componentConfig.themeStyleSheet);
+                    }
+                    this.shadowRoot.adoptedStyleSheets = sheets;
+                    adopted = true;
+                } catch (e) {
+                    // Browser might not support adoptedStyleSheets
+                }
+            }
+
+            // Fallback to link tag if adoption failed or sheet wasn't loaded yet
+            if (!adopted) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = DAISYUI_CDN;
+                this.shadowRoot.appendChild(link);
+            }
 
             // Sync theme from document
             const themeWrapper = document.createElement('div');
@@ -1458,22 +1485,30 @@ const customElementWrapper = (Component, config = {}) => {
 
                 if (!componentInfo) return null;
 
-                const { component, attributeMap = {}, innerHTML = false } = componentInfo;
+                const { component, attributeMap = {} } = componentInfo;
                 const attributes = {};
 
-                // Parse attributes based on map
-                Object.entries(attributeMap).forEach(([attr, type]) => {
-                    const value = child.getAttribute(attr);
-                    if (value !== null) {
-                        if (type === Boolean) {
-                            attributes[attr] = value === 'true' || value === '';
-                        } else if (type === Number) {
-                            attributes[attr] = Number(value);
-                        } else {
-                            attributes[attr] = value;
+                // Parse all attributes
+                for (const attr of child.attributes) {
+                    const name = attr.name.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                    const type = attributeMap[name];
+                    const value = attr.value;
+
+                    if (type === Boolean) {
+                        attributes[name] = value === 'true' || value === '';
+                    } else if (type === Number) {
+                        attributes[name] = Number(value);
+                    } else if (type === Array || type === Object) {
+                        try {
+                            attributes[name] = JSON.parse(value);
+                        } catch (e) {
+                            console.warn(`[Lightview] Failed to parse child attribute ${name} as JSON:`, value);
+                            attributes[name] = value;
                         }
+                    } else {
+                        attributes[name] = value;
                     }
-                });
+                }
 
                 // Copy event handlers
                 if (child.onclick) attributes.onclick = child.onclick.bind(child);
@@ -1481,7 +1516,7 @@ const customElementWrapper = (Component, config = {}) => {
                 return {
                     tag: component,
                     attributes,
-                    children: innerHTML ? [child.innerHTML] : [child.textContent]
+                    children: Array.from(child.childNodes)
                 };
             }).filter(Boolean);
         }
@@ -1489,18 +1524,28 @@ const customElementWrapper = (Component, config = {}) => {
         render() {
             // Build props from attributes
             const props = { useShadow: false }; // Wrapper already created shadow DOM
-            Object.entries(attributeMap).forEach(([attr, type]) => {
-                const value = this.getAttribute(attr);
-                if (value !== null) {
-                    if (type === Boolean) {
-                        props[attr] = value === 'true' || value === '';
-                    } else if (type === Number) {
-                        props[attr] = Number(value);
-                    } else {
-                        props[attr] = value;
+
+            // Collect all attributes
+            for (const attr of this.attributes) {
+                const name = attr.name.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                const type = attributeMap[name];
+                const value = attr.value;
+
+                if (type === Boolean) {
+                    props[name] = value === 'true' || value === '';
+                } else if (type === Number) {
+                    props[name] = Number(value);
+                } else if (type === Array || type === Object) {
+                    try {
+                        props[name] = JSON.parse(value);
+                    } catch (e) {
+                        console.warn(`[Lightview] Failed to parse ${name} as JSON:`, value);
+                        props[name] = value;
                     }
+                } else {
+                    props[name] = value;
                 }
-            });
+            }
 
             const vdomChildren = this.parseChildrenToVDOM();
             // If no child elements are mapped, use a slot to project light DOM

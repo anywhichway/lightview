@@ -613,41 +613,52 @@ $('#example').content(reactiveDemo);</code></pre>
                     </table>
                 </div>
 
-                <!-- Colors Example -->
-                <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
-                    <input type="radio" class="radio" checked name="color-demo" />
-                    <input type="radio" class="radio radio-primary" checked name="color-demo2" />
-                    <input type="radio" class="radio radio-secondary" checked name="color-demo3" />
-                    <input type="radio" class="radio radio-accent" checked name="color-demo4" />
-                    <input type="radio" class="radio radio-success" checked name="color-demo5" />
-                    <input type="radio" class="radio radio-warning" checked name="color-demo6" />
-                    <input type="radio" class="radio radio-info" checked name="color-demo7" />
-                    <input type="radio" class="radio radio-error" checked name="color-demo8" />
+                <!-- Custom Element Gallery -->
+                <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Radio Gallery</h2>
+                <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                    Live examples using <code>&lt;lv-radio&gt;</code> and <code>&lt;lv-radio-group&gt;</code> custom
+                    elements.
+                </p>
+
+                <script type="module" src="/components/data-input/radio.js"></script>
+
+                <!-- Colors -->
+                <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Colors</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+                    <lv-radio label="Default" checked name="color-gallery"></lv-radio>
+                    <lv-radio label="Primary" color="primary" checked name="color-gallery-1"></lv-radio>
+                    <lv-radio label="Secondary" color="secondary" checked name="color-gallery-2"></lv-radio>
+                    <lv-radio label="Accent" color="accent" checked name="color-gallery-3"></lv-radio>
+                    <lv-radio label="Success" color="success" checked name="color-gallery-4"></lv-radio>
+                    <lv-radio label="Warning" color="warning" checked name="color-gallery-5"></lv-radio>
+                    <lv-radio label="Info" color="info" checked name="color-gallery-6"></lv-radio>
+                    <lv-radio label="Error" color="error" checked name="color-gallery-7"></lv-radio>
                 </div>
 
-                <!-- Sizes Example -->
-                <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                    <input type="radio" class="radio radio-xs" checked name="size-demo" />
-                    <input type="radio" class="radio radio-sm" checked name="size-demo2" />
-                    <input type="radio" class="radio radio-md" checked name="size-demo3" />
-                    <input type="radio" class="radio radio-lg" checked name="size-demo4" />
+                <!-- Sizes -->
+                <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Sizes</h3>
+                <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem;">
+                    <lv-radio size="xs" label="Extra Small" checked name="size-gallery-1"></lv-radio>
+                    <lv-radio size="sm" label="Small" checked name="size-gallery-2"></lv-radio>
+                    <lv-radio size="md" label="Medium" checked name="size-gallery-3"></lv-radio>
+                    <lv-radio size="lg" label="Large" checked name="size-gallery-4"></lv-radio>
                 </div>
 
-                <!-- With Label -->
-                <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label</h2>
-                <div style="display: flex; flex-direction: column; width: 13rem; margin-bottom: 2rem;">
-                    <label
-                        style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 0.5rem 0;">
-                        <span style="font-size: 0.875rem;">Option 1</span>
-                        <input type="radio" name="label-demo" class="radio radio-primary" checked />
-                    </label>
-                    <label
-                        style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 0.5rem 0;">
-                        <span style="font-size: 0.875rem;">Option 2</span>
-                        <input type="radio" name="label-demo" class="radio radio-primary" />
-                    </label>
+                <!-- Radio Groups -->
+                <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Radio Groups</h3>
+                <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem; max-width: 28rem;">
+                    <lv-radio-group label="Vertical Group (Default)" name="vertical-gallery"
+                        options='["Option 1", "Option 2", "Option 3"]' color="primary">
+                    </lv-radio-group>
+
+                    <lv-radio-group label="Horizontal Group" name="horizontal-gallery" horizontal="true"
+                        options='["Small", "Medium", "Large"]' color="secondary">
+                    </lv-radio-group>
+
+                    <lv-radio-group label="With Descriptions" name="desc-gallery"
+                        options='[{"value":"standard","label":"Standard","description":"Ships in 3-5 days"},{"value":"express","label":"Express","description":"Ships in 1-2 days"}]'
+                        color="accent">
+                    </lv-radio-group>
                 </div>
             </div>
         </div>

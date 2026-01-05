@@ -204,14 +204,14 @@ const badges = {
                 div: {
                     style: 'display: flex; flex-direction: row; gap: 0.5rem;',
                     children: [
-                        { Badge: { text: 'Default' } },
-                        { Badge: { color: 'primary', text: 'Primary' } },
-                        { Badge: { color: 'secondary', text: 'Secondary' } },
-                        { Badge: { color: 'accent', text: 'Accent' } },
-                        { Badge: { color: 'info', text: 'Info' } },
-                        { Badge: { color: 'success', text: 'Success' } },
-                        { Badge: { color: 'warning', text: 'Warning' } },
-                        { Badge: { color: 'error', text: 'Error' } }
+                        { Badge: { children: ['Default'] } },
+                        { Badge: { color: 'primary', children: ['Primary'] } },
+                        { Badge: { color: 'secondary', children: ['Secondary'] } },
+                        { Badge: { color: 'accent', children: ['Accent'] } },
+                        { Badge: { color: 'info', children: ['Info'] } },
+                        { Badge: { color: 'success', children: ['Success'] } },
+                        { Badge: { color: 'warning', children: ['Warning'] } },
+                        { Badge: { color: 'error', children: ['Error'] } }
                     ]
                 }
             },
@@ -219,9 +219,9 @@ const badges = {
                 div: {
                     style: 'display: flex; flex-direction: row; gap: 0.5rem;',
                     children: [
-                        { Badge: { variant: 'outline', text: 'Outline' } },
-                        { Badge: { variant: 'soft', color: 'primary', text: 'Soft' } },
-                        { Badge: { variant: 'dash', color: 'secondary', text: 'Dash' } }
+                        { Badge: { variant: 'outline', children: ['Outline'] } },
+                        { Badge: { variant: 'soft', color: 'primary', children: ['Soft'] } },
+                        { Badge: { variant: 'dash', color: 'secondary', children: ['Dash'] } }
                     ]
                 }
             }
@@ -410,7 +410,7 @@ const demo = {
                     size: 'sm',
                     color: 'primary',
                     onclick: () => { count.value++; },
-                    text: '+ Add Message'
+                    children: ['+ Add Message']
                 }
             },
             {
@@ -421,7 +421,7 @@ const demo = {
                             Badge: {
                                 color: 'secondary',
                                 style: 'margin-left: 0.5rem;',
-                                text: () => count.value > 99 ? '99+' : count.value
+                                children: [() => count.value > 99 ? '99+' : count.value]
                             }
                         }
                     ]
@@ -431,7 +431,7 @@ const demo = {
                 Button: {
                     size: 'sm',
                     onclick: () => { count.value = 0; },
-                    text: 'Clear'
+                    children: ['Clear']
                 }
             }
         ]

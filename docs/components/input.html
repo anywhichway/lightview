@@ -602,41 +602,57 @@ $('#example').content(reactiveDemo);</code></pre>
                         </table>
                     </div>
 
-                    <!-- Sizes Example -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-                    <div style="display: flex; align-items: flex-end; gap: 0.5rem; margin-bottom: 2rem;">
-                        <input type="text" placeholder="Extra small" class="input input-xs" />
-                        <input type="text" placeholder="Small" class="input input-sm" />
-                        <input type="text" placeholder="Medium" class="input" />
-                        <input type="text" placeholder="Large" class="input input-lg" />
+                    <!-- Custom Element Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Input Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-input&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/data-input/input.js"></script>
+
+                    <!-- Sizes -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Sizes</h3>
+                    <div style="display: flex; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+                        <lv-input size="xs" placeholder="Extra small"></lv-input>
+                        <lv-input size="sm" placeholder="Small"></lv-input>
+                        <lv-input placeholder="Medium (default)"></lv-input>
+                        <lv-input size="lg" placeholder="Large"></lv-input>
                     </div>
 
-                    <!-- Colors Example -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <!-- Colors -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Colors</h3>
                     <div
                         style="display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-                        <input type="text" placeholder="Primary" class="input input-primary" />
-                        <input type="text" placeholder="Secondary" class="input input-secondary" />
-                        <input type="text" placeholder="Accent" class="input input-accent" />
-                        <input type="text" placeholder="Info" class="input input-info" />
-                        <input type="text" placeholder="Success" class="input input-success" />
-                        <input type="text" placeholder="Warning" class="input input-warning" />
-                        <input type="text" placeholder="Error" class="input input-error" />
-                        <input type="text" placeholder="Ghost" class="input input-ghost" />
+                        <lv-input color="primary" placeholder="Primary"></lv-input>
+                        <lv-input color="secondary" placeholder="Secondary"></lv-input>
+                        <lv-input color="accent" placeholder="Accent"></lv-input>
+                        <lv-input color="info" placeholder="Info"></lv-input>
+                        <lv-input color="success" placeholder="Success"></lv-input>
+                        <lv-input color="warning" placeholder="Warning"></lv-input>
+                        <lv-input color="error" placeholder="Error"></lv-input>
+                        <lv-input ghost="true" placeholder="Ghost Style"></lv-input>
                     </div>
 
-                    <!-- With Fieldset -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label (Fieldset Pattern)</h2>
-                    <div style="max-width: 28rem; margin-bottom: 2rem;">
-                        <fieldset
-                            style="display: flex; flex-direction: column; gap: 0.5rem; border: none; padding: 0.5rem 0;">
-                            <legend
-                                style="font-size: 0.875rem; font-weight: 700; color: oklch(var(--bc)/0.8); padding: 0 0.5rem;">
-                                Email Address</legend>
-                            <input type="email" class="input" style="width: 100%;" placeholder="you@example.com" />
-                            <p style="font-size: 0.875rem; color: oklch(var(--bc)/0.6); padding: 0 0.5rem;">We'll never
-                                share your email.</p>
-                        </fieldset>
+                    <!-- Labels and Helpers -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Labels & Assistance</h3>
+                    <div
+                        style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; max-width: 28rem;">
+                        <lv-input label="Email Address" type="email" placeholder="you@example.com"
+                            helper="We'll never share your email address.">
+                        </lv-input>
+                        <lv-input label="Password" type="password" placeholder="Enter your password" required="true">
+                        </lv-input>
+                        <lv-input label="Error State" placeholder="Invalid input"
+                            error="This field has an error message.">
+                        </lv-input>
+                    </div>
+
+                    <!-- States -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">States</h3>
+                    <div
+                        style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; max-width: 28rem;">
+                        <lv-input label="Disabled Input" value="Cannot edit this" disabled="true"></lv-input>
+                        <lv-input label="Read Only (via value)" value="Static text" disabled="true"></lv-input>
                     </div>
                 </div>
             </div>

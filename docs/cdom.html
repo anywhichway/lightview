@@ -74,11 +74,15 @@
             A path in cDOM is a powerful string that describes how to navigate your reactive state and apply
             transformations.
         </p>
+        <p>
+            Paths always start with a &dollar;.
+        </p>
         <ul>
             <li><strong>Root/Prefix:</strong>
                 <ul>
-                    <li><code>helperName(...args)</code>: Call a registered helper function.</li>
-                    <li><code>$/&lt;name&gt;</code>: Access the global named signal or state registry.</li>
+                    <li><code>&dollar;helperName(...args)</code> or <code>&dollar;helperName(...args)</code>: Call a
+                        registered helper function.</li>
+                    <li><code>&dollar;/&lt;name&gt;</code>: Access the global named signal or state registry.</li>
                     <li><code>./</code>: Access the local context (inherited from parent).</li>
                     <li><code>../</code>: Access the parent of the local context.</li>
                     <li><code>/</code>: (Alias for global when not first item in path) Starts at the root of your state.
@@ -89,17 +93,18 @@
                 <code>cart[0]/name</code>).
             </li>
             <li><strong>Embedded Functions:</strong> Paths can contain function calls to transform data (e.g.,
-                <code>filter($/cart/items..., eq(_/status, 'paid'))</code>). Functions are executed and their results
+                <code>$filter(/cart/items..., eq(_/status, 'paid'))</code>). Functions are executed and their results
                 can be passed to other helpers or used as element children.
             </li>
             <li><strong>Explosion Operator:</strong> <code>...</code> expands an array into multiple arguments for a
-                function or extracts a property from every item in an array (e.g., <code>$/items...name</code>).</li>
+                function, (e.g., <code>sort($/names...)</code>) or extracts a property from every item in an array
+                (e.g., <code>$/items...name</code>). The extraction is effectively a shothand for <code>map</code>.</li>
             <li><strong>Placeholders:</strong>
                 <ul>
                     <li><code>_</code>: Represents the current item during iteration (like in <code>map(_)</code>).
                     </li>
                     <li><code>$event</code>: Represents the event object in event handlers (e.g.,
-                        <code>cdom-on:click="set($/current, $event.target.value)"</code>).
+                        <code>cdom-on:click="set(/current, $event.target.value)"</code>).
                     </li>
                 </ul>
             </li>
@@ -109,19 +114,19 @@
         <p>Representing a shopping cart total with reactive expressions:</p>
 
         <div class="code-block">
-            <pre><code>// Example CDOM structure
+            <pre><code>// Example CDOM structure. Note: cDOM paths are not quoted, a special parser is used for files eding  in .cdom
 { 
     div: {
         children: [
             { h2: "Shopping Cart" }, // Static header
             { ul: { 
                 // Map over the items in the cart: name - $price
-                children: "map($/cart/items, li(_/name, ' - $', _/price))" 
+                children: $map(/cart/items, li(_/name, ' - $', _/price))
             }},
             { p: { 
                 class: "total",
                 // Calculate the total by summing item prices
-                children: ["Total: $", "sum(map($/cart/items, _/price)...)"]
+                children: ["Total: $", $sum(/cart/items...price)]
             }}
         ]
     }
@@ -210,7 +215,7 @@
             allows for clear, declarative event handling that updates local state or calls helper functions.
         </p>
         <div class="code-block">
-            <pre><code>&lt;button cdom-on:click="increment($/count)"&gt;Click Me&lt;/button&gt;</code></pre>
+            <pre><code>&lt;button cdom-on:click="increment(/count)"&gt;Click Me&lt;/button&gt;</code></pre>
         </div>
 
         <h3 id="interaction-llm">LLM-Generated Interaction</h3>
@@ -222,7 +227,7 @@
             that notify the server.
         </p>
         <div class="code-block">
-            <pre><code>// Example of an LLM 'registering' for a click event
+            <pre><code>// Example of an LLM 'registering' for a click event. Note the fetch url is quotes so it is not mistaken for a CDOM signal or state reference.
 { 
     button: {
         "cdom-on:click": "fetch('/api/notify', { method: 'POST', body: { $event } })",

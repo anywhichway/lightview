@@ -74,18 +74,58 @@ Breadcrumbs.Item = (props = {}, ...children) => {
     if (!tags) return null;
 
     const { href, class: className = '', ...rest } = props;
+    const allChildren = children.flat(Infinity);
 
     if (href) {
         return tags.li({ class: className, ...rest },
-            tags.a({ href }, ...children)
+            tags.a({ href }, ...allChildren)
         );
     }
 
-    return tags.li({ class: className, ...rest }, ...children);
+    return tags.li({ class: className, ...rest }, ...allChildren);
 };
 
 
 const tags = globalThis.Lightview.tags;
 tags.Breadcrumbs = Breadcrumbs;
 tags['Breadcrumbs.Item'] = Breadcrumbs.Item;
+
+// Register as custom elements
+if (globalThis.LightviewX?.customElementWrapper) {
+    const BreadcrumbsElement = globalThis.LightviewX.customElementWrapper(Breadcrumbs, {
+        attributeMap: {
+            items: Array,
+            useShadow: Boolean,
+            class: String
+        },
+        childElements: {
+            'lv-breadcrumbs-item': {
+                component: Breadcrumbs.Item,
+                attributeMap: {
+                    href: String,
+                    class: String
+                }
+            }
+        }
+    });
+
+    if (!customElements.get('lv-breadcrumbs')) {
+        customElements.define('lv-breadcrumbs', BreadcrumbsElement);
+    }
+
+    const BreadcrumbsItemElement = globalThis.LightviewX.customElementWrapper(Breadcrumbs.Item, {
+        attributeMap: {
+            href: String,
+            class: String
+        }
+    });
+
+    if (!customElements.get('lv-breadcrumbs-item')) {
+        customElements.define('lv-breadcrumbs-item', BreadcrumbsItemElement);
+    }
+} else if (globalThis.LightviewX?.createCustomElement) {
+    globalThis.LightviewX.createCustomElement(Breadcrumbs, { tagName: 'lv-breadcrumbs' });
+    globalThis.LightviewX.createCustomElement(Breadcrumbs.Item, { tagName: 'lv-breadcrumbs-item' });
+}
+
 export default Breadcrumbs;

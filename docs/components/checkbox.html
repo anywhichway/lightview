@@ -485,7 +485,7 @@ const reactiveDemo = {
                         {
                             p: {
                                 style: 'font-size: 0.875rem; font-family: monospace;',
-                                text: () => `Notifications: ${notifications.value}, Marketing: ${marketing.value}`
+                                children: [() => `Notifications: ${notifications.value}, Marketing: ${marketing.value}`]
                             }
                         },
                         {
@@ -493,7 +493,7 @@ const reactiveDemo = {
                                 class: 'btn btn-primary',
                                 style: () => `margin-top: 0.5rem; ${termsAccepted.value ? '' : 'opacity: 0.5; pointer-events: none;'}`,
                                 disabled: () => !termsAccepted.value,
-                                text: 'Submit'
+                                children: ['Submit']
                             }
                         }
                     ]
@@ -604,36 +604,56 @@ $('#example').content(reactiveDemo);</code></pre>
                         </table>
                     </div>
 
-                    <!-- Colors Example -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
-                        <input type="checkbox" class="checkbox" checked />
-                        <input type="checkbox" class="checkbox checkbox-primary" checked />
-                        <input type="checkbox" class="checkbox checkbox-secondary" checked />
-                        <input type="checkbox" class="checkbox checkbox-accent" checked />
-                        <input type="checkbox" class="checkbox checkbox-success" checked />
-                        <input type="checkbox" class="checkbox checkbox-warning" checked />
-                        <input type="checkbox" class="checkbox checkbox-info" checked />
-                        <input type="checkbox" class="checkbox checkbox-error" checked />
+                    <!-- Custom Element Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Checkbox Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-checkbox&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/data-input/checkbox.js"></script>
+
+                    <!-- Colors -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Colors</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+                        <lv-checkbox label="Default" checked></lv-checkbox>
+                        <lv-checkbox label="Primary" color="primary" checked></lv-checkbox>
+                        <lv-checkbox label="Secondary" color="secondary" checked></lv-checkbox>
+                        <lv-checkbox label="Accent" color="accent" checked></lv-checkbox>
+                        <lv-checkbox label="Info" color="info" checked></lv-checkbox>
+                        <lv-checkbox label="Success" color="success" checked></lv-checkbox>
+                        <lv-checkbox label="Warning" color="warning" checked></lv-checkbox>
+                        <lv-checkbox label="Error" color="error" checked></lv-checkbox>
                     </div>
 
-                    <!-- Sizes Example -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
-                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                        <input type="checkbox" class="checkbox checkbox-xs" checked />
-                        <input type="checkbox" class="checkbox checkbox-sm" checked />
-                        <input type="checkbox" class="checkbox checkbox-md" checked />
-                        <input type="checkbox" class="checkbox checkbox-lg" checked />
+                    <!-- Sizes -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Sizes</h3>
+                    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem;">
+                        <lv-checkbox size="xs" label="Extra Small" checked></lv-checkbox>
+                        <lv-checkbox size="sm" label="Small" checked></lv-checkbox>
+                        <lv-checkbox size="md" label="Medium" checked></lv-checkbox>
+                        <lv-checkbox size="lg" label="Large" checked></lv-checkbox>
                     </div>
 
-                    <!-- With Label -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label</h2>
-                    <div style="display: flex; flex-direction: column; width: 13rem; margin-bottom: 2rem;">
-                        <label
-                            style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 0.5rem 0;">
-                            <span style="font-size: 0.875rem;">Remember me</span>
-                            <input type="checkbox" class="checkbox checkbox-primary" />
-                        </label>
+                    <!-- States -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">States</h3>
+                    <div
+                        style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; max-width: 20rem;">
+                        <lv-checkbox label="Disabled Unchecked" disabled></lv-checkbox>
+                        <lv-checkbox label="Disabled Checked" checked disabled></lv-checkbox>
+                        <lv-checkbox label="Required Field" required></lv-checkbox>
+                        <lv-checkbox label="Indeterminate" indeterminate="true"></lv-checkbox>
+                    </div>
+
+                    <!-- Descriptions -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">With Descriptions</h3>
+                    <div
+                        style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; max-width: 28rem;">
+                        <lv-checkbox label="Email Notifications"
+                            description="Receive updates about your account activity." color="primary" checked>
+                        </lv-checkbox>
+                        <lv-checkbox label="Marketing" description="We'll send you occasional promotions and news."
+                            color="secondary">
+                        </lv-checkbox>
                     </div>
                 </div>
             </div>

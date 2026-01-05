@@ -169,7 +169,9 @@
             const load = new URLSearchParams(globalThis.location.search).get('load');
             globalThis.onpopstate = (e) => handleRequest(e.state?.path || normalizePath(globalThis.location.pathname + globalThis.location.hash));
             document.onclick = (e) => {
-                const a = e.target.closest('a[href]');
+                const path = e.composedPath();
+                const a = path.find(el => el.tagName === 'A' && el.hasAttribute?.('href'));
+
                 if (!a || a.target === '_blank' || /^(http|#|mailto|tel)/.test(a.getAttribute('href'))) return;
 
                 // Only intercept internal links

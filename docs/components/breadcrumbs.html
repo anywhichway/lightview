@@ -72,7 +72,7 @@
                             <!-- Tabs -->
                             <script>
                                 globalThis.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -94,6 +94,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -196,6 +198,28 @@ const breadcrumbs = {
 
 $('#example').content(breadcrumbs);</code></pre>
                             </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 75
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import the component (registers lv-breadcrumbs) --&gt;
+&lt;script type="module" src="/components/navigation/breadcrumbs.js"&gt;&lt;/script&gt;
+
+&lt;lv-breadcrumbs style="font-size: 0.75rem"&gt;
+    &lt;lv-breadcrumbs-item href="/"&gt;Home&lt;/lv-breadcrumbs-item&gt;
+    &lt;lv-breadcrumbs-item href="/products"&gt;Products&lt;/lv-breadcrumbs-item&gt;
+    &lt;lv-breadcrumbs-item href="/products/electronics"&gt;Electronics&lt;/lv-breadcrumbs-item&gt;
+    &lt;lv-breadcrumbs-item&gt;Phones&lt;/lv-breadcrumbs-item&gt;
+&lt;/lv-breadcrumbs&gt;</code></pre>
+                            </div>
                         </div>
                     </div>
 
@@ -243,36 +267,78 @@ $('#example').content(breadcrumbs);</code></pre>
                         </table>
                     </div>
 
+                    <!-- Custom Element Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Breadcrumbs Gallery
+                    </h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-breadcrumbs&gt;</code> and
+                        <code>&lt;lv-breadcrumbs-item&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/navigation/breadcrumbs.js"></script>
+
+                    <!-- Basic -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Basic</h3>
+                    <div style="margin-bottom: 2rem;">
+                        <lv-breadcrumbs>
+                            <lv-breadcrumbs-item href="/">Home</lv-breadcrumbs-item>
+                            <lv-breadcrumbs-item href="/docs">Docs</lv-breadcrumbs-item>
+                            <lv-breadcrumbs-item>Breadcrumbs</lv-breadcrumbs-item>
+                        </lv-breadcrumbs>
+                    </div>
+
                     <!-- With Icons -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Icons</h2>
-                    <div class="breadcrumbs" style="font-size: 0.875rem; margin-bottom: 2rem;">
-                        <ul>
-                            <li>
-                                <a>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        style="width: 1rem; height: 1rem; stroke: currentColor; stroke-width: 2;">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
-                                        </path>
-                                    </svg>
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        style="width: 1rem; height: 1rem; stroke: currentColor; stroke-width: 2;">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
-                                        </path>
-                                    </svg>
-                                    Documents
-                                </a>
-                            </li>
-                            <li>Add Document</li>
-                        </ul>
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">With Icons</h3>
+                    <div style="margin-bottom: 2rem;">
+                        <lv-breadcrumbs>
+                            <lv-breadcrumbs-item href="/">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    class="w-4 h-4 mr-2 stroke-current">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
+                                    </path>
+                                </svg>
+                                Home
+                            </lv-breadcrumbs-item>
+                            <lv-breadcrumbs-item href="/docs">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    class="w-4 h-4 mr-2 stroke-current">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
+                                    </path>
+                                </svg>
+                                Documents
+                            </lv-breadcrumbs-item>
+                            <lv-breadcrumbs-item>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    class="w-4 h-4 mr-2 stroke-current">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                Add Document
+                            </lv-breadcrumbs-item>
+                        </lv-breadcrumbs>
+                    </div>
+
+                    <!-- Sizes -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Sizes</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                        <lv-breadcrumbs class="text-xs">
+                            <lv-breadcrumbs-item href="/">Home</lv-breadcrumbs-item>
+                            <lv-breadcrumbs-item>Extra Small</lv-breadcrumbs-item>
+                        </lv-breadcrumbs>
+                        <lv-breadcrumbs class="text-sm">
+                            <lv-breadcrumbs-item href="/">Home</lv-breadcrumbs-item>
+                            <lv-breadcrumbs-item>Small</lv-breadcrumbs-item>
+                        </lv-breadcrumbs>
+                        <lv-breadcrumbs class="text-lg">
+                            <lv-breadcrumbs-item href="/">Home</lv-breadcrumbs-item>
+                            <lv-breadcrumbs-item>Large</lv-breadcrumbs-item>
+                        </lv-breadcrumbs>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>

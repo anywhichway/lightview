@@ -414,20 +414,20 @@ const reactiveDemo = {
             () => {
                 const files = selectedFiles.value;
                 if (files.length === 0) {
-                    return { p: { class: 'text-sm opacity-50', text: 'No files selected' } };
+                    return { p: { class: 'text-sm opacity-50', children: ['No files selected'] } };
                 }
                 return {
                     div: {
                         children: [
-                            { p: { class: 'text-sm font-semibold mb-2', text: `${files.length} file(s) selected:` } },
+                            { p: { class: 'text-sm font-semibold mb-2', children: [`${files.length} file(s) selected:`] } },
                             {
                                 ul: {
                                     class: 'text-xs font-mono', style: 'display: flex; flex-direction: column; gap: 0.25rem',
                                     children: files.map(f => ({
                                         li: {
                                             children: [
-                                                { span: { class: 'text-primary', text: f.name } },
-                                                { span: { class: 'opacity-50', text: ` (${(f.size / 1024).toFixed(1)} KB)` } }
+                                                { span: { class: 'text-primary', children: [f.name] } },
+                                                { span: { class: 'opacity-50', children: [` (${(f.size / 1024).toFixed(1)} KB)`] } }
                                             ]
                                         }
                                     }))

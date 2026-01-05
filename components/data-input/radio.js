@@ -168,7 +168,7 @@ const RadioGroup = (props = {}) => {
     } = props;
 
     // Normalize options
-    const normalizedOptions = options.map(opt =>
+    const normalizedOptions = (Array.isArray(options) ? options : []).map(opt =>
         typeof opt === 'string' ? { value: opt, label: opt } : opt
     );
 
@@ -323,7 +323,42 @@ globalThis.Lightview.tags.Radio = Radio;
 globalThis.Lightview.tags.RadioGroup = RadioGroup;
 
 // Register as Custom Elements
-if (globalThis.LightviewX?.createCustomElement) {
+if (globalThis.LightviewX?.customElementWrapper) {
+    if (!customElements.get('lv-radio')) {
+        customElements.define('lv-radio', globalThis.LightviewX.customElementWrapper(Radio, {
+            attributeMap: {
+                name: String,
+                value: String,
+                checked: Boolean,
+                size: String,
+                color: String,
+                disabled: Boolean,
+                label: String,
+                id: String,
+                class: String
+            }
+        }));
+    }
+    if (!customElements.get('lv-radio-group')) {
+        customElements.define('lv-radio-group', globalThis.LightviewX.customElementWrapper(RadioGroup, {
+            attributeMap: {
+                options: Array,
+                value: String,
+                defaultValue: String,
+                name: String,
+                label: String,
+                helper: String,
+                error: String,
+                color: String,
+                size: String,
+                horizontal: Boolean,
+                disabled: Boolean,
+                required: Boolean,
+                class: String
+            }
+        }));
+    }
+} else if (globalThis.LightviewX?.createCustomElement) {
     const RadioElement = globalThis.LightviewX.createCustomElement(Radio);
     if (!customElements.get('lv-radio')) {
         customElements.define('lv-radio', RadioElement);

@@ -212,9 +212,9 @@ const demo = {
             {
                 Join: {
                     children: [
-                        { Button: { class: 'join-item', text: 'Previous' } },
-                        { Button: { class: 'join-item', color: 'primary', text: 'Current' } },
-                        { Button: { class: 'join-item', text: 'Next' } }
+                        { Button: { class: 'join-item', children: ['Previous'] } },
+                        { Button: { class: 'join-item', color: 'primary', children: ['Current'] } },
+                        { Button: { class: 'join-item', children: ['Next'] } }
                     ]
                 }
             },
@@ -229,7 +229,7 @@ const demo = {
                                 oninput: (e) => { email.value = e.target.value; }
                             }
                         },
-                        { Button: { class: 'join-item', color: 'primary', text: 'Subscribe' } }
+                        { Button: { class: 'join-item', color: 'primary', children: ['Subscribe'] } }
                     ]
                 }
             }

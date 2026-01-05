@@ -191,7 +191,27 @@ const Toggle = (props = {}) => {
 globalThis.Lightview.tags.Toggle = Toggle;
 
 // Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
+if (globalThis.LightviewX?.customElementWrapper) {
+    const ToggleElement = globalThis.LightviewX.customElementWrapper(Toggle, {
+        attributeMap: {
+            checked: Boolean,
+            defaultChecked: Boolean,
+            size: String,
+            color: String,
+            disabled: Boolean,
+            label: String,
+            labelPosition: String,
+            description: String,
+            name: String,
+            id: String,
+            class: String,
+            theme: String
+        }
+    });
+    if (!customElements.get('lv-toggle')) {
+        customElements.define('lv-toggle', ToggleElement);
+    }
+} else if (globalThis.LightviewX?.createCustomElement) {
     const ToggleElement = globalThis.LightviewX.createCustomElement(Toggle);
     if (!customElements.get('lv-toggle')) {
         customElements.define('lv-toggle', ToggleElement);

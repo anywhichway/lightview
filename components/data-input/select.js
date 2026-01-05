@@ -277,7 +277,30 @@ const Select = (props = {}) => {
 globalThis.Lightview.tags.Select = Select;
 
 // Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
+if (globalThis.LightviewX?.customElementWrapper) {
+    const SelectElement = globalThis.LightviewX.customElementWrapper(Select, {
+        attributeMap: {
+            options: Array,
+            value: String,
+            defaultValue: String,
+            placeholder: String,
+            size: String,
+            color: String,
+            ghost: Boolean,
+            disabled: Boolean,
+            required: Boolean,
+            label: String,
+            helper: String,
+            error: String,
+            name: String,
+            id: String,
+            class: String
+        }
+    });
+    if (!customElements.get('lv-select')) {
+        customElements.define('lv-select', SelectElement);
+    }
+} else if (globalThis.LightviewX?.createCustomElement) {
     const SelectElement = globalThis.LightviewX.createCustomElement(Select);
     if (!customElements.get('lv-select')) {
         customElements.define('lv-select', SelectElement);

@@ -242,7 +242,29 @@ const Checkbox = (props = {}) => {
 globalThis.Lightview.tags.Checkbox = Checkbox;
 
 // Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
+if (globalThis.LightviewX?.customElementWrapper) {
+    const CheckboxElement = globalThis.LightviewX.customElementWrapper(Checkbox, {
+        attributeMap: {
+            checked: Boolean,
+            defaultChecked: Boolean,
+            indeterminate: Boolean,
+            size: String,
+            color: String,
+            disabled: Boolean,
+            required: Boolean,
+            label: String,
+            description: String,
+            error: String,
+            name: String,
+            id: String,
+            value: String,
+            class: String
+        }
+    });
+    if (!customElements.get('lv-checkbox')) {
+        customElements.define('lv-checkbox', CheckboxElement);
+    }
+} else if (globalThis.LightviewX?.createCustomElement) {
     const CheckboxElement = globalThis.LightviewX.createCustomElement(Checkbox);
     if (!customElements.get('lv-checkbox')) {
         customElements.define('lv-checkbox', CheckboxElement);

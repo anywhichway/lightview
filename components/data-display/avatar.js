@@ -158,7 +158,31 @@ tags.Avatar = Avatar;
 tags['Avatar.Group'] = Avatar.Group;
 
 // Register as Custom Elements
-if (globalThis.LightviewX?.createCustomElement) {
+if (globalThis.LightviewX?.customElementWrapper) {
+    if (!customElements.get('lv-avatar')) {
+        customElements.define('lv-avatar', globalThis.LightviewX.customElementWrapper(Avatar, {
+            attributeMap: {
+                src: String,
+                alt: String,
+                placeholder: String,
+                size: String,
+                shape: String,
+                ring: Boolean,
+                ringColor: String,
+                online: Boolean,
+                offline: Boolean,
+                class: String
+            }
+        }));
+    }
+    if (!customElements.get('lv-avatar-group')) {
+        customElements.define('lv-avatar-group', globalThis.LightviewX.customElementWrapper(Avatar.Group, {
+            attributeMap: {
+                class: String
+            }
+        }));
+    }
+} else if (globalThis.LightviewX?.createCustomElement) {
     if (!customElements.get('lv-avatar')) {
         customElements.define('lv-avatar', globalThis.LightviewX.createCustomElement(Avatar));
     }

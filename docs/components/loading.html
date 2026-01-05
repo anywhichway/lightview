@@ -276,22 +276,14 @@ $('#example').content(loaders);</code></pre>
                                         scripts: ['/lightview.js', '/lightview-x.js'],
                                         styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
-                                        minHeight: 80
+                                        minHeight: 80,
+                                        autoRun: true
                                     });
                                 </script><code contenteditable="true">await import('/components/data-display/loading.js');
 await import('/components/actions/button.js');
 
 const { signal, tags, $ } = Lightview;
 const { div, span, Loading, Button } = tags;
-
-const isLoading = signal(false);
-
-const handleClick = async () => {
-                                </script><code contenteditable="true">import { signal, tags, $ } from '/lightview.js';
-import { Loading } from '/components/data-display/loading.js';
-import { Button } from '/components/actions/button.js';
-
-const { div, span } = tags;
 
 const isLoading = signal(false);
 
@@ -324,12 +316,13 @@ $('#example').content(demo);</code></pre>
                                         scripts: ['/lightview.js', '/lightview-x.js'],
                                         styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
-                                        minHeight: 80
+                                        minHeight: 80,
+                                        autoRun: true
                                     });
-                                </script><code contenteditable="true">import { signal, $, tags } from '/lightview.js';
-import { Loading } from '/components/data-display/loading.js';
-import { Button } from '/components/actions/button.js';
-const { div, span } = tags;
+                                </script><code contenteditable="true">await import('/components/data-display/loading.js');
+await import('/components/actions/button.js');
+const { signal, tags, $ } = Lightview;
+const { div, span, Loading, Button } = tags;
 
 const isLoading = signal(false);
 
@@ -343,23 +336,20 @@ const demo = {
     tag: div,
     attributes: { style: 'display: flex; gap: 1rem; align-items: center;' },
     children: [
-        {
-            observable: isLoading,
-            callback: (loading) => loading
-                ? {
-                    tag: Button,
-                    attributes: { color: 'primary', disabled: true },
-                    children: [
-                        { tag: Loading, attributes: { type: 'spinner', size: 'sm' } },
-                        { tag: span, children: [' Processing...'] }
-                    ]
-                }
-                : {
-                    tag: Button,
-                    attributes: { color: 'primary', onclick: handleClick },
-                    children: ['Submit']
-                }
-        },
+        () => isLoading.value
+            ? {
+                tag: Button,
+                attributes: { color: 'primary', disabled: true },
+                children: [
+                    { tag: Loading, attributes: { type: 'spinner', size: 'sm' } },
+                    { tag: span, children: [' Processing...'] }
+                ]
+            }
+            : {
+                tag: Button,
+                attributes: { color: 'primary', onclick: handleClick },
+                children: ['Submit']
+            },
         {
             tag: span,
             attributes: { style: 'font-size: 0.875rem; opacity: 0.7;' },
@@ -379,11 +369,12 @@ $('#example').content(demo);</code></pre>
                                         scripts: ['/lightview.js', '/lightview-x.js'],
                                         styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
-                                        minHeight: 80
+                                        minHeight: 80,
+                                        autoRun: true
                                     });
-                                </script><code contenteditable="true">import { signal, $ } from '/lightview.js';
-import { Loading } from '/components/data-display/loading.js';
-import { Button } from '/components/actions/button.js';
+                                </script><code contenteditable="true">await import('/components/data-display/loading.js');
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
 
 const isLoading = signal(false);
 
@@ -397,27 +388,24 @@ const demo = {
     div: {
         style: 'display: flex; gap: 1rem; align-items: center',
         children: [
-            {
-                observable: isLoading,
-                callback: (loading) => loading
-                    ? {
-                        Button: {
-                            color: 'primary',
-                            disabled: true,
-                            children: [
-                                { Loading: { type: 'spinner', size: 'sm' } },
-                                { span: { text: ' Processing...' } }
-                            ]
-                        }
+            () => isLoading.value
+                ? {
+                    Button: {
+                        color: 'primary',
+                        disabled: true,
+                        children: [
+                            { Loading: { type: 'spinner', size: 'sm' } },
+                            { span: { children: [' Processing...'] } }
+                        ]
                     }
-                    : {
-                        Button: { color: 'primary', onclick: handleClick, text: 'Submit' }
-                    }
-            },
+                }
+                : {
+                    Button: { color: 'primary', onclick: handleClick, children: ['Submit'] }
+                },
             {
                 span: {
                     style: 'font-size: 0.875rem; opacity: 0.7;',
-                    text: () => isLoading.value ? 'Please wait...' : 'Click the button'
+                    children: [() => isLoading.value ? 'Please wait...' : 'Click the button']
                 }
             }
         ]

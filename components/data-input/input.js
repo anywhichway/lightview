@@ -254,7 +254,30 @@ const Input = (props = {}) => {
 globalThis.Lightview.tags.Input = Input;
 
 // Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
+if (globalThis.LightviewX?.customElementWrapper) {
+    const InputElement = globalThis.LightviewX.customElementWrapper(Input, {
+        attributeMap: {
+            type: String,
+            value: String,
+            defaultValue: String,
+            placeholder: String,
+            size: String,
+            color: String,
+            ghost: Boolean,
+            disabled: Boolean,
+            required: Boolean,
+            label: String,
+            helper: String,
+            error: String,
+            name: String,
+            id: String,
+            class: String
+        }
+    });
+    if (!customElements.get('lv-input')) {
+        customElements.define('lv-input', InputElement);
+    }
+} else if (globalThis.LightviewX?.createCustomElement) {
     const InputElement = globalThis.LightviewX.createCustomElement(Input);
     if (!customElements.get('lv-input')) {
         customElements.define('lv-input', InputElement);

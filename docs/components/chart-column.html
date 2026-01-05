@@ -261,7 +261,7 @@ const chart = Chart({
     multiple: true,
     labels: true, 
     primaryAxis: true,
-    spacing: 5,
+    primaryAxis: true,
     style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;' 
 },
     Chart.Body({},
@@ -322,9 +322,7 @@ const chart = {
     attributes: { 
         type: 'column', 
         multiple: true,
-        labels: true, 
         primaryAxis: true,
-        spacing: 5,
         style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;' 
     },
     children: [
@@ -366,7 +364,6 @@ const chart = {
         multiple: true,
         labels: true,
         primaryAxis: true,
-        spacing: 5,
         style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;',
         children: [
             {
@@ -441,7 +438,7 @@ const chart = Chart({
     type: 'column', 
     labels: true, 
     primaryAxis: true,
-    secondaryAxis: 'show-10-secondary-axes',
+    secondaryAxesCount: 5,
     style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;' 
 },
     Chart.Body({},
@@ -484,7 +481,7 @@ const chart = {
         type: 'column', 
         labels: true, 
         primaryAxis: true,
-        secondaryAxis: 'show-10-secondary-axes',
+        secondaryAxesCount: 5,
         style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;' 
     },
     children: [
@@ -522,7 +519,7 @@ const chart = {
         type: 'column',
         labels: true,
         primaryAxis: true,
-        secondaryAxis: 'show-10-secondary-axes',
+        secondaryAxesCount: 5,
         style: 'width: 100%; max-width: 600px; height: 280px; margin: 0 auto;',
         children: [
             {
@@ -545,188 +542,6 @@ $('#example').content(chart);</code></pre>
                         </div>
                     </div>
 
-                    <!-- Spacing -->
-                    <div class="card bg-base-200" style="margin-bottom: 2rem;">
-                        <div class="card-body">
-                            <h2 class="card-title">Spacing</h2>
-                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">
-                                Control the gap between columns with the <code>spacing</code> prop (1-20).
-                            </p>
-
-                            <!-- Tabs -->
-                            <script>
-                                globalThis.switchSpacingColumnTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
-                                    tabs.forEach(t => {
-                                        const tabEl = document.getElementById(`spacing-column-tab-btn-${t}`);
-                                        const contentEl = document.getElementById(`spacing-column-syntax-${t}`);
-                                        if (t === tabId) {
-                                            tabEl.classList.add('syntax-tab-active');
-                                            contentEl.style.display = 'block';
-                                        } else {
-                                            tabEl.classList.remove('syntax-tab-active');
-                                            contentEl.style.display = 'none';
-                                        }
-                                    });
-                                };
-                            </script>
-                            <div role="tablist" class="syntax-tabs" style="margin-bottom: 1rem;">
-                                <button id="spacing-column-tab-btn-tagged" role="tab"
-                                    class="syntax-tab syntax-tab-active"
-                                    onclick="switchSpacingColumnTab('tagged')">Tagged</button>
-                                <button id="spacing-column-tab-btn-vdom" role="tab" class="syntax-tab"
-                                    onclick="switchSpacingColumnTab('vdom')">vDOM</button>
-                                <button id="spacing-column-tab-btn-object" role="tab" class="syntax-tab"
-                                    onclick="switchSpacingColumnTab('object')">Object DOM</button>
-                            </div>
-
-                            <!-- Tagged Syntax -->
-                            <div id="spacing-column-syntax-tagged">
-                                <pre><script>
-                                    examplify(document.currentScript.nextElementSibling, {
-                                        at: document.currentScript.parentElement,
-                                        scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
-                                        type: 'module',
-                                        minHeight: 200,
-                                        autoRun: true
-                                    });
-                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
-const { tags, $ } = Lightview;
-const { Chart, div } = tags;
-
-const charts = div({ style: 'display: flex; gap: 2rem; flex-wrap: wrap;' },
-    div({ style: 'flex: 1; min-width: 250px;' },
-        div({ style: 'font-weight: bold; margin-bottom: 0.5rem;' }, 'spacing: 2'),
-        Chart({ type: 'column', labels: true, spacing: 2, style: 'height: 180px;' },
-            Chart.Body({},
-                Chart.Row({}, Chart.Label({}, 'A'), Chart.Data({ value: 0.6 })),
-                Chart.Row({}, Chart.Label({}, 'B'), Chart.Data({ value: 0.8 })),
-                Chart.Row({}, Chart.Label({}, 'C'), Chart.Data({ value: 0.5 })),
-                Chart.Row({}, Chart.Label({}, 'D'), Chart.Data({ value: 0.9 }))
-            )
-        )
-    ),
-    div({ style: 'flex: 1; min-width: 250px;' },
-        div({ style: 'font-weight: bold; margin-bottom: 0.5rem;' }, 'spacing: 15'),
-        Chart({ type: 'column', labels: true, spacing: 15, style: 'height: 180px;' },
-            Chart.Body({},
-                Chart.Row({}, Chart.Label({}, 'A'), Chart.Data({ value: 0.6 })),
-                Chart.Row({}, Chart.Label({}, 'B'), Chart.Data({ value: 0.8 })),
-                Chart.Row({}, Chart.Label({}, 'C'), Chart.Data({ value: 0.5 })),
-                Chart.Row({}, Chart.Label({}, 'D'), Chart.Data({ value: 0.9 }))
-            )
-        )
-    )
-);
-
-$('#example').content(charts);</code></pre>
-                            </div>
-
-                            <!-- vDOM Syntax -->
-                            <div id="spacing-column-syntax-vdom" style="display: none;">
-                                <pre><script>
-                                    examplify(document.currentScript.nextElementSibling, {
-                                        at: document.currentScript.parentElement,
-                                        scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
-                                        type: 'module',
-                                        minHeight: 200
-                                    });
-                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
-const { tags, $ } = Lightview;
-const { Chart, div } = tags;
-
-const data = [
-    { label: 'A', value: 0.6 },
-    { label: 'B', value: 0.8 },
-    { label: 'C', value: 0.5 },
-    { label: 'D', value: 0.9 }
-];
-
-const createChart = (spacing) => ({
-    tag: div,
-    attributes: { style: 'flex: 1; min-width: 250px;' },
-    children: [
-        { tag: div, attributes: { style: 'font-weight: bold; margin-bottom: 0.5rem;' }, children: [`spacing: ${spacing}`] },
-        {
-            tag: Chart,
-            attributes: { type: 'column', labels: true, spacing, style: 'height: 180px;' },
-            children: [
-                {
-                    tag: Chart.Body,
-                    children: data.map(d => ({
-                        tag: Chart.Row,
-                        children: [
-                            { tag: Chart.Label, children: [d.label] },
-                            { tag: Chart.Data, attributes: { value: d.value } }
-                        ]
-                    }))
-                }
-            ]
-        }
-    ]
-});
-
-const charts = {
-    tag: div,
-    attributes: { style: 'display: flex; gap: 2rem; flex-wrap: wrap;' },
-    children: [createChart(2), createChart(15)]
-};
-
-$('#example').content(charts);</code></pre>
-                            </div>
-
-                            <!-- Object DOM Syntax -->
-                            <div id="spacing-column-syntax-object" style="display: none;">
-                                <pre><script>
-                                    examplify(document.currentScript.nextElementSibling, {
-                                        at: document.currentScript.parentElement,
-                                        scripts: ['/lightview.js', '/lightview-x.js'],
-                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
-                                        type: 'module',
-                                        minHeight: 200
-                                    });
-                                </script><code contenteditable="true">await import('/components/data-display/chart.js');
-const { $ } = Lightview;
-
-const chartData = [
-    { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['A'] } }, { 'Chart.Data': { value: 0.6 } }] } },
-    { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['B'] } }, { 'Chart.Data': { value: 0.8 } }] } },
-    { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['C'] } }, { 'Chart.Data': { value: 0.5 } }] } },
-    { 'Chart.Row': { children: [{ 'Chart.Label': { children: ['D'] } }, { 'Chart.Data': { value: 0.9 } }] } }
-];
-
-const charts = {
-    div: {
-        style: 'display: flex; gap: 2rem; flex-wrap: wrap;',
-        children: [
-            {
-                div: {
-                    style: 'flex: 1; min-width: 250px;',
-                    children: [
-                        { div: { style: 'font-weight: bold; margin-bottom: 0.5rem;', children: ['spacing: 2'] } },
-                        { Chart: { type: 'column', labels: true, spacing: 2, style: 'height: 180px;', children: [{ 'Chart.Body': { children: chartData } }] } }
-                    ]
-                }
-            },
-            {
-                div: {
-                    style: 'flex: 1; min-width: 250px;',
-                    children: [
-                        { div: { style: 'font-weight: bold; margin-bottom: 0.5rem;', children: ['spacing: 15'] } },
-                        { Chart: { type: 'column', labels: true, spacing: 15, style: 'height: 180px;', children: [{ 'Chart.Body': { children: chartData } }] } }
-                    ]
-                }
-            }
-        ]
-    }
-};
-
-$('#example').content(charts);</code></pre>
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
             </div>

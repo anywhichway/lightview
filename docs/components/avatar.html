@@ -501,9 +501,17 @@ $('#example').content(demo);</code></pre>
                         </table>
                     </div>
 
+                    <!-- Custom Element Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Avatar Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-avatar&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/data-display/avatar.js"></script>
+
                     <!-- Shapes -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Shapes</h2>
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Shapes</h3>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
                         <lv-avatar src="https://i.pravatar.cc/100?img=1" size="w-16" shape="circle"></lv-avatar>
                         <lv-avatar src="https://i.pravatar.cc/100?img=2" size="w-16" shape="rounded"></lv-avatar>
                         <lv-avatar src="https://i.pravatar.cc/100?img=3" size="w-16" shape="squircle"></lv-avatar>
@@ -511,75 +519,37 @@ $('#example').content(demo);</code></pre>
                         <lv-avatar src="https://i.pravatar.cc/100?img=5" size="w-16" shape="triangle"></lv-avatar>
                     </div>
 
-                    <pre class="code-block" style="margin-bottom: 2rem;"><code>&lt;!-- Tagged Syntax --&gt;
-Avatar({ src: '...', shape: 'squircle' })
-
-&lt;!-- HTML Syntax --&gt;
-&lt;lv-avatar src="..." shape="squircle"&gt;&lt;/lv-avatar&gt;</code></pre>
-
-                    <!-- With Ring -->
-                    <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">With Ring</h2>
-                    <div style="margin-bottom: 1.5rem;">
-                        <lv-avatar src="https://i.pravatar.cc/100?img=6" size="w-16" ring
-                            ringColor="ring-primary"></lv-avatar>
-                    </div>
-                    <pre class="code-block" style="margin-bottom: 2rem;"><code>&lt;!-- Tagged Syntax --&gt;
-Avatar({ src: '...', ring: true, ringColor: 'ring-primary' })
-
-&lt;!-- HTML Syntax --&gt;
-&lt;lv-avatar src="..." ring ring-color="ring-primary"&gt;&lt;/lv-avatar&gt;</code></pre>
-
                     <!-- Online/Offline Status -->
-                    <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Online/Offline Status
-                    </h2>
-                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Status Indicators</h3>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
                         <lv-avatar src="https://i.pravatar.cc/100?img=7" size="w-16" online></lv-avatar>
                         <lv-avatar src="https://i.pravatar.cc/100?img=8" size="w-16" offline></lv-avatar>
+                        <lv-avatar src="https://i.pravatar.cc/100?img=9" size="w-16" ring
+                            ring-color="ring-primary"></lv-avatar>
                     </div>
-                    <pre class="code-block" style="margin-bottom: 2rem;"><code>&lt;!-- Tagged Syntax --&gt;
-Avatar({ src: '...', online: true })
 
-&lt;!-- HTML Syntax --&gt;
-&lt;lv-avatar src="..." online&gt;&lt;/lv-avatar&gt;</code></pre>
-
-                    <!-- Placeholder -->
-                    <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Placeholder</h2>
-                    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
+                    <!-- Placeholders -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Placeholders</h3>
+                    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
                         <lv-avatar placeholder="AI" size="w-12"
                             style="--lv-avatar-bg: oklch(var(--n)); --lv-avatar-text: oklch(var(--nc));"></lv-avatar>
-                        <lv-avatar placeholder="AV" size="w-20" shape="squircle"
+                        <lv-avatar placeholder="JD" size="w-16" shape="squircle"
                             style="--lv-avatar-bg: oklch(var(--p)); --lv-avatar-text: oklch(var(--pc));"></lv-avatar>
-                        <lv-avatar placeholder="LRG" size="w-32" shape="hexagon"
+                        <lv-avatar placeholder="LR" size="w-20" shape="hexagon"
                             style="--lv-avatar-bg: oklch(var(--s)); --lv-avatar-text: oklch(var(--sc));"></lv-avatar>
                     </div>
-                    <pre class="code-block" style="margin-bottom: 2rem;"><code>&lt;!-- Tagged Syntax --&gt;
-Avatar({ placeholder: 'AI', size: 'w-12' })
-Avatar({ placeholder: 'AV', size: 'w-20', shape: 'squircle' })
 
-&lt;!-- HTML Syntax --&gt;
-&lt;lv-avatar placeholder="LRG" size="w-32" shape="hexagon"&gt;&lt;/lv-avatar&gt;</code></pre>
-
-                    <!-- Avatar Group -->
-                    <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Avatar Group</h2>
-                    <div style="margin-bottom: 1.5rem;">
+                    <!-- Grouping -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Avatar Group</h3>
+                    <div style="margin-bottom: 2rem;">
                         <lv-avatar-group>
                             <lv-avatar src="https://i.pravatar.cc/100?img=10" size="w-12"></lv-avatar>
                             <lv-avatar src="https://i.pravatar.cc/100?img=11" size="w-12"></lv-avatar>
                             <lv-avatar src="https://i.pravatar.cc/100?img=12" size="w-12"></lv-avatar>
-                            <lv-avatar placeholder="+99" size="w-12"></lv-avatar>
+                            <lv-avatar placeholder="+99" size="w-12"
+                                style="--lv-avatar-bg: oklch(var(--n)); --lv-avatar-text: oklch(var(--nc));"></lv-avatar>
                         </lv-avatar-group>
                     </div>
-                    <pre class="code-block" style="margin-bottom: 2rem;"><code>&lt;!-- Tagged Syntax --&gt;
-Avatar.Group({},
-    Avatar({ src: '...', size: 'w-12' }),
-    Avatar({ placeholder: '+99', size: 'w-12' })
-)
-
-&lt;!-- HTML Syntax --&gt;
-&lt;lv-avatar-group&gt;
-    &lt;lv-avatar src="..." size="w-12"&gt;&lt;/lv-avatar&gt;
-    &lt;lv-avatar placeholder="+99" size="w-12"&gt;&lt;/lv-avatar&gt;
-&lt;/lv-avatar-group&gt;</code></pre>
                 </div>
             </div>
         </div>

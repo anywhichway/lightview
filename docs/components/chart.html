@@ -81,8 +81,7 @@
                     <div class="card bg-base-100 shadow-sm mb-8">
                         <div class="card-body">
                             <div id="bar-chart-container" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                                <table
-                                    class="charts-css bar show-labels show-data-on-hover show-primary-axis data-spacing-5">
+                                <table class="charts-css bar show-labels show-data-on-hover show-primary-axis">
                                     <caption>Front-end Frameworks</caption>
                                     <thead>
                                         <tr>
@@ -119,7 +118,7 @@
                                 </table>
                             </div>
                             <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true, dataOnHover: true, primaryAxis: true, spacing: 5, heading: 'Front-end Frameworks' },
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true, dataOnHover: true, primaryAxis: true, heading: 'Front-end Frameworks' },
     /* Head is for screen reader use and is not visible */
     Chart.Head({},
         Chart.Row({},
@@ -166,8 +165,7 @@
                         <div class="card-body">
                             <div id="column-chart-container"
                                 style="width: 100%; max-width: 600px; height: 300px; margin: 0 auto;">
-                                <table
-                                    class="charts-css column show-labels show-primary-axis data-spacing-10 show-heading">
+                                <table class="charts-css column show-labels show-primary-axis show-heading">
                                     <caption>Monthly Revenue</caption>
                                     <thead>
                                         <tr>
@@ -200,7 +198,7 @@
                                 </table>
                             </div>
                             <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'column', labels: true, primaryAxis: true, spacing: 10, heading: 'Monthly Revenue' },
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'column', labels: true, primaryAxis: true, heading: 'Monthly Revenue' },
     /* Head is for screen reader use and is not visible */
     Chart.Head({},
         Chart.Row({},
@@ -251,7 +249,7 @@
                             <div id="line-chart-container"
                                 style="width: 100%; max-width: 600px; height: 300px; margin: 0 auto;">
                                 <table
-                                    class="charts-css line show-heading show-labels show-primary-axis show-10-secondary-axes">
+                                    class="charts-css line show-heading show-labels show-primary-axis show-4-secondary-axes">
                                     <caption>Growth Trajectory</caption>
                                     <thead>
                                         <tr>
@@ -289,7 +287,7 @@
                                 </table>
                             </div>
                             <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', heading: 'Growth Trajectory', labels: true, primaryAxis: true, secondaryAxis: true },
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', heading: 'Growth Trajectory', labels: true, primaryAxis: true, secondaryAxesCount: 4 },
     /* Head is for screen reader use and is not visible */
     Chart.Head({},
         Chart.Row({},
@@ -422,7 +420,7 @@
                         <div class="card-body">
                             <div id="pie-chart-container"
                                 style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1 / 1;">
-                                <table class="charts-css pie show-labels data-spacing-2">
+                                <table class="charts-css pie show-labels show-4-secondary-axes">
                                     <caption>Browser Market Share</caption>
                                     <thead>
                                         <tr>
@@ -461,7 +459,7 @@
                                 to 1.0).
                             </p>
                             <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie', labels: true, spacing: 2, heading: 'Browser Market Share' },
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie', labels: true, heading: 'Browser Market Share', secondaryAxesCount: 4 },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Chrome'),
@@ -528,13 +526,13 @@
                                     <td><code>secondaryAxis</code></td>
                                     <td>boolean|string</td>
                                     <td>false</td>
-                                    <td>Show secondary axes lines (.show-10-secondary-axes or custom class)</td>
+                                    <td>Show 10 secondary axes lines if true (or custom class)</td>
                                 </tr>
                                 <tr>
-                                    <td><code>spacing</code></td>
+                                    <td><code>secondaryAxesCount</code></td>
                                     <td>number</td>
                                     <td>-</td>
-                                    <td>Gap between data points (1-20) (.data-spacing-N)</td>
+                                    <td>Number of secondary axes lines (1-10)</td>
                                 </tr>
                                 <tr>
                                     <td><code>reverse</code></td>

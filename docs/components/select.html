@@ -625,70 +625,59 @@ $('#example').content(reactiveDemo);</code></pre>
                         </table>
                     </div>
 
-                    <!-- Sizes Example -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <!-- Custom Element Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-top: 2rem; margin-bottom: 1rem;">Select Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-select&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/data-input/select.js"></script>
+
+                    <!-- Sizes -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Sizes</h3>
                     <div
-                        style="display: flex; flex-direction: column; gap: 0.5rem; max-width: 20rem; margin-bottom: 2rem;">
-                        <select class="select select-xs">
-                            <option>Extra Small</option>
-                        </select>
-                        <select class="select select-sm">
-                            <option>Small</option>
-                        </select>
-                        <select class="select">
-                            <option>Medium</option>
-                        </select>
-                        <select class="select select-lg">
-                            <option>Large</option>
-                        </select>
+                        style="display: flex; flex-direction: column; gap: 1rem; max-width: 20rem; margin-bottom: 2rem;">
+                        <lv-select size="xs" options='["Extra Small"]'></lv-select>
+                        <lv-select size="sm" options='["Small"]'></lv-select>
+                        <lv-select options='["Medium (default)"]'></lv-select>
+                        <lv-select size="lg" options='["Large"]'></lv-select>
                     </div>
 
-                    <!-- Colors Example -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem;">
-                        <select class="select select-primary">
-                            <option>Primary</option>
-                        </select>
-                        <select class="select select-secondary">
-                            <option>Secondary</option>
-                        </select>
-                        <select class="select select-accent">
-                            <option>Accent</option>
-                        </select>
-                        <select class="select select-info">
-                            <option>Info</option>
-                        </select>
-                        <select class="select select-success">
-                            <option>Success</option>
-                        </select>
-                        <select class="select select-warning">
-                            <option>Warning</option>
-                        </select>
-                        <select class="select select-error">
-                            <option>Error</option>
-                        </select>
-                        <select class="select select-ghost">
-                            <option>Ghost</option>
-                        </select>
+                    <!-- Colors -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Colors</h3>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        <lv-select color="primary" options='["Primary"]'></lv-select>
+                        <lv-select color="secondary" options='["Secondary"]'></lv-select>
+                        <lv-select color="accent" options='["Accent"]'></lv-select>
+                        <lv-select color="info" options='["Info"]'></lv-select>
+                        <lv-select color="success" options='["Success"]'></lv-select>
+                        <lv-select color="warning" options='["Warning"]'></lv-select>
+                        <lv-select color="error" options='["Error"]'></lv-select>
+                        <lv-select ghost="true" options='["Ghost Style"]'></lv-select>
                     </div>
 
-                    <!-- With Fieldset -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">With Label (Fieldset Pattern)</h2>
-                    <div style="max-width: 28rem; margin-bottom: 2rem;">
-                        <fieldset
-                            style="display: flex; flex-direction: column; gap: 0.5rem; border: none; padding: 0.5rem 0;">
-                            <legend
-                                style="font-size: 0.875rem; font-weight: 700; color: oklch(var(--bc)/0.8); padding: 0 0.5rem;">
-                                Country</legend>
-                            <select class="select" style="width: 100%;">
-                                <option disabled selected>Select your country</option>
-                                <option>United States</option>
-                                <option>United Kingdom</option>
-                                <option>Canada</option>
-                            </select>
-                            <p style="font-size: 0.875rem; color: oklch(var(--bc)/0.6); padding: 0 0.5rem;">Used for
-                                shipping calculations.</p>
-                        </fieldset>
+                    <!-- Labels and Helpers -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Labels & Assistance</h3>
+                    <div
+                        style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; max-width: 28rem;">
+                        <lv-select label="Country" placeholder="Select your country"
+                            options='["United States", "United Kingdom", "Canada", "Other"]'
+                            helper="Used for shipping calculations.">
+                        </lv-select>
+                        <lv-select label="Required Field" placeholder="Must choose one"
+                            options='["Choice A", "Choice B"]' required="true">
+                        </lv-select>
+                        <lv-select label="Error State" options='["Option 1", "Option 2"]'
+                            error="Selection is required.">
+                        </lv-select>
+                    </div>
+
+                    <!-- States -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">States</h3>
+                    <div
+                        style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; max-width: 28rem;">
+                        <lv-select label="Disabled Select" options='["Locked value"]' disabled="true"></lv-select>
                     </div>
                 </div>
             </div>
