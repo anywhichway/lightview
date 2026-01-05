@@ -181,7 +181,7 @@ const loaders = {
                 style: 'text-align: center;',
                 children: [
                     { Loading: { type, size: 'lg' } },
-                    { p: { style: 'font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;', text: type } }
+                    { p: { style: 'font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;', children: [type] } }
                 ]
             }
         }))
@@ -206,10 +206,30 @@ $('#example').content(loaders);</code></pre>
 &lt;script type="module" src="/components/data-display/loading.js"&gt;&lt;/script&gt;
 
 &lt;div style="display: flex; flex-wrap: wrap; gap: 2rem;"&gt;
-    &lt;lv-loading type="spinner" size="lg"&gt;&lt;/lv-loading&gt;
-    &lt;lv-loading type="dots" size="lg"&gt;&lt;/lv-loading&gt;
-    &lt;lv-loading type="ring" size="lg"&gt;&lt;/lv-loading&gt;
-    &lt;lv-loading type="ball" size="lg"&gt;&lt;/lv-loading&gt;
+    &lt;div style="text-align: center;"&gt;
+        &lt;lv-loading type="spinner" size="lg"&gt;&lt;/lv-loading&gt;
+        &lt;p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;"&gt;spinner&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="text-align: center;"&gt;
+        &lt;lv-loading type="dots" size="lg"&gt;&lt;/lv-loading&gt;
+        &lt;p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;"&gt;dots&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="text-align: center;"&gt;
+        &lt;lv-loading type="ring" size="lg"&gt;&lt;/lv-loading&gt;
+        &lt;p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;"&gt;ring&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="text-align: center;"&gt;
+        &lt;lv-loading type="ball" size="lg"&gt;&lt;/lv-loading&gt;
+        &lt;p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;"&gt;ball&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="text-align: center;"&gt;
+        &lt;lv-loading type="bars" size="lg"&gt;&lt;/lv-loading&gt;
+        &lt;p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;"&gt;bars&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style="text-align: center;"&gt;
+        &lt;lv-loading type="infinity" size="lg"&gt;&lt;/lv-loading&gt;
+        &lt;p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;"&gt;infinity&lt;/p&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                             </div>
                         </div>
@@ -444,78 +464,74 @@ $('#example').content(demo);</code></pre>
                         </table>
                     </div>
 
-                    <!-- Types -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Types</h2>
+                    <!-- Loading Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Loading Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-loading&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/data-display/loading.js"></script>
+
+                    <!-- All Types -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">All Types</h3>
                     <div style="display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 2rem;">
                         <div style="text-align: center;">
-                            <span class="loading loading-spinner loading-lg"></span>
+                            <lv-loading type="spinner" size="lg"></lv-loading>
                             <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">spinner</p>
                         </div>
                         <div style="text-align: center;">
-                            <span class="loading loading-dots loading-lg"></span>
+                            <lv-loading type="dots" size="lg"></lv-loading>
                             <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">dots</p>
                         </div>
                         <div style="text-align: center;">
-                            <span class="loading loading-ring loading-lg"></span>
+                            <lv-loading type="ring" size="lg"></lv-loading>
                             <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">ring</p>
                         </div>
                         <div style="text-align: center;">
-                            <span class="loading loading-ball loading-lg"></span>
+                            <lv-loading type="ball" size="lg"></lv-loading>
                             <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">ball</p>
                         </div>
                         <div style="text-align: center;">
-                            <span class="loading loading-bars loading-lg"></span>
+                            <lv-loading type="bars" size="lg"></lv-loading>
                             <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">bars</p>
                         </div>
                         <div style="text-align: center;">
-                            <span class="loading loading-infinity loading-lg"></span>
+                            <lv-loading type="infinity" size="lg"></lv-loading>
                             <p style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.5;">infinity</p>
                         </div>
                     </div>
 
-                    <!-- Sizes -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <!-- All Sizes -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">All Sizes</h3>
                     <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
                         <div style="text-align: center;">
-                            <span class="loading loading-spinner loading-xs"></span>
+                            <lv-loading type="spinner" size="xs"></lv-loading>
                             <p style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.5;">xs</p>
                         </div>
                         <div style="text-align: center;">
-                            <span class="loading loading-spinner loading-sm"></span>
+                            <lv-loading type="spinner" size="sm"></lv-loading>
                             <p style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.5;">sm</p>
                         </div>
                         <div style="text-align: center;">
-                            <span class="loading loading-spinner loading-md"></span>
+                            <lv-loading type="spinner"></lv-loading>
                             <p style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.5;">md</p>
                         </div>
                         <div style="text-align: center;">
-                            <span class="loading loading-spinner loading-lg"></span>
+                            <lv-loading type="spinner" size="lg"></lv-loading>
                             <p style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.5;">lg</p>
                         </div>
                     </div>
 
-                    <!-- Colors -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <!-- With Colors -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">With Colors</h3>
                     <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem;">
-                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--p));"></span>
-                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--s));"></span>
-                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--a));"></span>
-                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--in));"></span>
-                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--su));"></span>
-                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--wa));"></span>
-                        <span class="loading loading-spinner loading-lg" style="color: oklch(var(--er));"></span>
+                        <lv-loading type="spinner" size="lg" color="text-primary"></lv-loading>
+                        <lv-loading type="dots" size="lg" color="text-secondary"></lv-loading>
+                        <lv-loading type="ring" size="lg" color="text-accent"></lv-loading>
+                        <lv-loading type="ball" size="lg" color="text-success"></lv-loading>
+                        <lv-loading type="bars" size="lg" color="text-warning"></lv-loading>
+                        <lv-loading type="infinity" size="lg" color="text-error"></lv-loading>
                     </div>
 
-                    <!-- In Button -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">In Button</h2>
-                    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-                        <button class="btn btn-square">
-                            <span class="loading loading-spinner"></span>
-                        </button>
-                        <button class="btn btn-primary">
-                            <span class="loading loading-spinner"></span>
-                            Loading
-                        </button>
-                    </div>
                 </div>
             </div>

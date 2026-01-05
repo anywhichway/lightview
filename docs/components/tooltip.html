@@ -71,7 +71,7 @@
                             <!-- Tabs -->
                             <script>
                                 globalThis.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -93,6 +93,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -196,15 +198,46 @@ const tooltips = {
     div: {
         style: 'display: flex; flex-wrap: wrap; gap: 1rem',
         children: [
-            { Tooltip: { tip: 'Tooltip on top', position: 'top', children: [{ Button: { children: ['Top'] } }] } },
-            { Tooltip: { tip: 'Tooltip on bottom', position: 'bottom', children: [{ Button: { children: ['Bottom'] } }] } },
-            { Tooltip: { tip: 'Tooltip on left', position: 'left', children: [{ Button: { children: ['Left'] } }] } },
-            { Tooltip: { tip: 'Tooltip on right', position: 'right', children: [{ Button: { children: ['Right'] } }] } }
+            { Tooltip: { tip: 'Tooltip on top', position: 'top', children: [ { Button: { children: ['Top'] } } ] } },
+            { Tooltip: { tip: 'Tooltip on bottom', position: 'bottom', children: [ { Button: { children: ['Bottom'] } } ] } },
+            { Tooltip: { tip: 'Tooltip on left', position: 'left', children: [ { Button: { children: ['Left'] } } ] } },
+            { Tooltip: { tip: 'Tooltip on right', position: 'right', children: [ { Button: { children: ['Right'] } } ] } }
         ]
     }
 };
 
 $('#demo').content(tooltips);</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 100,
+                                        html: '<div id="demo" class="p-8"></div>'
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;script type="module" src="/components/data-display/tooltip.js"&gt;&lt;/script&gt;
+&lt;script type="module" src="/components/actions/button.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; flex-wrap: wrap; gap: 1rem"&gt;
+    &lt;lv-tooltip tip="Tooltip on top" position="top"&gt;
+        &lt;lv-button&gt;Top&lt;/lv-button&gt;
+    &lt;/lv-tooltip&gt;
+    &lt;lv-tooltip tip="Tooltip on bottom" position="bottom"&gt;
+        &lt;lv-button&gt;Bottom&lt;/lv-button&gt;
+    &lt;/lv-tooltip&gt;
+    &lt;lv-tooltip tip="Tooltip on left" position="left"&gt;
+        &lt;lv-button&gt;Left&lt;/lv-button&gt;
+    &lt;/lv-tooltip&gt;
+    &lt;lv-tooltip tip="Tooltip on right" position="right"&gt;
+        &lt;lv-button&gt;Right&lt;/lv-button&gt;
+    &lt;/lv-tooltip&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>
@@ -382,37 +415,44 @@ $('#demo').content(tooltips);</code></pre>
                         </table>
                     </div>
 
-                    <!-- Positions -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
+                    <!-- Tooltip Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Tooltip Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-tooltip&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/data-display/tooltip.js"></script>
+                    <script type="module" src="/components/actions/button.js"></script>
+
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Positions</h3>
                     <div style="display: flex; flex-wrap: wrap; gap: 1rem; padding: 2rem; margin-bottom: 2rem;">
-                        <div class="tooltip tooltip-top" data-tip="Top"><button class="btn">Top</button></div>
-                        <div class="tooltip tooltip-bottom" data-tip="Bottom"><button class="btn">Bottom</button></div>
-                        <div class="tooltip tooltip-left" data-tip="Left"><button class="btn">Left</button></div>
-                        <div class="tooltip tooltip-right" data-tip="Right"><button class="btn">Right</button></div>
+                        <lv-tooltip tip="Top" position="top"><lv-button>Top</lv-button></lv-tooltip>
+                        <lv-tooltip tip="Bottom" position="bottom"><lv-button>Bottom</lv-button></lv-tooltip>
+                        <lv-tooltip tip="Left" position="left"><lv-button>Left</lv-button></lv-tooltip>
+                        <lv-tooltip tip="Right" position="right"><lv-button>Right</lv-button></lv-tooltip>
                     </div>
 
-                    <!-- Colors -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
-                    <div class="example-flex" style="margin-bottom: 2rem;">
-                        <div class="tooltip tooltip-primary" data-tip="Primary"><button class="btn">Primary</button>
-                        </div>
-                        <div class="tooltip tooltip-secondary" data-tip="Secondary"><button
-                                class="btn">Secondary</button></div>
-                        <div class="tooltip tooltip-accent" data-tip="Accent"><button class="btn">Accent</button></div>
-                        <div class="tooltip tooltip-info" data-tip="Info"><button class="btn">Info</button></div>
-                        <div class="tooltip tooltip-success" data-tip="Success"><button class="btn">Success</button>
-                        </div>
-                        <div class="tooltip tooltip-warning" data-tip="Warning"><button class="btn">Warning</button>
-                        </div>
-                        <div class="tooltip tooltip-error" data-tip="Error"><button class="btn">Error</button></div>
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Colors</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+                        <lv-tooltip tip="Primary" color="primary"><lv-button
+                                color="primary">Primary</lv-button></lv-tooltip>
+                        <lv-tooltip tip="Secondary" color="secondary"><lv-button
+                                color="secondary">Secondary</lv-button></lv-tooltip>
+                        <lv-tooltip tip="Accent" color="accent"><lv-button
+                                color="accent">Accent</lv-button></lv-tooltip>
+                        <lv-tooltip tip="Info" color="info"><lv-button color="info">Info</lv-button></lv-tooltip>
+                        <lv-tooltip tip="Success" color="success"><lv-button
+                                color="success">Success</lv-button></lv-tooltip>
+                        <lv-tooltip tip="Warning" color="warning"><lv-button
+                                color="warning">Warning</lv-button></lv-tooltip>
+                        <lv-tooltip tip="Error" color="error"><lv-button color="error">Error</lv-button></lv-tooltip>
                     </div>
 
-                    <!-- Force Open -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Force Open</h2>
-                    <div style="margin-bottom: 2rem;">
-                        <div class="tooltip tooltip-open tooltip-primary" data-tip="Always visible">
-                            <button class="btn btn-primary">Always Open</button>
-                        </div>
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Force Open</h3>
+                    <div style="margin-bottom: 2rem; padding: 1rem;">
+                        <lv-tooltip tip="Always visible" open color="primary">
+                            <lv-button color="primary">Always Open</lv-button>
+                        </lv-tooltip>
                     </div>
                 </div>
             </div>

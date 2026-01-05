@@ -61,16 +61,17 @@
                         Perfect for toggle buttons, theme switchers, and animated icons.
                     </p>
 
-                    <!-- Basic Example with Examplify -->
+                    <!-- Swap Example with Examplify -->
                     <div class="card bg-base-200" style="margin-bottom: 2rem;">
                         <div class="card-body">
-                            <h2 class="card-title">Basic Example</h2>
-                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Swap with rotate animation</p>
+                            <h2 class="card-title">Usage Example</h2>
+                            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1rem;">Swap with transition effects
+                                and state binding.</p>
 
                             <!-- Tabs -->
                             <script>
                                 globalThis.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -90,8 +91,9 @@
                                 <button id="tab-btn-vdom" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('vdom')">vDOM</button>
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
-                                    onclick="switchSyntaxTab('object')">Object
-                                    DOM</button>
+                                    onclick="switchSyntaxTab('object')">Object DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -102,31 +104,42 @@
                                         scripts: ['/lightview.js', '/lightview-x.js'],
                                         styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
-                                        minHeight: 80,
+                                        minHeight: 180,
                                         autoRun: true
                                     });
                                 </script><code contenteditable="true">await import('/components/actions/swap.js');
-const { tags, $ } = Lightview;
-const { div, Swap } = tags;
+await import('/components/actions/button.js');
 
-// Emoji swap with rotate effect
-const emojiSwap = Swap({ effect: 'rotate', class: 'text-4xl' },
-    Swap.On({}, '😈'),
-    Swap.Off({}, '😇')
+const { signal, tags, $ } = Lightview;
+const { div, p, Swap, Button } = tags;
+
+const isActive = signal(false);
+
+// Controlled swap
+const swap = Swap({ 
+    effect: 'flip',
+    class: 'text-6xl',
+    active: () => isActive.value,
+    onChange: (checked) => { isActive.value = checked; }
+},
+    Swap.On({}, '🥳'),
+    Swap.Off({}, '😭')
 );
 
-// Play/Pause swap
-const playPause = Swap({ effect: 'rotate', class: 'btn btn-circle' },
-    Swap.On({}, '⏸️'),
-    Swap.Off({}, '▶️')
+// External control
+const demo = div({ style: 'display: flex; flex-direction: column; gap: 1rem; align-items: center' },
+    swap,
+    p({ class: 'text-sm' }, 
+        () => isActive.value ? 'Party time! 🎉' : 'So sad... 💔'
+    ),
+    Button({ 
+        color: 'primary',
+        size: 'sm',
+        onclick: () => { isActive.value = !isActive.value; }
+    }, 'Toggle from button')
 );
 
-$('#example').content(
-    div({ style: 'display: flex; gap: 2rem; align-items: center' }, 
-        emojiSwap, 
-        playPause
-    )
-);</code></pre>
+$('#example').content(demo);</code></pre>
                             </div>
 
                             <!-- vDOM Syntax -->
@@ -137,35 +150,50 @@ $('#example').content(
                                         scripts: ['/lightview.js', '/lightview-x.js'],
                                         styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
-                                        minHeight: 80
+                                        minHeight: 180
                                     });
                                 </script><code contenteditable="true">await import('/components/actions/swap.js');
-const { $, tags } = Lightview;
-const { Swap, div } = tags;
+await import('/components/actions/button.js');
+const { signal, $, tags } = Lightview;
+const { Swap, Button, div, p } = tags;
 
-const emojiSwap = {
-    tag: Swap,
-    attributes: { effect: 'rotate', class: 'text-4xl' },
-    children: [
-        { tag: Swap.On, children: ['😈'] },
-        { tag: Swap.Off, children: ['😇'] }
-    ]
-};
+const isActive = signal(false);
 
-const playPause = {
-    tag: Swap,
-    attributes: { effect: 'rotate', class: 'btn btn-circle' },
-    children: [
-        { tag: Swap.On, children: ['⏸️'] },
-        { tag: Swap.Off, children: ['▶️'] }
-    ]
-};
-
-$('#example').content({
+const demo = {
     tag: div,
-    attributes: { style: 'display: flex; gap: 2rem; align-items: center' },
-    children: [emojiSwap, playPause]
-});</code></pre>
+    attributes: { style: 'display: flex; flex-direction: column; gap: 1rem; align-items: center' },
+    children: [
+        {
+            tag: Swap,
+            attributes: {
+                effect: 'flip',
+                class: 'text-6xl',
+                active: () => isActive.value,
+                onChange: (checked) => { isActive.value = checked; }
+            },
+            children: [
+                { tag: Swap.On, children: ['🥳'] },
+                { tag: Swap.Off, children: ['😭'] }
+            ]
+        },
+        {
+            tag: p,
+            attributes: { class: 'text-sm' },
+            children: [() => isActive.value ? 'Party time! 🎉' : 'So sad... 💔']
+        },
+        {
+            tag: Button,
+            attributes: {
+                color: 'primary',
+                size: 'sm',
+                onclick: () => { isActive.value = !isActive.value; }
+            },
+            children: ['Toggle from button']
+        }
+    ]
+};
+
+$('#example').content(demo);</code></pre>
                             </div>
 
                             <!-- Object DOM Syntax -->
@@ -176,33 +204,42 @@ $('#example').content({
                                         scripts: ['/lightview.js', '/lightview-x.js'],
                                         styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
                                         type: 'module',
-                                        minHeight: 80
+                                        minHeight: 180
                                     });
                                 </script><code contenteditable="true">await import('/components/actions/swap.js');
-const { $ } = Lightview;
+await import('/components/actions/button.js');
+const { signal, $ } = Lightview;
+
+const isActive = signal(false);
 
 const demo = {
     div: {
-        style: 'display: flex; gap: 2rem; align-items: center',
+        style: 'display: flex; flex-direction: column; gap: 1rem; align-items: center',
         children: [
             {
                 Swap: {
-                    effect: 'rotate',
-                    class: 'text-4xl',
+                    effect: 'flip',
+                    class: 'text-6xl',
+                    active: () => isActive.value,
+                    onChange: (checked) => { isActive.value = checked; },
                     children: [
-                        { 'Swap.On': { children: ['😈'] } },
-                        { 'Swap.Off': { children: ['😇'] } }
+                        { 'Swap.On': { children: ['🥳'] } },
+                        { 'Swap.Off': { children: ['😭'] } }
                     ]
                 }
             },
             {
-                Swap: {
-                    effect: 'rotate',
-                    class: 'btn btn-circle',
-                    children: [
-                        { 'Swap.On': { children: ['⏸️'] } },
-                        { 'Swap.Off': { children: ['▶️'] } }
-                    ]
+                p: {
+                    class: 'text-sm',
+                    children: [() => isActive.value ? 'Party time! 🎉' : 'So sad... 💔']
+                }
+            },
+            {
+                Button: {
+                    color: 'primary',
+                    size: 'sm',
+                    onclick: () => { isActive.value = !isActive.value; },
+                    children: ['Toggle from button']
                 }
             }
         ]
@@ -210,6 +247,54 @@ const demo = {
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 180
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;!-- Import components --&gt;
+&lt;script type="module" src="/components/actions/swap.js"&gt;&lt;/script&gt;
+&lt;script type="module" src="/components/actions/button.js"&gt;&lt;/script&gt;
+
+&lt;div id="demo-root" style="display: flex; flex-direction: column; gap: 1rem; align-items: center"&gt;
+    &lt;lv-swap id="my-swap" effect="flip" class="text-6xl"&gt;
+        &lt;on&gt;🥳&lt;/on&gt;
+        &lt;off&gt;😭&lt;/off&gt;
+    &lt;/lv-swap&gt;
+    
+    &lt;p id="status-text" class="text-sm"&gt;Waiting...&lt;/p&gt;
+    
+    &lt;lv-button id="toggle-btn" color="primary" size="sm"&gt;Toggle State&lt;/lv-button&gt;
+&lt;/div&gt;
+
+&lt;script type="module"&gt;
+    const { signal, effect, $ } = Lightview;
+    const isActive = signal(false);
+    
+    // Link swap state
+    const swap = document.getElementById('my-swap');
+    swap.addEventListener('change', (e) => { isActive.value = e.target.checked; });
+    
+    // External toggle
+    document.getElementById('toggle-btn').onclick = () => {
+        isActive.value = !isActive.value;
+    };
+    
+    // Reactive sync
+    effect(() => {
+        swap.setAttribute('active', isActive.value);
+        document.getElementById('status-text').textContent = 
+            isActive.value ? 'Party time! 🎉' : 'So sad... 💔';
+    });
+&lt;/script&gt;</code></pre>
                             </div>
                         </div>
                     </div>
@@ -459,57 +544,55 @@ $('#example').content(demo);</code></pre>
                         </table>
                     </div>
 
-                    <!-- Effects -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Effects</h2>
+                    <!-- Swap Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Swap Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-swap&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/actions/swap.js"></script>
+
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Effects</h3>
                     <div class="example-flex" style="margin-bottom: 2rem;">
                         <div class="text-center">
                             <p class="text-sm opacity-70 mb-2">Rotate</p>
-                            <label class="swap swap-rotate text-4xl">
-                                <input type="checkbox" />
-                                <div class="swap-on">😈</div>
-                                <div class="swap-off">😇</div>
-                            </label>
+                            <lv-swap effect="rotate" class="text-4xl">
+                                <on>😈</on>
+                                <off>😇</off>
+                            </lv-swap>
                         </div>
                         <div class="text-center">
                             <p class="text-sm opacity-70 mb-2">Flip</p>
-                            <label class="swap swap-flip text-4xl">
-                                <input type="checkbox" />
-                                <div class="swap-on">🥳</div>
-                                <div class="swap-off">😭</div>
-                            </label>
+                            <lv-swap effect="flip" class="text-4xl">
+                                <on>🥳</on>
+                                <off>😭</off>
+                            </lv-swap>
                         </div>
                     </div>
 
-                    <!-- Hamburger Menu Icon -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Hamburger Menu Icon</h2>
-                    <label class="btn btn-circle swap swap-rotate" style="margin-bottom: 2rem;">
-                        <input type="checkbox" />
-                        <svg class="swap-off fill-current" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                            viewBox="0 0 512 512">
-                            <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
-                        </svg>
-                        <svg class="swap-on fill-current" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                            viewBox="0 0 512 512">
-                            <polygon
-                                points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
-                        </svg>
-                    </label>
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Interactive Icons</h3>
+                    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
+                        <lv-swap effect="rotate" class="btn btn-circle">
+                            <on>
+                                <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                    viewBox="0 0 512 512">
+                                    <polygon
+                                        points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
+                                </svg>
+                            </on>
+                            <off>
+                                <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                    viewBox="0 0 512 512">
+                                    <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
+                                </svg>
+                            </off>
+                        </lv-swap>
 
-                    <!-- Theme Toggle -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Theme Toggle (Sun/Moon)</h2>
-                    <label class="swap swap-rotate" style="margin-bottom: 2rem;">
-                        <input type="checkbox" class="theme-controller" value="dark" />
-                        <svg class="swap-off h-10 w-10 fill-current" xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24">
-                            <path
-                                d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" />
-                        </svg>
-                        <svg class="swap-on h-10 w-10 fill-current" xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24">
-                            <path
-                                d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
-                        </svg>
-                    </label>
+                        <lv-swap class="text-4xl">
+                            <on>❤️</on>
+                            <off>🤍</off>
+                        </lv-swap>
+                    </div>
                 </div>
             </div>
         </div>

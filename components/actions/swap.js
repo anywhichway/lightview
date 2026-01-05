@@ -34,8 +34,9 @@ const Swap = (props = {}, ...children) => {
     else if (effect === 'flip') classes.push('swap-flip');
     if (className) classes.push(className);
 
-    // Handle reactive active state
-    const isActive = typeof active === 'function' ? active : () => active;
+    // Handle internal state for non-reactive/uncontrolled usage
+    const internalActive = signal(active);
+    const isActive = typeof active === 'function' ? active : () => internalActive.value;
 
     const swapEl = label({
         class: () => {
@@ -49,7 +50,11 @@ const Swap = (props = {}, ...children) => {
             type: 'checkbox',
             checked: isActive,
             onchange: (e) => {
-                if (onChange) onChange(e.target.checked);
+                const checked = e.target.checked;
+                if (typeof active !== 'function') {
+                    internalActive.value = checked;
+                }
+                if (onChange) onChange(checked);
             }
         }),
         ...children
@@ -114,5 +119,23 @@ const tags = globalThis.Lightview.tags;
 tags.Swap = Swap;
 tags['Swap.On'] = Swap.On;
 tags['Swap.Off'] = Swap.Off;
+
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const SwapElement = globalThis.LightviewX.customElementWrapper(Swap, {
+        attributeMap: {
+            active: Boolean,
+            effect: String
+        },
+        childElements: {
+            'on': Swap.On,
+            'off': Swap.Off
+        }
+    });
+
+    if (!customElements.get('lv-swap')) {
+        customElements.define('lv-swap', SwapElement);
+    }
+}
 
 export default Swap;

@@ -206,9 +206,12 @@ $('#example').content(progressBars);</code></pre>
 
 &lt;div style="display: flex; flex-direction: column; gap: 1rem; width: 16rem;"&gt;
     &lt;lv-progress value="30" color="primary"&gt;&lt;/lv-progress&gt;
-    &lt;lv-progress value="50" color="secondary"&gt;&lt;/lv-progress&gt;
-    &lt;lv-progress value="70" color="accent"&gt;&lt;/lv-progress&gt;
-    &lt;lv-progress value="90" color="success"&gt;&lt;/lv-progress&gt;
+    &lt;lv-progress value="40" color="secondary"&gt;&lt;/lv-progress&gt;
+    &lt;lv-progress value="50" color="accent"&gt;&lt;/lv-progress&gt;
+    &lt;lv-progress value="60" color="info"&gt;&lt;/lv-progress&gt;
+    &lt;lv-progress value="70" color="success"&gt;&lt;/lv-progress&gt;
+    &lt;lv-progress value="80" color="warning"&gt;&lt;/lv-progress&gt;
+    &lt;lv-progress value="90" color="error"&gt;&lt;/lv-progress&gt;
 &lt;/div&gt;</code></pre>
                             </div>
                         </div>
@@ -509,6 +512,44 @@ $('#example').content(demo);</code></pre>
                     </div>
 
                     >
+
+                    <!-- Custom Element Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-top: 3rem; margin-bottom: 1rem;">Custom Element Gallery
+                    </h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-progress&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/data-display/progress.js"></script>
+
+                    <!-- All Colors -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">All Colors</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 16rem; margin-bottom: 2rem;">
+                        <lv-progress value="30" color="primary"></lv-progress>
+                        <lv-progress value="40" color="secondary"></lv-progress>
+                        <lv-progress value="50" color="accent"></lv-progress>
+                        <lv-progress value="60" color="info"></lv-progress>
+                        <lv-progress value="70" color="success"></lv-progress>
+                        <lv-progress value="80" color="warning"></lv-progress>
+                        <lv-progress value="90" color="error"></lv-progress>
+                    </div>
+
+                    <!-- Different Values -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Different Values</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 16rem; margin-bottom: 2rem;">
+                        <lv-progress value="10" color="primary"></lv-progress>
+                        <lv-progress value="25" color="primary"></lv-progress>
+                        <lv-progress value="50" color="primary"></lv-progress>
+                        <lv-progress value="75" color="primary"></lv-progress>
+                        <lv-progress value="100" color="primary"></lv-progress>
+                    </div>
+
+                    <!-- Indeterminate -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Indeterminate (No Value)</h3>
+                    <div style="width: 16rem; margin-bottom: 2rem;">
+                        <lv-progress color="primary"></lv-progress>
+                    </div>
+
                 </div>
             </div>
         </div>

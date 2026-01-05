@@ -87,4 +87,18 @@ const tags = globalThis.Lightview.tags;
 tags.Indicator = Indicator;
 tags['Indicator.Item'] = Indicator.Item;
 
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const IndicatorElement = globalThis.LightviewX.customElementWrapper(Indicator, {
+        attributeMap: {},
+        childElements: {
+            'item': Indicator.Item
+        }
+    });
+
+    if (!customElements.get('lv-indicator')) {
+        customElements.define('lv-indicator', IndicatorElement);
+    }
+}
+
 export default Indicator;

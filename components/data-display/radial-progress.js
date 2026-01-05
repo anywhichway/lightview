@@ -77,9 +77,18 @@ const RadialProgress = (props = {}, ...children) => {
 
 globalThis.Lightview.tags.RadialProgress = RadialProgress;
 
-// Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
-    const RadialProgressElement = globalThis.LightviewX.createCustomElement(RadialProgress);
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const RadialProgressElement = globalThis.LightviewX.customElementWrapper(RadialProgress, {
+        attributeMap: {
+            value: Number,
+            size: String,
+            thickness: String,
+            color: String
+        },
+        childElements: {} // No child components, uses slot for percentage display
+    });
+
     if (!customElements.get('lv-radial-progress')) {
         customElements.define('lv-radial-progress', RadialProgressElement);
     }

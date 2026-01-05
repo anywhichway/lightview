@@ -64,9 +64,17 @@ const Loading = (props = {}) => {
 
 globalThis.Lightview.tags.Loading = Loading;
 
-// Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
-    const LoadingElement = globalThis.LightviewX.createCustomElement(Loading);
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const LoadingElement = globalThis.LightviewX.customElementWrapper(Loading, {
+        attributeMap: {
+            type: String,
+            size: String,
+            color: String
+        },
+        childElements: {} // No child components, self-contained
+    });
+
     if (!customElements.get('lv-loading')) {
         customElements.define('lv-loading', LoadingElement);
     }

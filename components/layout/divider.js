@@ -40,7 +40,10 @@ const Divider = (props = {}, ...children) => {
     if (color) classes.push(`divider-${color}`);
     if (className) classes.push(className);
 
-    const dividerEl = div({ class: classes.join(' '), ...rest }, ...children);
+    const dividerEl = div({ class: classes.join(' '), ...rest },
+        tags.style ? tags.style(':host { display: block; width: 100%; }') : null,
+        ...children
+    );
 
     // Check if we should use shadow DOM
     let usesShadow = false;
@@ -68,5 +71,22 @@ const Divider = (props = {}, ...children) => {
 };
 
 globalThis.Lightview.tags.Divider = Divider;
+
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const DividerElement = globalThis.LightviewX.customElementWrapper(Divider, {
+        attributeMap: {
+            horizontal: Boolean,
+            vertical: Boolean,
+            position: String,
+            color: String
+        },
+        childElements: {} // No child components, uses slot for text
+    });
+
+    if (!customElements.get('lv-divider')) {
+        customElements.define('lv-divider', DividerElement);
+    }
+}
 
 export default Divider;

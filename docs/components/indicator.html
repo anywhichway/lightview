@@ -71,7 +71,7 @@
                             <!-- Tabs -->
                             <script>
                                 globalThis.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -93,6 +93,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -228,13 +230,13 @@ const demo = {
                     children: [
                         {
                             'Indicator.Item': {
-                                children: [{ Badge: { color: 'primary', text: () => count.value } }]
+                                children: [{ Badge: { color: 'primary', children: [() => count.value] } }]
                             }
                         },
                         {
                             Button: {
                                 onclick: () => { count.value++; },
-                                text: 'Messages'
+                                children: ['Messages']
                             }
                         }
                     ]
@@ -271,6 +273,38 @@ const demo = {
 
 $('#example').content(demo);</code></pre>
                             </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 100
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;script type="module" src="/components/layout/indicator.js"&gt;&lt;/script&gt;
+&lt;script type="module" src="/components/data-display/badge.js"&gt;&lt;/script&gt;
+&lt;script type="module" src="/components/actions/button.js"&gt;&lt;/script&gt;
+
+&lt;div style="display: flex; gap: 2rem"&gt;
+    &lt;lv-indicator&gt;
+        &lt;item class="badge badge-primary"&gt;3&lt;/item&gt;
+        &lt;lv-button&gt;Messages&lt;/lv-button&gt;
+    &lt;/lv-indicator&gt;
+
+    &lt;lv-indicator&gt;
+        &lt;item position="bottom-end" class="badge badge-success badge-xs"&gt;&lt;/item&gt;
+        &lt;div class="avatar"&gt;
+            &lt;div class="w-12 rounded-full"&gt;
+                &lt;img src="https://i.pravatar.cc/100?img=5" /&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/lv-indicator&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
                         </div>
                     </div>
 
@@ -299,42 +333,62 @@ $('#example').content(demo);</code></pre>
                         </table>
                     </div>
 
-                    <!-- Positions -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Positions</h2>
-                    <div class="example-flex" style="margin-bottom: 2rem;">
-                        <div class="indicator">
-                            <span
-                                class="indicator-item indicator-top indicator-start badge badge-secondary">top-start</span>
+                    <!-- Indicator Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Indicator Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-indicator&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/layout/indicator.js"></script>
+                    <script type="module" src="/components/data-display/badge.js"></script>
+
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Top Positions</h3>
+                    <div style="display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                        <lv-indicator>
+                            <item position="top-start" class="badge badge-secondary">top-start</item>
                             <div class="bg-base-300 p-6 rounded-box">content</div>
-                        </div>
-                        <div class="indicator">
-                            <span
-                                class="indicator-item indicator-top indicator-center badge badge-secondary">top-center</span>
+                        </lv-indicator>
+                        <lv-indicator>
+                            <item position="top-center" class="badge badge-secondary">top-center</item>
                             <div class="bg-base-300 p-6 rounded-box">content</div>
-                        </div>
-                        <div class="indicator">
-                            <span
-                                class="indicator-item indicator-top indicator-end badge badge-secondary">top-end</span>
+                        </lv-indicator>
+                        <lv-indicator>
+                            <item position="top-end" class="badge badge-secondary">top-end</item>
                             <div class="bg-base-300 p-6 rounded-box">content</div>
-                        </div>
+                        </lv-indicator>
                     </div>
 
-                    <div class="example-flex" style="margin-bottom: 2rem;">
-                        <div class="indicator">
-                            <span
-                                class="indicator-item indicator-bottom indicator-start badge badge-secondary">bottom-start</span>
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Bottom Positions</h3>
+                    <div style="display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                        <lv-indicator>
+                            <item position="bottom-start" class="badge badge-secondary">bottom-start</item>
                             <div class="bg-base-300 p-6 rounded-box">content</div>
-                        </div>
-                        <div class="indicator">
-                            <span
-                                class="indicator-item indicator-bottom indicator-center badge badge-secondary">bottom-center</span>
+                        </lv-indicator>
+                        <lv-indicator>
+                            <item position="bottom-center" class="badge badge-secondary">bottom-center</item>
                             <div class="bg-base-300 p-6 rounded-box">content</div>
-                        </div>
-                        <div class="indicator">
-                            <span
-                                class="indicator-item indicator-bottom indicator-end badge badge-secondary">bottom-end</span>
+                        </lv-indicator>
+                        <lv-indicator>
+                            <item position="bottom-end" class="badge badge-secondary">bottom-end</item>
                             <div class="bg-base-300 p-6 rounded-box">content</div>
-                        </div>
+                        </lv-indicator>
+                    </div>
+
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Common Use Cases</h3>
+                    <div style="display: flex; gap: 3rem; margin-bottom: 2rem; align-items: center;">
+                        <lv-indicator>
+                            <item class="badge badge-primary">99+</item>
+                            <lv-button>Inbox</lv-button>
+                        </lv-indicator>
+
+                        <lv-indicator>
+                            <item position="bottom-end" class="badge badge-success badge-xs"></item>
+                            <div class="avatar">
+                                <div class="w-12 rounded-full">
+                                    <img src="https://i.pravatar.cc/100?img=8" />
+                                </div>
+                            </div>
+                        </lv-indicator>
                     </div>
                 </div>
             </div>

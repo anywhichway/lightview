@@ -71,7 +71,7 @@
                             <!-- Tabs -->
                             <script>
                                 globalThis.switchSyntaxTab = (tabId) => {
-                                    const tabs = ['tagged', 'vdom', 'object'];
+                                    const tabs = ['tagged', 'vdom', 'object', 'html'];
                                     tabs.forEach(t => {
                                         const tabEl = document.getElementById(`tab-btn-${t}`);
                                         const contentEl = document.getElementById(`syntax-${t}`);
@@ -93,6 +93,8 @@
                                 <button id="tab-btn-object" role="tab" class="syntax-tab"
                                     onclick="switchSyntaxTab('object')">Object
                                     DOM</button>
+                                <button id="tab-btn-html" role="tab" class="syntax-tab"
+                                    onclick="switchSyntaxTab('html')">HTML</button>
                             </div>
 
                             <!-- Tagged Syntax -->
@@ -167,16 +169,38 @@ const demo = {
     div: {
         class: 'flex flex-col w-full',
         children: [
-            { div: { class: 'card bg-base-300 p-4 rounded-box', text: 'Content above' } },
-            { Divider: { text: 'OR' } },
-            { div: { class: 'card bg-base-300 p-4 rounded-box', text: 'Content below' } },
-            { Divider: { color: 'primary', text: 'Primary' } },
-            { div: { class: 'card bg-base-300 p-4 rounded-box', text: 'More content' } }
+            { div: { class: 'card bg-base-300 p-4 rounded-box', children: ['Content above'] } },
+            { Divider: { children: ['OR'] } },
+            { div: { class: 'card bg-base-300 p-4 rounded-box', children: ['Content below'] } },
+            { Divider: { color: 'primary', children: ['Primary'] } },
+            { div: { class: 'card bg-base-300 p-4 rounded-box', children: ['More content'] } }
         ]
     }
 };
 
 $('#example').content(demo);</code></pre>
+                            </div>
+
+                            <!-- HTML Syntax -->
+                            <div id="syntax-html" style="display: none;">
+                                <pre><script>
+                                    examplify(document.currentScript.nextElementSibling, {
+                                        at: document.currentScript.parentElement,
+                                        scripts: ['/lightview.js', '/lightview-x.js'],
+                                        styles: ['https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.min.css'],
+                                        type: 'module',
+                                        language: 'html',
+                                        minHeight: 240
+                                    });
+                                </script><code contenteditable="true" class="language-html">&lt;script type="module" src="/components/layout/divider.js"&gt;&lt;/script&gt;
+
+&lt;div class="flex flex-col w-full"&gt;
+    &lt;div class="card bg-base-300 p-4 rounded-box"&gt;Content above&lt;/div&gt;
+    &lt;lv-divider&gt;OR&lt;/lv-divider&gt;
+    &lt;div class="card bg-base-300 p-4 rounded-box"&gt;Content below&lt;/div&gt;
+    &lt;lv-divider color="primary"&gt;Primary&lt;/lv-divider&gt;
+    &lt;div class="card bg-base-300 p-4 rounded-box"&gt;More content&lt;/div&gt;
+&lt;/div&gt;</code></pre>
                             </div>
                         </div>
                     </div>
@@ -210,29 +234,49 @@ $('#example').content(demo);</code></pre>
                         </table>
                     </div>
 
-                    <!-- Static Examples -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Without Text</h2>
+                    <!-- Divider Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Divider Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-divider&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/layout/divider.js"></script>
+
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Basic Divider</h3>
                     <div style="display: flex; width: 100%; flex-direction: column; margin-bottom: 2rem;">
                         <div class="card bg-base-300 rounded-box p-4">Content</div>
-                        <div class="divider"></div>
+                        <lv-divider></lv-divider>
                         <div class="card bg-base-300 rounded-box p-4">Content</div>
                     </div>
 
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Vertical</h2>
-                    <div style="display: flex; width: 100%; margin-bottom: 2rem;">
-                        <div class="card bg-base-300 rounded-box p-4 flex-grow">Left</div>
-                        <div class="divider divider-horizontal">OR</div>
-                        <div class="card bg-base-300 rounded-box p-4 flex-grow">Right</div>
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">With Text</h3>
+                    <div style="display: flex; width: 100%; flex-direction: column; margin-bottom: 2rem;">
+                        <div class="card bg-base-300 rounded-box p-4">Login</div>
+                        <lv-divider>OR</lv-divider>
+                        <div class="card bg-base-300 rounded-box p-4">Sign Up</div>
                     </div>
 
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Horizontal (Manual)</h3>
+                    <div style="display: flex; width: 100%; margin-bottom: 2rem; height: 100px;">
+                        <div class="card bg-base-300 rounded-box p-4 flex-grow place-items-center">Left</div>
+                        <lv-divider horizontal>OR</lv-divider>
+                        <div class="card bg-base-300 rounded-box p-4 flex-grow place-items-center">Right</div>
+                    </div>
+
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Colors</h3>
                     <div style="display: flex; width: 100%; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
-                        <div class="divider divider-primary">Primary</div>
-                        <div class="divider divider-secondary">Secondary</div>
-                        <div class="divider divider-accent">Accent</div>
-                        <div class="divider divider-success">Success</div>
-                        <div class="divider divider-warning">Warning</div>
-                        <div class="divider divider-error">Error</div>
+                        <lv-divider color="primary">Primary</lv-divider>
+                        <lv-divider color="secondary">Secondary</lv-divider>
+                        <lv-divider color="accent">Accent</lv-divider>
+                        <lv-divider color="success">Success</lv-divider>
+                        <lv-divider color="warning">Warning</lv-divider>
+                        <lv-divider color="error">Error</lv-divider>
+                    </div>
+
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Text Position</h3>
+                    <div style="display: flex; width: 100%; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
+                        <lv-divider position="start">Start</lv-divider>
+                        <lv-divider position="end">End</lv-divider>
                     </div>
                 </div>
             </div>

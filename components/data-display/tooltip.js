@@ -71,4 +71,21 @@ const Tooltip = (props = {}, ...children) => {
 
 globalThis.Lightview.tags.Tooltip = Tooltip;
 
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const TooltipElement = globalThis.LightviewX.customElementWrapper(Tooltip, {
+        attributeMap: {
+            tip: String,
+            position: String,
+            color: String,
+            open: Boolean
+        },
+        childElements: {} // No child components, uses slot for trigger element
+    });
+
+    if (!customElements.get('lv-tooltip')) {
+        customElements.define('lv-tooltip', TooltipElement);
+    }
+}
+
 export default Tooltip;

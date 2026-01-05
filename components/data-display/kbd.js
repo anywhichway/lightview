@@ -54,9 +54,15 @@ const Kbd = (props = {}, ...children) => {
 
 globalThis.Lightview.tags.Kbd = Kbd;
 
-// Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
-    const KbdElement = globalThis.LightviewX.createCustomElement(Kbd);
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const KbdElement = globalThis.LightviewX.customElementWrapper(Kbd, {
+        attributeMap: {
+            size: String
+        },
+        childElements: {} // No child components, uses slot for key text
+    });
+
     if (!customElements.get('lv-kbd')) {
         customElements.define('lv-kbd', KbdElement);
     }

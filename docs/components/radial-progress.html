@@ -410,24 +410,44 @@ $('#example').content(demo);</code></pre>
                 </table>
             </div>
 
-            <!-- Colors -->
-            <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Colors</h2>
+            <!-- Radial Progress Gallery -->
+            <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Radial Progress Gallery</h2>
+            <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                Live examples using <code>&lt;lv-radial-progress&gt;</code> custom elements.
+            </p>
+
+            <script type="module" src="/components/data-display/radial-progress.js"></script>
+
+            <!-- Different Values -->
+            <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Different Values</h3>
             <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-                <div class="radial-progress text-primary" style="--value:70;" role="progressbar">70%</div>
-                <div class="radial-progress text-secondary" style="--value:70;" role="progressbar">70%</div>
-                <div class="radial-progress text-accent" style="--value:70;" role="progressbar">70%</div>
-                <div class="radial-progress text-success" style="--value:70;" role="progressbar">70%</div>
+                <lv-radial-progress value="0">0%</lv-radial-progress>
+                <lv-radial-progress value="25">25%</lv-radial-progress>
+                <lv-radial-progress value="50">50%</lv-radial-progress>
+                <lv-radial-progress value="75">75%</lv-radial-progress>
+                <lv-radial-progress value="100">100%</lv-radial-progress>
+            </div>
+
+            <!-- All Colors -->
+            <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">All Colors</h3>
+            <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                <lv-radial-progress value="70" color="text-primary">70%</lv-radial-progress>
+                <lv-radial-progress value="70" color="text-secondary">70%</lv-radial-progress>
+                <lv-radial-progress value="70" color="text-accent">70%</lv-radial-progress>
+                <lv-radial-progress value="70" color="text-success">70%</lv-radial-progress>
+                <lv-radial-progress value="70" color="text-warning">70%</lv-radial-progress>
+                <lv-radial-progress value="70" color="text-error">70%</lv-radial-progress>
             </div>
 
             <!-- Custom Size & Thickness -->
-            <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Custom Size & Thickness</h2>
+            <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Custom Size & Thickness</h3>
             <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
-                <div class="radial-progress" style="--value:70; --size:8rem;" role="progressbar">70%</div>
-                <div class="radial-progress" style="--value:70; --size:8rem; --thickness:2px;" role="progressbar">70%
-                </div>
-                <div class="radial-progress" style="--value:70; --size:8rem; --thickness:1rem;" role="progressbar">70%
-                </div>
+                <lv-radial-progress value="70" size="6rem">70%</lv-radial-progress>
+                <lv-radial-progress value="70" size="8rem" thickness="2px">70%</lv-radial-progress>
+                <lv-radial-progress value="70" size="10rem" thickness="1rem"
+                    color="text-success">70%</lv-radial-progress>
             </div>
+
         </div>
     </div>
 </div>

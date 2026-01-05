@@ -284,38 +284,77 @@ $('#example').content(shortcuts);</code></pre>
                         </table>
                     </div>
 
-                    <!-- Sizes -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Sizes</h2>
+                    <!-- Kbd Gallery -->
+                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Kbd Gallery</h2>
+                    <p class="text-sm" style="opacity: 0.7; margin-bottom: 1.5rem;">
+                        Live examples using <code>&lt;lv-kbd&gt;</code> custom elements.
+                    </p>
+
+                    <script type="module" src="/components/data-display/kbd.js"></script>
+
+                    <!-- Keyboard Shortcuts -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Keyboard Shortcuts</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem;">
+                        <div style="display: flex; gap: 0.25rem; align-items: center;">
+                            <span style="min-width: 70px;">Save:</span>
+                            <lv-kbd>⌘</lv-kbd>
+                            <lv-kbd>S</lv-kbd>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem; align-items: center;">
+                            <span style="min-width: 70px;">Copy:</span>
+                            <lv-kbd>⌘</lv-kbd>
+                            <lv-kbd>C</lv-kbd>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem; align-items: center;">
+                            <span style="min-width: 70px;">Paste:</span>
+                            <lv-kbd>⌘</lv-kbd>
+                            <lv-kbd>V</lv-kbd>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem; align-items: center;">
+                            <span style="min-width: 70px;">Undo:</span>
+                            <lv-kbd>⌘</lv-kbd>
+                            <lv-kbd>Z</lv-kbd>
+                        </div>
+                    </div>
+
+                    <!-- All Sizes -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">All Sizes</h3>
                     <div style="display: flex; align-items: flex-end; gap: 0.5rem; margin-bottom: 2rem;">
-                        <kbd class="kbd kbd-lg">Shift</kbd>
-                        <kbd class="kbd kbd-md">Ctrl</kbd>
-                        <kbd class="kbd kbd-sm">Alt</kbd>
-                        <kbd class="kbd kbd-xs">Esc</kbd>
+                        <lv-kbd size="xs">xs</lv-kbd>
+                        <lv-kbd size="sm">sm</lv-kbd>
+                        <lv-kbd size="md">md</lv-kbd>
+                        <lv-kbd size="lg">lg</lv-kbd>
                     </div>
 
-                    <!-- Keyboard Shortcut Example -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Keyboard Shortcut</h2>
+                    <!--  Function Keys -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Function Keys</h3>
                     <div style="display: flex; gap: 0.25rem; margin-bottom: 2rem;">
-                        <kbd class="kbd">⌘</kbd>
-                        <kbd class="kbd">⌥</kbd>
-                        <kbd class="kbd">⇧</kbd>
-                        <kbd class="kbd">P</kbd>
+                        <lv-kbd>F1</lv-kbd>
+                        <lv-kbd>F2</lv-kbd>
+                        <lv-kbd>F3</lv-kbd>
+                        <lv-kbd>F4</lv-kbd>
+                        <lv-kbd>F5</lv-kbd>
+                        <lv-kbd>F6</lv-kbd>
+                        <lv-kbd>F7</lv-kbd>
+                        <lv-kbd>F8</lv-kbd>
+                        <lv-kbd>F9</lv-kbd>
+                        <lv-kbd>F10</lv-kbd>
+                        <lv-kbd>F11</lv-kbd>
+                        <lv-kbd>F12</lv-kbd>
                     </div>
 
-                    <!-- Full Row -->
-                    <h2 class="text-xl font-bold" style="margin-bottom: 1rem;">Full Keyboard Row</h2>
-                    <div style="display: flex; gap: 0.25rem; margin-bottom: 2rem;">
-                        <kbd class="kbd">q</kbd>
-                        <kbd class="kbd">w</kbd>
-                        <kbd class="kbd">e</kbd>
-                        <kbd class="kbd">r</kbd>
-                        <kbd class="kbd">t</kbd>
-                        <kbd class="kbd">y</kbd>
-                        <kbd class="kbd">u</kbd>
-                        <kbd class="kbd">i</kbd>
-                        <kbd class="kbd">o</kbd>
-                        <kbd class="kbd">p</kbd>
+                    <!-- Arrow Keys -->
+                    <h3 class="text-lg font-semibold" style="margin-bottom: 0.75rem;">Arrow Keys</h3>
+                    <div
+                        style="display: inline-grid; grid-template-columns: repeat(3, auto); gap: 0.25rem; margin-bottom: 2rem;">
+                        <div></div>
+                        <lv-kbd>▲</lv-kbd>
+                        <div></div>
+                        <lv-kbd>◀</lv-kbd>
+                        <lv-kbd>▼</lv-kbd>
+                        <lv-kbd>▶</lv-kbd>
                     </div>
+
                 </div>
             </div>
         </div>

@@ -68,9 +68,17 @@ const Progress = (props = {}, ...children) => {
 
 globalThis.Lightview.tags.Progress = Progress;
 
-// Register as Custom Element
-if (globalThis.LightviewX?.createCustomElement) {
-    const ProgressElement = globalThis.LightviewX.createCustomElement(Progress);
+// Register as Custom Element using customElementWrapper
+if (globalThis.LightviewX && typeof customElements !== 'undefined') {
+    const ProgressElement = globalThis.LightviewX.customElementWrapper(Progress, {
+        attributeMap: {
+            value: Number,
+            max: Number,
+            color: String
+        },
+        childElements: {} // No child components
+    });
+
     if (!customElements.get('lv-progress')) {
         customElements.define('lv-progress', ProgressElement);
     }
