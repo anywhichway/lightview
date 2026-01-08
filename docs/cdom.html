@@ -23,7 +23,7 @@
             can interact with across platforms.
         </p>
         <p>
-            cDOM uses <strong>JRPX (JSON Reactive Path eXpressions)</strong> as its expression language. JRPX
+            cDOM uses <strong>JPRX (JSON Pointer Reactive eXpressions)</strong> as its expression language. JPRX
             extends <a href="https://www.rfc-editor.org/rfc/rfc6901" target="_blank">JSON Pointer (RFC 6901)</a>
             with reactivity, relative paths, and helper functions.
         </p>
@@ -85,17 +85,17 @@
             </div>
         </div>
 
-        <!-- ===== JRPX INTRODUCTION ===== -->
-        <h2 id="jrpx">JRPX (JSON Reactive Path eXpressions)</h2>
+        <!-- ===== JPRX INTRODUCTION ===== -->
+        <h2 id="JPRX">JPRX (JSON Pointer Reactive eXpressions)</h2>
         <p>
-            <strong>JRPX</strong> is the expression language that powers cDOM. It extends
+            <strong>JPRX</strong> is the expression language that powers cDOM. It extends
             <a href="https://www.rfc-editor.org/rfc/rfc6901" target="_blank">JSON Pointer (RFC 6901)</a>
             with reactivity, relative paths, and helper functions.
         </p>
 
-        <h3 id="jrpx-delimiters">Delimiters</h3>
+        <h3 id="JPRX-delimiters">Delimiters</h3>
         <p>
-            JRPX expressions begin with a <code>$</code> delimiter:
+            JPRX expressions begin with a <code>$</code> delimiter:
         </p>
         <table class="api-table">
             <thead>
@@ -119,13 +119,13 @@
             </tbody>
         </table>
         <p>
-            Once inside a JRPX expression, paths follow <strong>JSON Pointer</strong> syntax. The <code>$</code>
+            Once inside a JPRX expression, paths follow <strong>JSON Pointer</strong> syntax. The <code>$</code>
             is only needed at the start of the expression.
         </p>
 
-        <h3 id="jrpx-anatomy">Anatomy of a Path</h3>
+        <h3 id="JPRX-anatomy">Anatomy of a Path</h3>
         <p>
-            Inside a JRPX expression, paths follow JSON Pointer with these extensions:
+            Inside a JPRX expression, paths follow JSON Pointer with these extensions:
         </p>
         <table class="api-table">
             <thead>
@@ -144,22 +144,22 @@
                 <tr>
                     <td><code>/items[2]</code></td>
                     <td>Array index (bracket notation)</td>
-                    <td>JRPX extension</td>
+                    <td>JPRX extension</td>
                 </tr>
                 <tr>
                     <td><code>./child</code></td>
                     <td>Relative to current context</td>
-                    <td>JRPX extension</td>
+                    <td>JPRX extension</td>
                 </tr>
                 <tr>
                     <td><code>../sibling</code></td>
                     <td>Parent context access</td>
-                    <td>JRPX extension</td>
+                    <td>JPRX extension</td>
                 </tr>
                 <tr>
                     <td><code>/items...price</code></td>
                     <td>Extract <code>price</code> from all items (explosion)</td>
-                    <td>JRPX extension</td>
+                    <td>JPRX extension</td>
                 </tr>
             </tbody>
         </table>
@@ -180,7 +180,7 @@
             <li><strong>$currency(...)</strong>: Format as currency string</li>
         </ul>
 
-        <h3 id="jrpx-placeholders">Placeholders</h3>
+        <h3 id="JPRX-placeholders">Placeholders</h3>
         <table class="api-table">
             <thead>
                 <tr>
@@ -219,7 +219,7 @@
                 <tr>
                     <th>Feature</th>
                     <th>Excel</th>
-                    <th>cDOM / JRPX</th>
+                    <th>cDOM / JPRX</th>
                 </tr>
             </thead>
             <tbody>
@@ -249,12 +249,12 @@
         <!-- ===== LIGHTVIEW INTEGRATION ===== -->
         <h2 id="integration">Lightview Integration</h2>
         <p>
-            cDOM integrates seamlessly with Lightview's existing DOM formats. You can use JRPX expressions
+            cDOM integrates seamlessly with Lightview's existing DOM formats. You can use JPRX expressions
             in any of Lightview's hypermedia formats:
         </p>
 
         <h3>vDOM (Virtual DOM)</h3>
-        <p>JRPX expressions work directly in vDOM arrays:</p>
+        <p>JPRX expressions work directly in vDOM arrays:</p>
         <div class="code-block">
             <pre><code>["div", { class: "counter" },
     ["p", "Count: ", "$/count"],
@@ -263,7 +263,7 @@
         </div>
 
         <h3>oDOM (Object DOM)</h3>
-        <p>JRPX expressions work in oDOM objects:</p>
+        <p>JPRX expressions work in oDOM objects:</p>
         <div class="code-block">
             <pre><code>{
     tag: "div",
@@ -424,7 +424,7 @@ globalThis.LightviewCDOM.activate(example.domEl);
 
         <h3 id="events-manual">Manual Implementation</h3>
         <p>
-            Use standard event attributes with JRPX expressions:
+            Use standard event attributes with JPRX expressions:
         </p>
         <div class="code-block">
             <pre><code>{ button: { onclick: $(++, $/count), children: ["Click Me"] } }
@@ -500,7 +500,7 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
 
         <h3 id="api-parseCDOMC">parseCDOMC(string)</h3>
         <p>
-            Parses cDOM's concise syntax (unquoted keys, JRPX expressions) into a JavaScript object.
+            Parses cDOM's concise syntax (unquoted keys, JPRX expressions) into a JavaScript object.
         </p>
         <div class="code-block">
             <pre><code>const obj = LightviewCDOM.parseCDOMC(`{ div: { children: [$/name] } }`);</code></pre>
@@ -508,15 +508,15 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
 
         <h3 id="api-registerHelper">registerHelper(name, fn, options?)</h3>
         <p>
-            Registers a custom helper function for use in JRPX expressions.
+            Registers a custom helper function for use in JPRX expressions.
         </p>
         <div class="code-block">
             <pre><code>LightviewCDOM.registerHelper('double', (x) => x * 2);
 // Now usable: $double($/count)</code></pre>
         </div>
 
-        <!-- ===== JRPX HELPERS ===== -->
-        <h2 id="helpers">JRPX Helper Functions</h2>
+        <!-- ===== JPRX HELPERS ===== -->
+        <h2 id="helpers">JPRX Helper Functions</h2>
         <p>
             cDOM includes a rich set of built-in helpers for common transformations.
             For security, only registered helpers are available — no access to <code>globalThis</code>.
@@ -575,7 +575,7 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
             <pre><code>number, currency, percent, thousands</code></pre>
         </div>
         <p class="text-xs italic opacity-70" style="margin-top: 0.5rem;">
-            <strong>Explosion Operator:</strong> In JRPX, <code>...</code> is placed at the end of a path
+            <strong>Explosion Operator:</strong> In JPRX, <code>...</code> is placed at the end of a path
             (e.g., <code>$/items...price</code>) to expand arrays into arguments.
         </p>
 
