@@ -270,7 +270,7 @@ const setAttributeValue = (domNode, key, value) => {
         value = 'javascript:void(0)'; // Safer fallback than # which might trigger scroll or router
     }
 
-    if (NODE_PROPERTIES.has(key) || isBool) {
+    if (NODE_PROPERTIES.has(key) || isBool || key.startsWith('cdom-')) {
         domNode[key] = isBool ? (value !== null && value !== undefined && value !== false && value !== 'false') : value;
     } else if (value === null || value === undefined) {
         domNode.removeAttribute(key);

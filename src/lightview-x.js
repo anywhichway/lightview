@@ -1053,7 +1053,11 @@ const activateReactiveSyntax = (root, LV) => {
             try {
                 const val = fn(LV.state, LV.signal);
                 if (isAttr) {
-                    (val === null || val === undefined || val === false) ? node.removeAttribute(attrName) : node.setAttribute(attrName, val);
+                    if (attrName.startsWith('cdom-')) {
+                        node[attrName] = val;
+                    } else {
+                        (val === null || val === undefined || val === false) ? node.removeAttribute(attrName) : node.setAttribute(attrName, val);
+                    }
                 } else node.textContent = val !== undefined ? val : '';
             } catch (e) { /* Effect execution failed */ }
         });

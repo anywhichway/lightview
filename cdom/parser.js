@@ -342,16 +342,20 @@ export const resolveExpression = (expr, context) => {
 
         const options = helperOptions.get(funcName) || {};
 
-        // Split arguments respecting quotes and parentheses
+        // Split arguments respecting quotes, parentheses, curly braces, and square brackets
         const argsList = [];
-        let current = '', depth = 0, quote = null;
+        let current = '', parenDepth = 0, braceDepth = 0, bracketDepth = 0, quote = null;
         for (let i = 0; i < argsStr.length; i++) {
             const char = argsStr[i];
             if (char === quote) quote = null;
             else if (!quote && (char === "'" || char === '"')) quote = char;
-            else if (!quote && char === '(') depth++;
-            else if (!quote && char === ')') depth--;
-            else if (!quote && char === ',' && depth === 0) {
+            else if (!quote && char === '(') parenDepth++;
+            else if (!quote && char === ')') parenDepth--;
+            else if (!quote && char === '{') braceDepth++;
+            else if (!quote && char === '}') braceDepth--;
+            else if (!quote && char === '[') bracketDepth++;
+            else if (!quote && char === ']') bracketDepth--;
+            else if (!quote && char === ',' && parenDepth === 0 && braceDepth === 0 && bracketDepth === 0) {
                 argsList.push(current.trim());
                 current = '';
                 continue;
@@ -459,7 +463,7 @@ export const parseCDOMC = (input) => {
         let res = '';
         while (i < len) {
             const char = input[i++];
-            if (char === quote) return new String(res);
+            if (char === quote) return res;
             if (char === '\\') {
                 const next = input[i++];
                 if (next === 'n') res += '\n';
@@ -475,36 +479,57 @@ export const parseCDOMC = (input) => {
         throw new Error("Unterminated string");
     };
 
+    /**
+     * Parses an unquoted word (identifier, path, or literal).
+     * Supports dashes in identifiers (e.g. cdom-state).
+     * Words starting with $ are preserved as strings for cDOM expression parsing.
+     */
     const parseWord = () => {
         const start = i;
-        let depth = 0;
+        let pDepth = 0;
+        let bDepth = 0;
+        let brDepth = 0;
+        let quote = null;
 
         while (i < len) {
             const char = input[i];
 
-            // If inside parentheses, ignore everything except matching parenthesis
-            if (depth > 0) {
-                if (char === ')') depth--;
-                else if (char === '(') depth++;
+            if (quote) {
+                if (char === quote) quote = null;
+                i++;
+                continue;
+            } else if (char === '"' || char === "'" || char === "`") {
+                quote = char;
                 i++;
                 continue;
             }
 
-            // Structural characters that end a word (at depth 0)
-            if (/[\s:,{}\[\]"'`()]/.test(char)) {
-                // Special case: if we see '(', we are entering a function call word
-                if (char === '(') {
-                    depth++;
-                    i++;
-                    continue;
+            // Nesting
+            if (char === '(') { pDepth++; i++; continue; }
+            if (char === '{') { bDepth++; i++; continue; }
+            if (char === '[') { brDepth++; i++; continue; }
+
+            if (char === ')') { if (pDepth > 0) { pDepth--; i++; continue; } }
+            if (char === '}') { if (bDepth > 0) { bDepth--; i++; continue; } }
+            if (char === ']') { if (brDepth > 0) { brDepth--; i++; continue; } }
+
+            // Termination at depth 0
+            if (pDepth === 0 && bDepth === 0 && brDepth === 0) {
+                if (/[\s:,{}\[\]"'`()]/.test(char)) {
+                    break;
                 }
-                break;
             }
 
             i++;
         }
 
         const word = input.slice(start, i);
+
+        // If word starts with $, preserve it as a string for cDOM expression parsing
+        if (word.startsWith('$')) {
+            return word;
+        }
+
         if (word === 'true') return true;
         if (word === 'false') return false;
         if (word === 'null') return null;
@@ -538,7 +563,7 @@ export const parseCDOMC = (input) => {
             skipWhitespace();
             let key;
             if (input[i] === '"' || input[i] === "'") key = parseString();
-            else key = parseWord();
+            else key = parseWord(); // No longer need special key handling
 
             skipWhitespace();
             if (input[i] !== ':') throw new Error(`Expected ':' at position ${i}, found '${input[i]}'`);

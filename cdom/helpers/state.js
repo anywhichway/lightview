@@ -14,19 +14,22 @@ export const set = (target, val) => {
 };
 
 export const increment = (target, by = 1) => {
-    const current = (target && typeof target === 'object' && 'value' in target) ? target.value : 0;
+    const hasValue = target && (typeof target === 'object' || typeof target === 'function') && 'value' in target;
+    const current = hasValue ? target.value : 0;
     const next = Number(current) + Number(by);
     return set(target, next);
 };
 
 export const decrement = (target, by = 1) => {
-    const current = (target && typeof target === 'object' && 'value' in target) ? target.value : 0;
+    const hasValue = target && (typeof target === 'object' || typeof target === 'function') && 'value' in target;
+    const current = hasValue ? target.value : 0;
     const next = Number(current) - Number(by);
     return set(target, next);
 };
 
 export const toggle = (target) => {
-    const current = (target && typeof target === 'object' && 'value' in target) ? target.value : false;
+    const hasValue = target && (typeof target === 'object' || typeof target === 'function') && 'value' in target;
+    const current = hasValue ? target.value : false;
     return set(target, !current);
 };
 

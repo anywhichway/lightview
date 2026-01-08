@@ -10,6 +10,7 @@ const builds = [
     { entry: 'src/lightview.js', name: 'lightview', globalName: 'Lightview' },
     { entry: 'src/lightview-x.js', name: 'lightview-x', globalName: 'LightviewX' },
     { entry: 'src/lightview-cdom.js', name: 'lightview-cdom', globalName: 'LightviewCDOM' },
+    { entry: 'src/lightview-router.js', name: 'lightview-router', globalName: 'LightviewRouter' },
     { entry: 'src/lightview-all.js', name: 'lightview-all', globalName: 'LightviewAll' }
 ];
 
@@ -44,12 +45,7 @@ async function runBuilds() {
                     rollupOptions: {
                         external: (id) => id.includes('/components/') || id.includes('/docs/')
                     },
-                    minify: 'terser',
-                    terserOptions: {
-                        compress: {
-                            drop_console: false
-                        }
-                    }
+                    minify: false // No minification for easier debugging
                 }
             });
         }

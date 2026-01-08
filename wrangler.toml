@@ -1,9 +1,6 @@
 name = "lightview"
 compatibility_date = "2024-01-01"
 
-# Enable eval() and new Function() for SSR script processing
-[unsafe]
-eval = true
 
 # [build]
 # command = "npm run build"

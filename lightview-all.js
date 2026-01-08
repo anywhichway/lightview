@@ -1,1 +1,3133 @@
-!function(){"use strict";const e=globalThis.__LIGHTVIEW_INTERNALS__||(globalThis.__LIGHTVIEW_INTERNALS__={currentEffect:null,registry:new Map,dependencyMap:new WeakMap}),t=(t,n)=>{let r="string"==typeof n?n:null==n?void 0:n.name;const o=null==n?void 0:n.storage;if(r&&o)try{const e=o.getItem(r);null!==e&&(t=JSON.parse(e))}catch(l){}let s=t;const i=new Set,a=(...e)=>{if(0===e.length)return a.value;a.value=e[0]};if(Object.defineProperty(a,"value",{get:()=>(e.currentEffect&&(i.add(e.currentEffect),e.currentEffect.dependencies.add(i)),s),set(e){if(s!==e){if(s=e,r&&o)try{o.setItem(r,JSON.stringify(s))}catch(l){}[...i].forEach(e=>e())}}}),r)if(e.registry.has(r)){if(e.registry.get(r)!==a)throw new Error(`Lightview: A signal or state with the name "${r}" is already registered.`)}else e.registry.set(r,a);return a};t.get=(n,r)=>e.registry.has(n)||void 0===r?e.registry.get(n):t(r,n);const n=t=>{const n=()=>{if(n.active&&!n.running){n.dependencies.forEach(e=>e.delete(n)),n.dependencies.clear(),n.running=!0,e.currentEffect=n;try{t()}finally{e.currentEffect=null,n.running=!1}}};return n.active=!0,n.running=!1,n.dependencies=new Set,n.stop=()=>{n.dependencies.forEach(e=>e.delete(n)),n.dependencies.clear(),n.active=!1},n(),n},r=()=>e.registry,o=new WeakMap,s=new WeakMap,i=new WeakMap,a=(e,t)=>Object.getOwnPropertyNames(e).filter(n=>"function"==typeof e[n]&&t(n)),l=a(Date.prototype,e=>/^(to|get|valueOf)/.test(e)),c=a(Date.prototype,e=>/^set/.test(e)),u=["map","forEach","filter","find","findIndex","some","every","reduce","reduceRight","includes","indexOf","lastIndexOf","join","slice","concat","flat","flatMap","at","entries","keys","values"],d=["push","pop","shift","unshift","splice","sort","reverse","fill","copyWithin"],h=["map","forEach","filter","find","findIndex","some","every","flatMap"],f=(e,t,n)=>{let r=e.get(t);return r||(r=n(),e.set(t,r)),r},p=(e,n,r,o)=>{if("__parent__"===n)return i.get(r);o.has(n)||o.set(n,t(Reflect.get(e,n,r)));const s=o.get(n).value;if("object"==typeof s&&null!==s){const e=y(s);return i.set(e,r),e}return s},m=(e,n,r,o,s)=>{s.has(n)||s.set(n,t(Reflect.get(e,n,o)));const i=Reflect.set(e,n,r,o),a=s.get(n);return i&&a&&(a.value=r),i},g=(e,n,r=[])=>{const o=f(s,e,()=>new Map);if(!o.has(n)){const r="function"==typeof e[n]?e[n].call(e):e[n];o.set(n,t(r))}const a=e instanceof Date,g=Array.isArray(e),v=a?l:g?u:r,b=a?c:g?d:[];return new Proxy(e,{get(e,t,r){if("__parent__"===t)return i.get(r);const s=e[t];if("function"==typeof s){const a=v.includes(t),l=b.includes(t);return function(...c){if(a){const e=o.get(n);e&&e.value}const u="function"==typeof e[n]?e[n].call(e):e[n];if(g&&h.includes(t)&&"function"==typeof c[0]){const e=c[0];c[0]=function(t,n,o){const s="object"==typeof t&&null!==t?y(t):t;return s&&"object"==typeof s&&i.set(s,r),e.call(this,s,n,o)}}const d=s.apply(e,c),f="function"==typeof e[n]?e[n].call(e):e[n];if(u!==f||l){const e=o.get(n);e&&e.value!==f&&(e.value=f)}return d}}if(t===n){const s=o.get(n);return s?s.value:Reflect.get(e,t,r)}if(g&&!isNaN(parseInt(t))){const e=o.get(n);e&&e.value}return p(e,t,r,o)},set(e,t,r,s){if(t===n){const i=Reflect.set(e,t,r,s);if(i){const e=o.get(n);e&&(e.value=r)}return i}return m(e,t,r,s,o)}})},y=(e,t)=>{if("object"!=typeof e||null===e)return e;const a="string"==typeof t?t:null==t?void 0:t.name,l=null==t?void 0:t.storage;if(a&&l)try{const t=l.getItem(a);if(t){const n=JSON.parse(t);Array.isArray(e)&&Array.isArray(n)?(e.length=0,e.push(...n)):Object.assign(e,n)}}catch(u){}let c=o.get(e);if(!c){const t=Array.isArray(e),n=e instanceof Date,r=t||n;if(!r&&(e instanceof RegExp||e instanceof Map||e instanceof Set||e instanceof WeakMap||e instanceof WeakSet))return e;c=r?g(e,t?"length":n?"getTime":null):new Proxy(e,{get:(e,t,n)=>"__parent__"===t?i.get(n):p(e,t,n,f(s,e,()=>new Map)),set:(e,t,n,r)=>m(e,t,n,r,f(s,e,()=>new Map))}),o.set(e,c)}if(a&&l&&n(()=>{try{l.setItem(a,JSON.stringify(c))}catch(u){}}),a){const e=r();if(e.has(a)){if(e.get(a)!==c)throw new Error(`Lightview: A signal or state with the name "${a}" is already registered.`)}else e.set(a,c)}return c};y.get=(e,t)=>{const n=r();return n.has(e)||void 0===t?n.get(e):y(t,e)};const v={get currentEffect(){return(globalThis.__LIGHTVIEW_INTERNALS__||(globalThis.__LIGHTVIEW_INTERNALS__={})).currentEffect}},b=new WeakMap,w=()=>({effects:[],onmount:null,onunmount:null}),S=r(),E=(e,t)=>{const n=f(b,e,w);n.effects||(n.effects=[]),n.effects.push(t)},A=Symbol("lightview.shadowDOM"),T=e=>e&&"object"==typeof e&&!0===e[A],C=(e,t)=>{if(t.shadowRoot)return void console.warn("Lightview: Element already has a shadowRoot, skipping shadowDOM directive");const n=t.attachShadow({mode:e.mode}),r=[],o=[...e.styles||[]];if(e.adoptedStyleSheets&&e.adoptedStyleSheets.length>0&&e.adoptedStyleSheets.forEach(e=>{e instanceof CSSStyleSheet?r.push(e):"string"==typeof e&&o.push(e)}),r.length>0)try{n.adoptedStyleSheets=r}catch(s){console.warn("Lightview: adoptedStyleSheets not supported")}for(const i of o){const e=document.createElement("link");e.rel="stylesheet",e.href=i,n.appendChild(e)}e.children&&e.children.length>0&&D(e.children,n)};let L=!1;const N=new WeakMap,O=(e,t,n={},r=[])=>{const o=_({tag:t,attributes:n,children:r,get domEl(){return e}});return N.set(e,o),o},M=(e,t={},r=[])=>{if(R[e]&&(e=R[e]),"function"==typeof e){const n=e({...t},r);return k(n)}if("shadowDOM"===e)return((e,t)=>({[A]:!0,mode:e.mode||"open",styles:e.styles||[],adoptedStyleSheets:e.adoptedStyleSheets||[],children:t}))(t,r);if("text"===e&&!L){const o=document.createTextNode(""),s={tag:e,attributes:t,children:r,get domEl(){return o}},i=()=>{const e=(Array.isArray(s.children)?s.children:[s.children]).flat(1/0).map(e=>{const t="function"==typeof e?e():e;return t&&"object"==typeof t&&t.domEl?t.domEl.textContent:null==t?"":String(t)});o.textContent=e.join(" ")},a=new Proxy(s,{set:(e,t,n)=>(e[t]=n,"children"===t&&i(),!0)});if(r.flat(1/0).some(e=>"function"==typeof e)){const e=n(i);E(o,e)}return i(),a}const o="svg"===e.toLowerCase(),s=L;o&&(L=!0);const i=L?document.createElementNS("http://www.w3.org/2000/svg",e):document.createElement(e),a=O(i,e,t,r);return a.attributes=t,a.children=r,o&&(L=s),a},k=e=>{if(!e)return null;if(F.hooks.processChild&&(e=F.hooks.processChild(e)??e),e.domEl)return e;const t=typeof e;if("object"===t&&e instanceof HTMLElement)return O(e,e.tagName.toLowerCase(),{},[]);if("object"===t&&e instanceof String){const t=document.createElement("span");return t.textContent=e.toString(),O(t,"span",{},[])}if("string"===t){const t=document.createElement("template");t.innerHTML=e.trim();const n=t.content;if(1===n.childNodes.length&&n.firstChild instanceof HTMLElement){const e=n.firstChild;return O(e,e.tagName.toLowerCase(),{},[])}{const e=document.createElement("span");return e.style.display="contents",e.appendChild(n),O(e,"span",{},[])}}return"object"==typeof e&&e.tag?M(e.tag,e.attributes||{},e.children||[]):null},_=e=>{const t=e.domEl;return new Proxy(e,{set:(e,n,r)=>(e[n]="attributes"===n?$(r,t):"children"===n?I(r,t):r,!0)})},W=new Set(["value","checked","selected","selectedIndex","className","innerHTML","innerText"]),x=(e,t,n)=>{const r="boolean"==typeof e[t];"href"!==t&&"src"!==t||"string"!=typeof n||!/^(javascript|vbscript|data:text\/html|data:application\/javascript)/i.test(n)||(console.warn(`[Lightview] Blocked dangerous protocol in ${t}: ${n}`),n="javascript:void(0)"),W.has(t)||r?e[t]=r?null!=n&&!1!==n&&"false"!==n:n:null==n?e.removeAttribute(t):e.setAttribute(t,n)},$=(e,t)=>{const r={};for(let[o,s]of Object.entries(e))if("onmount"===o||"onunmount"===o){f(b,t,w)[o]=s,"onmount"===o&&t.isConnected&&s(t)}else if(o.startsWith("on")){if("function"==typeof s){const e=o.slice(2).toLowerCase();t.addEventListener(e,s)}else"string"==typeof s&&t.setAttribute(o,s);r[o]=s}else if("function"==typeof s){const e=n(()=>{const e=s();"style"===o&&"object"==typeof e?Object.assign(t.style,e):x(t,o,e)});E(t,e),r[o]=s}else"style"===o&&"object"==typeof s?(Object.entries(s).forEach(([e,r])=>{if("function"==typeof r){const o=n(()=>{t.style[e]=r()});E(t,o)}else t.style[e]=r}),r[o]=s):(x(t,o,s),r[o]=s);return r},j=(e,t,r=!0)=>{r&&void 0!==t.innerHTML&&(t.innerHTML="");const o=[],s=t.tagName&&("script"===t.tagName.toLowerCase()||"style"===t.tagName.toLowerCase()),i=e.flat(1/0);for(let a of i){if(F.hooks.processChild&&!s&&(a=F.hooks.processChild(a)??a),T(a)){if(t instanceof ShadowRoot){console.warn("Lightview: Cannot nest shadowDOM inside another shadowDOM");continue}C(a,t);continue}const e=typeof a;if("function"===e){const e=document.createComment("lv:s"),r=document.createComment("lv:e");let s;t.appendChild(e),t.appendChild(r);const i=()=>{for(;e.nextSibling&&e.nextSibling!==r;)e.nextSibling.remove();const t=a();if(null!=t)if(!s||e.isConnected)if("object"==typeof t&&t instanceof String){const e=document.createTextNode(t);r.parentNode.insertBefore(e,r)}else{const e=document.createDocumentFragment(),n=Array.isArray(t)?t:[t];j(n,e,!1),r.parentNode.insertBefore(e,r)}else s.stop()};s=n(i),E(e,s),o.push(a)}else if(["string","number","boolean","symbol"].includes(e)||a&&"object"===e&&a instanceof String)t.appendChild(document.createTextNode(a)),o.push(a);else if(a instanceof Node){const e=a.domEl||a;if(e instanceof HTMLElement||e instanceof SVGElement){const n=O(e,e.tagName.toLowerCase());t.appendChild(e),o.push(n)}else t.appendChild(e),o.push(a)}else if(a&&"object"===e&&a.tag){const e=a.domEl?a:M(a.tag,a.attributes||{},a.children||[]);t.appendChild(e.domEl),o.push(e)}}return o},D=(e,t)=>j(e,t,!1),I=(e,t)=>j(e,t,!0),R={},P=new Proxy({},{get(e,t){if("_customTags"===t)return{...R};const n=(...e)=>{let n={},r=e;const o=e[0];return e.length>0&&o&&"object"==typeof o&&!o.tag&&!o.domEl&&!Array.isArray(o)&&(n=o,r=e.slice(1)),M(R[t]||t,n,r)};return R[t]&&Object.assign(n,R[t]),n},set:(e,t,n)=>(R[t]=n,!0)}),F={signal:t,get:t.get,computed:e=>{const r=t(void 0);return n(()=>{r.value=e()}),r},effect:n,registry:S,element:M,enhance:(e,t={})=>{const r="string"==typeof e?document.querySelector(e):e,o=r.domEl||r;if(!(o instanceof HTMLElement))return null;const s=o.tagName.toLowerCase();let i=N.get(o);i||(i=O(o,s));const{innerText:a,innerHTML:l,...c}=t;return void 0!==a&&("function"==typeof a?n(()=>{o.innerText=a()}):o.innerText=a),void 0!==l&&("function"==typeof l?n(()=>{o.innerHTML=l()}):o.innerHTML=l),Object.keys(c).length>0&&(i.attributes=c),i},tags:P,$:(e,t=document.body)=>{const n="string"==typeof e?t.querySelector(e):e;return n?(Object.defineProperty(n,"content",{value(e,t="inner"){t=t.toLowerCase(),F.tags;const r=n.tagName&&("script"===n.tagName.toLowerCase()||"style"===n.tagName.toLowerCase()),o=(Array.isArray(e)?e:[e]).map(e=>(F.hooks.processChild&&!r&&(e=F.hooks.processChild(e)??e),e.tag&&!e.domEl?M(e.tag,e.attributes||{},e.children||[]).domEl:e.domEl||e)),s="shadow"===t?n.shadowRoot||n.attachShadow({mode:"open"}):n;return"inner"===t||"shadow"===t?s.replaceChildren(...o):"outer"===t?s.replaceWith(...o):"afterbegin"===t?s.prepend(...o):"beforeend"===t?s.append(...o):o.forEach(e=>n.insertAdjacentElement(t,e)),n},configurable:!0,writable:!0}),n):null},hooks:{onNonStandardHref:null,processChild:null,validateUrl:null},internals:{core:v,domToElement:N,wrapDomElement:O,setupChildren:I}};if("undefined"!=typeof module&&module.exports&&(module.exports=F),"undefined"!=typeof window&&(globalThis.Lightview=F,globalThis.addEventListener("click",e=>{const t=e.composedPath().find(e=>{var t,n;return"A"===e.tagName&&(null==(n=null==(t=e.getAttribute)?void 0:t.call(e,"href"))?void 0:n.startsWith("#"))});if(t&&!e.defaultPrevented){const n=t.getAttribute("href");if(n.length>1){const r=n.slice(1),o=t.getRootNode(),s=(o.getElementById?o.getElementById(r):null)||(o.querySelector?o.querySelector(`#${r}`):null);s&&(e.preventDefault(),requestAnimationFrame(()=>{requestAnimationFrame(()=>{s.style.scrollMarginTop="calc(var(--site-nav-height, 0px) + 2rem)",s.scrollIntoView({behavior:"smooth",block:"start",inline:"start"})})}))}}F.hooks.onNonStandardHref&&F.hooks.onNonStandardHref(e)}),"undefined"!=typeof MutationObserver)){const e=(t,n)=>{var r;n(t),null==(r=t.childNodes)||r.forEach(t=>e(t,n)),t.shadowRoot&&e(t.shadowRoot,n)},t=t=>e(t,e=>{var t,n;const r=b.get(e);r&&(null==(t=r.effects)||t.forEach(e=>e.stop()),null==(n=r.onunmount)||n.call(r,e),b.delete(e))}),n=t=>e(t,e=>{var t,n;null==(n=null==(t=b.get(e))?void 0:t.onmount)||n.call(t,e)}),r=new MutationObserver(e=>{e.forEach(e=>{e.removedNodes.forEach(t),e.addedNodes.forEach(n)})}),o=()=>{document.body&&r.observe(document.body,{childList:!0,subtree:!0})};"loading"===document.readyState?document.addEventListener("DOMContentLoaded",o):o()}const H=["img","script","iframe","video","audio","source","track","embed","input"],q=["a","area","base","link"],U=e=>{if(!e||"string"!=typeof e)return!1;const t=e.trim().toLowerCase();return t.startsWith("javascript:")||t.startsWith("vbscript:")||t.startsWith("data:text/html")||t.startsWith("data:application/javascript")},B=e=>{if(!e)return!1;if(!/^[a-z][a-z0-9+.-]*:/i.test(e))return!0;try{const t="undefined"!=typeof document?document.baseURI:globalThis.location.origin,n=new URL(e,"null"===t?void 0:t),r=globalThis.location;return n.origin===r.origin&&"null"!==n.origin||(!(!n.hostname||n.hostname!==r.hostname)||(!!(n.hostname&&r.hostname&&n.hostname.endsWith("."+r.hostname))||"file:"===r.protocol&&"file:"===n.protocol))}catch(t){return!1}},z=e=>{var t,n;if("object"!=typeof e||null===e)return e;if(Array.isArray(e))return e.map(z);if(e.tag)return{...e,children:e.children?z(e.children):[]};if(e.domEl||!(e=>{if("object"!=typeof e||null===e||Array.isArray(e)||e.tag||e.domEl)return!1;const t=Object.keys(e);return 1===t.length&&"string"==typeof(n=t[0])&&n.length>0&&"children"!==n&&"object"==typeof e[t[0]];var n})(e))return e;const r=Object.keys(e)[0],o=e[r],s="undefined"!=typeof window||"undefined"!=typeof globalThis?globalThis.Lightview:null,i=(null==(n=null==(t=null==s?void 0:s.tags)?void 0:t._customTags)?void 0:n[r])||r,{children:a,...l}=o;return{tag:i,attributes:l,children:a?z(a):[]}},X="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css",J={initialized:!1,shadowDefault:!0,daisyStyleSheet:null,themeStyleSheet:null,componentStyleSheets:new Map,customStyleSheets:new Map,customStyleSheetPromises:new Map},V=async(e,t)=>{if(J.customStyleSheets.has(e))return J.customStyleSheets.get(e);if(J.customStyleSheetPromises.has(e))return J.customStyleSheetPromises.get(e);const n=(async()=>{try{let n=t;if(void 0===n)if(e.startsWith("#")){const t=document.querySelector(e);if(!t)throw new Error(`Style block '${e}' not found`);n=t.textContent}else{const t=await fetch(e);if(!t.ok)throw new Error(`Fetch failed: ${t.status}`);n=await t.text()}if(void 0!==n){const t=new CSSStyleSheet;return t.replaceSync(n),J.customStyleSheets.set(e,t),t}}catch(n){console.error(`LightviewX: Failed to register stylesheet '${e}':`,n)}finally{J.customStyleSheetPromises.delete(e)}})();return J.customStyleSheetPromises.set(e,n),n},Y=()=>{try{if("undefined"!=typeof localStorage)return localStorage.getItem("lightview-theme")}catch(e){return null}},G=t("undefined"!=typeof document&&document.documentElement.getAttribute("data-theme")||Y()||"light"),Z=e=>{if(e){"undefined"!=typeof document&&document.documentElement.setAttribute("data-theme",e),G&&G.value!==e&&(G.value=e);try{"undefined"!=typeof localStorage&&localStorage.setItem("lightview-theme",e)}catch(t){}}},K=async(e={})=>{const{shadowDefault:t=!0}=e;if(J.shadowDefault=t,t)try{const e=await fetch(X);if(!e.ok)throw new Error(`Failed to fetch DaisyUI CSS: ${e.status}`);const t=await e.text(),n=new CSSStyleSheet;n.replaceSync(t),J.daisyStyleSheet=n}catch(n){console.error("LightviewX: Failed to preload DaisyUI stylesheet:",n)}J.initialized=!0};(async()=>{await K()})();const Q=(e,t=[])=>{const n=[];if(J.daisyStyleSheet?n.push(J.daisyStyleSheet):n.push(X),J.themeStyleSheet&&n.push(J.themeStyleSheet),e){const t=J.componentStyleSheets.get(e);t&&n.push(t)}return Array.isArray(t)&&t.forEach(e=>{const t=J.customStyleSheets.get(e);t?n.push(t):(V(e),n.push(e))}),n},ee=e=>{try{const t=e.trim().startsWith("${")&&e.trim().endsWith("}")&&!e.trim().includes("${",2)?"return "+e.trim().slice(2,-1):"return `"+e.replace(/\\/g,"\\\\").replace(/`/g,"\\`")+"`";return new Function("state","signal",t)}catch(t){return()=>""}},te=(e,t,n=null)=>{const r="script"===n||"style"===n,o=globalThis.Lightview;return e.map(e=>e.nodeType===Node.TEXT_NODE?((e,t,n)=>{const r=e.textContent;if(t)return r;if(!r.trim()&&!r.includes("${"))return null;if(r.includes("${")){const e=ee(r);return()=>e(n.state,n.signal)}return r})(e,r,o):e.nodeType===Node.ELEMENT_NODE?((e,t,n)=>{const r=e.tagName.toLowerCase(),o={},s="script"===r||"style"===r,i="undefined"!=typeof window||"undefined"!=typeof globalThis?globalThis.Lightview:null;for(let a of e.attributes){const e=a.value;o[a.name]=!s&&e.includes("${")?(()=>{const t=ee(e);return()=>t(i.state,i.signal)})():e}return t(r,o,n(Array.from(e.childNodes),t,r))})(e,t,te):null).filter(e=>null!==e)},ne=new WeakMap,re=(e,t=!1)=>document.createComment(`lv-src-${t?"end":"start"}:${e}`),oe=e=>{if(!e)return;e.querySelectorAll("script").forEach(e=>{const t=document.createElement("script");Array.from(e.attributes).forEach(e=>{t.setAttribute(e.name,e.value)}),e.src?t.src=e.src:t.textContent=e.textContent,e.parentNode.replaceChild(t,e)})},se=(e,t,n,r,o,s=!1,i="")=>{var a;if(t)return Array.isArray(e)?e:[e];if(s&&"cdomc"===i){const t=null==(a=globalThis.LightviewCDOM)?void 0:a.parseCDOMC;if(!t)return console.warn("LightviewX: CDOMC parser not found. Ensure lightview-cdom.js is loaded."),[];try{const n=t(e);return Array.isArray(n)?n:[n]}catch(l){return console.warn("LightviewX: Failed to parse .cdomc:",l),[]}}if(n){if("true"===r.domEl.getAttribute("escape"))return[e];const t=(new DOMParser).parseFromString(e.replace(/<head[^>]*>[\s\S]*?<\/head>/i,""),"text/html");return te([...Array.from(t.head.childNodes),...Array.from(t.body.childNodes)],o)}return[e]},ie=(e,t,n,r,o,{element:s,setupChildren:i},a=null)=>{const l=`${r}-${o.slice(0,8)}`;let c=f(ne,e.domEl,()=>({}));c[r]&&((e,t)=>{const n=`lv-src-start:${t}`,r=`lv-src-end:${t}`;let o=!1;const s=[],i=document.createTreeWalker(e.parentElement||e,NodeFilter.SHOW_COMMENT|NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT,null,!1);for(;i.nextNode();){const e=i.currentNode;if(e.nodeType===Node.COMMENT_NODE){if(e.textContent===n){o=!0,s.push(e);continue}if(e.textContent===r){s.push(e);break}}o&&s.push(e)}s.forEach(e=>e.remove()),s.length})(e.domEl,`${r}-${c[r].slice(0,8)}`),c[r]=o;const u=e=>{a&&requestAnimationFrame(()=>{requestAnimationFrame(()=>{const t=a.startsWith("#")?a.slice(1):a,n=e.getElementById?e.getElementById(t):e.querySelector(`#${t}`);n&&(n.style.scrollMarginTop="calc(var(--site-nav-height, 0px) + 2rem)",n.scrollIntoView({behavior:"smooth",block:"start",inline:"start"}))})})};"shadow"===r?(e.domEl.shadowRoot||e.domEl.attachShadow({mode:"open"}),i(t,e.domEl.shadowRoot),oe(e.domEl.shadowRoot),u(e.domEl.shadowRoot)):"innerhtml"===r?(e.children=t,oe(e.domEl),u(document)):(((e,t,n,r,{element:o,setupChildren:s})=>{const i="outerhtml"===n,a="beforebegin"===n||"afterend"===n||i?t.parentElement:t;if(!a)return console.warn(`LightviewX: No parent for ${n}`);const l=document.createDocumentFragment();l.appendChild(re(r,!1)),e.forEach(e=>{var t,n,r;if("string"==typeof e)l.appendChild(document.createTextNode(e));else if(e.domEl)l.appendChild(e.domEl);else if(e instanceof Node)l.appendChild(e);else{const s=(null==(r=null==(t=globalThis.Lightview)?void 0:(n=t.hooks).processChild)?void 0:r.call(n,e))||e;if(s.tag){const e=o(s.tag,s.attributes||{},s.children||[]);(null==e?void 0:e.domEl)&&l.appendChild(e.domEl)}}}),l.appendChild(re(r,!0)),i?a.replaceChild(l,t):"beforebegin"===n?a.insertBefore(l,t):"afterend"===n?a.insertBefore(l,t.nextSibling):"afterbegin"===n?t.insertBefore(l,t.firstChild):"beforeend"===n&&t.appendChild(l),oe(a)})(t,e.domEl,r,l,{element:s,setupChildren:i}),u(document))},ae=async(e,t,n,{element:r,setupChildren:o})=>{if(H.includes(n))return;let s=[],i="",a=null;if("string"==typeof(l=t)&&!U(l)&&/^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom|cdomc?))$/i.test(l)){t.includes("#")&&([t,a]=t.split("#"));const n=await(async e=>{var t;try{const n=globalThis.Lightview;if((null==(t=null==n?void 0:n.hooks)?void 0:t.validateUrl)&&!n.hooks.validateUrl(e))return console.warn(`[LightviewX] Fetch blocked by validateUrl hook: ${e}`),null;const r=new URL(e,document.baseURI),o=await fetch(r);if(!o.ok)return null;const s=r.pathname.split(".").pop().toLowerCase(),i="vdom"===s||"odom"===s||"cdom"===s,a="html"===s,l="cdom"===s||"cdomc"===s,c=i?await o.json():await o.text();return{content:c,isJson:i,isHtml:a,isCdom:l,ext:s,raw:i?JSON.stringify(c):c}}catch(n){return null}})(t);n&&(s=se(n.content,n.isJson,n.isHtml,e,r,n.isCdom,n.ext),i=n.raw)}var l;if(!s.length){const e=((e,t)=>{try{const n=document.querySelectorAll(e);return n.length?{elements:te(Array.from(n),t),raw:Array.from(n).map(e=>e.outerHTML||e.textContent).join("")}:null}catch(n){return null}})(t,r);e&&(s=e.elements,i=e.raw)}if(!s.length)return;const c=(e.domEl.getAttribute("location")||"innerhtml").toLowerCase(),u=(e=>{let t=0;for(let n=0;n<e.length;n++)t=(t<<5)-t+e.charCodeAt(n),t&=t;return t.toString(36)})(i);if(f(ne,e.domEl,()=>({}))[c]!==u)ie(e,s,0,c,u,{element:r,setupChildren:o},a);else if(a){const t="shadow"===c?e.domEl.shadowRoot:document;t&&requestAnimationFrame(()=>{requestAnimationFrame(()=>{var e;const n=a.startsWith("#")?a.slice(1):a,r=t.getElementById?t.getElementById(n):null==(e=t.querySelector)?void 0:e.call(t,`#${n}`);r&&(r.style.scrollMarginTop="calc(var(--site-nav-height, 0px) + 2rem)",r.scrollIntoView({behavior:"smooth",block:"start",inline:"start"}))})})}},le=["beforebegin","afterbegin","beforeend","afterend","innerhtml","outerhtml","shadow"],ce=(e,{domToElement:t,wrapDomElement:n})=>{var r;const o=e.target.closest("[href]");if(!o)return;const s=o.tagName.toLowerCase();if(q.includes(s))return;e.preventDefault();const i=o.getAttribute("href"),a=globalThis.Lightview;if(i&&(U(i)||(null==(r=null==a?void 0:a.hooks)?void 0:r.validateUrl)&&!a.hooks.validateUrl(i)))return void console.warn(`[LightviewX] Navigation or fetch blocked by security policy: ${i}`);const l=o.getAttribute("target");if(!l){let e=t.get(o);if(!e){const t={};for(let e of o.attributes)t[e.name]=e.value;e=n(o,s,t)}const r={...e.attributes,src:i};return void(e.attributes=r)}if(l.startsWith("_")){switch(l){case"_self":globalThis.location.href=i;break;case"_parent":globalThis.parent.location.href=i;break;case"_top":globalThis.top.location.href=i;break;default:globalThis.open(i,l)}return}const{selector:c,location:u}=(e=>{for(const t of le){const n=":"+t;if(e.toLowerCase().endsWith(n))return{selector:e.slice(0,-n.length),location:t}}return{selector:e,location:null}})(l);try{document.querySelectorAll(c).forEach(e=>{let r=t.get(e);if(!r){const t={};for(let n of e.attributes)t[n.name]=n.value;r=n(e,e.tagName.toLowerCase(),t)}const o={...r.attributes,src:i};u&&(o.location=u),r.attributes=o})}catch(d){console.warn("Invalid target selector:",c,d)}},ue=new WeakMap,de="__lv_passed",he="__lv_resume",fe=["click","dblclick","mousedown","mouseup","contextmenu","submit","reset","change","input","invalid","keydown","keyup","keypress","touchstart","touchend"],pe=["focus","blur"],me=(e,t)=>{let n=ue.get(e);n||(n=new Map,ue.set(e,n));let r=n.get(t);return r||(r={},n.set(t,r)),r},ge=function(e){const t=arguments[arguments.length-1];if(null==t?void 0:t[he])return!0;const n=`throttle-${(null==t?void 0:t.type)||"all"}-${e}`,r=me(this,n),o=Date.now();return o-(r.last||0)>=e&&(r.last=o,!0)},ye=function(e){const t=arguments[arguments.length-1],n=`debounce-${(null==t?void 0:t.type)||"all"}-${e}`,r=me(this,n);return r.timer&&clearTimeout(r.timer),(null==t?void 0:t[he])&&r.passed?(r.passed=!1,!0):(r.timer=setTimeout(()=>{r.passed=!0;const e=new t.constructor(t.type,t);e[he]=!0,this.dispatchEvent(e)},e),!1)},ve=async e=>{var t,n;if(e[de])return;const r=null==(n=(t=e.target).closest)?void 0:n.call(t,"[lv-before]");if(!r)return;const{events:o,exclusions:s,calls:i}=(e=>{const t=[];let n="",r=0,o=null;for(let c=0;c<e.length;c++){const s=e[c];o?(n+=s,s===o&&"\\"!==e[c-1]&&(o=null)):"'"===s||'"'===s?(o=s,n+=s):"("===s?(r++,n+=s):")"===s?(r--,n+=s):/\s/.test(s)&&0===r?(n&&t.push(n),n=""):n+=s}n&&t.push(n);const s=[],i=[],a=[];let l=0;for(;l<t.length;){const e=t[l];if(!e||e.includes("("))break;e.startsWith("!")?i.push(e.slice(1)):s.push(e),l++}for(;l<t.length;)t[l]&&a.push(t[l]),l++;return{events:s,exclusions:i,calls:a}})(r.getAttribute("lv-before")),a=s.includes(e.type),l=o.includes("*")||o.includes(e.type);if(a||!l)return;e.stopImmediatePropagation(),e.preventDefault();for(const d of i)try{const t=d.match(/^([\w\.]+)\((.*)\)$/);if(!t)continue;const n=t[1],o=t[2],s=globalThis.Lightview,i=globalThis.LightviewX;let a=n.split(".").reduce((e,t)=>null==e?void 0:e[t],globalThis);if(a||"throttle"!==n||(a=ge),a||"debounce"!==n||(a=ye),!a&&i&&i[n]&&(a=i[n]),"function"!=typeof a){console.warn(`LightviewX: lv-before function '${n}' not found`);continue}const l=new Function("event","state","signal",`return [${o}]`).call(r,e,(null==s?void 0:s.state)||{},(null==s?void 0:s.signal)||{});l.push(e);let c=a.apply(r,l);if(c instanceof Promise&&(c=await c),!1===c||null==c)return}catch(u){return void console.error(`LightviewX: Error executing lv-before gate '${d}':`,u)}const c=new e.constructor(e.type,e);c[de]=!0,r.dispatchEvent(c)},be=(e,t)=>{if(e.nodeType!==Node.ELEMENT_NODE)return;const n=e.tagName.toLowerCase();if((e=>H.includes(e)||e.startsWith("lv-"))(n))return;const r=e.getAttribute("src");if(!r)return;let o=t.internals.domToElement.get(e);if(!o){const r={};for(let t of e.attributes)r[t.name]=t.value;o=t.internals.wrapDomElement(e,n,r,[])}ae(o,r,n,{element:t.element,setupChildren:t.internals.setupChildren})},we=new WeakSet,Se=(e,t)=>{if(!e||!t)return;const n=(e,n,r=!1,o=null)=>{if(we.has(e)&&!r)return;r||we.add(e);const s=ee(n);t.effect(()=>{try{const n=s(t.state,t.signal);r?null==n||!1===n?e.removeAttribute(o):e.setAttribute(o,n):e.textContent=void 0!==n?n:""}catch(n){}})},r=document.evaluate(".//text()[contains(., '${')]",e,null,XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,null);for(let s=0;s<r.snapshotLength;s++){const e=r.snapshotItem(s);e.parentElement&&e.parentElement.closest("SCRIPT, STYLE, CODE, PRE, TEMPLATE, NOSCRIPT")||n(e,e.textContent)}const o=document.evaluate(".//*[@*[contains(., '${')]]",e,null,XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,null);for(let s=0;s<o.snapshotLength;s++){const e=o.snapshotItem(s);["SCRIPT","STYLE","CODE","PRE","TEMPLATE","NOSCRIPT"].includes(e.tagName)||Array.from(e.attributes).forEach(t=>{t.value.includes("${")&&n(e,t.value,!0,t.name)})}e.nodeType!==Node.ELEMENT_NODE||["SCRIPT","STYLE","CODE","PRE","TEMPLATE","NOSCRIPT"].includes(e.tagName)||Array.from(e.attributes).forEach(t=>{t.value.includes("${")&&n(e,t.value,!0,t.name)})},Ee=(e,t,n)=>{if(e.nodeType!==Node.ELEMENT_NODE&&e.nodeType!==Node.TEXT_NODE||n.push(e),e.nodeType!==Node.ELEMENT_NODE)return;t.push(e);const r="[src]:not("+H.join("):not(")+")",o=e.querySelectorAll(r);for(const s of o)s.tagName.toLowerCase().startsWith("lv-")||t.push(s)},Ae=e=>{const t=new MutationObserver(t=>{const{nodesToProcess:n,nodesToActivate:r}=(e=>{const t=[],n=[];for(const r of e)"childList"===r.type?r.addedNodes.forEach(e=>Ee(e,t,n)):"attributes"===r.type&&"src"===r.attributeName&&t.push(r.target);return{nodesToProcess:t,nodesToActivate:n}})(t);(n.length>0||r.length>0)&&requestAnimationFrame(()=>{r.forEach(t=>Se(t,e)),n.forEach(t=>be(t,e))})});return t.observe(document.body,{childList:!0,subtree:!0,attributes:!0,attributeFilter:["src"]}),t};if("undefined"!=typeof window&&globalThis.Lightview){const e=globalThis.Lightview;"loading"===document.readyState?document.addEventListener("DOMContentLoaded",()=>Ae(e)):Ae(e);const t=()=>{requestAnimationFrame(()=>{Se(document.body,e);const t="[src]:not("+H.join("):not(")+")";document.querySelectorAll(t).forEach(t=>{t.tagName.toLowerCase().startsWith("lv-")||be(t,e)})})};document.body?t():document.addEventListener("DOMContentLoaded",t),e.hooks.onNonStandardHref=t=>{ce(t,{domToElement:e.internals.domToElement,wrapDomElement:e.internals.wrapDomElement})},fe.forEach(e=>window.addEventListener(e,ve,!0)),pe.forEach(e=>window.addEventListener(e,ve,!0)),e.hooks.processChild=t=>{if(!t)return t;if("object"!=typeof t||Array.isArray(t)||t.tag||t.domEl||(t=z(t)),"string"==typeof t&&t.startsWith("$")&&isNaN(parseInt(t[1]))){const e=globalThis.LightviewCDOM;if(e)return e.parseExpression(t)}if("string"==typeof t&&(t.trim().startsWith("{")||t.trim().startsWith("[")))try{const e=new Function("return ("+t+")")();if("object"==typeof e&&null!==e)return Array.isArray(e)||e.tag||e.domEl?e:z(e)}catch(n){}return((e,t)=>{if("string"==typeof e&&e.includes("${")){const n=ee(e);return()=>n(t.state,t.signal)}return e})(t,{state:y,signal:e.signal})}}const Te={state:y,themeSignal:G,setTheme:Z,registerStyleSheet:V,registerThemeSheet:async e=>{try{const t=await fetch(e);if(!t.ok)throw new Error(`Failed to fetch theme CSS: ${t.status}`);const n=await t.text(),r=new CSSStyleSheet;r.replaceSync(n),J.themeStyleSheet=r}catch(t){console.error(`LightviewX: Failed to register theme stylesheet '${e}':`,t)}},throttle:ge,debounce:ye,initComponents:K,componentConfig:J,shouldUseShadow:e=>void 0!==e?e:J.shadowDefault,getAdoptedStyleSheets:Q,preloadComponentCSS:async e=>{J.componentStyleSheets.has(e)||await(async e=>{if(J.componentStyleSheets.has(e))return J.componentStyleSheets.get(e);try{const t=await fetch(e);if(!t.ok)throw new Error(`Failed to fetch component CSS: ${t.status}`);const n=await t.text(),r=new CSSStyleSheet;return r.replaceSync(n),J.componentStyleSheets.set(e,r),r}catch(t){return console.error(`LightviewX: Failed to create stylesheet for ${e}:`,t),null}})(e)},createCustomElement:(e,t={})=>class extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"})}async connectedCallback(){const{cssUrl:n,styles:r}=t;this.themeWrapper=document.createElement("div"),this.themeWrapper.style.display="contents";const o=()=>{const e=document.documentElement.getAttribute("data-theme")||"light";this.themeWrapper.setAttribute("data-theme",e)};o(),this.themeObserver=new MutationObserver(o),this.themeObserver.observe(document.documentElement,{attributes:!0,attributeFilter:["data-theme"]}),this.shadowRoot.appendChild(this.themeWrapper);const s=Q(n,r);try{const e=s.filter(e=>e instanceof CSSStyleSheet);this.shadowRoot.adoptedStyleSheets=e}catch(i){}if(!J.daisyStyleSheet){const e=document.createElement("link");e.rel="stylesheet",e.href=X,this.shadowRoot.appendChild(e)}s.forEach(e=>{if("string"==typeof e){const t=document.createElement("link");t.rel="stylesheet",t.href=e,this.shadowRoot.appendChild(t)}}),this.render=()=>{const t={};for(const e of this.attributes){const n=e.name.replace(/-([a-z])/g,e=>e[1].toUpperCase());""===e.value?t[n]=!0:t[n]=e.value}t.useShadow=!1;const n=globalThis.Lightview.tags.slot(),r=e(t,n);globalThis.Lightview.internals.setupChildren([r],this.themeWrapper)},"undefined"!=typeof MutationObserver&&"undefined"!=typeof HTMLElement&&(this.attrObserver=new MutationObserver(e=>{this.render()}),this.attrObserver.observe(this,{attributes:!0})),this.render()}disconnectedCallback(){this.themeObserver&&this.themeObserver.disconnect(),this.attrObserver&&this.attrObserver.disconnect()}},customElementWrapper:(e,t={})=>{const{attributeMap:n={},childElements:r={}}=t;return class extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"})}connectedCallback(){let e=!1;if(J.daisyStyleSheet)try{const t=[J.daisyStyleSheet];J.themeStyleSheet&&t.push(J.themeStyleSheet),this.shadowRoot.adoptedStyleSheets=t,e=!0}catch(s){}if(!e){const e=document.createElement("link");e.rel="stylesheet",e.href=X,this.shadowRoot.appendChild(e)}const t=document.createElement("div");t.setAttribute("data-theme",document.documentElement.getAttribute("data-theme")||"light"),t.style.display="contents",this.shadowRoot.appendChild(t),this.themeWrapper=t,this.themeObserver=new MutationObserver(()=>{const e=document.documentElement.getAttribute("data-theme")||"light";this.themeWrapper.setAttribute("data-theme",e)}),this.themeObserver.observe(document.documentElement,{attributes:!0,attributeFilter:["data-theme"]}),this.render();const o=Object.keys(n);o.length>0&&(this.attrObserver=new MutationObserver(()=>this.render()),this.attrObserver.observe(this,{attributes:!0,attributeFilter:o})),Object.keys(r).length>0&&(this.childObserver=new MutationObserver(()=>this.render()),this.childObserver.observe(this,{childList:!0,subtree:!0,attributes:!0}))}disconnectedCallback(){this.themeObserver&&this.themeObserver.disconnect(),this.attrObserver&&this.attrObserver.disconnect(),this.childObserver&&this.childObserver.disconnect()}parseChildrenToVDOM(){return Array.from(this.children).map(e=>{const t=e.tagName.toLowerCase(),n=r[t];if(!n)return null;const{component:o,attributeMap:s={}}=n,i={};for(const r of e.attributes){const e=r.name.replace(/-([a-z])/g,e=>e[1].toUpperCase()),t=s[e],n=r.value;if(t===Boolean)i[e]="true"===n||""===n;else if(t===Number)i[e]=Number(n);else if(t===Array||t===Object)try{i[e]=JSON.parse(n)}catch(a){console.warn(`[Lightview] Failed to parse child attribute ${e} as JSON:`,n),i[e]=n}else i[e]=n}return e.onclick&&(i.onclick=e.onclick.bind(e)),{tag:o,attributes:i,children:Array.from(e.childNodes)}}).filter(Boolean)}render(){var t,o;const s={useShadow:!1};for(const e of this.attributes){const t=e.name.replace(/-([a-z])/g,e=>e[1].toUpperCase()),r=n[t],o=e.value;if(r===Boolean)s[t]="true"===o||""===o;else if(r===Number)s[t]=Number(o);else if(r===Array||r===Object)try{s[t]=JSON.parse(o)}catch(c){console.warn(`[Lightview] Failed to parse ${t} as JSON:`,o),s[t]=o}else s[t]=o}const i=this.parseChildrenToVDOM(),a=Object.keys(r).length>0?i:[{tag:globalThis.Lightview.tags.slot}],l=e(s,...a);(null==(o=null==(t=globalThis.Lightview)?void 0:t.internals)?void 0:o.setupChildren)&&this.themeWrapper&&(this.themeWrapper.innerHTML="",globalThis.Lightview.internals.setupChildren([l],this.themeWrapper))}static get observedAttributes(){return Object.keys(n)}attributeChangedCallback(){this.render()}}},internals:{handleSrcAttribute:ae,parseElements:se}};if("undefined"!=typeof module&&module.exports&&(module.exports=Te),"undefined"!=typeof window&&(globalThis.LightviewX=Te),"undefined"!=typeof window){try{const e=Y();e&&Z(e)}catch(Mn){}"undefined"!=typeof window&&globalThis.Lightview&&(globalThis.Lightview.hooks.validateUrl||(globalThis.Lightview.hooks.validateUrl=B))}"undefined"!=typeof globalThis&&globalThis.Lightview&&(globalThis.Lightview.hooks.validateUrl||(globalThis.Lightview.hooks.validateUrl=B));const Ce=new Map,Le=new Map,Ne=(e,t,n={})=>{Ce.set(e,t),n&&Le.set(e,n)},Oe=()=>globalThis.Lightview||null,Me=()=>{var e;return(null==(e=Oe())?void 0:e.registry)||null};class ke{constructor(e,t){this.parent=e,this.key=t,this.isBindingTarget=!0}get value(){return this.parent[this.key]}set value(e){this.parent[this.key]=e}get __parent__(){return this.parent}}const _e=e=>e&&"function"==typeof e&&"value"in e?e.value:!e||"object"!=typeof e||globalThis.Node&&e instanceof globalThis.Node||!("value"in e)?e:e.value,We=(e,t)=>{let n=e;for(const r of t){if(!r)continue;if(n=_e(n),null==n)return;n=n[r.startsWith("[")?r.slice(1,-1):r]}return _e(n)},xe=(e,t)=>{let n=e;for(let r=0;r<t.length;r++){const e=t[r];if(!e)continue;const o=e.startsWith("[")?e.slice(1,-1):e,s=_e(n);if(null==s)return;if(r===t.length-1)return new ke(s,o);n=s[o]}return n},$e=(e,t)=>{if("string"!=typeof e)return e;const n=Me();if("."===e)return _e(t);if(e.startsWith("$/")){const[t,...r]=e.slice(2).split("/"),o=null==n?void 0:n.get(t);if(!o)return;return We(o,r)}if(e.startsWith("./"))return We(t,e.slice(2).split("/"));if(e.startsWith("../"))return We(null==t?void 0:t.__parent__,e.slice(3).split("/"));if(e.includes("/")||e.includes("."))return We(t,e.split(/[\/.]/));const r=_e(t);return r&&"object"==typeof r&&(e in r||void 0!==r[e])?We(r,[e]):e},je=(e,t)=>{if("string"!=typeof e)return e;const n=Me();if("."===e)return t;if(e.startsWith("$/")){const t=e.slice(2).split(/[\/.]/),r=t.shift(),o=null==n?void 0:n.get(r);if(!o)return;return xe(o,t)}if(e.startsWith("./"))return xe(t,e.slice(2).split(/[\/.]/));if(e.startsWith("../"))return xe(null==t?void 0:t.__parent__,e.slice(3).split(/[\/.]/));if(e.includes("/")||e.includes("."))return xe(t,e.split(/[\/.]/));const r=_e(t);return r&&"object"==typeof r&&/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(e)?new ke(r,e):e};class De{constructor(e){this.fn=e,this.isLazy=!0}resolve(e){return this.fn(e)}}const Ie=(e,t,n=!1)=>{if(e.startsWith("'")&&e.endsWith("'")||e.startsWith('"')&&e.endsWith('"'))return{value:e.slice(1,-1),isLiteral:!0};if(""!==e&&!isNaN(Number(e)))return{value:Number(e),isLiteral:!0};if("true"===e)return{value:!0,isLiteral:!0};if("false"===e)return{value:!1,isLiteral:!0};if("null"===e)return{value:null,isLiteral:!0};if("_"===e||e.startsWith("_/")||e.startsWith("_."))return{value:new De(t=>{if("_"===e)return t;const n=(e.startsWith("_."),e.slice(2));return $e(n,t)}),isLazy:!0};if("$event"===e||e.startsWith("$event/")||e.startsWith("$event."))return{value:new De(t=>{if("$event"===e)return t;const n=(e.startsWith("$event."),e.slice(7));return $e(n,t)}),isLazy:!0};if(e.includes("(")){let r=e;e.startsWith("/")?r="$"+e:!n||e.startsWith("$")||e.startsWith("./")||(r=`$/${e}`);const o=Re(r,t);return o instanceof De?{value:o,isLazy:!0}:{value:o,isSignal:!1}}const r=e.endsWith("..."),o=r?e.slice(0,-3):e;let s;if(s=o.startsWith("/")?"$"+o:o.startsWith("$")||o.startsWith("./")||o.startsWith("../")?o:n?`$/${o}`:`./${o}`,r){const e=s.split("/"),n=e.pop(),r=e.join("/"),o=r?$e(r,t):t,i=_e(o);if(Array.isArray(i)){return{value:i.map(e=>{const t=_e(e);return t&&t[n]}),isExplosion:!0}}if(i&&"object"==typeof i){const e=i[n];return{value:_e(e),isExplosion:!0}}return{value:void 0,isExplosion:!0}}return{value:je(s,t),isExplosion:!1}},Re=(e,t)=>{var n;if("string"!=typeof e)return e;const r=e.indexOf("(");if(-1!==r&&e.endsWith(")")){const o=e.slice(0,r).trim(),s=e.slice(r+1,-1),i=o.split("/");let a=i.pop().replace(/^\$/,"");""===a&&(i.length>0||"/"===o)&&(a="/");const l=i.join("/"),c=e.startsWith("$/")||e.startsWith("$");let u=t;l&&"$"!==l&&(u=je(l,t));const d=Ce.get(a);if(!d)return null==(n=globalThis.console)||n.warn(`LightviewCDOM: Helper "${a}" not found.`),e;const h=Le.get(a)||{},f=[];let p="",m=0,g=null;for(let e=0;e<s.length;e++){const t=s[e];if(t===g)g=null;else if(g||"'"!==t&&'"'!==t)if(g||"("!==t)if(g||")"!==t){if(!g&&","===t&&0===m){f.push(p.trim()),p="";continue}}else m--;else m++;else g=t;p+=t}p&&f.push(p.trim());const y=[];let v=!1;for(let e=0;e<f.length;e++){const t=f[e],n=Ie(t,u,c&&("$"===l||!l));n.isLazy&&(v=!0);const r=!(h.pathAware&&0===e);let o=r?_e(n.value):n.value;n.isExplosion&&Array.isArray(o)?y.push(...o.map(e=>r?_e(e):e)):y.push(o)}if(v)return new De(e=>{const t=y.map((t,n)=>{const r=!(h.pathAware&&0===n),o=t instanceof De?t.resolve(e):t;return r?_e(o):o});return d(...t)});const b=d(...y);return _e(b)}return _e($e(e,t))},Pe=(e,t)=>{const n=Oe();return n&&"string"==typeof e?n.computed(()=>Re(e,t)):e},Fe=(...e)=>e.reduce((e,t)=>Number(e)+Number(t),0),He=(e,t)=>Number(e)-Number(t),qe=(...e)=>e.reduce((e,t)=>Number(e)*Number(t),1),Ue=(e,t)=>Number(e)/Number(t),Be=(e,t=0)=>Number(Math.round(e+"e"+t)+"e-"+t),ze=e=>Math.ceil(e),Xe=e=>Math.floor(e),Je=e=>Math.abs(e),Ve=(e,t)=>e%t,Ye=(e,t)=>Math.pow(e,t),Ge=e=>Math.sqrt(e),Ze=(e,t,n)=>e?t:n,Ke=(...e)=>e.every(Boolean),Qe=(...e)=>e.some(Boolean),et=e=>!e,tt=(e,t)=>e===t,nt=(e,t)=>e!==t,rt=(...e)=>{const t=e[e.length-1];return e.slice(0,-1).join(t)},ot=(...e)=>e.join(""),st=e=>String(e).toUpperCase(),it=e=>String(e).toLowerCase(),at=e=>String(e).trim(),lt=e=>String(e).length,ct=(e,t,n)=>String(e).replace(t,n),ut=(e,t)=>String(e).split(t),dt=e=>{const t=String(e);return t.charAt(0).toUpperCase()+t.slice(1)},ht=e=>String(e).toLowerCase().split(" ").map(e=>e.charAt(0).toUpperCase()+e.slice(1)).join(" "),ft=(e,t)=>String(e).includes(t),pt=(e,t)=>String(e).startsWith(t),mt=(e,t)=>String(e).endsWith(t),gt=(e,t)=>null!=e?e:t,yt=(...e)=>e.length,vt=(e,t)=>Array.isArray(e)?"function"==typeof t&&t.isLazy?e.filter(e=>t.resolve(e)):e.filter(e=>!!e):[],bt=(e,t)=>Array.isArray(e)?"string"==typeof t?e.map(e=>e&&"object"==typeof e?e[t]:e):t&&t.isLazy?e.map(e=>t.resolve(e)):e:[],wt=(e,t)=>{if(Array.isArray(e))return t&&t.isLazy?e.find(e=>t.resolve(e)):e.find(e=>!!e)},St=e=>Array.isArray(e)?[...new Set(e)]:[],Et=(e,t="asc")=>{if(!Array.isArray(e))return[];const n=[...e];return n.sort((e,n)=>e<n?"asc"===t?-1:1:e>n?"asc"===t?1:-1:0),n},At=e=>Array.isArray(e)?[...e].reverse():[],Tt=e=>Array.isArray(e)?e[0]:void 0,Ct=e=>Array.isArray(e)?e[e.length-1]:void 0,Lt=(e,t,n)=>Array.isArray(e)?e.slice(t,n):[],Nt=e=>Array.isArray(e)?e.flat(1/0):[],Ot=(e,t=",")=>Array.isArray(e)?e.join(String(t)):"",Mt=e=>Array.isArray(e)?e.length:e?String(e).length:0,kt=(e,t)=>e>t,_t=(e,t)=>e<t,Wt=(e,t)=>e>=t,xt=(e,t)=>e<=t,$t=(e,t)=>e!==t,jt=(e,t,n)=>e>=t&&e<=n,Dt=(e,t)=>Array.isArray(e)&&e.includes(t),It=(e,t)=>{if(!Array.isArray(e))return 0;return(t&&t.isLazy?e.filter(e=>t.resolve(e)):e).reduce((e,t)=>e+(Number(t)||0),0)},Rt=(e,t)=>Array.isArray(e)?t&&t.isLazy?e.filter(e=>t.resolve(e)).length:e.filter(e=>!!e).length:0,Pt=(e,t)=>{if(!Array.isArray(e))return 0;const n=t&&t.isLazy?e.filter(e=>t.resolve(e)):e;return 0===n.length?0:n.reduce((e,t)=>e+(Number(t)||0),0)/n.length},Ft=()=>(new Date).getTime(),Ht=()=>{const e=new Date;return e.setHours(0,0,0,0),e.getTime()},qt=e=>new Date(e).getTime(),Ut=(e,t)=>{const n=new Date(e);if(isNaN(n.getTime()))return"";const r={year:"numeric",month:"2-digit",day:"2-digit"};return"long"===t&&(r.month="long"),n.toLocaleDateString(void 0,r)},Bt=e=>new Date(e).getFullYear(),zt=e=>new Date(e).getMonth()+1,Xt=e=>new Date(e).getDate(),Jt=e=>new Date(e).getDay(),Vt=(e,t)=>{const n=new Date(e);return n.setDate(n.getDate()+Number(t)),n.getTime()},Yt=(e,t,n="days")=>{const r=Math.abs(new Date(e)-new Date(t));return"seconds"===n?r/1e3:"minutes"===n?r/6e4:"hours"===n?r/36e5:r/864e5},Gt=(e,t=2)=>Number(e).toFixed(t),Zt=(e,t="$",n=2)=>t+Number(e).toFixed(n).replace(/\B(?=(\d{3})+(?!\d))/g,","),Kt=(e,t=0)=>(100*Number(e)).toFixed(t)+"%",Qt=e=>String(e).replace(/\B(?=(\d{3})+(?!\d))/g,","),en=(e,t,n)=>{if(!Array.isArray(t))return;const r=t.indexOf(e);return-1!==r&&Array.isArray(n)?n[r]:void 0},tn=(e,t,n)=>{if(!Array.isArray(t))return;const r=t.find(t=>Array.isArray(t)&&t[0]===e);return r?r[n-1]:void 0},nn=(e,t)=>Array.isArray(e)?e[t]:void 0,rn=(e,t)=>Array.isArray(t)?t.indexOf(e):-1,on=(...e)=>e.reduce((e,t)=>e+(Number(t)||0),0),sn=(...e)=>0===e.length?0:on(...e)/e.length,an=(...e)=>Math.min(...e),ln=(...e)=>Math.max(...e),cn=(...e)=>{if(0===e.length)return 0;const t=[...e].sort((e,t)=>e-t),n=Math.floor(t.length/2);return t.length%2!=0?t[n]:(t[n-1]+t[n])/2},un=(...e)=>{if(0===e.length)return 0;const t=sn(...e),n=e.map(e=>Math.pow(e-t,2));return Math.sqrt(sn(...n))},dn=(...e)=>{if(0===e.length)return 0;const t=sn(...e),n=e.map(e=>Math.pow(e-t,2));return sn(...n)},hn=(e,t)=>(e&&"object"==typeof e&&"value"in e||e&&"function"==typeof e&&"value"in e?e.value=t:e&&"object"==typeof e&&t&&"object"==typeof t&&Object.assign(e,t),t),fn=(e,t=1)=>{const n=e&&"object"==typeof e&&"value"in e?e.value:0,r=Number(n)+Number(t);return hn(e,r)},pn=(e,t=1)=>{const n=e&&"object"==typeof e&&"value"in e?e.value:0,r=Number(n)-Number(t);return hn(e,r)},mn=e=>{const t=!(!e||"object"!=typeof e||!("value"in e))&&e.value;return hn(e,!t)},gn=(e,t)=>{const n=e&&"object"==typeof e&&"value"in e?e.value:[];if(Array.isArray(n)){const r=[...n,t];return hn(e,r)}return n},yn=e=>{const t=e&&"object"==typeof e&&"value"in e?e.value:[];if(Array.isArray(t)&&t.length>0){const n=t.slice(0,-1);hn(e,n)}return t},vn=(e,t)=>{const n={...e&&"object"==typeof e&&"value"in e?e.value:{},...t};return hn(e,n)},bn=e=>{const t=e&&"object"==typeof e&&"value"in e?e.value:null;return Array.isArray(t)?hn(e,[]):hn(e,"object"==typeof t&&null!==t?{}:null)},wn=(e,t={})=>{const n={...t},r={...n.headers};let o=n.body;return void 0!==o&&(null!==o&&"object"==typeof o?(o=JSON.stringify(o),r["Content-Type"]||(r["Content-Type"]="application/json")):(o=String(o),r["Content-Type"]||(r["Content-Type"]="text/plain"))),n.body=o,n.headers=r,globalThis.fetch(e,n)};var Sn;(Sn=Ne)("+",Fe),Sn("add",Fe),Sn("-",He),Sn("sub",He),Sn("*",qe),Sn("mul",qe),Sn("/",Ue),Sn("div",Ue),Sn("round",Be),Sn("ceil",ze),Sn("floor",Xe),Sn("abs",Je),Sn("mod",Ve),Sn("pow",Ye),Sn("sqrt",Ge),(e=>{e("if",Ze),e("and",Ke),e("&&",Ke),e("or",Qe),e("||",Qe),e("not",et),e("!",et),e("eq",tt),e("==",tt),e("===",tt),e("neq",nt)})(Ne),(e=>{e("join",rt),e("concat",ot),e("upper",st),e("lower",it),e("trim",at),e("len",lt),e("replace",ct),e("split",ut),e("capitalize",dt),e("titleCase",ht),e("contains",ft),e("startsWith",pt),e("endsWith",mt),e("default",gt)})(Ne),(e=>{e("count",yt),e("filter",vt),e("map",bt),e("find",wt),e("unique",St),e("sort",Et),e("reverse",At),e("first",Tt),e("last",Ct),e("slice",Lt),e("flatten",Nt),e("join",Ot),e("len",Mt),e("length",Mt)})(Ne),(e=>{e("gt",kt),e(">",kt),e("lt",_t),e("<",_t),e("gte",Wt),e(">=",Wt),e("lte",xt),e("<=",xt),e("neq",$t),e("!=",$t),e("between",jt),e("in",Dt)})(Ne),(e=>{e("sumIf",It),e("countIf",Rt),e("avgIf",Pt)})(Ne),(e=>{e("now",Ft),e("today",Ht),e("date",qt),e("formatDate",Ut),e("year",Bt),e("month",zt),e("day",Xt),e("weekday",Jt),e("addDays",Vt),e("dateDiff",Yt)})(Ne),(e=>{e("number",Gt),e("currency",Zt),e("percent",Kt),e("thousands",Qt)})(Ne),(e=>{e("lookup",en),e("vlookup",tn),e("index",nn),e("match",rn)})(Ne),(e=>{e("sum",on),e("avg",sn),e("min",an),e("max",ln),e("median",cn),e("stdev",un),e("var",dn)})(Ne),(e=>{const t={pathAware:!0};e("set",hn,t),e("increment",fn,t),e("++",fn,t),e("decrement",pn,t),e("--",pn,t),e("toggle",mn,t),e("!!",mn,t),e("push",gn,t),e("pop",yn,t),e("assign",vn,t),e("clear",bn,t)})((e,t)=>Ne(e,t,{pathAware:!0})),(e=>{e("fetch",wn)})(Ne);const En=new WeakMap,An=(e,t=null)=>{const n=[];let o=e;const s=globalThis.ShadowRoot;for(;o;){const e=En.get(o);e&&n.unshift(e),o=o.parentElement||(s&&o.parentNode instanceof s?o.parentNode.host:null)}const i=r();return new Proxy({},{get(e,r,o){var s;if("$event"===r||"event"===r)return t;if("__parent__"===r)return;for(let t=n.length-1;t>=0;t--){const e=n[t];if(r in e)return e[r]}if(i&&i.has(r))return i.get(r);const a=null==(s=globalThis.Lightview)?void 0:s.state;return a&&r in a?a[r]:void 0},set(e,t,r,o){var s;for(let a=n.length-1;a>=0;a--){const e=n[a];if(t in e)return e[t]=r,!0}if(n.length>0)return n[n.length-1][t]=r,!0;const i=null==(s=globalThis.Lightview)?void 0:s.state;return!!i&&(i[t]=r,!0)},has(e,r){var o;if("$event"===r||"event"===r)return!!t;for(const t of n)if(r in t)return!0;const s=null==(o=globalThis.Lightview)?void 0:o.state;return!(!s||!(r in s))},ownKeys(e){var r;const o=new Set;t&&(o.add("$event"),o.add("event"));for(const t of n)for(const e in t)o.add(e);const s=null==(r=globalThis.Lightview)?void 0:r.state;if(s)for(const t in s)o.add(t);return Array.from(o)},getOwnPropertyDescriptor:(e,t)=>({enumerable:!0,configurable:!0})})},Tn=e=>{var t;const n=e.getAttribute("cdom-state");if(n&&!En.has(e))try{const t=JSON.parse(n),r=y(t);En.set(e,r)}catch(Mn){null==(t=globalThis.console)||t.error("LightviewCDOM: Failed to parse cdom-state",Mn)}},Cn=e=>{const t=e.getAttribute("cdom-bind");if(!t)return;const r=e.type||"",o=e.tagName.toLowerCase();let s="value",i="input";"checkbox"===r||"radio"===r?(s="checked",i="change"):"select"===o&&(i="change");const a=An(e);let l=je(t,a);if(l&&l.isBindingTarget&&void 0===l.value){const n=e[s];void 0!==n&&""!==n&&(hn(a,{[l.key]:n}),l=je(t,a))}n(()=>{const t=_e(l);e[s]!==t&&(e[s]=void 0===t?"":t)}),e.addEventListener(i,()=>{const n=e[s];l&&l.isBindingTarget?l.value=n:hn(a,{[t]:n})})},Ln=e=>{Array.from(e.attributes).forEach(t=>{if(t.name.startsWith("cdom-on:")){const n=t.name.slice(8),r=t.value;e.addEventListener(n,t=>{const n=An(e,t),o=Re(r,n);o&&"object"==typeof o&&o.isLazy&&"function"==typeof o.resolve&&o.resolve(t)})}})},Nn=(e,t=null)=>{if(!e)return e;if("string"==typeof e&&e.startsWith("$"))return Pe(e,t);if(Array.isArray(e))return e.map(e=>Nn(e,t));if(e instanceof String)return e.toString();if("object"==typeof e&&null!==e){t&&!("__parent__"in e)&&Object.defineProperty(e,"__parent__",{value:t,enumerable:!1,writable:!0,configurable:!0});for(const t in e)e[t]=Nn(e[t],e);return e}return e},On={registerHelper:Ne,parseExpression:Pe,resolvePath:$e,resolvePathAsContext:je,resolveExpression:Re,parseCDOMC:e=>{let t=0;const n=e.length,r=()=>{for(;t<n;){const r=e[t];if(!/\s/.test(r)){if("/"===r){const r=e[t+1];if("/"===r){for(t+=2;t<n&&"\n"!==e[t]&&"\r"!==e[t];)t++;continue}if("*"===r){for(t+=2;t<n;){if("*"===e[t]&&"/"===e[t+1]){t+=2;break}t++}continue}}break}t++}},o=()=>{const r=e[t++];let o="";for(;t<n;){const n=e[t++];if(n===r)return new String(o);if("\\"===n){const n=e[t++];o+="n"===n?"\n":"t"===n?"\t":'"'===n?'"':"'"===n?"'":"\\"===n?"\\":n}else o+=n}throw new Error("Unterminated string")},s=()=>{const r=t;let o=0;for(;t<n;){const n=e[t];if(o>0)")"===n?o--:"("===n&&o++,t++;else{if(/[\s:,{}\[\]"'`()]/.test(n)){if("("===n){o++,t++;continue}break}t++}}const s=e.slice(r,t);return"true"===s||"false"!==s&&("null"===s?null:""===s.trim()||isNaN(Number(s))?s:Number(s))},i=()=>{if(r(),t>=n)return;const i=e[t];return"{"===i?a():"["===i?l():'"'===i||"'"===i?o():s()},a=()=>{t++;const a={};if(r(),t<n&&"}"===e[t])return t++,a;for(;t<n;){let n;if(r(),n='"'===e[t]||"'"===e[t]?o():s(),r(),":"!==e[t])throw new Error(`Expected ':' at position ${t}, found '${e[t]}'`);t++;const l=i();if(a[String(n)]=l,r(),"}"===e[t])return t++,a;if(","!==e[t])throw new Error(`Expected '}' or ',' at position ${t}, found '${e[t]}'`);if(t++,r(),"}"===e[t])return t++,a}},l=()=>{t++;const o=[];if(r(),t<n&&"]"===e[t])return t++,o;for(;t<n;){const n=i();if(o.push(n),r(),"]"===e[t])return t++,o;if(","!==e[t])throw new Error(`Expected ']' or ',' at position ${t}, found '${e[t]}'`);if(t++,r(),"]"===e[t])return t++,o}};r();return i()},unwrapSignal:_e,getContext:An,handleCDOMState:Tn,handleCDOMBind:Cn,handleCDOMOn:Ln,activate:(e=document.body)=>{const t=e=>{1===e.nodeType&&(e.hasAttribute("cdom-state")&&Tn(e),e.hasAttribute("cdom-bind")&&Cn(e),Ln(e));let n=e.firstChild;for(;n;)t(n),n=n.nextSibling};t(e)},hydrate:Nn,version:"1.0.0"};"undefined"!=typeof window&&(globalThis.LightviewCDOM=On),console.log("Lightview Full Bundle Loaded")}();
+(function() {
+  "use strict";
+  const _LV = globalThis.__LIGHTVIEW_INTERNALS__ || (globalThis.__LIGHTVIEW_INTERNALS__ = {
+    currentEffect: null,
+    registry: /* @__PURE__ */ new Map(),
+    dependencyMap: /* @__PURE__ */ new WeakMap()
+    // Tracking signals -> subscribers
+  });
+  const signal = (initialValue, optionsOrName) => {
+    let name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
+    const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
+    if (name && storage) {
+      try {
+        const stored = storage.getItem(name);
+        if (stored !== null) {
+          initialValue = JSON.parse(stored);
+        }
+      } catch (e) {
+      }
+    }
+    let value = initialValue;
+    const subscribers = /* @__PURE__ */ new Set();
+    const f = (...args) => {
+      if (args.length === 0) return f.value;
+      f.value = args[0];
+    };
+    Object.defineProperty(f, "value", {
+      get() {
+        if (_LV.currentEffect) {
+          subscribers.add(_LV.currentEffect);
+          _LV.currentEffect.dependencies.add(subscribers);
+        }
+        return value;
+      },
+      set(newValue) {
+        if (value !== newValue) {
+          value = newValue;
+          if (name && storage) {
+            try {
+              storage.setItem(name, JSON.stringify(value));
+            } catch (e) {
+            }
+          }
+          [...subscribers].forEach((effect2) => effect2());
+        }
+      }
+    });
+    if (name) {
+      if (_LV.registry.has(name)) {
+        if (_LV.registry.get(name) !== f) {
+          throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+        }
+      } else {
+        _LV.registry.set(name, f);
+      }
+    }
+    return f;
+  };
+  const getSignal = (name, defaultValue) => {
+    if (!_LV.registry.has(name) && defaultValue !== void 0) {
+      return signal(defaultValue, name);
+    }
+    return _LV.registry.get(name);
+  };
+  signal.get = getSignal;
+  const effect = (fn) => {
+    const execute = () => {
+      if (!execute.active || execute.running) return;
+      execute.dependencies.forEach((dep) => dep.delete(execute));
+      execute.dependencies.clear();
+      execute.running = true;
+      _LV.currentEffect = execute;
+      try {
+        fn();
+      } finally {
+        _LV.currentEffect = null;
+        execute.running = false;
+      }
+    };
+    execute.active = true;
+    execute.running = false;
+    execute.dependencies = /* @__PURE__ */ new Set();
+    execute.stop = () => {
+      execute.dependencies.forEach((dep) => dep.delete(execute));
+      execute.dependencies.clear();
+      execute.active = false;
+    };
+    execute();
+    return execute;
+  };
+  const computed = (fn) => {
+    const sig = signal(void 0);
+    effect(() => {
+      sig.value = fn();
+    });
+    return sig;
+  };
+  const getRegistry$1 = () => _LV.registry;
+  const stateCache = /* @__PURE__ */ new WeakMap();
+  const stateSignals = /* @__PURE__ */ new WeakMap();
+  const parents = /* @__PURE__ */ new WeakMap();
+  const protoMethods = (proto, test) => Object.getOwnPropertyNames(proto).filter((k) => typeof proto[k] === "function" && test(k));
+  const DATE_TRACKING = protoMethods(Date.prototype, (k) => /^(to|get|valueOf)/.test(k));
+  const DATE_MUTATING = protoMethods(Date.prototype, (k) => /^set/.test(k));
+  const ARRAY_TRACKING = [
+    "map",
+    "forEach",
+    "filter",
+    "find",
+    "findIndex",
+    "some",
+    "every",
+    "reduce",
+    "reduceRight",
+    "includes",
+    "indexOf",
+    "lastIndexOf",
+    "join",
+    "slice",
+    "concat",
+    "flat",
+    "flatMap",
+    "at",
+    "entries",
+    "keys",
+    "values"
+  ];
+  const ARRAY_MUTATING = ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"];
+  const ARRAY_ITERATION = ["map", "forEach", "filter", "find", "findIndex", "some", "every", "flatMap"];
+  const getOrSet = (map2, key, factory) => {
+    let v = map2.get(key);
+    if (!v) {
+      v = factory();
+      map2.set(key, v);
+    }
+    return v;
+  };
+  const proxyGet = (target, prop, receiver, signals) => {
+    if (prop === "__parent__") return parents.get(receiver);
+    if (!signals.has(prop)) {
+      signals.set(prop, signal(Reflect.get(target, prop, receiver)));
+    }
+    const signal$1 = signals.get(prop);
+    const val = signal$1.value;
+    if (typeof val === "object" && val !== null) {
+      const childProxy = state(val);
+      parents.set(childProxy, receiver);
+      return childProxy;
+    }
+    return val;
+  };
+  const proxySet = (target, prop, value, receiver, signals) => {
+    if (!signals.has(prop)) {
+      signals.set(prop, signal(Reflect.get(target, prop, receiver)));
+    }
+    const success = Reflect.set(target, prop, value, receiver);
+    const signal$1 = signals.get(prop);
+    if (success && signal$1) signal$1.value = value;
+    return success;
+  };
+  const createSpecialProxy = (obj, monitor, trackingProps = []) => {
+    const signals = getOrSet(stateSignals, obj, () => /* @__PURE__ */ new Map());
+    if (!signals.has(monitor)) {
+      const initialValue = typeof obj[monitor] === "function" ? obj[monitor].call(obj) : obj[monitor];
+      signals.set(monitor, signal(initialValue));
+    }
+    const isDate = obj instanceof Date;
+    const isArray = Array.isArray(obj);
+    const trackingMethods = isDate ? DATE_TRACKING : isArray ? ARRAY_TRACKING : trackingProps;
+    const mutatingMethods = isDate ? DATE_MUTATING : isArray ? ARRAY_MUTATING : [];
+    return new Proxy(obj, {
+      get(target, prop, receiver) {
+        if (prop === "__parent__") return parents.get(receiver);
+        const value = target[prop];
+        if (typeof value === "function") {
+          const isTracking = trackingMethods.includes(prop);
+          const isMutating = mutatingMethods.includes(prop);
+          return function(...args) {
+            if (isTracking) {
+              const sig = signals.get(monitor);
+              if (sig) void sig.value;
+            }
+            const startValue = typeof target[monitor] === "function" ? target[monitor].call(target) : target[monitor];
+            if (isArray && ARRAY_ITERATION.includes(prop) && typeof args[0] === "function") {
+              const originalCallback = args[0];
+              args[0] = function(element2, index2, array) {
+                const wrappedElement = typeof element2 === "object" && element2 !== null ? state(element2) : element2;
+                if (wrappedElement && typeof wrappedElement === "object") {
+                  parents.set(wrappedElement, receiver);
+                }
+                return originalCallback.call(this, wrappedElement, index2, array);
+              };
+            }
+            const result = value.apply(target, args);
+            const endValue = typeof target[monitor] === "function" ? target[monitor].call(target) : target[monitor];
+            if (startValue !== endValue || isMutating) {
+              const sig = signals.get(monitor);
+              if (sig && sig.value !== endValue) {
+                sig.value = endValue;
+              }
+            }
+            return result;
+          };
+        }
+        if (prop === monitor) {
+          const sig = signals.get(monitor);
+          return sig ? sig.value : Reflect.get(target, prop, receiver);
+        }
+        if (isArray && !isNaN(parseInt(prop))) {
+          const monitorSig = signals.get(monitor);
+          if (monitorSig) void monitorSig.value;
+        }
+        return proxyGet(target, prop, receiver, signals);
+      },
+      set(target, prop, value, receiver) {
+        if (prop === monitor) {
+          const success = Reflect.set(target, prop, value, receiver);
+          if (success) {
+            const sig = signals.get(monitor);
+            if (sig) sig.value = value;
+          }
+          return success;
+        }
+        return proxySet(target, prop, value, receiver, signals);
+      }
+    });
+  };
+  const state = (obj, optionsOrName) => {
+    if (typeof obj !== "object" || obj === null) return obj;
+    const name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
+    const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
+    if (name && storage) {
+      try {
+        const item = storage.getItem(name);
+        if (item) {
+          const loaded = JSON.parse(item);
+          Array.isArray(obj) && Array.isArray(loaded) ? (obj.length = 0, obj.push(...loaded)) : Object.assign(obj, loaded);
+        }
+      } catch (e) {
+      }
+    }
+    let proxy = stateCache.get(obj);
+    if (!proxy) {
+      const isArray = Array.isArray(obj), isDate = obj instanceof Date;
+      const isSpecial = isArray || isDate;
+      const monitor = isArray ? "length" : isDate ? "getTime" : null;
+      if (isSpecial || !(obj instanceof RegExp || obj instanceof Map || obj instanceof Set || obj instanceof WeakMap || obj instanceof WeakSet)) {
+        proxy = isSpecial ? createSpecialProxy(obj, monitor) : new Proxy(obj, {
+          get(t, p, r) {
+            if (p === "__parent__") return parents.get(r);
+            return proxyGet(t, p, r, getOrSet(stateSignals, t, () => /* @__PURE__ */ new Map()));
+          },
+          set(t, p, v, r) {
+            return proxySet(t, p, v, r, getOrSet(stateSignals, t, () => /* @__PURE__ */ new Map()));
+          }
+        });
+        stateCache.set(obj, proxy);
+      } else return obj;
+    }
+    if (name && storage) {
+      effect(() => {
+        try {
+          storage.setItem(name, JSON.stringify(proxy));
+        } catch (e) {
+        }
+      });
+    }
+    if (name) {
+      const registry2 = getRegistry$1();
+      if (registry2.has(name)) {
+        if (registry2.get(name) !== proxy) {
+          throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+        }
+      } else {
+        registry2.set(name, proxy);
+      }
+    }
+    return proxy;
+  };
+  const getState = (name, defaultValue) => {
+    const registry2 = getRegistry$1();
+    if (!registry2.has(name) && defaultValue !== void 0) {
+      return state(defaultValue, name);
+    }
+    return registry2.get(name);
+  };
+  state.get = getState;
+  const core = {
+    get currentEffect() {
+      return (globalThis.__LIGHTVIEW_INTERNALS__ || (globalThis.__LIGHTVIEW_INTERNALS__ = {})).currentEffect;
+    }
+  };
+  const nodeState = /* @__PURE__ */ new WeakMap();
+  const nodeStateFactory = () => ({ effects: [], onmount: null, onunmount: null });
+  const registry = getRegistry$1();
+  const trackEffect = (node, effectFn) => {
+    const state2 = getOrSet(nodeState, node, nodeStateFactory);
+    if (!state2.effects) state2.effects = [];
+    state2.effects.push(effectFn);
+  };
+  const SHADOW_DOM_MARKER = Symbol("lightview.shadowDOM");
+  const createShadowDOMMarker = (attributes, children) => ({
+    [SHADOW_DOM_MARKER]: true,
+    mode: attributes.mode || "open",
+    styles: attributes.styles || [],
+    adoptedStyleSheets: attributes.adoptedStyleSheets || [],
+    children
+  });
+  const isShadowDOMMarker = (obj) => obj && typeof obj === "object" && obj[SHADOW_DOM_MARKER] === true;
+  const processShadowDOM = (marker, parentNode) => {
+    if (parentNode.shadowRoot) {
+      console.warn("Lightview: Element already has a shadowRoot, skipping shadowDOM directive");
+      return;
+    }
+    const shadowRoot = parentNode.attachShadow({ mode: marker.mode });
+    const sheets = [];
+    const linkUrls = [...marker.styles || []];
+    if (marker.adoptedStyleSheets && marker.adoptedStyleSheets.length > 0) {
+      marker.adoptedStyleSheets.forEach((item) => {
+        if (item instanceof CSSStyleSheet) {
+          sheets.push(item);
+        } else if (typeof item === "string") {
+          linkUrls.push(item);
+        }
+      });
+    }
+    if (sheets.length > 0) {
+      try {
+        shadowRoot.adoptedStyleSheets = sheets;
+      } catch (e) {
+        console.warn("Lightview: adoptedStyleSheets not supported");
+      }
+    }
+    for (const styleUrl of linkUrls) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = styleUrl;
+      shadowRoot.appendChild(link);
+    }
+    if (marker.children && marker.children.length > 0) {
+      setupChildrenInTarget(marker.children, shadowRoot);
+    }
+  };
+  let inSVG = false;
+  const domToElement = /* @__PURE__ */ new WeakMap();
+  const wrapDomElement = (domNode, tag, attributes = {}, children = []) => {
+    const el = {
+      tag,
+      attributes,
+      children,
+      get domEl() {
+        return domNode;
+      }
+    };
+    const proxy = makeReactive(el);
+    domToElement.set(domNode, proxy);
+    return proxy;
+  };
+  const element = (tag, attributes = {}, children = []) => {
+    if (customTags[tag]) tag = customTags[tag];
+    if (typeof tag === "function") {
+      const result = tag({ ...attributes }, children);
+      return processComponentResult(result);
+    }
+    if (tag === "shadowDOM") {
+      return createShadowDOMMarker(attributes, children);
+    }
+    if (tag === "text" && !inSVG) {
+      const domNode2 = document.createTextNode("");
+      const el = {
+        tag,
+        attributes,
+        children,
+        get domEl() {
+          return domNode2;
+        }
+      };
+      const update = () => {
+        const flat = (Array.isArray(el.children) ? el.children : [el.children]).flat(Infinity);
+        const bits = flat.map((c) => {
+          const val = typeof c === "function" ? c() : c;
+          if (val && typeof val === "object" && val.domEl) return val.domEl.textContent;
+          return val === null || val === void 0 ? "" : String(val);
+        });
+        domNode2.textContent = bits.join(" ");
+      };
+      const proxy2 = new Proxy(el, {
+        set(target, prop, value) {
+          target[prop] = value;
+          if (prop === "children") update();
+          return true;
+        }
+      });
+      const hasReactive = children.flat(Infinity).some((c) => typeof c === "function");
+      if (hasReactive) {
+        const runner = effect(update);
+        trackEffect(domNode2, runner);
+      }
+      update();
+      return proxy2;
+    }
+    const isSVG = tag.toLowerCase() === "svg";
+    const wasInSVG = inSVG;
+    if (isSVG) inSVG = true;
+    const domNode = inSVG ? document.createElementNS("http://www.w3.org/2000/svg", tag) : document.createElement(tag);
+    const proxy = wrapDomElement(domNode, tag, attributes, children);
+    proxy.attributes = attributes;
+    proxy.children = children;
+    if (isSVG) inSVG = wasInSVG;
+    return proxy;
+  };
+  const processComponentResult = (result) => {
+    if (!result) return null;
+    if (Lightview.hooks.processChild) {
+      result = Lightview.hooks.processChild(result) ?? result;
+    }
+    if (result.domEl) return result;
+    const type = typeof result;
+    if (type === "object" && result instanceof HTMLElement) {
+      return wrapDomElement(result, result.tagName.toLowerCase(), {}, []);
+    }
+    if (type === "object" && result instanceof String) {
+      const span = document.createElement("span");
+      span.textContent = result.toString();
+      return wrapDomElement(span, "span", {}, []);
+    }
+    if (type === "string") {
+      const template = document.createElement("template");
+      template.innerHTML = result.trim();
+      const content = template.content;
+      if (content.childNodes.length === 1 && content.firstChild instanceof HTMLElement) {
+        const el = content.firstChild;
+        return wrapDomElement(el, el.tagName.toLowerCase(), {}, []);
+      } else {
+        const wrapper = document.createElement("span");
+        wrapper.style.display = "contents";
+        wrapper.appendChild(content);
+        return wrapDomElement(wrapper, "span", {}, []);
+      }
+    }
+    if (typeof result === "object" && result.tag) {
+      return element(result.tag, result.attributes || {}, result.children || []);
+    }
+    return null;
+  };
+  const makeReactive = (el) => {
+    const domNode = el.domEl;
+    return new Proxy(el, {
+      set(target, prop, value) {
+        if (prop === "attributes") {
+          target[prop] = makeReactiveAttributes(value, domNode);
+        } else if (prop === "children") {
+          target[prop] = setupChildren(value, domNode);
+        } else {
+          target[prop] = value;
+        }
+        return true;
+      }
+    });
+  };
+  const NODE_PROPERTIES = /* @__PURE__ */ new Set(["value", "checked", "selected", "selectedIndex", "className", "innerHTML", "innerText"]);
+  const setAttributeValue = (domNode, key, value) => {
+    const isBool = typeof domNode[key] === "boolean";
+    if ((key === "href" || key === "src") && typeof value === "string" && /^(javascript|vbscript|data:text\/html|data:application\/javascript)/i.test(value)) {
+      console.warn(`[Lightview] Blocked dangerous protocol in ${key}: ${value}`);
+      value = "javascript:void(0)";
+    }
+    if (NODE_PROPERTIES.has(key) || isBool || key.startsWith("cdom-")) {
+      domNode[key] = isBool ? value !== null && value !== void 0 && value !== false && value !== "false" : value;
+    } else if (value === null || value === void 0) {
+      domNode.removeAttribute(key);
+    } else {
+      domNode.setAttribute(key, value);
+    }
+  };
+  const makeReactiveAttributes = (attributes, domNode) => {
+    const reactiveAttrs = {};
+    for (let [key, value] of Object.entries(attributes)) {
+      if (key === "onmount" || key === "onunmount") {
+        const state2 = getOrSet(nodeState, domNode, nodeStateFactory);
+        state2[key] = value;
+        if (key === "onmount" && domNode.isConnected) {
+          value(domNode);
+        }
+      } else if (key.startsWith("on")) {
+        if (typeof value === "function") {
+          const eventName = key.slice(2).toLowerCase();
+          domNode.addEventListener(eventName, value);
+        } else if (typeof value === "string") {
+          domNode.setAttribute(key, value);
+        }
+        reactiveAttrs[key] = value;
+      } else if (typeof value === "function") {
+        const runner = effect(() => {
+          const result = value();
+          if (key === "style" && typeof result === "object") {
+            Object.assign(domNode.style, result);
+          } else {
+            setAttributeValue(domNode, key, result);
+          }
+        });
+        trackEffect(domNode, runner);
+        reactiveAttrs[key] = value;
+      } else if (key === "style" && typeof value === "object") {
+        Object.entries(value).forEach(([styleKey, styleValue]) => {
+          if (typeof styleValue === "function") {
+            const runner = effect(() => {
+              domNode.style[styleKey] = styleValue();
+            });
+            trackEffect(domNode, runner);
+          } else {
+            domNode.style[styleKey] = styleValue;
+          }
+        });
+        reactiveAttrs[key] = value;
+      } else {
+        setAttributeValue(domNode, key, value);
+        reactiveAttrs[key] = value;
+      }
+    }
+    return reactiveAttrs;
+  };
+  const processChildren = (children, targetNode, clearExisting = true) => {
+    if (clearExisting && targetNode.innerHTML !== void 0) {
+      targetNode.innerHTML = "";
+    }
+    const childElements = [];
+    const isSpecialElement = targetNode.tagName && (targetNode.tagName.toLowerCase() === "script" || targetNode.tagName.toLowerCase() === "style");
+    const flatChildren = children.flat(Infinity);
+    for (let child of flatChildren) {
+      if (Lightview.hooks.processChild && !isSpecialElement) {
+        child = Lightview.hooks.processChild(child) ?? child;
+      }
+      if (isShadowDOMMarker(child)) {
+        if (targetNode instanceof ShadowRoot) {
+          console.warn("Lightview: Cannot nest shadowDOM inside another shadowDOM");
+          continue;
+        }
+        processShadowDOM(child, targetNode);
+        continue;
+      }
+      const type = typeof child;
+      if (type === "function") {
+        const startMarker = document.createComment("lv:s");
+        const endMarker = document.createComment("lv:e");
+        targetNode.appendChild(startMarker);
+        targetNode.appendChild(endMarker);
+        let runner;
+        const update = () => {
+          while (startMarker.nextSibling && startMarker.nextSibling !== endMarker) {
+            startMarker.nextSibling.remove();
+          }
+          const val = child();
+          if (val === void 0 || val === null) return;
+          if (runner && !startMarker.isConnected) {
+            runner.stop();
+            return;
+          }
+          if (typeof val === "object" && val instanceof String) {
+            const textNode = document.createTextNode(val);
+            endMarker.parentNode.insertBefore(textNode, endMarker);
+          } else {
+            const fragment = document.createDocumentFragment();
+            const childrenToProcess = Array.isArray(val) ? val : [val];
+            processChildren(childrenToProcess, fragment, false);
+            endMarker.parentNode.insertBefore(fragment, endMarker);
+          }
+        };
+        runner = effect(update);
+        trackEffect(startMarker, runner);
+        childElements.push(child);
+      } else if (["string", "number", "boolean", "symbol"].includes(type) || child && type === "object" && child instanceof String) {
+        targetNode.appendChild(document.createTextNode(child));
+        childElements.push(child);
+      } else if (child instanceof Node) {
+        const node = child.domEl || child;
+        if (node instanceof HTMLElement || node instanceof SVGElement) {
+          const wrapped = wrapDomElement(node, node.tagName.toLowerCase());
+          targetNode.appendChild(node);
+          childElements.push(wrapped);
+        } else {
+          targetNode.appendChild(node);
+          childElements.push(child);
+        }
+      } else if (child && type === "object" && child.tag) {
+        const childEl = child.domEl ? child : element(child.tag, child.attributes || {}, child.children || []);
+        targetNode.appendChild(childEl.domEl);
+        childElements.push(childEl);
+      }
+    }
+    return childElements;
+  };
+  const setupChildrenInTarget = (children, targetNode) => {
+    return processChildren(children, targetNode, false);
+  };
+  const setupChildren = (children, domNode) => {
+    return processChildren(children, domNode, true);
+  };
+  const enhance = (selectorOrNode, options = {}) => {
+    const domNode = typeof selectorOrNode === "string" ? document.querySelector(selectorOrNode) : selectorOrNode;
+    const node = domNode.domEl || domNode;
+    if (!(node instanceof HTMLElement)) return null;
+    const tagName = node.tagName.toLowerCase();
+    let el = domToElement.get(node);
+    if (!el) {
+      el = wrapDomElement(node, tagName);
+    }
+    const { innerText, innerHTML, ...attrs } = options;
+    if (innerText !== void 0) {
+      if (typeof innerText === "function") {
+        effect(() => {
+          node.innerText = innerText();
+        });
+      } else {
+        node.innerText = innerText;
+      }
+    }
+    if (innerHTML !== void 0) {
+      if (typeof innerHTML === "function") {
+        effect(() => {
+          node.innerHTML = innerHTML();
+        });
+      } else {
+        node.innerHTML = innerHTML;
+      }
+    }
+    if (Object.keys(attrs).length > 0) {
+      el.attributes = attrs;
+    }
+    return el;
+  };
+  const $ = (cssSelectorOrElement, startingDomEl = document.body) => {
+    const el = typeof cssSelectorOrElement === "string" ? startingDomEl.querySelector(cssSelectorOrElement) : cssSelectorOrElement;
+    if (!el) return null;
+    Object.defineProperty(el, "content", {
+      value(child, location = "inner") {
+        location = location.toLowerCase();
+        Lightview.tags;
+        const isSpecialElement = el.tagName && (el.tagName.toLowerCase() === "script" || el.tagName.toLowerCase() === "style");
+        const array = (Array.isArray(child) ? child : [child]).map((item) => {
+          if (Lightview.hooks.processChild && !isSpecialElement) {
+            item = Lightview.hooks.processChild(item) ?? item;
+          }
+          if (item.tag && !item.domEl) {
+            return element(item.tag, item.attributes || {}, item.children || []).domEl;
+          } else {
+            return item.domEl || item;
+          }
+        });
+        const target = location === "shadow" ? el.shadowRoot || el.attachShadow({ mode: "open" }) : el;
+        if (location === "inner" || location === "shadow") {
+          target.replaceChildren(...array);
+        } else if (location === "outer") {
+          target.replaceWith(...array);
+        } else if (location === "afterbegin") {
+          target.prepend(...array);
+        } else if (location === "beforeend") {
+          target.append(...array);
+        } else {
+          array.forEach((item) => el.insertAdjacentElement(location, item));
+        }
+        return el;
+      },
+      configurable: true,
+      writable: true
+    });
+    return el;
+  };
+  const customTags = {};
+  const tags = new Proxy({}, {
+    get(_, tag) {
+      if (tag === "_customTags") return { ...customTags };
+      const wrapper = (...args) => {
+        let attributes = {};
+        let children = args;
+        const arg0 = args[0];
+        if (args.length > 0 && arg0 && typeof arg0 === "object" && !arg0.tag && !arg0.domEl && !Array.isArray(arg0)) {
+          attributes = arg0;
+          children = args.slice(1);
+        }
+        return element(customTags[tag] || tag, attributes, children);
+      };
+      if (customTags[tag]) {
+        Object.assign(wrapper, customTags[tag]);
+      }
+      return wrapper;
+    },
+    set(_, tag, value) {
+      customTags[tag] = value;
+      return true;
+    }
+  });
+  const Lightview = {
+    signal,
+    get: signal.get,
+    computed,
+    effect,
+    registry,
+    element,
+    // do not document this
+    enhance,
+    tags,
+    $,
+    // Extension hooks
+    hooks: {
+      onNonStandardHref: null,
+      processChild: null,
+      validateUrl: null
+    },
+    // Internals exposed for extensions
+    internals: {
+      core,
+      domToElement,
+      wrapDomElement,
+      setupChildren
+    }
+  };
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = Lightview;
+  }
+  if (typeof window !== "undefined") {
+    globalThis.Lightview = Lightview;
+    globalThis.addEventListener("click", (e) => {
+      const path = e.composedPath();
+      const link = path.find((el) => {
+        var _a, _b;
+        return el.tagName === "A" && ((_b = (_a = el.getAttribute) == null ? void 0 : _a.call(el, "href")) == null ? void 0 : _b.startsWith("#"));
+      });
+      if (link && !e.defaultPrevented) {
+        const href = link.getAttribute("href");
+        if (href.length > 1) {
+          const id = href.slice(1);
+          const root = link.getRootNode();
+          const target = (root.getElementById ? root.getElementById(id) : null) || (root.querySelector ? root.querySelector(`#${id}`) : null);
+          if (target) {
+            e.preventDefault();
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                target.style.scrollMarginTop = "calc(var(--site-nav-height, 0px) + 2rem)";
+                target.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+              });
+            });
+          }
+        }
+      }
+      if (Lightview.hooks.onNonStandardHref) {
+        Lightview.hooks.onNonStandardHref(e);
+      }
+    });
+    if (typeof MutationObserver !== "undefined") {
+      const walkNodes = (node, fn) => {
+        var _a;
+        fn(node);
+        (_a = node.childNodes) == null ? void 0 : _a.forEach((n) => walkNodes(n, fn));
+        if (node.shadowRoot) walkNodes(node.shadowRoot, fn);
+      };
+      const cleanupNode = (node) => walkNodes(node, (n) => {
+        var _a, _b;
+        const s = nodeState.get(n);
+        if (s) {
+          (_a = s.effects) == null ? void 0 : _a.forEach((e) => e.stop());
+          (_b = s.onunmount) == null ? void 0 : _b.call(s, n);
+          nodeState.delete(n);
+        }
+      });
+      const mountNode = (node) => walkNodes(node, (n) => {
+        var _a, _b;
+        (_b = (_a = nodeState.get(n)) == null ? void 0 : _a.onmount) == null ? void 0 : _b.call(_a, n);
+      });
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.removedNodes.forEach(cleanupNode);
+          mutation.addedNodes.forEach(mountNode);
+        });
+      });
+      const startObserving = () => {
+        if (document.body) {
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true
+          });
+        }
+      };
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", startObserving);
+      } else {
+        startObserving();
+      }
+    }
+  }
+  const STANDARD_SRC_TAGS = ["img", "script", "iframe", "video", "audio", "source", "track", "embed", "input"];
+  const isStandardSrcTag = (tagName) => STANDARD_SRC_TAGS.includes(tagName) || tagName.startsWith("lv-");
+  const STANDARD_HREF_TAGS = ["a", "area", "base", "link"];
+  const isValidTagName = (name) => typeof name === "string" && name.length > 0 && name !== "children";
+  const isDangerousProtocol = (url) => {
+    if (!url || typeof url !== "string") return false;
+    const normalized = url.trim().toLowerCase();
+    return normalized.startsWith("javascript:") || normalized.startsWith("vbscript:") || normalized.startsWith("data:text/html") || normalized.startsWith("data:application/javascript");
+  };
+  const validateUrl = (url) => {
+    if (!url) return false;
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(url)) return true;
+    try {
+      const base = typeof document !== "undefined" ? document.baseURI : globalThis.location.origin;
+      const target = new URL(url, base === "null" ? void 0 : base);
+      const current = globalThis.location;
+      if (target.origin === current.origin && target.origin !== "null") return true;
+      if (target.hostname && target.hostname === current.hostname) return true;
+      if (target.hostname && current.hostname && target.hostname.endsWith("." + current.hostname)) return true;
+      if (current.protocol === "file:" && target.protocol === "file:") return true;
+      return false;
+    } catch (e) {
+      return false;
+    }
+  };
+  const isObjectDOM = (obj) => {
+    if (typeof obj !== "object" || obj === null || Array.isArray(obj) || obj.tag || obj.domEl) return false;
+    const keys = Object.keys(obj);
+    return keys.length === 1 && isValidTagName(keys[0]) && typeof obj[keys[0]] === "object";
+  };
+  const convertObjectDOM = (obj) => {
+    var _a, _b;
+    if (typeof obj !== "object" || obj === null) return obj;
+    if (Array.isArray(obj)) return obj.map(convertObjectDOM);
+    if (obj.tag) return { ...obj, children: obj.children ? convertObjectDOM(obj.children) : [] };
+    if (obj.domEl || !isObjectDOM(obj)) return obj;
+    const tagKey = Object.keys(obj)[0];
+    const content = obj[tagKey];
+    const LV = typeof window !== "undefined" ? globalThis.Lightview : typeof globalThis !== "undefined" ? globalThis.Lightview : null;
+    const tag = ((_b = (_a = LV == null ? void 0 : LV.tags) == null ? void 0 : _a._customTags) == null ? void 0 : _b[tagKey]) || tagKey;
+    const { children, ...attributes } = content;
+    return { tag, attributes, children: children ? convertObjectDOM(children) : [] };
+  };
+  const DAISYUI_CDN = "https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css";
+  const componentConfig = {
+    initialized: false,
+    shadowDefault: true,
+    // Default: components use shadow DOM
+    daisyStyleSheet: null,
+    themeStyleSheet: null,
+    // Global theme stylesheet
+    componentStyleSheets: /* @__PURE__ */ new Map(),
+    customStyleSheets: /* @__PURE__ */ new Map(),
+    // Registry for named custom stylesheets
+    customStyleSheetPromises: /* @__PURE__ */ new Map()
+    // Cache for pending stylesheet fetches
+  };
+  const registerStyleSheet = async (nameOrIdOrUrl, cssText) => {
+    if (componentConfig.customStyleSheets.has(nameOrIdOrUrl)) return componentConfig.customStyleSheets.get(nameOrIdOrUrl);
+    if (componentConfig.customStyleSheetPromises.has(nameOrIdOrUrl)) return componentConfig.customStyleSheetPromises.get(nameOrIdOrUrl);
+    const promise = (async () => {
+      try {
+        let finalCss = cssText;
+        if (finalCss === void 0) {
+          if (nameOrIdOrUrl.startsWith("#")) {
+            const el = document.querySelector(nameOrIdOrUrl);
+            if (el) {
+              finalCss = el.textContent;
+            } else {
+              throw new Error(`Style block '${nameOrIdOrUrl}' not found`);
+            }
+          } else {
+            const response = await fetch(nameOrIdOrUrl);
+            if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+            finalCss = await response.text();
+          }
+        }
+        if (finalCss !== void 0) {
+          const sheet = new CSSStyleSheet();
+          sheet.replaceSync(finalCss);
+          componentConfig.customStyleSheets.set(nameOrIdOrUrl, sheet);
+          return sheet;
+        }
+      } catch (e) {
+        console.error(`LightviewX: Failed to register stylesheet '${nameOrIdOrUrl}':`, e);
+      } finally {
+        componentConfig.customStyleSheetPromises.delete(nameOrIdOrUrl);
+      }
+    })();
+    componentConfig.customStyleSheetPromises.set(nameOrIdOrUrl, promise);
+    return promise;
+  };
+  const getSavedTheme = () => {
+    try {
+      if (typeof localStorage !== "undefined") {
+        return localStorage.getItem("lightview-theme");
+      }
+    } catch (e) {
+      return null;
+    }
+  };
+  const themeSignal = signal(
+    typeof document !== "undefined" && document.documentElement.getAttribute("data-theme") || getSavedTheme() || "light"
+  );
+  const setTheme = (themeName) => {
+    if (!themeName) return;
+    if (typeof document !== "undefined") {
+      document.documentElement.setAttribute("data-theme", themeName);
+    }
+    if (themeSignal && themeSignal.value !== themeName) {
+      themeSignal.value = themeName;
+    }
+    try {
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("lightview-theme", themeName);
+      }
+    } catch (e) {
+    }
+  };
+  const registerThemeSheet = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Failed to fetch theme CSS: ${response.status}`);
+      const cssText = await response.text();
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(cssText);
+      componentConfig.themeStyleSheet = sheet;
+    } catch (e) {
+      console.error(`LightviewX: Failed to register theme stylesheet '${url}':`, e);
+    }
+  };
+  const initComponents = async (options = {}) => {
+    const { shadowDefault = true } = options;
+    componentConfig.shadowDefault = shadowDefault;
+    if (shadowDefault) {
+      try {
+        const response = await fetch(DAISYUI_CDN);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch DaisyUI CSS: ${response.status}`);
+        }
+        const cssText = await response.text();
+        const sheet = new CSSStyleSheet();
+        sheet.replaceSync(cssText);
+        componentConfig.daisyStyleSheet = sheet;
+      } catch (e) {
+        console.error("LightviewX: Failed to preload DaisyUI stylesheet:", e);
+      }
+    }
+    componentConfig.initialized = true;
+  };
+  (async () => await initComponents())();
+  const getComponentStyleSheet = async (cssUrl) => {
+    if (componentConfig.componentStyleSheets.has(cssUrl)) {
+      return componentConfig.componentStyleSheets.get(cssUrl);
+    }
+    try {
+      const response = await fetch(cssUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch component CSS: ${response.status}`);
+      }
+      const cssText = await response.text();
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(cssText);
+      componentConfig.componentStyleSheets.set(cssUrl, sheet);
+      return sheet;
+    } catch (e) {
+      console.error(`LightviewX: Failed to create stylesheet for ${cssUrl}:`, e);
+      return null;
+    }
+  };
+  const shouldUseShadow = (useShadowProp) => {
+    if (useShadowProp !== void 0) {
+      return useShadowProp;
+    }
+    return componentConfig.shadowDefault;
+  };
+  const getAdoptedStyleSheets = (componentCssUrl, requestedSheets = []) => {
+    const result = [];
+    if (componentConfig.daisyStyleSheet) {
+      result.push(componentConfig.daisyStyleSheet);
+    } else {
+      result.push(DAISYUI_CDN);
+    }
+    if (componentConfig.themeStyleSheet) {
+      result.push(componentConfig.themeStyleSheet);
+    }
+    if (componentCssUrl) {
+      const componentSheet = componentConfig.componentStyleSheets.get(componentCssUrl);
+      if (componentSheet) {
+        result.push(componentSheet);
+      }
+    }
+    if (Array.isArray(requestedSheets)) {
+      requestedSheets.forEach((url) => {
+        const sheet = componentConfig.customStyleSheets.get(url);
+        if (sheet) {
+          result.push(sheet);
+        } else {
+          registerStyleSheet(url);
+          result.push(url);
+        }
+      });
+    }
+    return result;
+  };
+  const preloadComponentCSS = async (cssUrl) => {
+    if (!componentConfig.componentStyleSheets.has(cssUrl)) {
+      await getComponentStyleSheet(cssUrl);
+    }
+  };
+  const compileTemplate = (code) => {
+    try {
+      const isSingle = code.trim().startsWith("${") && code.trim().endsWith("}") && !code.trim().includes("${", 2);
+      const body = isSingle ? "return " + code.trim().slice(2, -1) : "return `" + code.replace(/\\/g, "\\\\").replace(/`/g, "\\`") + "`";
+      return new Function("state", "signal", body);
+    } catch (e) {
+      return () => "";
+    }
+  };
+  const processTemplateChild = (child, LV) => {
+    if (typeof child === "string" && child.includes("${")) {
+      const fn = compileTemplate(child);
+      return () => fn(LV.state, LV.signal);
+    }
+    return child;
+  };
+  const transformTextNode = (node, isRaw, LV) => {
+    const text = node.textContent;
+    if (isRaw) return text;
+    if (!text.trim() && !text.includes("${")) return null;
+    if (text.includes("${")) {
+      const fn = compileTemplate(text);
+      return () => fn(LV.state, LV.signal);
+    }
+    return text;
+  };
+  const transformElementNode = (node, element2, domToElements2) => {
+    const tagName = node.tagName.toLowerCase();
+    const attributes = {};
+    const skip = tagName === "script" || tagName === "style";
+    const LV = typeof window !== "undefined" ? globalThis.Lightview : typeof globalThis !== "undefined" ? globalThis.Lightview : null;
+    for (let attr of node.attributes) {
+      const val = attr.value;
+      attributes[attr.name] = !skip && val.includes("${") ? (() => {
+        const fn = compileTemplate(val);
+        return () => fn(LV.state, LV.signal);
+      })() : val;
+    }
+    return element2(tagName, attributes, domToElements2(Array.from(node.childNodes), element2, tagName));
+  };
+  const domToElements = (domNodes, element2, parentTagName = null) => {
+    const isRaw = parentTagName === "script" || parentTagName === "style";
+    const LV = globalThis.Lightview;
+    return domNodes.map((node) => {
+      if (node.nodeType === Node.TEXT_NODE) return transformTextNode(node, isRaw, LV);
+      if (node.nodeType === Node.ELEMENT_NODE) return transformElementNode(node, element2, domToElements);
+      return null;
+    }).filter((n) => n !== null);
+  };
+  const insertedContentMap = /* @__PURE__ */ new WeakMap();
+  const hashContent = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash;
+    }
+    return hash.toString(36);
+  };
+  const createMarker = (id, isEnd = false) => {
+    return document.createComment(`lv-src-${isEnd ? "end" : "start"}:${id}`);
+  };
+  const executeScripts = (container) => {
+    if (!container) return;
+    const scripts = container.querySelectorAll("script");
+    scripts.forEach((oldScript) => {
+      const newScript = document.createElement("script");
+      Array.from(oldScript.attributes).forEach((attr) => {
+        newScript.setAttribute(attr.name, attr.value);
+      });
+      if (oldScript.src) {
+        newScript.src = oldScript.src;
+      } else {
+        newScript.textContent = oldScript.textContent;
+      }
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
+  };
+  const removeInsertedContent = (parentEl, markerId) => {
+    const startMarker = `lv-src-start:${markerId}`;
+    const endMarker = `lv-src-end:${markerId}`;
+    let inRange = false;
+    const nodesToRemove = [];
+    const walker = document.createTreeWalker(
+      parentEl.parentElement || parentEl,
+      NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      if (node.nodeType === Node.COMMENT_NODE) {
+        if (node.textContent === startMarker) {
+          inRange = true;
+          nodesToRemove.push(node);
+          continue;
+        }
+        if (node.textContent === endMarker) {
+          nodesToRemove.push(node);
+          break;
+        }
+      }
+      if (inRange) {
+        nodesToRemove.push(node);
+      }
+    }
+    nodesToRemove.forEach((node) => node.remove());
+    return nodesToRemove.length > 0;
+  };
+  const insert = (elements, parent, location, markerId, { element: element2, setupChildren: setupChildren2 }) => {
+    const isSibling = location === "beforebegin" || location === "afterend";
+    const isOuter = location === "outerhtml";
+    const target = isSibling || isOuter ? parent.parentElement : parent;
+    if (!target) return console.warn(`LightviewX: No parent for ${location}`);
+    const frag = document.createDocumentFragment();
+    frag.appendChild(createMarker(markerId, false));
+    elements.forEach((c) => {
+      var _a, _b, _c;
+      if (typeof c === "string") frag.appendChild(document.createTextNode(c));
+      else if (c.domEl) frag.appendChild(c.domEl);
+      else if (c instanceof Node) frag.appendChild(c);
+      else {
+        const v = ((_c = (_a = globalThis.Lightview) == null ? void 0 : (_b = _a.hooks).processChild) == null ? void 0 : _c.call(_b, c)) || c;
+        if (v.tag) {
+          const n = element2(v.tag, v.attributes || {}, v.children || []);
+          if (n == null ? void 0 : n.domEl) frag.appendChild(n.domEl);
+        }
+      }
+    });
+    frag.appendChild(createMarker(markerId, true));
+    if (isOuter) target.replaceChild(frag, parent);
+    else if (location === "beforebegin") target.insertBefore(frag, parent);
+    else if (location === "afterend") target.insertBefore(frag, parent.nextSibling);
+    else if (location === "afterbegin") parent.insertBefore(frag, parent.firstChild);
+    else if (location === "beforeend") parent.appendChild(frag);
+    executeScripts(target);
+  };
+  const isPath = (s) => typeof s === "string" && !isDangerousProtocol(s) && /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom|cdomc?))$/i.test(s);
+  const fetchContent = async (src) => {
+    var _a;
+    try {
+      const LV = globalThis.Lightview;
+      if (((_a = LV == null ? void 0 : LV.hooks) == null ? void 0 : _a.validateUrl) && !LV.hooks.validateUrl(src)) {
+        console.warn(`[LightviewX] Fetch blocked by validateUrl hook: ${src}`);
+        return null;
+      }
+      const url = new URL(src, document.baseURI);
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const ext = url.pathname.split(".").pop().toLowerCase();
+      const isJson = ext === "vdom" || ext === "odom" || ext === "cdom";
+      const isHtml = ext === "html";
+      const isCdom = ext === "cdom" || ext === "cdomc";
+      const content = isJson ? await res.json() : await res.text();
+      return {
+        content,
+        isJson,
+        isHtml,
+        isCdom,
+        ext,
+        raw: isJson ? JSON.stringify(content) : content
+      };
+    } catch (e) {
+      return null;
+    }
+  };
+  const parseElements = (content, isJson, isHtml, el, element2, isCdom = false, ext = "") => {
+    var _a;
+    if (isJson) return Array.isArray(content) ? content : [content];
+    if (isCdom && ext === "cdomc") {
+      const parser = (_a = globalThis.LightviewCDOM) == null ? void 0 : _a.parseCDOMC;
+      if (parser) {
+        try {
+          const obj = parser(content);
+          return Array.isArray(obj) ? obj : [obj];
+        } catch (e) {
+          console.warn("LightviewX: Failed to parse .cdomc:", e);
+          return [];
+        }
+      } else {
+        console.warn("LightviewX: CDOMC parser not found. Ensure lightview-cdom.js is loaded.");
+        return [];
+      }
+    }
+    if (isHtml) {
+      if (el.domEl.getAttribute("escape") === "true") return [content];
+      const doc = new DOMParser().parseFromString(content.replace(/<head[^>]*>[\s\S]*?<\/head>/i, ""), "text/html");
+      return domToElements([...Array.from(doc.head.childNodes), ...Array.from(doc.body.childNodes)], element2);
+    }
+    return [content];
+  };
+  const elementsFromSelector = (selector, element2) => {
+    try {
+      const sel = document.querySelectorAll(selector);
+      if (!sel.length) return null;
+      return {
+        elements: domToElements(Array.from(sel), element2),
+        raw: Array.from(sel).map((n) => n.outerHTML || n.textContent).join("")
+      };
+    } catch (e) {
+      return null;
+    }
+  };
+  const updateTargetContent = (el, elements, raw, loc, contentHash, { element: element2, setupChildren: setupChildren2 }, targetHash = null) => {
+    const markerId = `${loc}-${contentHash.slice(0, 8)}`;
+    let track = getOrSet(insertedContentMap, el.domEl, () => ({}));
+    if (track[loc]) removeInsertedContent(el.domEl, `${loc}-${track[loc].slice(0, 8)}`);
+    track[loc] = contentHash;
+    const performScroll = (root) => {
+      if (!targetHash) return;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const id = targetHash.startsWith("#") ? targetHash.slice(1) : targetHash;
+          const target = root.getElementById ? root.getElementById(id) : root.querySelector(`#${id}`);
+          if (target) {
+            target.style.scrollMarginTop = "calc(var(--site-nav-height, 0px) + 2rem)";
+            target.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+          }
+        });
+      });
+    };
+    if (loc === "shadow") {
+      if (!el.domEl.shadowRoot) el.domEl.attachShadow({ mode: "open" });
+      setupChildren2(elements, el.domEl.shadowRoot);
+      executeScripts(el.domEl.shadowRoot);
+      performScroll(el.domEl.shadowRoot);
+    } else if (loc === "innerhtml") {
+      el.children = elements;
+      executeScripts(el.domEl);
+      performScroll(document);
+    } else {
+      insert(elements, el.domEl, loc, markerId, { element: element2, setupChildren: setupChildren2 });
+      performScroll(document);
+    }
+  };
+  const handleSrcAttribute = async (el, src, tagName, { element: element2, setupChildren: setupChildren2 }) => {
+    if (STANDARD_SRC_TAGS.includes(tagName)) return;
+    let elements = [], raw = "", targetHash = null;
+    if (isPath(src)) {
+      if (src.includes("#")) {
+        [src, targetHash] = src.split("#");
+      }
+      const result = await fetchContent(src);
+      if (result) {
+        elements = parseElements(result.content, result.isJson, result.isHtml, el, element2, result.isCdom, result.ext);
+        raw = result.raw;
+      }
+    }
+    if (!elements.length) {
+      const result = elementsFromSelector(src, element2);
+      if (result) {
+        elements = result.elements;
+        raw = result.raw;
+      }
+    }
+    if (!elements.length) return;
+    const loc = (el.domEl.getAttribute("location") || "innerhtml").toLowerCase();
+    const contentHash = hashContent(raw);
+    const track = getOrSet(insertedContentMap, el.domEl, () => ({}));
+    if (track[loc] === contentHash) {
+      if (targetHash) {
+        const root = loc === "shadow" ? el.domEl.shadowRoot : document;
+        if (root) {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              var _a;
+              const id = targetHash.startsWith("#") ? targetHash.slice(1) : targetHash;
+              const target = root.getElementById ? root.getElementById(id) : (_a = root.querySelector) == null ? void 0 : _a.call(root, `#${id}`);
+              if (target) {
+                target.style.scrollMarginTop = "calc(var(--site-nav-height, 0px) + 2rem)";
+                target.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+              }
+            });
+          });
+        }
+      }
+      return;
+    }
+    updateTargetContent(el, elements, raw, loc, contentHash, { element: element2, setupChildren: setupChildren2 }, targetHash);
+  };
+  const VALID_LOCATIONS = ["beforebegin", "afterbegin", "beforeend", "afterend", "innerhtml", "outerhtml", "shadow"];
+  const parseTargetWithLocation = (targetStr) => {
+    for (const loc of VALID_LOCATIONS) {
+      const suffix = ":" + loc;
+      if (targetStr.toLowerCase().endsWith(suffix)) {
+        return {
+          selector: targetStr.slice(0, -suffix.length),
+          location: loc
+        };
+      }
+    }
+    return { selector: targetStr, location: null };
+  };
+  const handleNonStandardHref = (e, { domToElement: domToElement2, wrapDomElement: wrapDomElement2 }) => {
+    var _a;
+    const clickedEl = e.target.closest("[href]");
+    if (!clickedEl) return;
+    const tagName = clickedEl.tagName.toLowerCase();
+    if (STANDARD_HREF_TAGS.includes(tagName)) return;
+    e.preventDefault();
+    const href = clickedEl.getAttribute("href");
+    const LV = globalThis.Lightview;
+    if (href && (isDangerousProtocol(href) || ((_a = LV == null ? void 0 : LV.hooks) == null ? void 0 : _a.validateUrl) && !LV.hooks.validateUrl(href))) {
+      console.warn(`[LightviewX] Navigation or fetch blocked by security policy: ${href}`);
+      return;
+    }
+    const targetAttr = clickedEl.getAttribute("target");
+    if (!targetAttr) {
+      let el = domToElement2.get(clickedEl);
+      if (!el) {
+        const attrs = {};
+        for (let attr of clickedEl.attributes) attrs[attr.name] = attr.value;
+        el = wrapDomElement2(clickedEl, tagName, attrs);
+      }
+      const newAttrs = { ...el.attributes, src: href };
+      el.attributes = newAttrs;
+      return;
+    }
+    if (targetAttr.startsWith("_")) {
+      switch (targetAttr) {
+        case "_self":
+          globalThis.location.href = href;
+          break;
+        case "_parent":
+          globalThis.parent.location.href = href;
+          break;
+        case "_top":
+          globalThis.top.location.href = href;
+          break;
+        case "_blank":
+        default:
+          globalThis.open(href, targetAttr);
+          break;
+      }
+      return;
+    }
+    const { selector, location } = parseTargetWithLocation(targetAttr);
+    try {
+      const targetElements = document.querySelectorAll(selector);
+      targetElements.forEach((targetEl) => {
+        let el = domToElement2.get(targetEl);
+        if (!el) {
+          const attrs = {};
+          for (let attr of targetEl.attributes) attrs[attr.name] = attr.value;
+          el = wrapDomElement2(targetEl, targetEl.tagName.toLowerCase(), attrs);
+        }
+        const newAttrs = { ...el.attributes, src: href };
+        if (location) {
+          newAttrs.location = location;
+        }
+        el.attributes = newAttrs;
+      });
+    } catch (err) {
+      console.warn("Invalid target selector:", selector, err);
+    }
+  };
+  const gateStates = /* @__PURE__ */ new WeakMap();
+  const BYPASS_FLAG = "__lv_passed";
+  const RESUME_FLAG = "__lv_resume";
+  const SENSIBLE_EVENTS = [
+    "click",
+    "dblclick",
+    "mousedown",
+    "mouseup",
+    "contextmenu",
+    "submit",
+    "reset",
+    "change",
+    "input",
+    "invalid",
+    "keydown",
+    "keyup",
+    "keypress",
+    "touchstart",
+    "touchend"
+  ];
+  const CAPTURE_EVENTS = ["focus", "blur"];
+  const getGateState = (el, key) => {
+    let elState = gateStates.get(el);
+    if (!elState) {
+      elState = /* @__PURE__ */ new Map();
+      gateStates.set(el, elState);
+    }
+    let state2 = elState.get(key);
+    if (!state2) {
+      state2 = {};
+      elState.set(key, state2);
+    }
+    return state2;
+  };
+  const gateThrottle = function(ms) {
+    const event = arguments[arguments.length - 1];
+    if (event == null ? void 0 : event[RESUME_FLAG]) return true;
+    const key = `throttle-${(event == null ? void 0 : event.type) || "all"}-${ms}`;
+    const state2 = getGateState(this, key);
+    const now2 = Date.now();
+    if (now2 - (state2.last || 0) >= ms) {
+      state2.last = now2;
+      return true;
+    }
+    return false;
+  };
+  const gateDebounce = function(ms) {
+    const event = arguments[arguments.length - 1];
+    const key = `debounce-${(event == null ? void 0 : event.type) || "all"}-${ms}`;
+    const state2 = getGateState(this, key);
+    if (state2.timer) clearTimeout(state2.timer);
+    if ((event == null ? void 0 : event[RESUME_FLAG]) && state2.passed) {
+      state2.passed = false;
+      return true;
+    }
+    state2.timer = setTimeout(() => {
+      state2.passed = true;
+      const newEvent = new event.constructor(event.type, event);
+      newEvent[RESUME_FLAG] = true;
+      this.dispatchEvent(newEvent);
+    }, ms);
+    return false;
+  };
+  const parseBeforeAttribute = (attrValue) => {
+    const tokens = [];
+    let current = "", depth = 0, inQuote = null;
+    for (let i2 = 0; i2 < attrValue.length; i2++) {
+      const char = attrValue[i2];
+      if (inQuote) {
+        current += char;
+        if (char === inQuote && attrValue[i2 - 1] !== "\\") inQuote = null;
+      } else if (char === "'" || char === '"') {
+        inQuote = char;
+        current += char;
+      } else if (char === "(") {
+        depth++;
+        current += char;
+      } else if (char === ")") {
+        depth--;
+        current += char;
+      } else if (/\s/.test(char) && depth === 0) {
+        if (current) tokens.push(current);
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+    if (current) tokens.push(current);
+    const events = [];
+    const exclusions = [];
+    const calls = [];
+    let i = 0;
+    while (i < tokens.length) {
+      const token = tokens[i];
+      if (!token || token.includes("(")) break;
+      if (token.startsWith("!")) exclusions.push(token.slice(1));
+      else events.push(token);
+      i++;
+    }
+    while (i < tokens.length) {
+      if (tokens[i]) calls.push(tokens[i]);
+      i++;
+    }
+    return { events, exclusions, calls };
+  };
+  const globalBeforeInterceptor = async (e) => {
+    var _a, _b;
+    if (e[BYPASS_FLAG]) return;
+    const target = (_b = (_a = e.target).closest) == null ? void 0 : _b.call(_a, "[lv-before]");
+    if (!target) return;
+    const { events, exclusions, calls } = parseBeforeAttribute(target.getAttribute("lv-before"));
+    const isExcluded = exclusions.includes(e.type);
+    const isIncluded = events.includes("*") || events.includes(e.type);
+    if (isExcluded || !isIncluded) return;
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    for (const callStr of calls) {
+      try {
+        const match2 = callStr.match(/^([\w\.]+)\((.*)\)$/);
+        if (!match2) continue;
+        const funcName = match2[1];
+        const argsStr = match2[2];
+        const LV = globalThis.Lightview;
+        const LVX = globalThis.LightviewX;
+        let fn = funcName.split(".").reduce((obj, key) => obj == null ? void 0 : obj[key], globalThis);
+        if (!fn && funcName === "throttle") fn = gateThrottle;
+        if (!fn && funcName === "debounce") fn = gateDebounce;
+        if (!fn && LVX && LVX[funcName]) fn = LVX[funcName];
+        if (typeof fn !== "function") {
+          console.warn(`LightviewX: lv-before function '${funcName}' not found`);
+          continue;
+        }
+        const evalArgs = new Function("event", "state", "signal", `return [${argsStr}]`);
+        const args = evalArgs.call(target, e, (LV == null ? void 0 : LV.state) || {}, (LV == null ? void 0 : LV.signal) || {});
+        args.push(e);
+        let result = fn.apply(target, args);
+        if (result instanceof Promise) result = await result;
+        if (result === false || result === null || result === void 0) return;
+      } catch (err) {
+        console.error(`LightviewX: Error executing lv-before gate '${callStr}':`, err);
+        return;
+      }
+    }
+    const finalEvent = new e.constructor(e.type, e);
+    finalEvent[BYPASS_FLAG] = true;
+    target.dispatchEvent(finalEvent);
+  };
+  const processSrcOnNode = (node, LV) => {
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    const tagName = node.tagName.toLowerCase();
+    if (isStandardSrcTag(tagName)) return;
+    const src = node.getAttribute("src");
+    if (!src) return;
+    let el = LV.internals.domToElement.get(node);
+    if (!el) {
+      const attrs = {};
+      for (let attr of node.attributes) attrs[attr.name] = attr.value;
+      el = LV.internals.wrapDomElement(node, tagName, attrs, []);
+    }
+    handleSrcAttribute(el, src, tagName, {
+      element: LV.element,
+      setupChildren: LV.internals.setupChildren
+    });
+  };
+  const processedNodes = /* @__PURE__ */ new WeakSet();
+  const activateReactiveSyntax = (root, LV) => {
+    if (!root || !LV) return;
+    const bindEffect = (node, codeStr, isAttr = false, attrName = null) => {
+      if (processedNodes.has(node) && !isAttr) return;
+      if (!isAttr) processedNodes.add(node);
+      const fn = compileTemplate(codeStr);
+      LV.effect(() => {
+        try {
+          const val = fn(LV.state, LV.signal);
+          if (isAttr) {
+            if (attrName.startsWith("cdom-")) {
+              node[attrName] = val;
+            } else {
+              val === null || val === void 0 || val === false ? node.removeAttribute(attrName) : node.setAttribute(attrName, val);
+            }
+          } else node.textContent = val !== void 0 ? val : "";
+        } catch (e) {
+        }
+      });
+    };
+    const textXPath = ".//text()[contains(., '${')]";
+    const textResult = document.evaluate(
+      textXPath,
+      root,
+      null,
+      XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+      null
+    );
+    for (let i = 0; i < textResult.snapshotLength; i++) {
+      const node = textResult.snapshotItem(i);
+      if (node.parentElement && node.parentElement.closest("SCRIPT, STYLE, CODE, PRE, TEMPLATE, NOSCRIPT")) continue;
+      bindEffect(node, node.textContent);
+    }
+    const attrXPath = ".//*[@*[contains(., '${')]]";
+    const attrResult = document.evaluate(
+      attrXPath,
+      root,
+      null,
+      XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+      null
+    );
+    for (let i = 0; i < attrResult.snapshotLength; i++) {
+      const element2 = attrResult.snapshotItem(i);
+      if (["SCRIPT", "STYLE", "CODE", "PRE", "TEMPLATE", "NOSCRIPT"].includes(element2.tagName)) continue;
+      Array.from(element2.attributes).forEach((attr) => {
+        if (attr.value.includes("${")) {
+          bindEffect(element2, attr.value, true, attr.name);
+        }
+      });
+    }
+    if (root.nodeType === Node.ELEMENT_NODE && !["SCRIPT", "STYLE", "CODE", "PRE", "TEMPLATE", "NOSCRIPT"].includes(root.tagName)) {
+      Array.from(root.attributes).forEach((attr) => {
+        if (attr.value.includes("${")) {
+          bindEffect(root, attr.value, true, attr.name);
+        }
+      });
+    }
+  };
+  const processAddedNode = (node, nodesToProcess, nodesToActivate) => {
+    if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
+      nodesToActivate.push(node);
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    nodesToProcess.push(node);
+    const selector = "[src]:not(" + STANDARD_SRC_TAGS.join("):not(") + ")";
+    const descendants = node.querySelectorAll(selector);
+    for (const desc of descendants) {
+      if (!desc.tagName.toLowerCase().startsWith("lv-")) {
+        nodesToProcess.push(desc);
+      }
+    }
+  };
+  const collectNodesFromMutations = (mutations) => {
+    const nodesToProcess = [];
+    const nodesToActivate = [];
+    for (const mutation of mutations) {
+      if (mutation.type === "childList") {
+        mutation.addedNodes.forEach((node) => processAddedNode(node, nodesToProcess, nodesToActivate));
+      } else if (mutation.type === "attributes" && mutation.attributeName === "src") {
+        nodesToProcess.push(mutation.target);
+      }
+    }
+    return { nodesToProcess, nodesToActivate };
+  };
+  const setupSrcObserver = (LV) => {
+    const observer = new MutationObserver((mutations) => {
+      const { nodesToProcess, nodesToActivate } = collectNodesFromMutations(mutations);
+      if (nodesToProcess.length > 0 || nodesToActivate.length > 0) {
+        requestAnimationFrame(() => {
+          nodesToActivate.forEach((node) => activateReactiveSyntax(node, LV));
+          nodesToProcess.forEach((node) => processSrcOnNode(node, LV));
+        });
+      }
+    });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["src"]
+    });
+    return observer;
+  };
+  if (typeof window !== "undefined" && globalThis.Lightview) {
+    const LV = globalThis.Lightview;
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => setupSrcObserver(LV));
+    } else {
+      setupSrcObserver(LV);
+    }
+    const initialScan = () => {
+      requestAnimationFrame(() => {
+        activateReactiveSyntax(document.body, LV);
+        const selector = "[src]:not(" + STANDARD_SRC_TAGS.join("):not(") + ")";
+        const nodes = document.querySelectorAll(selector);
+        nodes.forEach((node) => {
+          if (node.tagName.toLowerCase().startsWith("lv-")) return;
+          processSrcOnNode(node, LV);
+        });
+      });
+    };
+    if (document.body) {
+      initialScan();
+    } else {
+      document.addEventListener("DOMContentLoaded", initialScan);
+    }
+    LV.hooks.onNonStandardHref = (e) => {
+      handleNonStandardHref(e, {
+        domToElement: LV.internals.domToElement,
+        wrapDomElement: LV.internals.wrapDomElement
+      });
+    };
+    SENSIBLE_EVENTS.forEach((ev) => window.addEventListener(ev, globalBeforeInterceptor, true));
+    CAPTURE_EVENTS.forEach((ev) => window.addEventListener(ev, globalBeforeInterceptor, true));
+    LV.hooks.processChild = (child) => {
+      if (!child) return child;
+      if (typeof child === "object" && !Array.isArray(child) && !child.tag && !child.domEl) {
+        child = convertObjectDOM(child);
+      }
+      if (typeof child === "string" && child.startsWith("$") && isNaN(parseInt(child[1]))) {
+        const CDOM = globalThis.LightviewCDOM;
+        if (CDOM) return CDOM.parseExpression(child);
+      }
+      if (typeof child === "string" && (child.trim().startsWith("{") || child.trim().startsWith("["))) {
+        try {
+          const parsed = new Function("return (" + child + ")")();
+          if (typeof parsed === "object" && parsed !== null) {
+            if (Array.isArray(parsed)) {
+              return parsed;
+            }
+            if (parsed.tag || parsed.domEl) {
+              return parsed;
+            }
+            return convertObjectDOM(parsed);
+          }
+        } catch (e) {
+        }
+      }
+      return processTemplateChild(child, {
+        state,
+        signal: LV.signal
+      });
+    };
+  }
+  const createCustomElement = (Component, options = {}) => {
+    return class extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: "open" });
+      }
+      async connectedCallback() {
+        const { cssUrl, styles } = options;
+        this.themeWrapper = document.createElement("div");
+        this.themeWrapper.style.display = "contents";
+        const syncTheme = () => {
+          const theme = document.documentElement.getAttribute("data-theme") || "light";
+          this.themeWrapper.setAttribute("data-theme", theme);
+        };
+        syncTheme();
+        this.themeObserver = new MutationObserver(syncTheme);
+        this.themeObserver.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["data-theme"]
+        });
+        this.shadowRoot.appendChild(this.themeWrapper);
+        const adoptedStyleSheets = getAdoptedStyleSheets(cssUrl, styles);
+        try {
+          const sheets = adoptedStyleSheets.filter((s) => s instanceof CSSStyleSheet);
+          this.shadowRoot.adoptedStyleSheets = sheets;
+        } catch (e) {
+        }
+        if (!componentConfig.daisyStyleSheet) {
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = DAISYUI_CDN;
+          this.shadowRoot.appendChild(link);
+        }
+        adoptedStyleSheets.forEach((s) => {
+          if (typeof s === "string") {
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = s;
+            this.shadowRoot.appendChild(link);
+          }
+        });
+        this.render = () => {
+          const props = {};
+          for (const attr of this.attributes) {
+            const name = attr.name.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+            if (attr.value === "") {
+              props[name] = true;
+            } else {
+              props[name] = attr.value;
+            }
+          }
+          props.useShadow = false;
+          const slot = globalThis.Lightview.tags.slot();
+          const result = Component(props, slot);
+          globalThis.Lightview.internals.setupChildren([result], this.themeWrapper);
+        };
+        if (typeof MutationObserver !== "undefined" && typeof HTMLElement !== "undefined") {
+          this.attrObserver = new MutationObserver((mutations) => {
+            this.render();
+          });
+          this.attrObserver.observe(this, {
+            attributes: true
+          });
+        }
+        this.render();
+      }
+      disconnectedCallback() {
+        if (this.themeObserver) {
+          this.themeObserver.disconnect();
+        }
+        if (this.attrObserver) {
+          this.attrObserver.disconnect();
+        }
+      }
+    };
+  };
+  const customElementWrapper = (Component, config = {}) => {
+    const {
+      attributeMap = {},
+      childElements = {}
+    } = config;
+    return class extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: "open" });
+      }
+      connectedCallback() {
+        let adopted = false;
+        if (componentConfig.daisyStyleSheet) {
+          try {
+            const sheets = [componentConfig.daisyStyleSheet];
+            if (componentConfig.themeStyleSheet) {
+              sheets.push(componentConfig.themeStyleSheet);
+            }
+            this.shadowRoot.adoptedStyleSheets = sheets;
+            adopted = true;
+          } catch (e) {
+          }
+        }
+        if (!adopted) {
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = DAISYUI_CDN;
+          this.shadowRoot.appendChild(link);
+        }
+        const themeWrapper = document.createElement("div");
+        themeWrapper.setAttribute("data-theme", document.documentElement.getAttribute("data-theme") || "light");
+        themeWrapper.style.display = "contents";
+        this.shadowRoot.appendChild(themeWrapper);
+        this.themeWrapper = themeWrapper;
+        this.themeObserver = new MutationObserver(() => {
+          const theme = document.documentElement.getAttribute("data-theme") || "light";
+          this.themeWrapper.setAttribute("data-theme", theme);
+        });
+        this.themeObserver.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["data-theme"]
+        });
+        this.render();
+        const attrs = Object.keys(attributeMap);
+        if (attrs.length > 0) {
+          this.attrObserver = new MutationObserver(() => this.render());
+          this.attrObserver.observe(this, {
+            attributes: true,
+            attributeFilter: attrs
+          });
+        }
+        if (Object.keys(childElements).length > 0) {
+          this.childObserver = new MutationObserver(() => this.render());
+          this.childObserver.observe(this, {
+            childList: true,
+            subtree: true,
+            attributes: true
+          });
+        }
+      }
+      disconnectedCallback() {
+        if (this.themeObserver) this.themeObserver.disconnect();
+        if (this.attrObserver) this.attrObserver.disconnect();
+        if (this.childObserver) this.childObserver.disconnect();
+      }
+      parseChildrenToVDOM() {
+        return Array.from(this.children).map((child) => {
+          const tagName = child.tagName.toLowerCase();
+          const componentInfo = childElements[tagName];
+          if (!componentInfo) return null;
+          const { component, attributeMap: attributeMap2 = {} } = componentInfo;
+          const attributes = {};
+          for (const attr of child.attributes) {
+            const name = attr.name.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+            const type = attributeMap2[name];
+            const value = attr.value;
+            if (type === Boolean) {
+              attributes[name] = value === "true" || value === "";
+            } else if (type === Number) {
+              attributes[name] = Number(value);
+            } else if (type === Array || type === Object) {
+              try {
+                attributes[name] = JSON.parse(value);
+              } catch (e) {
+                console.warn(`[Lightview] Failed to parse child attribute ${name} as JSON:`, value);
+                attributes[name] = value;
+              }
+            } else {
+              attributes[name] = value;
+            }
+          }
+          if (child.onclick) attributes.onclick = child.onclick.bind(child);
+          return {
+            tag: component,
+            attributes,
+            children: Array.from(child.childNodes)
+          };
+        }).filter(Boolean);
+      }
+      render() {
+        var _a, _b;
+        const props = { useShadow: false };
+        for (const attr of this.attributes) {
+          const name = attr.name.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+          const type = attributeMap[name];
+          const value = attr.value;
+          if (type === Boolean) {
+            props[name] = value === "true" || value === "";
+          } else if (type === Number) {
+            props[name] = Number(value);
+          } else if (type === Array || type === Object) {
+            try {
+              props[name] = JSON.parse(value);
+            } catch (e) {
+              console.warn(`[Lightview] Failed to parse ${name} as JSON:`, value);
+              props[name] = value;
+            }
+          } else {
+            props[name] = value;
+          }
+        }
+        const vdomChildren = this.parseChildrenToVDOM();
+        const children = Object.keys(childElements).length > 0 ? vdomChildren : [{ tag: globalThis.Lightview.tags.slot }];
+        const result = Component(props, ...children);
+        if (((_b = (_a = globalThis.Lightview) == null ? void 0 : _a.internals) == null ? void 0 : _b.setupChildren) && this.themeWrapper) {
+          this.themeWrapper.innerHTML = "";
+          globalThis.Lightview.internals.setupChildren([result], this.themeWrapper);
+        }
+      }
+      static get observedAttributes() {
+        return Object.keys(attributeMap);
+      }
+      attributeChangedCallback() {
+        this.render();
+      }
+    };
+  };
+  const LightviewX = {
+    state,
+    themeSignal,
+    setTheme,
+    registerStyleSheet,
+    registerThemeSheet,
+    // Gate modifiers
+    throttle: gateThrottle,
+    debounce: gateDebounce,
+    // Component initialization
+    initComponents,
+    componentConfig,
+    shouldUseShadow,
+    getAdoptedStyleSheets,
+    preloadComponentCSS,
+    createCustomElement,
+    customElementWrapper,
+    internals: {
+      handleSrcAttribute,
+      parseElements
+    }
+  };
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = LightviewX;
+  }
+  if (typeof window !== "undefined") {
+    globalThis.LightviewX = LightviewX;
+  }
+  if (typeof window !== "undefined") {
+    try {
+      const savedTheme = getSavedTheme();
+      if (savedTheme) {
+        setTheme(savedTheme);
+      }
+    } catch (e) {
+    }
+    if (typeof window !== "undefined" && globalThis.Lightview) {
+      if (!globalThis.Lightview.hooks.validateUrl) {
+        globalThis.Lightview.hooks.validateUrl = validateUrl;
+      }
+    }
+  }
+  if (typeof globalThis !== "undefined" && globalThis.Lightview) {
+    if (!globalThis.Lightview.hooks.validateUrl) {
+      globalThis.Lightview.hooks.validateUrl = validateUrl;
+    }
+  }
+  const helpers = /* @__PURE__ */ new Map();
+  const helperOptions = /* @__PURE__ */ new Map();
+  const registerHelper = (name, fn, options = {}) => {
+    helpers.set(name, fn);
+    if (options) helperOptions.set(name, options);
+  };
+  const getLV = () => globalThis.Lightview || null;
+  const getRegistry = () => {
+    var _a;
+    return ((_a = getLV()) == null ? void 0 : _a.registry) || null;
+  };
+  class BindingTarget {
+    constructor(parent, key) {
+      this.parent = parent;
+      this.key = key;
+      this.isBindingTarget = true;
+    }
+    get value() {
+      return this.parent[this.key];
+    }
+    set value(v) {
+      this.parent[this.key] = v;
+    }
+    get __parent__() {
+      return this.parent;
+    }
+  }
+  const unwrapSignal = (val) => {
+    if (val && typeof val === "function" && "value" in val) {
+      return val.value;
+    }
+    if (val && typeof val === "object" && !(globalThis.Node && val instanceof globalThis.Node) && "value" in val) {
+      return val.value;
+    }
+    return val;
+  };
+  const traverse = (root, segments) => {
+    let current = root;
+    for (const segment of segments) {
+      if (!segment) continue;
+      current = unwrapSignal(current);
+      if (current == null) return void 0;
+      const key = segment.startsWith("[") ? segment.slice(1, -1) : segment;
+      current = current[key];
+    }
+    return unwrapSignal(current);
+  };
+  const traverseAsContext = (root, segments) => {
+    let current = root;
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      if (!segment) continue;
+      const key = segment.startsWith("[") ? segment.slice(1, -1) : segment;
+      const unwrapped = unwrapSignal(current);
+      if (unwrapped == null) return void 0;
+      if (i === segments.length - 1) {
+        return new BindingTarget(unwrapped, key);
+      }
+      current = unwrapped[key];
+    }
+    return current;
+  };
+  const resolvePath = (path, context) => {
+    if (typeof path !== "string") return path;
+    const registry2 = getRegistry();
+    if (path === ".") return unwrapSignal(context);
+    if (path.startsWith("$/")) {
+      const [rootName, ...rest] = path.slice(2).split("/");
+      const rootSignal = registry2 == null ? void 0 : registry2.get(rootName);
+      if (!rootSignal) return void 0;
+      return traverse(rootSignal, rest);
+    }
+    if (path.startsWith("./")) {
+      return traverse(context, path.slice(2).split("/"));
+    }
+    if (path.startsWith("../")) {
+      return traverse(context == null ? void 0 : context.__parent__, path.slice(3).split("/"));
+    }
+    if (path.includes("/") || path.includes(".")) {
+      return traverse(context, path.split(/[\/.]/));
+    }
+    const unwrappedContext = unwrapSignal(context);
+    if (unwrappedContext && typeof unwrappedContext === "object") {
+      if (path in unwrappedContext || unwrappedContext[path] !== void 0) {
+        return traverse(unwrappedContext, [path]);
+      }
+    }
+    return path;
+  };
+  const resolvePathAsContext = (path, context) => {
+    if (typeof path !== "string") return path;
+    const registry2 = getRegistry();
+    if (path === ".") return context;
+    if (path.startsWith("$/")) {
+      const segments = path.slice(2).split(/[\/.]/);
+      const rootName = segments.shift();
+      const rootSignal = registry2 == null ? void 0 : registry2.get(rootName);
+      if (!rootSignal) return void 0;
+      return traverseAsContext(rootSignal, segments);
+    }
+    if (path.startsWith("./")) {
+      return traverseAsContext(context, path.slice(2).split(/[\/.]/));
+    }
+    if (path.startsWith("../")) {
+      return traverseAsContext(context == null ? void 0 : context.__parent__, path.slice(3).split(/[\/.]/));
+    }
+    if (path.includes("/") || path.includes(".")) {
+      return traverseAsContext(context, path.split(/[\/.]/));
+    }
+    const unwrappedContext = unwrapSignal(context);
+    if (unwrappedContext && typeof unwrappedContext === "object") {
+      if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(path)) {
+        return new BindingTarget(unwrappedContext, path);
+      }
+    }
+    return path;
+  };
+  class LazyValue {
+    constructor(fn) {
+      this.fn = fn;
+      this.isLazy = true;
+    }
+    resolve(context) {
+      return this.fn(context);
+    }
+  }
+  const resolveArgument = (arg, context, globalMode = false) => {
+    if (arg.startsWith("'") && arg.endsWith("'") || arg.startsWith('"') && arg.endsWith('"')) {
+      return { value: arg.slice(1, -1), isLiteral: true };
+    }
+    if (arg !== "" && !isNaN(Number(arg))) {
+      return { value: Number(arg), isLiteral: true };
+    }
+    if (arg === "true") return { value: true, isLiteral: true };
+    if (arg === "false") return { value: false, isLiteral: true };
+    if (arg === "null") return { value: null, isLiteral: true };
+    if (arg === "_" || arg.startsWith("_/") || arg.startsWith("_.")) {
+      return {
+        value: new LazyValue((item) => {
+          if (arg === "_") return item;
+          const path = arg.startsWith("_.") ? arg.slice(2) : arg.slice(2);
+          return resolvePath(path, item);
+        }),
+        isLazy: true
+      };
+    }
+    if (arg === "$event" || arg.startsWith("$event/") || arg.startsWith("$event.")) {
+      return {
+        value: new LazyValue((event) => {
+          if (arg === "$event") return event;
+          const path = arg.startsWith("$event.") ? arg.slice(7) : arg.slice(7);
+          return resolvePath(path, event);
+        }),
+        isLazy: true
+      };
+    }
+    if (arg.includes("(")) {
+      let nestedExpr = arg;
+      if (arg.startsWith("/")) {
+        nestedExpr = "$" + arg;
+      } else if (globalMode && !arg.startsWith("$") && !arg.startsWith("./")) {
+        nestedExpr = `$/${arg}`;
+      }
+      const val = resolveExpression(nestedExpr, context);
+      if (val instanceof LazyValue) {
+        return { value: val, isLazy: true };
+      }
+      return { value: val, isSignal: false };
+    }
+    const isExplosion = arg.endsWith("...");
+    const pathStr = isExplosion ? arg.slice(0, -3) : arg;
+    let normalizedPath;
+    if (pathStr.startsWith("/")) {
+      normalizedPath = "$" + pathStr;
+    } else if (pathStr.startsWith("$") || pathStr.startsWith("./") || pathStr.startsWith("../")) {
+      normalizedPath = pathStr;
+    } else if (globalMode) {
+      normalizedPath = `$/${pathStr}`;
+    } else {
+      normalizedPath = `./${pathStr}`;
+    }
+    if (isExplosion) {
+      const pathParts = normalizedPath.split("/");
+      const propName = pathParts.pop();
+      const parentPath = pathParts.join("/");
+      const parent = parentPath ? resolvePath(parentPath, context) : context;
+      const unwrappedParent = unwrapSignal(parent);
+      if (Array.isArray(unwrappedParent)) {
+        const values = unwrappedParent.map((item) => {
+          const unwrappedItem = unwrapSignal(item);
+          return unwrappedItem && unwrappedItem[propName];
+        });
+        return { value: values, isExplosion: true };
+      } else if (unwrappedParent && typeof unwrappedParent === "object") {
+        const val = unwrappedParent[propName];
+        return { value: unwrapSignal(val), isExplosion: true };
+      }
+      return { value: void 0, isExplosion: true };
+    }
+    const value = resolvePathAsContext(normalizedPath, context);
+    return { value, isExplosion: false };
+  };
+  const resolveExpression = (expr, context) => {
+    var _a;
+    if (typeof expr !== "string") return expr;
+    const funcStart = expr.indexOf("(");
+    if (funcStart !== -1 && expr.endsWith(")")) {
+      const fullPath = expr.slice(0, funcStart).trim();
+      const argsStr = expr.slice(funcStart + 1, -1);
+      const segments = fullPath.split("/");
+      let funcName = segments.pop().replace(/^\$/, "");
+      if (funcName === "" && (segments.length > 0 || fullPath === "/")) {
+        funcName = "/";
+      }
+      const navPath = segments.join("/");
+      const isGlobalExpr = expr.startsWith("$/") || expr.startsWith("$");
+      let baseContext = context;
+      if (navPath && navPath !== "$") {
+        baseContext = resolvePathAsContext(navPath, context);
+      }
+      const helper = helpers.get(funcName);
+      if (!helper) {
+        (_a = globalThis.console) == null ? void 0 : _a.warn(`LightviewCDOM: Helper "${funcName}" not found.`);
+        return expr;
+      }
+      const options = helperOptions.get(funcName) || {};
+      const argsList = [];
+      let current = "", parenDepth = 0, braceDepth = 0, bracketDepth = 0, quote = null;
+      for (let i = 0; i < argsStr.length; i++) {
+        const char = argsStr[i];
+        if (char === quote) quote = null;
+        else if (!quote && (char === "'" || char === '"')) quote = char;
+        else if (!quote && char === "(") parenDepth++;
+        else if (!quote && char === ")") parenDepth--;
+        else if (!quote && char === "{") braceDepth++;
+        else if (!quote && char === "}") braceDepth--;
+        else if (!quote && char === "[") bracketDepth++;
+        else if (!quote && char === "]") bracketDepth--;
+        else if (!quote && char === "," && parenDepth === 0 && braceDepth === 0 && bracketDepth === 0) {
+          argsList.push(current.trim());
+          current = "";
+          continue;
+        }
+        current += char;
+      }
+      if (current) argsList.push(current.trim());
+      const resolvedArgs = [];
+      let hasLazy = false;
+      for (let i = 0; i < argsList.length; i++) {
+        const arg = argsList[i];
+        const useGlobalMode = isGlobalExpr && (navPath === "$" || !navPath);
+        const res = resolveArgument(arg, baseContext, useGlobalMode);
+        if (res.isLazy) hasLazy = true;
+        const shouldUnwrap = !(options.pathAware && i === 0);
+        let val = shouldUnwrap ? unwrapSignal(res.value) : res.value;
+        if (res.isExplosion && Array.isArray(val)) {
+          resolvedArgs.push(...val.map((v) => shouldUnwrap ? unwrapSignal(v) : v));
+        } else {
+          resolvedArgs.push(val);
+        }
+      }
+      if (hasLazy) {
+        return new LazyValue((contextOverride) => {
+          const finalArgs = resolvedArgs.map((arg, i) => {
+            const shouldUnwrap = !(options.pathAware && i === 0);
+            const resolved = arg instanceof LazyValue ? arg.resolve(contextOverride) : arg;
+            return shouldUnwrap ? unwrapSignal(resolved) : resolved;
+          });
+          return helper(...finalArgs);
+        });
+      }
+      const result = helper(...resolvedArgs);
+      return unwrapSignal(result);
+    }
+    return unwrapSignal(resolvePath(expr, context));
+  };
+  const parseExpression = (expr, context) => {
+    const LV = getLV();
+    if (!LV || typeof expr !== "string") return expr;
+    return LV.computed(() => resolveExpression(expr, context));
+  };
+  const parseCDOMC = (input) => {
+    let i = 0;
+    const len2 = input.length;
+    const skipWhitespace = () => {
+      while (i < len2) {
+        const char = input[i];
+        if (/\s/.test(char)) {
+          i++;
+          continue;
+        }
+        if (char === "/") {
+          const next = input[i + 1];
+          if (next === "/") {
+            i += 2;
+            while (i < len2 && input[i] !== "\n" && input[i] !== "\r") i++;
+            continue;
+          } else if (next === "*") {
+            i += 2;
+            while (i < len2) {
+              if (input[i] === "*" && input[i + 1] === "/") {
+                i += 2;
+                break;
+              }
+              i++;
+            }
+            continue;
+          }
+        }
+        break;
+      }
+    };
+    const parseString = () => {
+      const quote = input[i++];
+      let res2 = "";
+      while (i < len2) {
+        const char = input[i++];
+        if (char === quote) return res2;
+        if (char === "\\") {
+          const next = input[i++];
+          if (next === "n") res2 += "\n";
+          else if (next === "t") res2 += "	";
+          else if (next === '"') res2 += '"';
+          else if (next === "'") res2 += "'";
+          else if (next === "\\") res2 += "\\";
+          else res2 += next;
+        } else {
+          res2 += char;
+        }
+      }
+      throw new Error("Unterminated string");
+    };
+    const parseWord = () => {
+      const start = i;
+      let pDepth = 0;
+      let bDepth = 0;
+      let brDepth = 0;
+      let quote = null;
+      while (i < len2) {
+        const char = input[i];
+        if (quote) {
+          if (char === quote) quote = null;
+          i++;
+          continue;
+        } else if (char === '"' || char === "'" || char === "`") {
+          quote = char;
+          i++;
+          continue;
+        }
+        if (char === "(") {
+          pDepth++;
+          i++;
+          continue;
+        }
+        if (char === "{") {
+          bDepth++;
+          i++;
+          continue;
+        }
+        if (char === "[") {
+          brDepth++;
+          i++;
+          continue;
+        }
+        if (char === ")") {
+          if (pDepth > 0) {
+            pDepth--;
+            i++;
+            continue;
+          }
+        }
+        if (char === "}") {
+          if (bDepth > 0) {
+            bDepth--;
+            i++;
+            continue;
+          }
+        }
+        if (char === "]") {
+          if (brDepth > 0) {
+            brDepth--;
+            i++;
+            continue;
+          }
+        }
+        if (pDepth === 0 && bDepth === 0 && brDepth === 0) {
+          if (/[\s:,{}\[\]"'`()]/.test(char)) {
+            break;
+          }
+        }
+        i++;
+      }
+      const word = input.slice(start, i);
+      if (word.startsWith("$")) {
+        return word;
+      }
+      if (word === "true") return true;
+      if (word === "false") return false;
+      if (word === "null") return null;
+      if (word.trim() !== "" && !isNaN(Number(word))) return Number(word);
+      return word;
+    };
+    const parseValue = () => {
+      skipWhitespace();
+      if (i >= len2) return void 0;
+      const char = input[i];
+      if (char === "{") return parseObject();
+      if (char === "[") return parseArray();
+      if (char === '"' || char === "'") return parseString();
+      return parseWord();
+    };
+    const parseObject = () => {
+      i++;
+      const obj = {};
+      skipWhitespace();
+      if (i < len2 && input[i] === "}") {
+        i++;
+        return obj;
+      }
+      while (i < len2) {
+        skipWhitespace();
+        let key;
+        if (input[i] === '"' || input[i] === "'") key = parseString();
+        else key = parseWord();
+        skipWhitespace();
+        if (input[i] !== ":") throw new Error(`Expected ':' at position ${i}, found '${input[i]}'`);
+        i++;
+        const value = parseValue();
+        obj[String(key)] = value;
+        skipWhitespace();
+        if (input[i] === "}") {
+          i++;
+          return obj;
+        }
+        if (input[i] === ",") {
+          i++;
+          skipWhitespace();
+          if (input[i] === "}") {
+            i++;
+            return obj;
+          }
+          continue;
+        }
+        throw new Error(`Expected '}' or ',' at position ${i}, found '${input[i]}'`);
+      }
+    };
+    const parseArray = () => {
+      i++;
+      const arr = [];
+      skipWhitespace();
+      if (i < len2 && input[i] === "]") {
+        i++;
+        return arr;
+      }
+      while (i < len2) {
+        const val = parseValue();
+        arr.push(val);
+        skipWhitespace();
+        if (input[i] === "]") {
+          i++;
+          return arr;
+        }
+        if (input[i] === ",") {
+          i++;
+          skipWhitespace();
+          if (input[i] === "]") {
+            i++;
+            return arr;
+          }
+          continue;
+        }
+        throw new Error(`Expected ']' or ',' at position ${i}, found '${input[i]}'`);
+      }
+    };
+    skipWhitespace();
+    const res = parseValue();
+    return res;
+  };
+  const add = (...args) => args.reduce((a, b) => Number(a) + Number(b), 0);
+  const subtract = (a, b) => Number(a) - Number(b);
+  const multiply = (...args) => args.reduce((a, b) => Number(a) * Number(b), 1);
+  const divide = (a, b) => Number(a) / Number(b);
+  const round = (val, decimals = 0) => Number(Math.round(val + "e" + decimals) + "e-" + decimals);
+  const ceil = (val) => Math.ceil(val);
+  const floor = (val) => Math.floor(val);
+  const abs = (val) => Math.abs(val);
+  const mod = (a, b) => a % b;
+  const pow = (a, b) => Math.pow(a, b);
+  const sqrt = (val) => Math.sqrt(val);
+  const registerMathHelpers = (register) => {
+    register("+", add);
+    register("add", add);
+    register("-", subtract);
+    register("sub", subtract);
+    register("*", multiply);
+    register("mul", multiply);
+    register("/", divide);
+    register("div", divide);
+    register("round", round);
+    register("ceil", ceil);
+    register("floor", floor);
+    register("abs", abs);
+    register("mod", mod);
+    register("pow", pow);
+    register("sqrt", sqrt);
+  };
+  const ifHelper = (condition, thenVal, elseVal) => condition ? thenVal : elseVal;
+  const andHelper = (...args) => args.every(Boolean);
+  const orHelper = (...args) => args.some(Boolean);
+  const notHelper = (val) => !val;
+  const eqHelper = (a, b) => a === b;
+  const neqHelper = (a, b) => a !== b;
+  const registerLogicHelpers = (register) => {
+    register("if", ifHelper);
+    register("and", andHelper);
+    register("&&", andHelper);
+    register("or", orHelper);
+    register("||", orHelper);
+    register("not", notHelper);
+    register("!", notHelper);
+    register("eq", eqHelper);
+    register("==", eqHelper);
+    register("===", eqHelper);
+    register("neq", neqHelper);
+  };
+  const join$1 = (...args) => {
+    const separator = args[args.length - 1];
+    const items = args.slice(0, -1);
+    return items.join(separator);
+  };
+  const concat = (...args) => args.join("");
+  const upper = (s) => String(s).toUpperCase();
+  const lower = (s) => String(s).toLowerCase();
+  const trim = (s) => String(s).trim();
+  const len = (s) => String(s).length;
+  const replace = (s, search, replacement) => String(s).replace(search, replacement);
+  const split = (s, separator) => String(s).split(separator);
+  const capitalize = (s) => {
+    const str = String(s);
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+  const titleCase = (s) => {
+    return String(s).toLowerCase().split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  };
+  const contains$1 = (s, search) => String(s).includes(search);
+  const startsWith = (s, prefix) => String(s).startsWith(prefix);
+  const endsWith = (s, suffix) => String(s).endsWith(suffix);
+  const defaultHelper = (val, fallback) => val !== void 0 && val !== null ? val : fallback;
+  const registerStringHelpers = (register) => {
+    register("join", join$1);
+    register("concat", concat);
+    register("upper", upper);
+    register("lower", lower);
+    register("trim", trim);
+    register("len", len);
+    register("replace", replace);
+    register("split", split);
+    register("capitalize", capitalize);
+    register("titleCase", titleCase);
+    register("contains", contains$1);
+    register("startsWith", startsWith);
+    register("endsWith", endsWith);
+    register("default", defaultHelper);
+  };
+  const count = (...args) => args.length;
+  const filter = (arr, predicate) => {
+    if (!Array.isArray(arr)) return [];
+    if (typeof predicate === "function" && predicate.isLazy) {
+      return arr.filter((item) => predicate.resolve(item));
+    }
+    return arr.filter((item) => !!item);
+  };
+  const map = (arr, transform) => {
+    if (!Array.isArray(arr)) return [];
+    if (typeof transform === "string") {
+      return arr.map((item) => item && typeof item === "object" ? item[transform] : item);
+    }
+    if (transform && transform.isLazy) {
+      return arr.map((item) => transform.resolve(item));
+    }
+    return arr;
+  };
+  const find = (arr, predicate) => {
+    if (!Array.isArray(arr)) return void 0;
+    if (predicate && predicate.isLazy) {
+      return arr.find((item) => predicate.resolve(item));
+    }
+    return arr.find((item) => !!item);
+  };
+  const unique = (arr) => Array.isArray(arr) ? [...new Set(arr)] : [];
+  const sort = (arr, order = "asc") => {
+    if (!Array.isArray(arr)) return [];
+    const sorted = [...arr];
+    sorted.sort((a, b) => {
+      if (a < b) return order === "asc" ? -1 : 1;
+      if (a > b) return order === "asc" ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  };
+  const reverse = (arr) => Array.isArray(arr) ? [...arr].reverse() : [];
+  const first = (arr) => Array.isArray(arr) ? arr[0] : void 0;
+  const last = (arr) => Array.isArray(arr) ? arr[arr.length - 1] : void 0;
+  const slice = (arr, start, end) => Array.isArray(arr) ? arr.slice(start, end) : [];
+  const flatten = (arr) => Array.isArray(arr) ? arr.flat(Infinity) : [];
+  const join = (arr, sep = ",") => Array.isArray(arr) ? arr.join(String(sep)) : "";
+  const length = (arg) => Array.isArray(arg) ? arg.length : arg ? String(arg).length : 0;
+  const registerArrayHelpers = (register) => {
+    register("count", count);
+    register("filter", filter);
+    register("map", map);
+    register("find", find);
+    register("unique", unique);
+    register("sort", sort);
+    register("reverse", reverse);
+    register("first", first);
+    register("last", last);
+    register("slice", slice);
+    register("flatten", flatten);
+    register("join", join);
+    register("len", length);
+    register("length", length);
+  };
+  const gt = (a, b) => a > b;
+  const lt = (a, b) => a < b;
+  const gte = (a, b) => a >= b;
+  const lte = (a, b) => a <= b;
+  const neq = (a, b) => a !== b;
+  const between = (val, min2, max2) => val >= min2 && val <= max2;
+  const contains = (arr, val) => Array.isArray(arr) && arr.includes(val);
+  const registerCompareHelpers = (register) => {
+    register("gt", gt);
+    register(">", gt);
+    register("lt", lt);
+    register("<", lt);
+    register("gte", gte);
+    register(">=", gte);
+    register("lte", lte);
+    register("<=", lte);
+    register("neq", neq);
+    register("!=", neq);
+    register("between", between);
+    register("in", contains);
+  };
+  const sumIf = (arr, predicate) => {
+    if (!Array.isArray(arr)) return 0;
+    const filtered = predicate && predicate.isLazy ? arr.filter((item) => predicate.resolve(item)) : arr;
+    return filtered.reduce((a, b) => a + (Number(b) || 0), 0);
+  };
+  const countIf = (arr, predicate) => {
+    if (!Array.isArray(arr)) return 0;
+    if (predicate && predicate.isLazy) {
+      return arr.filter((item) => predicate.resolve(item)).length;
+    }
+    return arr.filter((item) => !!item).length;
+  };
+  const avgIf = (arr, predicate) => {
+    if (!Array.isArray(arr)) return 0;
+    const filtered = predicate && predicate.isLazy ? arr.filter((item) => predicate.resolve(item)) : arr;
+    if (filtered.length === 0) return 0;
+    return filtered.reduce((a, b) => a + (Number(b) || 0), 0) / filtered.length;
+  };
+  const registerConditionalHelpers = (register) => {
+    register("sumIf", sumIf);
+    register("countIf", countIf);
+    register("avgIf", avgIf);
+  };
+  const now = () => (/* @__PURE__ */ new Date()).getTime();
+  const today = () => {
+    const d = /* @__PURE__ */ new Date();
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  };
+  const date = (val) => new Date(val).getTime();
+  const formatDate = (val, format) => {
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return "";
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    if (format === "long") options.month = "long";
+    return d.toLocaleDateString(void 0, options);
+  };
+  const year = (val) => new Date(val).getFullYear();
+  const month = (val) => new Date(val).getMonth() + 1;
+  const day = (val) => new Date(val).getDate();
+  const weekday = (val) => new Date(val).getDay();
+  const addDays = (val, days) => {
+    const d = new Date(val);
+    d.setDate(d.getDate() + Number(days));
+    return d.getTime();
+  };
+  const dateDiff = (d1, d2, unit = "days") => {
+    const diff = Math.abs(new Date(d1) - new Date(d2));
+    if (unit === "seconds") return diff / 1e3;
+    if (unit === "minutes") return diff / (1e3 * 60);
+    if (unit === "hours") return diff / (1e3 * 60 * 60);
+    return diff / (1e3 * 60 * 60 * 24);
+  };
+  const registerDateTimeHelpers = (register) => {
+    register("now", now);
+    register("today", today);
+    register("date", date);
+    register("formatDate", formatDate);
+    register("year", year);
+    register("month", month);
+    register("day", day);
+    register("weekday", weekday);
+    register("addDays", addDays);
+    register("dateDiff", dateDiff);
+  };
+  const number = (val, decimals = 2) => Number(val).toFixed(decimals);
+  const currency = (val, symbol = "$", decimals = 2) => {
+    return symbol + Number(val).toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+  const percent = (val, decimals = 0) => (Number(val) * 100).toFixed(decimals) + "%";
+  const thousands = (val) => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const registerFormatHelpers = (register) => {
+    register("number", number);
+    register("currency", currency);
+    register("percent", percent);
+    register("thousands", thousands);
+  };
+  const lookup = (val, searchArr, resultArr) => {
+    if (!Array.isArray(searchArr)) return void 0;
+    const idx = searchArr.indexOf(val);
+    return idx !== -1 && Array.isArray(resultArr) ? resultArr[idx] : void 0;
+  };
+  const vlookup = (val, table, colIdx) => {
+    if (!Array.isArray(table)) return void 0;
+    const row = table.find((r) => Array.isArray(r) && r[0] === val);
+    return row ? row[colIdx - 1] : void 0;
+  };
+  const index = (arr, idx) => Array.isArray(arr) ? arr[idx] : void 0;
+  const match = (val, arr) => Array.isArray(arr) ? arr.indexOf(val) : -1;
+  const registerLookupHelpers = (register) => {
+    register("lookup", lookup);
+    register("vlookup", vlookup);
+    register("index", index);
+    register("match", match);
+  };
+  const sum = (...args) => args.reduce((a, b) => a + (Number(b) || 0), 0);
+  const avg = (...args) => args.length === 0 ? 0 : sum(...args) / args.length;
+  const min = (...args) => Math.min(...args);
+  const max = (...args) => Math.max(...args);
+  const median = (...args) => {
+    if (args.length === 0) return 0;
+    const sorted = [...args].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+  };
+  const stdev = (...args) => {
+    if (args.length === 0) return 0;
+    const mean = avg(...args);
+    const squareDiffs = args.map((value) => Math.pow(value - mean, 2));
+    return Math.sqrt(avg(...squareDiffs));
+  };
+  const variance = (...args) => {
+    if (args.length === 0) return 0;
+    const mean = avg(...args);
+    const squareDiffs = args.map((value) => Math.pow(value - mean, 2));
+    return avg(...squareDiffs);
+  };
+  const registerStatsHelpers = (register) => {
+    register("sum", sum);
+    register("avg", avg);
+    register("min", min);
+    register("max", max);
+    register("median", median);
+    register("stdev", stdev);
+    register("var", variance);
+  };
+  const set = (target, val) => {
+    if (target && typeof target === "object" && "value" in target) {
+      target.value = val;
+    } else if (target && typeof target === "function" && "value" in target) {
+      target.value = val;
+    } else if (target && typeof target === "object" && val && typeof val === "object") {
+      Object.assign(target, val);
+    }
+    return val;
+  };
+  const increment = (target, by = 1) => {
+    const hasValue = target && (typeof target === "object" || typeof target === "function") && "value" in target;
+    const current = hasValue ? target.value : 0;
+    const next = Number(current) + Number(by);
+    return set(target, next);
+  };
+  const decrement = (target, by = 1) => {
+    const hasValue = target && (typeof target === "object" || typeof target === "function") && "value" in target;
+    const current = hasValue ? target.value : 0;
+    const next = Number(current) - Number(by);
+    return set(target, next);
+  };
+  const toggle = (target) => {
+    const hasValue = target && (typeof target === "object" || typeof target === "function") && "value" in target;
+    const current = hasValue ? target.value : false;
+    return set(target, !current);
+  };
+  const push = (target, item) => {
+    const current = target && typeof target === "object" && "value" in target ? target.value : [];
+    if (Array.isArray(current)) {
+      const next = [...current, item];
+      return set(target, next);
+    }
+    return current;
+  };
+  const pop = (target) => {
+    const current = target && typeof target === "object" && "value" in target ? target.value : [];
+    if (Array.isArray(current) && current.length > 0) {
+      const next = current.slice(0, -1);
+      set(target, next);
+    }
+    return current;
+  };
+  const assign = (target, obj) => {
+    const current = target && typeof target === "object" && "value" in target ? target.value : {};
+    const next = { ...current, ...obj };
+    return set(target, next);
+  };
+  const clear = (target) => {
+    const current = target && typeof target === "object" && "value" in target ? target.value : null;
+    if (Array.isArray(current)) return set(target, []);
+    if (typeof current === "object" && current !== null) return set(target, {});
+    return set(target, null);
+  };
+  const registerStateHelpers = (register) => {
+    const opts = { pathAware: true };
+    register("set", set, opts);
+    register("increment", increment, opts);
+    register("++", increment, opts);
+    register("decrement", decrement, opts);
+    register("--", decrement, opts);
+    register("toggle", toggle, opts);
+    register("!!", toggle, opts);
+    register("push", push, opts);
+    register("pop", pop, opts);
+    register("assign", assign, opts);
+    register("clear", clear, opts);
+  };
+  const fetchHelper = (url, options = {}) => {
+    const fetchOptions = { ...options };
+    const headers = { ...fetchOptions.headers };
+    let body = fetchOptions.body;
+    if (body !== void 0) {
+      if (body !== null && typeof body === "object") {
+        body = JSON.stringify(body);
+        if (!headers["Content-Type"]) {
+          headers["Content-Type"] = "application/json";
+        }
+      } else {
+        body = String(body);
+        if (!headers["Content-Type"]) {
+          headers["Content-Type"] = "text/plain";
+        }
+      }
+    }
+    fetchOptions.body = body;
+    fetchOptions.headers = headers;
+    return globalThis.fetch(url, fetchOptions);
+  };
+  const registerNetworkHelpers = (register) => {
+    register("fetch", fetchHelper);
+  };
+  registerMathHelpers(registerHelper);
+  registerLogicHelpers(registerHelper);
+  registerStringHelpers(registerHelper);
+  registerArrayHelpers(registerHelper);
+  registerCompareHelpers(registerHelper);
+  registerConditionalHelpers(registerHelper);
+  registerDateTimeHelpers(registerHelper);
+  registerFormatHelpers(registerHelper);
+  registerLookupHelpers(registerHelper);
+  registerStatsHelpers(registerHelper);
+  registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
+  registerNetworkHelpers(registerHelper);
+  const localStates = /* @__PURE__ */ new WeakMap();
+  const getContext = (node, event = null) => {
+    const chain = [];
+    let cur = node;
+    const ShadowRoot2 = globalThis.ShadowRoot;
+    while (cur) {
+      const local = localStates.get(cur);
+      if (local) chain.unshift(local);
+      cur = cur.parentElement || (ShadowRoot2 && cur.parentNode instanceof ShadowRoot2 ? cur.parentNode.host : null);
+    }
+    const globalRegistry = getRegistry$1();
+    const handler = {
+      get(target, prop, receiver) {
+        var _a;
+        if (prop === "$event" || prop === "event") return event;
+        if (prop === "__parent__") return void 0;
+        for (let i = chain.length - 1; i >= 0; i--) {
+          const s = chain[i];
+          if (prop in s) return s[prop];
+        }
+        if (globalRegistry && globalRegistry.has(prop)) return globalRegistry.get(prop);
+        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
+        if (globalState && prop in globalState) return globalState[prop];
+        return void 0;
+      },
+      set(target, prop, value, receiver) {
+        var _a;
+        for (let i = chain.length - 1; i >= 0; i--) {
+          const s = chain[i];
+          if (prop in s) {
+            s[prop] = value;
+            return true;
+          }
+        }
+        if (chain.length > 0) {
+          chain[chain.length - 1][prop] = value;
+          return true;
+        }
+        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
+        if (globalState) {
+          globalState[prop] = value;
+          return true;
+        }
+        return false;
+      },
+      has(target, prop) {
+        var _a;
+        if (prop === "$event" || prop === "event") return !!event;
+        for (const s of chain) if (prop in s) return true;
+        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
+        if (globalState && prop in globalState) return true;
+        return false;
+      },
+      ownKeys(target) {
+        var _a;
+        const keys = /* @__PURE__ */ new Set();
+        if (event) {
+          keys.add("$event");
+          keys.add("event");
+        }
+        for (const s of chain) {
+          for (const key in s) keys.add(key);
+        }
+        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
+        if (globalState) {
+          for (const key in globalState) keys.add(key);
+        }
+        return Array.from(keys);
+      },
+      getOwnPropertyDescriptor(target, prop) {
+        return { enumerable: true, configurable: true };
+      }
+    };
+    return new Proxy({}, handler);
+  };
+  const handleCDOMState = (node) => {
+    var _a;
+    const attr = node["cdom-state"] || node.getAttribute("cdom-state");
+    if (!attr || localStates.has(node)) return;
+    try {
+      const data = typeof attr === "object" ? attr : JSON.parse(attr);
+      const s = state(data);
+      localStates.set(node, s);
+    } catch (e) {
+      (_a = globalThis.console) == null ? void 0 : _a.error("LightviewCDOM: Failed to parse cdom-state", e);
+    }
+  };
+  const handleCDOMBind = (node) => {
+    const path = node["cdom-bind"] || node.getAttribute("cdom-bind");
+    if (!path) return;
+    const type = node.type || "";
+    const tagName = node.tagName.toLowerCase();
+    let prop = "value";
+    let event = "input";
+    if (type === "checkbox" || type === "radio") {
+      prop = "checked";
+      event = "change";
+    } else if (tagName === "select") {
+      event = "change";
+    }
+    const context = getContext(node);
+    let target = resolvePathAsContext(path, context);
+    if (target && target.isBindingTarget && target.value === void 0) {
+      const val = node[prop];
+      if (val !== void 0 && val !== "") {
+        set(context, { [target.key]: val });
+        target = resolvePathAsContext(path, context);
+      }
+    }
+    effect(() => {
+      const val = unwrapSignal(target);
+      if (node[prop] !== val) {
+        node[prop] = val === void 0 ? "" : val;
+      }
+    });
+    node.addEventListener(event, () => {
+      const val = node[prop];
+      if (target && target.isBindingTarget) {
+        target.value = val;
+      } else {
+        set(context, { [path]: val });
+      }
+    });
+  };
+  const activate = (root = document.body) => {
+    const walk = (node) => {
+      if (node.nodeType === 1) {
+        if (node.hasAttribute("cdom-state")) handleCDOMState(node);
+        if (node.hasAttribute("cdom-bind")) handleCDOMBind(node);
+      }
+      let child = node.firstChild;
+      while (child) {
+        walk(child);
+        child = child.nextSibling;
+      }
+    };
+    walk(root);
+  };
+  const hydrate = (node, parent = null) => {
+    if (!node) return node;
+    if (typeof node === "string" && node.startsWith("$")) {
+      return parseExpression(node, parent);
+    }
+    if (Array.isArray(node)) {
+      return node.map((item) => hydrate(item, parent));
+    }
+    if (node instanceof String) {
+      return node.toString();
+    }
+    if (typeof node === "object" && node !== null) {
+      if (parent && !("__parent__" in node)) {
+        Object.defineProperty(node, "__parent__", {
+          value: parent,
+          enumerable: false,
+          writable: true,
+          configurable: true
+        });
+      }
+      if (!node.tag) {
+        let potentialTag = null;
+        for (const key in node) {
+          if (key === "children" || key === "attributes" || key === "tag" || key.startsWith("cdom-") || key.startsWith("on") || key === "__parent__") {
+            continue;
+          }
+          const attrNames = [
+            // Form/input attributes
+            "type",
+            "name",
+            "value",
+            "placeholder",
+            "step",
+            "min",
+            "max",
+            "pattern",
+            "disabled",
+            "checked",
+            "selected",
+            "readonly",
+            "required",
+            "multiple",
+            "rows",
+            "cols",
+            "size",
+            "maxlength",
+            "minlength",
+            "autocomplete",
+            // Common element attributes
+            "id",
+            "class",
+            "className",
+            "style",
+            "title",
+            "tabindex",
+            "role",
+            "href",
+            "src",
+            "alt",
+            "width",
+            "height",
+            "target",
+            "rel",
+            // Data attributes
+            "data",
+            "label",
+            "text",
+            "description",
+            "content",
+            // Common data property names
+            "price",
+            "qty",
+            "items",
+            "count",
+            "total",
+            "amount",
+            "url"
+          ];
+          if (attrNames.includes(key)) {
+            continue;
+          }
+          potentialTag = key;
+          break;
+        }
+        if (potentialTag) {
+          const content = node[potentialTag];
+          if (content !== void 0 && content !== null) {
+            node.tag = potentialTag;
+            if (Array.isArray(content)) {
+              node.children = content;
+            } else if (typeof content === "object") {
+              node.attributes = node.attributes || {};
+              for (const k in content) {
+                if (k === "children") {
+                  node.children = content[k];
+                } else if (k.startsWith("cdom-")) {
+                  node[k] = content[k];
+                } else {
+                  node.attributes[k] = content[k];
+                }
+              }
+            } else {
+              node.children = [content];
+            }
+            delete node[potentialTag];
+          }
+        }
+      }
+      for (const key in node) {
+        const value = node[key];
+        if (key === "cdom-state") {
+          continue;
+        }
+        if (typeof value === "string" && value.startsWith("$")) {
+          if (key.startsWith("on")) {
+            node[key] = (event) => {
+              const element2 = event.currentTarget;
+              const context = getContext(element2, event);
+              const result = resolveExpression(value, context);
+              if (result && typeof result === "object" && result.isLazy && typeof result.resolve === "function") {
+                return result.resolve(event);
+              }
+              return result;
+            };
+          } else if (key === "children") {
+            node[key] = [parseExpression(value, node)];
+          } else {
+            node[key] = parseExpression(value, node);
+          }
+        } else if (key === "attributes" && typeof value === "object" && value !== null) {
+          for (const attrKey in value) {
+            const attrValue = value[attrKey];
+            if (typeof attrValue === "string" && attrValue.startsWith("$")) {
+              if (attrKey.startsWith("on")) {
+                value[attrKey] = (event) => {
+                  const element2 = event.currentTarget;
+                  const context = getContext(element2, event);
+                  const result = resolveExpression(attrValue, context);
+                  if (result && typeof result === "object" && result.isLazy && typeof result.resolve === "function") {
+                    return result.resolve(event);
+                  }
+                  return result;
+                };
+              } else {
+                value[attrKey] = parseExpression(attrValue, node);
+              }
+            }
+          }
+          node[key] = value;
+        } else {
+          node[key] = hydrate(value, node);
+        }
+      }
+      return node;
+    }
+    return node;
+  };
+  const LightviewCDOM = {
+    registerHelper,
+    parseExpression,
+    resolvePath,
+    resolvePathAsContext,
+    resolveExpression,
+    parseCDOMC,
+    unwrapSignal,
+    getContext,
+    handleCDOMState,
+    handleCDOMBind,
+    activate,
+    hydrate,
+    version: "1.0.0"
+  };
+  if (typeof window !== "undefined") {
+    globalThis.LightviewCDOM = LightviewCDOM;
+  }
+  console.log("Lightview Full Bundle Loaded");
+})();

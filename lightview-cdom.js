@@ -1,1 +1,1476 @@
-var LightviewCDOM=function(e){"use strict";const t=new Map,r=new Map,n=(e,n,i={})=>{t.set(e,n),i&&r.set(e,i)},i=()=>globalThis.Lightview||null,s=()=>{var e;return(null==(e=i())?void 0:e.registry)||null};class o{constructor(e,t){this.parent=e,this.key=t,this.isBindingTarget=!0}get value(){return this.parent[this.key]}set value(e){this.parent[this.key]=e}get __parent__(){return this.parent}}const a=e=>e&&"function"==typeof e&&"value"in e?e.value:!e||"object"!=typeof e||globalThis.Node&&e instanceof globalThis.Node||!("value"in e)?e:e.value,l=(e,t)=>{let r=e;for(const n of t){if(!n)continue;if(r=a(r),null==r)return;r=r[n.startsWith("[")?n.slice(1,-1):n]}return a(r)},u=(e,t)=>{let r=e;for(let n=0;n<t.length;n++){const e=t[n];if(!e)continue;const i=e.startsWith("[")?e.slice(1,-1):e,s=a(r);if(null==s)return;if(n===t.length-1)return new o(s,i);r=s[i]}return r},c=(e,t)=>{if("string"!=typeof e)return e;const r=s();if("."===e)return a(t);if(e.startsWith("$/")){const[t,...n]=e.slice(2).split("/"),i=null==r?void 0:r.get(t);if(!i)return;return l(i,n)}if(e.startsWith("./"))return l(t,e.slice(2).split("/"));if(e.startsWith("../"))return l(null==t?void 0:t.__parent__,e.slice(3).split("/"));if(e.includes("/")||e.includes("."))return l(t,e.split(/[\/.]/));const n=a(t);return n&&"object"==typeof n&&(e in n||void 0!==n[e])?l(n,[e]):e},f=(e,t)=>{if("string"!=typeof e)return e;const r=s();if("."===e)return t;if(e.startsWith("$/")){const t=e.slice(2).split(/[\/.]/),n=t.shift(),i=null==r?void 0:r.get(n);if(!i)return;return u(i,t)}if(e.startsWith("./"))return u(t,e.slice(2).split(/[\/.]/));if(e.startsWith("../"))return u(null==t?void 0:t.__parent__,e.slice(3).split(/[\/.]/));if(e.includes("/")||e.includes("."))return u(t,e.split(/[\/.]/));const n=a(t);return n&&"object"==typeof n&&/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(e)?new o(n,e):e};class h{constructor(e){this.fn=e,this.isLazy=!0}resolve(e){return this.fn(e)}}const p=(e,t,r=!1)=>{if(e.startsWith("'")&&e.endsWith("'")||e.startsWith('"')&&e.endsWith('"'))return{value:e.slice(1,-1),isLiteral:!0};if(""!==e&&!isNaN(Number(e)))return{value:Number(e),isLiteral:!0};if("true"===e)return{value:!0,isLiteral:!0};if("false"===e)return{value:!1,isLiteral:!0};if("null"===e)return{value:null,isLiteral:!0};if("_"===e||e.startsWith("_/")||e.startsWith("_."))return{value:new h(t=>{if("_"===e)return t;const r=(e.startsWith("_."),e.slice(2));return c(r,t)}),isLazy:!0};if("$event"===e||e.startsWith("$event/")||e.startsWith("$event."))return{value:new h(t=>{if("$event"===e)return t;const r=(e.startsWith("$event."),e.slice(7));return c(r,t)}),isLazy:!0};if(e.includes("(")){let n=e;e.startsWith("/")?n="$"+e:!r||e.startsWith("$")||e.startsWith("./")||(n=`$/${e}`);const i=g(n,t);return i instanceof h?{value:i,isLazy:!0}:{value:i,isSignal:!1}}const n=e.endsWith("..."),i=n?e.slice(0,-3):e;let s;if(s=i.startsWith("/")?"$"+i:i.startsWith("$")||i.startsWith("./")||i.startsWith("../")?i:r?`$/${i}`:`./${i}`,n){const e=s.split("/"),r=e.pop(),n=e.join("/"),i=n?c(n,t):t,o=a(i);if(Array.isArray(o)){return{value:o.map(e=>{const t=a(e);return t&&t[r]}),isExplosion:!0}}if(o&&"object"==typeof o){const e=o[r];return{value:a(e),isExplosion:!0}}return{value:void 0,isExplosion:!0}}return{value:f(s,t),isExplosion:!1}},g=(e,n)=>{var i;if("string"!=typeof e)return e;const s=e.indexOf("(");if(-1!==s&&e.endsWith(")")){const o=e.slice(0,s).trim(),l=e.slice(s+1,-1),u=o.split("/");let c=u.pop().replace(/^\$/,"");""===c&&(u.length>0||"/"===o)&&(c="/");const g=u.join("/"),d=e.startsWith("$/")||e.startsWith("$");let y=n;g&&"$"!==g&&(y=f(g,n));const v=t.get(c);if(!v)return null==(i=globalThis.console)||i.warn(`LightviewCDOM: Helper "${c}" not found.`),e;const m=r.get(c)||{},b=[];let w="",A=0,_=null;for(let e=0;e<l.length;e++){const t=l[e];if(t===_)_=null;else if(_||"'"!==t&&'"'!==t)if(_||"("!==t)if(_||")"!==t){if(!_&&","===t&&0===A){b.push(w.trim()),w="";continue}}else A--;else A++;else _=t;w+=t}w&&b.push(w.trim());const N=[];let W=!1;for(let e=0;e<b.length;e++){const t=b[e],r=p(t,y,d&&("$"===g||!g));r.isLazy&&(W=!0);const n=!(m.pathAware&&0===e);let i=n?a(r.value):r.value;r.isExplosion&&Array.isArray(i)?N.push(...i.map(e=>n?a(e):e)):N.push(i)}if(W)return new h(e=>{const t=N.map((t,r)=>{const n=!(m.pathAware&&0===r),i=t instanceof h?t.resolve(e):t;return n?a(i):i});return v(...t)});const M=v(...N);return a(M)}return a(c(e,n))},d=(e,t)=>{const r=i();return r&&"string"==typeof e?r.computed(()=>g(e,t)):e},y=(...e)=>e.reduce((e,t)=>Number(e)+Number(t),0),v=(e,t)=>Number(e)-Number(t),m=(...e)=>e.reduce((e,t)=>Number(e)*Number(t),1),b=(e,t)=>Number(e)/Number(t),w=(e,t=0)=>Number(Math.round(e+"e"+t)+"e-"+t),A=e=>Math.ceil(e),_=e=>Math.floor(e),N=e=>Math.abs(e),W=(e,t)=>e%t,M=(e,t)=>Math.pow(e,t),S=e=>Math.sqrt(e),j=(e,t,r)=>e?t:r,L=(...e)=>e.every(Boolean),$=(...e)=>e.some(Boolean),E=e=>!e,D=(e,t)=>e===t,x=(e,t)=>e!==t,O=(...e)=>{const t=e[e.length-1];return e.slice(0,-1).join(t)},T=(...e)=>e.join(""),C=e=>String(e).toUpperCase(),k=e=>String(e).toLowerCase(),I=e=>String(e).trim(),z=e=>String(e).length,P=(e,t,r)=>String(e).replace(t,r),R=(e,t)=>String(e).split(t),B=e=>{const t=String(e);return t.charAt(0).toUpperCase()+t.slice(1)},q=e=>String(e).toLowerCase().split(" ").map(e=>e.charAt(0).toUpperCase()+e.slice(1)).join(" "),J=(e,t)=>String(e).includes(t),F=(e,t)=>String(e).startsWith(t),H=(e,t)=>String(e).endsWith(t),U=(e,t)=>null!=e?e:t,G=(...e)=>e.length,V=(e,t)=>Array.isArray(e)?"function"==typeof t&&t.isLazy?e.filter(e=>t.resolve(e)):e.filter(e=>!!e):[],Z=(e,t)=>Array.isArray(e)?"string"==typeof t?e.map(e=>e&&"object"==typeof e?e[t]:e):t&&t.isLazy?e.map(e=>t.resolve(e)):e:[],K=(e,t)=>{if(Array.isArray(e))return t&&t.isLazy?e.find(e=>t.resolve(e)):e.find(e=>!!e)},Y=e=>Array.isArray(e)?[...new Set(e)]:[],Q=(e,t="asc")=>{if(!Array.isArray(e))return[];const r=[...e];return r.sort((e,r)=>e<r?"asc"===t?-1:1:e>r?"asc"===t?1:-1:0),r},X=e=>Array.isArray(e)?[...e].reverse():[],ee=e=>Array.isArray(e)?e[0]:void 0,te=e=>Array.isArray(e)?e[e.length-1]:void 0,re=(e,t,r)=>Array.isArray(e)?e.slice(t,r):[],ne=e=>Array.isArray(e)?e.flat(1/0):[],ie=(e,t=",")=>Array.isArray(e)?e.join(String(t)):"",se=e=>Array.isArray(e)?e.length:e?String(e).length:0,oe=(e,t)=>e>t,ae=(e,t)=>e<t,le=(e,t)=>e>=t,ue=(e,t)=>e<=t,ce=(e,t)=>e!==t,fe=(e,t,r)=>e>=t&&e<=r,he=(e,t)=>Array.isArray(e)&&e.includes(t),pe=(e,t)=>{if(!Array.isArray(e))return 0;return(t&&t.isLazy?e.filter(e=>t.resolve(e)):e).reduce((e,t)=>e+(Number(t)||0),0)},ge=(e,t)=>Array.isArray(e)?t&&t.isLazy?e.filter(e=>t.resolve(e)).length:e.filter(e=>!!e).length:0,de=(e,t)=>{if(!Array.isArray(e))return 0;const r=t&&t.isLazy?e.filter(e=>t.resolve(e)):e;return 0===r.length?0:r.reduce((e,t)=>e+(Number(t)||0),0)/r.length},ye=()=>(new Date).getTime(),ve=()=>{const e=new Date;return e.setHours(0,0,0,0),e.getTime()},me=e=>new Date(e).getTime(),be=(e,t)=>{const r=new Date(e);if(isNaN(r.getTime()))return"";const n={year:"numeric",month:"2-digit",day:"2-digit"};return"long"===t&&(n.month="long"),r.toLocaleDateString(void 0,n)},we=e=>new Date(e).getFullYear(),Ae=e=>new Date(e).getMonth()+1,_e=e=>new Date(e).getDate(),Ne=e=>new Date(e).getDay(),We=(e,t)=>{const r=new Date(e);return r.setDate(r.getDate()+Number(t)),r.getTime()},Me=(e,t,r="days")=>{const n=Math.abs(new Date(e)-new Date(t));return"seconds"===r?n/1e3:"minutes"===r?n/6e4:"hours"===r?n/36e5:n/864e5},Se=(e,t=2)=>Number(e).toFixed(t),je=(e,t="$",r=2)=>t+Number(e).toFixed(r).replace(/\B(?=(\d{3})+(?!\d))/g,","),Le=(e,t=0)=>(100*Number(e)).toFixed(t)+"%",$e=e=>String(e).replace(/\B(?=(\d{3})+(?!\d))/g,","),Ee=(e,t,r)=>{if(!Array.isArray(t))return;const n=t.indexOf(e);return-1!==n&&Array.isArray(r)?r[n]:void 0},De=(e,t,r)=>{if(!Array.isArray(t))return;const n=t.find(t=>Array.isArray(t)&&t[0]===e);return n?n[r-1]:void 0},xe=(e,t)=>Array.isArray(e)?e[t]:void 0,Oe=(e,t)=>Array.isArray(t)?t.indexOf(e):-1,Te=(...e)=>e.reduce((e,t)=>e+(Number(t)||0),0),Ce=(...e)=>0===e.length?0:Te(...e)/e.length,ke=(...e)=>Math.min(...e),Ie=(...e)=>Math.max(...e),ze=(...e)=>{if(0===e.length)return 0;const t=[...e].sort((e,t)=>e-t),r=Math.floor(t.length/2);return t.length%2!=0?t[r]:(t[r-1]+t[r])/2},Pe=(...e)=>{if(0===e.length)return 0;const t=Ce(...e),r=e.map(e=>Math.pow(e-t,2));return Math.sqrt(Ce(...r))},Re=(...e)=>{if(0===e.length)return 0;const t=Ce(...e),r=e.map(e=>Math.pow(e-t,2));return Ce(...r)},Be=(e,t)=>(e&&"object"==typeof e&&"value"in e||e&&"function"==typeof e&&"value"in e?e.value=t:e&&"object"==typeof e&&t&&"object"==typeof t&&Object.assign(e,t),t),qe=(e,t=1)=>{const r=e&&"object"==typeof e&&"value"in e?e.value:0,n=Number(r)+Number(t);return Be(e,n)},Je=(e,t=1)=>{const r=e&&"object"==typeof e&&"value"in e?e.value:0,n=Number(r)-Number(t);return Be(e,n)},Fe=e=>{const t=!(!e||"object"!=typeof e||!("value"in e))&&e.value;return Be(e,!t)},He=(e,t)=>{const r=e&&"object"==typeof e&&"value"in e?e.value:[];if(Array.isArray(r)){const n=[...r,t];return Be(e,n)}return r},Ue=e=>{const t=e&&"object"==typeof e&&"value"in e?e.value:[];if(Array.isArray(t)&&t.length>0){const r=t.slice(0,-1);Be(e,r)}return t},Ge=(e,t)=>{const r={...e&&"object"==typeof e&&"value"in e?e.value:{},...t};return Be(e,r)},Ve=e=>{const t=e&&"object"==typeof e&&"value"in e?e.value:null;return Array.isArray(t)?Be(e,[]):Be(e,"object"==typeof t&&null!==t?{}:null)},Ze=(e,t={})=>{const r={...t},n={...r.headers};let i=r.body;return void 0!==i&&(null!==i&&"object"==typeof i?(i=JSON.stringify(i),n["Content-Type"]||(n["Content-Type"]="application/json")):(i=String(i),n["Content-Type"]||(n["Content-Type"]="text/plain"))),r.body=i,r.headers=n,globalThis.fetch(e,r)},Ke=globalThis.__LIGHTVIEW_INTERNALS__||(globalThis.__LIGHTVIEW_INTERNALS__={currentEffect:null,registry:new Map,dependencyMap:new WeakMap}),Ye=(e,t)=>{let r="string"==typeof t?t:null==t?void 0:t.name;const n=null==t?void 0:t.storage;if(r&&n)try{const t=n.getItem(r);null!==t&&(e=JSON.parse(t))}catch(a){}let i=e;const s=new Set,o=(...e)=>{if(0===e.length)return o.value;o.value=e[0]};if(Object.defineProperty(o,"value",{get:()=>(Ke.currentEffect&&(s.add(Ke.currentEffect),Ke.currentEffect.dependencies.add(s)),i),set(e){if(i!==e){if(i=e,r&&n)try{n.setItem(r,JSON.stringify(i))}catch(a){}[...s].forEach(e=>e())}}}),r)if(Ke.registry.has(r)){if(Ke.registry.get(r)!==o)throw new Error(`Lightview: A signal or state with the name "${r}" is already registered.`)}else Ke.registry.set(r,o);return o};Ye.get=(e,t)=>Ke.registry.has(e)||void 0===t?Ke.registry.get(e):Ye(t,e);const Qe=e=>{const t=()=>{if(t.active&&!t.running){t.dependencies.forEach(e=>e.delete(t)),t.dependencies.clear(),t.running=!0,Ke.currentEffect=t;try{e()}finally{Ke.currentEffect=null,t.running=!1}}};return t.active=!0,t.running=!1,t.dependencies=new Set,t.stop=()=>{t.dependencies.forEach(e=>e.delete(t)),t.dependencies.clear(),t.active=!1},t(),t},Xe=()=>Ke.registry,et=new WeakMap,tt=new WeakMap,rt=new WeakMap,nt=(e,t)=>Object.getOwnPropertyNames(e).filter(r=>"function"==typeof e[r]&&t(r)),it=nt(Date.prototype,e=>/^(to|get|valueOf)/.test(e)),st=nt(Date.prototype,e=>/^set/.test(e)),ot=["map","forEach","filter","find","findIndex","some","every","reduce","reduceRight","includes","indexOf","lastIndexOf","join","slice","concat","flat","flatMap","at","entries","keys","values"],at=["push","pop","shift","unshift","splice","sort","reverse","fill","copyWithin"],lt=["map","forEach","filter","find","findIndex","some","every","flatMap"],ut=(e,t,r)=>{let n=e.get(t);return n||(n=r(),e.set(t,n)),n},ct=(e,t,r,n)=>{if("__parent__"===t)return rt.get(r);n.has(t)||n.set(t,Ye(Reflect.get(e,t,r)));const i=n.get(t).value;if("object"==typeof i&&null!==i){const e=pt(i);return rt.set(e,r),e}return i},ft=(e,t,r,n,i)=>{i.has(t)||i.set(t,Ye(Reflect.get(e,t,n)));const s=Reflect.set(e,t,r,n),o=i.get(t);return s&&o&&(o.value=r),s},ht=(e,t,r=[])=>{const n=ut(tt,e,()=>new Map);if(!n.has(t)){const r="function"==typeof e[t]?e[t].call(e):e[t];n.set(t,Ye(r))}const i=e instanceof Date,s=Array.isArray(e),o=i?it:s?ot:r,a=i?st:s?at:[];return new Proxy(e,{get(e,r,i){if("__parent__"===r)return rt.get(i);const l=e[r];if("function"==typeof l){const u=o.includes(r),c=a.includes(r);return function(...o){if(u){const e=n.get(t);e&&e.value}const a="function"==typeof e[t]?e[t].call(e):e[t];if(s&&lt.includes(r)&&"function"==typeof o[0]){const e=o[0];o[0]=function(t,r,n){const s="object"==typeof t&&null!==t?pt(t):t;return s&&"object"==typeof s&&rt.set(s,i),e.call(this,s,r,n)}}const f=l.apply(e,o),h="function"==typeof e[t]?e[t].call(e):e[t];if(a!==h||c){const e=n.get(t);e&&e.value!==h&&(e.value=h)}return f}}if(r===t){const s=n.get(t);return s?s.value:Reflect.get(e,r,i)}if(s&&!isNaN(parseInt(r))){const e=n.get(t);e&&e.value}return ct(e,r,i,n)},set(e,r,i,s){if(r===t){const o=Reflect.set(e,r,i,s);if(o){const e=n.get(t);e&&(e.value=i)}return o}return ft(e,r,i,s,n)}})},pt=(e,t)=>{if("object"!=typeof e||null===e)return e;const r="string"==typeof t?t:null==t?void 0:t.name,n=null==t?void 0:t.storage;if(r&&n)try{const t=n.getItem(r);if(t){const r=JSON.parse(t);Array.isArray(e)&&Array.isArray(r)?(e.length=0,e.push(...r)):Object.assign(e,r)}}catch(s){}let i=et.get(e);if(!i){const t=Array.isArray(e),r=e instanceof Date,n=t||r;if(!n&&(e instanceof RegExp||e instanceof Map||e instanceof Set||e instanceof WeakMap||e instanceof WeakSet))return e;i=n?ht(e,t?"length":r?"getTime":null):new Proxy(e,{get:(e,t,r)=>"__parent__"===t?rt.get(r):ct(e,t,r,ut(tt,e,()=>new Map)),set:(e,t,r,n)=>ft(e,t,r,n,ut(tt,e,()=>new Map))}),et.set(e,i)}if(r&&n&&Qe(()=>{try{n.setItem(r,JSON.stringify(i))}catch(s){}}),r){const e=Xe();if(e.has(r)){if(e.get(r)!==i)throw new Error(`Lightview: A signal or state with the name "${r}" is already registered.`)}else e.set(r,i)}return i};var gt;pt.get=(e,t)=>{const r=Xe();return r.has(e)||void 0===t?r.get(e):pt(t,e)},(gt=n)("+",y),gt("add",y),gt("-",v),gt("sub",v),gt("*",m),gt("mul",m),gt("/",b),gt("div",b),gt("round",w),gt("ceil",A),gt("floor",_),gt("abs",N),gt("mod",W),gt("pow",M),gt("sqrt",S),(e=>{e("if",j),e("and",L),e("&&",L),e("or",$),e("||",$),e("not",E),e("!",E),e("eq",D),e("==",D),e("===",D),e("neq",x)})(n),(e=>{e("join",O),e("concat",T),e("upper",C),e("lower",k),e("trim",I),e("len",z),e("replace",P),e("split",R),e("capitalize",B),e("titleCase",q),e("contains",J),e("startsWith",F),e("endsWith",H),e("default",U)})(n),(e=>{e("count",G),e("filter",V),e("map",Z),e("find",K),e("unique",Y),e("sort",Q),e("reverse",X),e("first",ee),e("last",te),e("slice",re),e("flatten",ne),e("join",ie),e("len",se),e("length",se)})(n),(e=>{e("gt",oe),e(">",oe),e("lt",ae),e("<",ae),e("gte",le),e(">=",le),e("lte",ue),e("<=",ue),e("neq",ce),e("!=",ce),e("between",fe),e("in",he)})(n),(e=>{e("sumIf",pe),e("countIf",ge),e("avgIf",de)})(n),(e=>{e("now",ye),e("today",ve),e("date",me),e("formatDate",be),e("year",we),e("month",Ae),e("day",_e),e("weekday",Ne),e("addDays",We),e("dateDiff",Me)})(n),(e=>{e("number",Se),e("currency",je),e("percent",Le),e("thousands",$e)})(n),(e=>{e("lookup",Ee),e("vlookup",De),e("index",xe),e("match",Oe)})(n),(e=>{e("sum",Te),e("avg",Ce),e("min",ke),e("max",Ie),e("median",ze),e("stdev",Pe),e("var",Re)})(n),(e=>{const t={pathAware:!0};e("set",Be,t),e("increment",qe,t),e("++",qe,t),e("decrement",Je,t),e("--",Je,t),e("toggle",Fe,t),e("!!",Fe,t),e("push",He,t),e("pop",Ue,t),e("assign",Ge,t),e("clear",Ve,t)})((e,t)=>n(e,t,{pathAware:!0})),(e=>{e("fetch",Ze)})(n);const dt=new WeakMap,yt=(e,t=null)=>{const r=[];let n=e;const i=globalThis.ShadowRoot;for(;n;){const e=dt.get(n);e&&r.unshift(e),n=n.parentElement||(i&&n.parentNode instanceof i?n.parentNode.host:null)}const s=Xe();return new Proxy({},{get(e,n,i){var o;if("$event"===n||"event"===n)return t;if("__parent__"===n)return;for(let t=r.length-1;t>=0;t--){const e=r[t];if(n in e)return e[n]}if(s&&s.has(n))return s.get(n);const a=null==(o=globalThis.Lightview)?void 0:o.state;return a&&n in a?a[n]:void 0},set(e,t,n,i){var s;for(let a=r.length-1;a>=0;a--){const e=r[a];if(t in e)return e[t]=n,!0}if(r.length>0)return r[r.length-1][t]=n,!0;const o=null==(s=globalThis.Lightview)?void 0:s.state;return!!o&&(o[t]=n,!0)},has(e,n){var i;if("$event"===n||"event"===n)return!!t;for(const t of r)if(n in t)return!0;const s=null==(i=globalThis.Lightview)?void 0:i.state;return!(!s||!(n in s))},ownKeys(e){var n;const i=new Set;t&&(i.add("$event"),i.add("event"));for(const t of r)for(const e in t)i.add(e);const s=null==(n=globalThis.Lightview)?void 0:n.state;if(s)for(const t in s)i.add(t);return Array.from(i)},getOwnPropertyDescriptor:(e,t)=>({enumerable:!0,configurable:!0})})},vt=e=>{var t;const r=e.getAttribute("cdom-state");if(r&&!dt.has(e))try{const t=JSON.parse(r),n=pt(t);dt.set(e,n)}catch(n){null==(t=globalThis.console)||t.error("LightviewCDOM: Failed to parse cdom-state",n)}},mt=e=>{const t=e.getAttribute("cdom-bind");if(!t)return;const r=e.type||"",n=e.tagName.toLowerCase();let i="value",s="input";"checkbox"===r||"radio"===r?(i="checked",s="change"):"select"===n&&(s="change");const o=yt(e);let l=f(t,o);if(l&&l.isBindingTarget&&void 0===l.value){const r=e[i];void 0!==r&&""!==r&&(Be(o,{[l.key]:r}),l=f(t,o))}Qe(()=>{const t=a(l);e[i]!==t&&(e[i]=void 0===t?"":t)}),e.addEventListener(s,()=>{const r=e[i];l&&l.isBindingTarget?l.value=r:Be(o,{[t]:r})})},bt=e=>{Array.from(e.attributes).forEach(t=>{if(t.name.startsWith("cdom-on:")){const r=t.name.slice(8),n=t.value;e.addEventListener(r,t=>{const r=yt(e,t),i=g(n,r);i&&"object"==typeof i&&i.isLazy&&"function"==typeof i.resolve&&i.resolve(t)})}})},wt=(e=document.body)=>{const t=e=>{1===e.nodeType&&(e.hasAttribute("cdom-state")&&vt(e),e.hasAttribute("cdom-bind")&&mt(e),bt(e));let r=e.firstChild;for(;r;)t(r),r=r.nextSibling};t(e)},At=(e,t=null)=>{if(!e)return e;if("string"==typeof e&&e.startsWith("$"))return d(e,t);if(Array.isArray(e))return e.map(e=>At(e,t));if(e instanceof String)return e.toString();if("object"==typeof e&&null!==e){t&&!("__parent__"in e)&&Object.defineProperty(e,"__parent__",{value:t,enumerable:!1,writable:!0,configurable:!0});for(const t in e)e[t]=At(e[t],e);return e}return e},_t={registerHelper:n,parseExpression:d,resolvePath:c,resolvePathAsContext:f,resolveExpression:g,parseCDOMC:e=>{let t=0;const r=e.length,n=()=>{for(;t<r;){const n=e[t];if(!/\s/.test(n)){if("/"===n){const n=e[t+1];if("/"===n){for(t+=2;t<r&&"\n"!==e[t]&&"\r"!==e[t];)t++;continue}if("*"===n){for(t+=2;t<r;){if("*"===e[t]&&"/"===e[t+1]){t+=2;break}t++}continue}}break}t++}},i=()=>{const n=e[t++];let i="";for(;t<r;){const r=e[t++];if(r===n)return new String(i);if("\\"===r){const r=e[t++];i+="n"===r?"\n":"t"===r?"\t":'"'===r?'"':"'"===r?"'":"\\"===r?"\\":r}else i+=r}throw new Error("Unterminated string")},s=()=>{const n=t;let i=0;for(;t<r;){const r=e[t];if(i>0)")"===r?i--:"("===r&&i++,t++;else{if(/[\s:,{}\[\]"'`()]/.test(r)){if("("===r){i++,t++;continue}break}t++}}const s=e.slice(n,t);return"true"===s||"false"!==s&&("null"===s?null:""===s.trim()||isNaN(Number(s))?s:Number(s))},o=()=>{if(n(),t>=r)return;const o=e[t];return"{"===o?a():"["===o?l():'"'===o||"'"===o?i():s()},a=()=>{t++;const a={};if(n(),t<r&&"}"===e[t])return t++,a;for(;t<r;){let r;if(n(),r='"'===e[t]||"'"===e[t]?i():s(),n(),":"!==e[t])throw new Error(`Expected ':' at position ${t}, found '${e[t]}'`);t++;const l=o();if(a[String(r)]=l,n(),"}"===e[t])return t++,a;if(","!==e[t])throw new Error(`Expected '}' or ',' at position ${t}, found '${e[t]}'`);if(t++,n(),"}"===e[t])return t++,a}},l=()=>{t++;const i=[];if(n(),t<r&&"]"===e[t])return t++,i;for(;t<r;){const r=o();if(i.push(r),n(),"]"===e[t])return t++,i;if(","!==e[t])throw new Error(`Expected ']' or ',' at position ${t}, found '${e[t]}'`);if(t++,n(),"]"===e[t])return t++,i}};n();return o()},unwrapSignal:a,getContext:yt,handleCDOMState:vt,handleCDOMBind:mt,handleCDOMOn:bt,activate:wt,hydrate:At,version:"1.0.0"};return"undefined"!=typeof window&&(globalThis.LightviewCDOM=_t),e.activate=wt,e.default=_t,e.getContext=yt,e.handleCDOMBind=mt,e.handleCDOMOn=bt,e.handleCDOMState=vt,e.hydrate=At,Object.defineProperties(e,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}}),e}({});
+var LightviewCDOM = function(exports) {
+  "use strict";
+  const helpers = /* @__PURE__ */ new Map();
+  const helperOptions = /* @__PURE__ */ new Map();
+  const registerHelper = (name, fn, options = {}) => {
+    helpers.set(name, fn);
+    if (options) helperOptions.set(name, options);
+  };
+  const getLV = () => globalThis.Lightview || null;
+  const getRegistry$1 = () => {
+    var _a;
+    return ((_a = getLV()) == null ? void 0 : _a.registry) || null;
+  };
+  class BindingTarget {
+    constructor(parent, key) {
+      this.parent = parent;
+      this.key = key;
+      this.isBindingTarget = true;
+    }
+    get value() {
+      return this.parent[this.key];
+    }
+    set value(v) {
+      this.parent[this.key] = v;
+    }
+    get __parent__() {
+      return this.parent;
+    }
+  }
+  const unwrapSignal = (val) => {
+    if (val && typeof val === "function" && "value" in val) {
+      return val.value;
+    }
+    if (val && typeof val === "object" && !(globalThis.Node && val instanceof globalThis.Node) && "value" in val) {
+      return val.value;
+    }
+    return val;
+  };
+  const traverse = (root, segments) => {
+    let current = root;
+    for (const segment of segments) {
+      if (!segment) continue;
+      current = unwrapSignal(current);
+      if (current == null) return void 0;
+      const key = segment.startsWith("[") ? segment.slice(1, -1) : segment;
+      current = current[key];
+    }
+    return unwrapSignal(current);
+  };
+  const traverseAsContext = (root, segments) => {
+    let current = root;
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      if (!segment) continue;
+      const key = segment.startsWith("[") ? segment.slice(1, -1) : segment;
+      const unwrapped = unwrapSignal(current);
+      if (unwrapped == null) return void 0;
+      if (i === segments.length - 1) {
+        return new BindingTarget(unwrapped, key);
+      }
+      current = unwrapped[key];
+    }
+    return current;
+  };
+  const resolvePath = (path, context) => {
+    if (typeof path !== "string") return path;
+    const registry = getRegistry$1();
+    if (path === ".") return unwrapSignal(context);
+    if (path.startsWith("$/")) {
+      const [rootName, ...rest] = path.slice(2).split("/");
+      const rootSignal = registry == null ? void 0 : registry.get(rootName);
+      if (!rootSignal) return void 0;
+      return traverse(rootSignal, rest);
+    }
+    if (path.startsWith("./")) {
+      return traverse(context, path.slice(2).split("/"));
+    }
+    if (path.startsWith("../")) {
+      return traverse(context == null ? void 0 : context.__parent__, path.slice(3).split("/"));
+    }
+    if (path.includes("/") || path.includes(".")) {
+      return traverse(context, path.split(/[\/.]/));
+    }
+    const unwrappedContext = unwrapSignal(context);
+    if (unwrappedContext && typeof unwrappedContext === "object") {
+      if (path in unwrappedContext || unwrappedContext[path] !== void 0) {
+        return traverse(unwrappedContext, [path]);
+      }
+    }
+    return path;
+  };
+  const resolvePathAsContext = (path, context) => {
+    if (typeof path !== "string") return path;
+    const registry = getRegistry$1();
+    if (path === ".") return context;
+    if (path.startsWith("$/")) {
+      const segments = path.slice(2).split(/[\/.]/);
+      const rootName = segments.shift();
+      const rootSignal = registry == null ? void 0 : registry.get(rootName);
+      if (!rootSignal) return void 0;
+      return traverseAsContext(rootSignal, segments);
+    }
+    if (path.startsWith("./")) {
+      return traverseAsContext(context, path.slice(2).split(/[\/.]/));
+    }
+    if (path.startsWith("../")) {
+      return traverseAsContext(context == null ? void 0 : context.__parent__, path.slice(3).split(/[\/.]/));
+    }
+    if (path.includes("/") || path.includes(".")) {
+      return traverseAsContext(context, path.split(/[\/.]/));
+    }
+    const unwrappedContext = unwrapSignal(context);
+    if (unwrappedContext && typeof unwrappedContext === "object") {
+      if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(path)) {
+        return new BindingTarget(unwrappedContext, path);
+      }
+    }
+    return path;
+  };
+  class LazyValue {
+    constructor(fn) {
+      this.fn = fn;
+      this.isLazy = true;
+    }
+    resolve(context) {
+      return this.fn(context);
+    }
+  }
+  const resolveArgument = (arg, context, globalMode = false) => {
+    if (arg.startsWith("'") && arg.endsWith("'") || arg.startsWith('"') && arg.endsWith('"')) {
+      return { value: arg.slice(1, -1), isLiteral: true };
+    }
+    if (arg !== "" && !isNaN(Number(arg))) {
+      return { value: Number(arg), isLiteral: true };
+    }
+    if (arg === "true") return { value: true, isLiteral: true };
+    if (arg === "false") return { value: false, isLiteral: true };
+    if (arg === "null") return { value: null, isLiteral: true };
+    if (arg === "_" || arg.startsWith("_/") || arg.startsWith("_.")) {
+      return {
+        value: new LazyValue((item) => {
+          if (arg === "_") return item;
+          const path = arg.startsWith("_.") ? arg.slice(2) : arg.slice(2);
+          return resolvePath(path, item);
+        }),
+        isLazy: true
+      };
+    }
+    if (arg === "$event" || arg.startsWith("$event/") || arg.startsWith("$event.")) {
+      return {
+        value: new LazyValue((event) => {
+          if (arg === "$event") return event;
+          const path = arg.startsWith("$event.") ? arg.slice(7) : arg.slice(7);
+          return resolvePath(path, event);
+        }),
+        isLazy: true
+      };
+    }
+    if (arg.includes("(")) {
+      let nestedExpr = arg;
+      if (arg.startsWith("/")) {
+        nestedExpr = "$" + arg;
+      } else if (globalMode && !arg.startsWith("$") && !arg.startsWith("./")) {
+        nestedExpr = `$/${arg}`;
+      }
+      const val = resolveExpression(nestedExpr, context);
+      if (val instanceof LazyValue) {
+        return { value: val, isLazy: true };
+      }
+      return { value: val, isSignal: false };
+    }
+    const isExplosion = arg.endsWith("...");
+    const pathStr = isExplosion ? arg.slice(0, -3) : arg;
+    let normalizedPath;
+    if (pathStr.startsWith("/")) {
+      normalizedPath = "$" + pathStr;
+    } else if (pathStr.startsWith("$") || pathStr.startsWith("./") || pathStr.startsWith("../")) {
+      normalizedPath = pathStr;
+    } else if (globalMode) {
+      normalizedPath = `$/${pathStr}`;
+    } else {
+      normalizedPath = `./${pathStr}`;
+    }
+    if (isExplosion) {
+      const pathParts = normalizedPath.split("/");
+      const propName = pathParts.pop();
+      const parentPath = pathParts.join("/");
+      const parent = parentPath ? resolvePath(parentPath, context) : context;
+      const unwrappedParent = unwrapSignal(parent);
+      if (Array.isArray(unwrappedParent)) {
+        const values = unwrappedParent.map((item) => {
+          const unwrappedItem = unwrapSignal(item);
+          return unwrappedItem && unwrappedItem[propName];
+        });
+        return { value: values, isExplosion: true };
+      } else if (unwrappedParent && typeof unwrappedParent === "object") {
+        const val = unwrappedParent[propName];
+        return { value: unwrapSignal(val), isExplosion: true };
+      }
+      return { value: void 0, isExplosion: true };
+    }
+    const value = resolvePathAsContext(normalizedPath, context);
+    return { value, isExplosion: false };
+  };
+  const resolveExpression = (expr, context) => {
+    var _a;
+    if (typeof expr !== "string") return expr;
+    const funcStart = expr.indexOf("(");
+    if (funcStart !== -1 && expr.endsWith(")")) {
+      const fullPath = expr.slice(0, funcStart).trim();
+      const argsStr = expr.slice(funcStart + 1, -1);
+      const segments = fullPath.split("/");
+      let funcName = segments.pop().replace(/^\$/, "");
+      if (funcName === "" && (segments.length > 0 || fullPath === "/")) {
+        funcName = "/";
+      }
+      const navPath = segments.join("/");
+      const isGlobalExpr = expr.startsWith("$/") || expr.startsWith("$");
+      let baseContext = context;
+      if (navPath && navPath !== "$") {
+        baseContext = resolvePathAsContext(navPath, context);
+      }
+      const helper = helpers.get(funcName);
+      if (!helper) {
+        (_a = globalThis.console) == null ? void 0 : _a.warn(`LightviewCDOM: Helper "${funcName}" not found.`);
+        return expr;
+      }
+      const options = helperOptions.get(funcName) || {};
+      const argsList = [];
+      let current = "", parenDepth = 0, braceDepth = 0, bracketDepth = 0, quote = null;
+      for (let i = 0; i < argsStr.length; i++) {
+        const char = argsStr[i];
+        if (char === quote) quote = null;
+        else if (!quote && (char === "'" || char === '"')) quote = char;
+        else if (!quote && char === "(") parenDepth++;
+        else if (!quote && char === ")") parenDepth--;
+        else if (!quote && char === "{") braceDepth++;
+        else if (!quote && char === "}") braceDepth--;
+        else if (!quote && char === "[") bracketDepth++;
+        else if (!quote && char === "]") bracketDepth--;
+        else if (!quote && char === "," && parenDepth === 0 && braceDepth === 0 && bracketDepth === 0) {
+          argsList.push(current.trim());
+          current = "";
+          continue;
+        }
+        current += char;
+      }
+      if (current) argsList.push(current.trim());
+      const resolvedArgs = [];
+      let hasLazy = false;
+      for (let i = 0; i < argsList.length; i++) {
+        const arg = argsList[i];
+        const useGlobalMode = isGlobalExpr && (navPath === "$" || !navPath);
+        const res = resolveArgument(arg, baseContext, useGlobalMode);
+        if (res.isLazy) hasLazy = true;
+        const shouldUnwrap = !(options.pathAware && i === 0);
+        let val = shouldUnwrap ? unwrapSignal(res.value) : res.value;
+        if (res.isExplosion && Array.isArray(val)) {
+          resolvedArgs.push(...val.map((v) => shouldUnwrap ? unwrapSignal(v) : v));
+        } else {
+          resolvedArgs.push(val);
+        }
+      }
+      if (hasLazy) {
+        return new LazyValue((contextOverride) => {
+          const finalArgs = resolvedArgs.map((arg, i) => {
+            const shouldUnwrap = !(options.pathAware && i === 0);
+            const resolved = arg instanceof LazyValue ? arg.resolve(contextOverride) : arg;
+            return shouldUnwrap ? unwrapSignal(resolved) : resolved;
+          });
+          return helper(...finalArgs);
+        });
+      }
+      const result = helper(...resolvedArgs);
+      return unwrapSignal(result);
+    }
+    return unwrapSignal(resolvePath(expr, context));
+  };
+  const parseExpression = (expr, context) => {
+    const LV = getLV();
+    if (!LV || typeof expr !== "string") return expr;
+    return LV.computed(() => resolveExpression(expr, context));
+  };
+  const parseCDOMC = (input) => {
+    let i = 0;
+    const len2 = input.length;
+    const skipWhitespace = () => {
+      while (i < len2) {
+        const char = input[i];
+        if (/\s/.test(char)) {
+          i++;
+          continue;
+        }
+        if (char === "/") {
+          const next = input[i + 1];
+          if (next === "/") {
+            i += 2;
+            while (i < len2 && input[i] !== "\n" && input[i] !== "\r") i++;
+            continue;
+          } else if (next === "*") {
+            i += 2;
+            while (i < len2) {
+              if (input[i] === "*" && input[i + 1] === "/") {
+                i += 2;
+                break;
+              }
+              i++;
+            }
+            continue;
+          }
+        }
+        break;
+      }
+    };
+    const parseString = () => {
+      const quote = input[i++];
+      let res2 = "";
+      while (i < len2) {
+        const char = input[i++];
+        if (char === quote) return res2;
+        if (char === "\\") {
+          const next = input[i++];
+          if (next === "n") res2 += "\n";
+          else if (next === "t") res2 += "	";
+          else if (next === '"') res2 += '"';
+          else if (next === "'") res2 += "'";
+          else if (next === "\\") res2 += "\\";
+          else res2 += next;
+        } else {
+          res2 += char;
+        }
+      }
+      throw new Error("Unterminated string");
+    };
+    const parseWord = () => {
+      const start = i;
+      let pDepth = 0;
+      let bDepth = 0;
+      let brDepth = 0;
+      let quote = null;
+      while (i < len2) {
+        const char = input[i];
+        if (quote) {
+          if (char === quote) quote = null;
+          i++;
+          continue;
+        } else if (char === '"' || char === "'" || char === "`") {
+          quote = char;
+          i++;
+          continue;
+        }
+        if (char === "(") {
+          pDepth++;
+          i++;
+          continue;
+        }
+        if (char === "{") {
+          bDepth++;
+          i++;
+          continue;
+        }
+        if (char === "[") {
+          brDepth++;
+          i++;
+          continue;
+        }
+        if (char === ")") {
+          if (pDepth > 0) {
+            pDepth--;
+            i++;
+            continue;
+          }
+        }
+        if (char === "}") {
+          if (bDepth > 0) {
+            bDepth--;
+            i++;
+            continue;
+          }
+        }
+        if (char === "]") {
+          if (brDepth > 0) {
+            brDepth--;
+            i++;
+            continue;
+          }
+        }
+        if (pDepth === 0 && bDepth === 0 && brDepth === 0) {
+          if (/[\s:,{}\[\]"'`()]/.test(char)) {
+            break;
+          }
+        }
+        i++;
+      }
+      const word = input.slice(start, i);
+      if (word.startsWith("$")) {
+        return word;
+      }
+      if (word === "true") return true;
+      if (word === "false") return false;
+      if (word === "null") return null;
+      if (word.trim() !== "" && !isNaN(Number(word))) return Number(word);
+      return word;
+    };
+    const parseValue = () => {
+      skipWhitespace();
+      if (i >= len2) return void 0;
+      const char = input[i];
+      if (char === "{") return parseObject();
+      if (char === "[") return parseArray();
+      if (char === '"' || char === "'") return parseString();
+      return parseWord();
+    };
+    const parseObject = () => {
+      i++;
+      const obj = {};
+      skipWhitespace();
+      if (i < len2 && input[i] === "}") {
+        i++;
+        return obj;
+      }
+      while (i < len2) {
+        skipWhitespace();
+        let key;
+        if (input[i] === '"' || input[i] === "'") key = parseString();
+        else key = parseWord();
+        skipWhitespace();
+        if (input[i] !== ":") throw new Error(`Expected ':' at position ${i}, found '${input[i]}'`);
+        i++;
+        const value = parseValue();
+        obj[String(key)] = value;
+        skipWhitespace();
+        if (input[i] === "}") {
+          i++;
+          return obj;
+        }
+        if (input[i] === ",") {
+          i++;
+          skipWhitespace();
+          if (input[i] === "}") {
+            i++;
+            return obj;
+          }
+          continue;
+        }
+        throw new Error(`Expected '}' or ',' at position ${i}, found '${input[i]}'`);
+      }
+    };
+    const parseArray = () => {
+      i++;
+      const arr = [];
+      skipWhitespace();
+      if (i < len2 && input[i] === "]") {
+        i++;
+        return arr;
+      }
+      while (i < len2) {
+        const val = parseValue();
+        arr.push(val);
+        skipWhitespace();
+        if (input[i] === "]") {
+          i++;
+          return arr;
+        }
+        if (input[i] === ",") {
+          i++;
+          skipWhitespace();
+          if (input[i] === "]") {
+            i++;
+            return arr;
+          }
+          continue;
+        }
+        throw new Error(`Expected ']' or ',' at position ${i}, found '${input[i]}'`);
+      }
+    };
+    skipWhitespace();
+    const res = parseValue();
+    return res;
+  };
+  const add = (...args) => args.reduce((a, b) => Number(a) + Number(b), 0);
+  const subtract = (a, b) => Number(a) - Number(b);
+  const multiply = (...args) => args.reduce((a, b) => Number(a) * Number(b), 1);
+  const divide = (a, b) => Number(a) / Number(b);
+  const round = (val, decimals = 0) => Number(Math.round(val + "e" + decimals) + "e-" + decimals);
+  const ceil = (val) => Math.ceil(val);
+  const floor = (val) => Math.floor(val);
+  const abs = (val) => Math.abs(val);
+  const mod = (a, b) => a % b;
+  const pow = (a, b) => Math.pow(a, b);
+  const sqrt = (val) => Math.sqrt(val);
+  const registerMathHelpers = (register) => {
+    register("+", add);
+    register("add", add);
+    register("-", subtract);
+    register("sub", subtract);
+    register("*", multiply);
+    register("mul", multiply);
+    register("/", divide);
+    register("div", divide);
+    register("round", round);
+    register("ceil", ceil);
+    register("floor", floor);
+    register("abs", abs);
+    register("mod", mod);
+    register("pow", pow);
+    register("sqrt", sqrt);
+  };
+  const ifHelper = (condition, thenVal, elseVal) => condition ? thenVal : elseVal;
+  const andHelper = (...args) => args.every(Boolean);
+  const orHelper = (...args) => args.some(Boolean);
+  const notHelper = (val) => !val;
+  const eqHelper = (a, b) => a === b;
+  const neqHelper = (a, b) => a !== b;
+  const registerLogicHelpers = (register) => {
+    register("if", ifHelper);
+    register("and", andHelper);
+    register("&&", andHelper);
+    register("or", orHelper);
+    register("||", orHelper);
+    register("not", notHelper);
+    register("!", notHelper);
+    register("eq", eqHelper);
+    register("==", eqHelper);
+    register("===", eqHelper);
+    register("neq", neqHelper);
+  };
+  const join$1 = (...args) => {
+    const separator = args[args.length - 1];
+    const items = args.slice(0, -1);
+    return items.join(separator);
+  };
+  const concat = (...args) => args.join("");
+  const upper = (s) => String(s).toUpperCase();
+  const lower = (s) => String(s).toLowerCase();
+  const trim = (s) => String(s).trim();
+  const len = (s) => String(s).length;
+  const replace = (s, search, replacement) => String(s).replace(search, replacement);
+  const split = (s, separator) => String(s).split(separator);
+  const capitalize = (s) => {
+    const str = String(s);
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+  const titleCase = (s) => {
+    return String(s).toLowerCase().split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  };
+  const contains$1 = (s, search) => String(s).includes(search);
+  const startsWith = (s, prefix) => String(s).startsWith(prefix);
+  const endsWith = (s, suffix) => String(s).endsWith(suffix);
+  const defaultHelper = (val, fallback) => val !== void 0 && val !== null ? val : fallback;
+  const registerStringHelpers = (register) => {
+    register("join", join$1);
+    register("concat", concat);
+    register("upper", upper);
+    register("lower", lower);
+    register("trim", trim);
+    register("len", len);
+    register("replace", replace);
+    register("split", split);
+    register("capitalize", capitalize);
+    register("titleCase", titleCase);
+    register("contains", contains$1);
+    register("startsWith", startsWith);
+    register("endsWith", endsWith);
+    register("default", defaultHelper);
+  };
+  const count = (...args) => args.length;
+  const filter = (arr, predicate) => {
+    if (!Array.isArray(arr)) return [];
+    if (typeof predicate === "function" && predicate.isLazy) {
+      return arr.filter((item) => predicate.resolve(item));
+    }
+    return arr.filter((item) => !!item);
+  };
+  const map = (arr, transform) => {
+    if (!Array.isArray(arr)) return [];
+    if (typeof transform === "string") {
+      return arr.map((item) => item && typeof item === "object" ? item[transform] : item);
+    }
+    if (transform && transform.isLazy) {
+      return arr.map((item) => transform.resolve(item));
+    }
+    return arr;
+  };
+  const find = (arr, predicate) => {
+    if (!Array.isArray(arr)) return void 0;
+    if (predicate && predicate.isLazy) {
+      return arr.find((item) => predicate.resolve(item));
+    }
+    return arr.find((item) => !!item);
+  };
+  const unique = (arr) => Array.isArray(arr) ? [...new Set(arr)] : [];
+  const sort = (arr, order = "asc") => {
+    if (!Array.isArray(arr)) return [];
+    const sorted = [...arr];
+    sorted.sort((a, b) => {
+      if (a < b) return order === "asc" ? -1 : 1;
+      if (a > b) return order === "asc" ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  };
+  const reverse = (arr) => Array.isArray(arr) ? [...arr].reverse() : [];
+  const first = (arr) => Array.isArray(arr) ? arr[0] : void 0;
+  const last = (arr) => Array.isArray(arr) ? arr[arr.length - 1] : void 0;
+  const slice = (arr, start, end) => Array.isArray(arr) ? arr.slice(start, end) : [];
+  const flatten = (arr) => Array.isArray(arr) ? arr.flat(Infinity) : [];
+  const join = (arr, sep = ",") => Array.isArray(arr) ? arr.join(String(sep)) : "";
+  const length = (arg) => Array.isArray(arg) ? arg.length : arg ? String(arg).length : 0;
+  const registerArrayHelpers = (register) => {
+    register("count", count);
+    register("filter", filter);
+    register("map", map);
+    register("find", find);
+    register("unique", unique);
+    register("sort", sort);
+    register("reverse", reverse);
+    register("first", first);
+    register("last", last);
+    register("slice", slice);
+    register("flatten", flatten);
+    register("join", join);
+    register("len", length);
+    register("length", length);
+  };
+  const gt = (a, b) => a > b;
+  const lt = (a, b) => a < b;
+  const gte = (a, b) => a >= b;
+  const lte = (a, b) => a <= b;
+  const neq = (a, b) => a !== b;
+  const between = (val, min2, max2) => val >= min2 && val <= max2;
+  const contains = (arr, val) => Array.isArray(arr) && arr.includes(val);
+  const registerCompareHelpers = (register) => {
+    register("gt", gt);
+    register(">", gt);
+    register("lt", lt);
+    register("<", lt);
+    register("gte", gte);
+    register(">=", gte);
+    register("lte", lte);
+    register("<=", lte);
+    register("neq", neq);
+    register("!=", neq);
+    register("between", between);
+    register("in", contains);
+  };
+  const sumIf = (arr, predicate) => {
+    if (!Array.isArray(arr)) return 0;
+    const filtered = predicate && predicate.isLazy ? arr.filter((item) => predicate.resolve(item)) : arr;
+    return filtered.reduce((a, b) => a + (Number(b) || 0), 0);
+  };
+  const countIf = (arr, predicate) => {
+    if (!Array.isArray(arr)) return 0;
+    if (predicate && predicate.isLazy) {
+      return arr.filter((item) => predicate.resolve(item)).length;
+    }
+    return arr.filter((item) => !!item).length;
+  };
+  const avgIf = (arr, predicate) => {
+    if (!Array.isArray(arr)) return 0;
+    const filtered = predicate && predicate.isLazy ? arr.filter((item) => predicate.resolve(item)) : arr;
+    if (filtered.length === 0) return 0;
+    return filtered.reduce((a, b) => a + (Number(b) || 0), 0) / filtered.length;
+  };
+  const registerConditionalHelpers = (register) => {
+    register("sumIf", sumIf);
+    register("countIf", countIf);
+    register("avgIf", avgIf);
+  };
+  const now = () => (/* @__PURE__ */ new Date()).getTime();
+  const today = () => {
+    const d = /* @__PURE__ */ new Date();
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  };
+  const date = (val) => new Date(val).getTime();
+  const formatDate = (val, format) => {
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return "";
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    if (format === "long") options.month = "long";
+    return d.toLocaleDateString(void 0, options);
+  };
+  const year = (val) => new Date(val).getFullYear();
+  const month = (val) => new Date(val).getMonth() + 1;
+  const day = (val) => new Date(val).getDate();
+  const weekday = (val) => new Date(val).getDay();
+  const addDays = (val, days) => {
+    const d = new Date(val);
+    d.setDate(d.getDate() + Number(days));
+    return d.getTime();
+  };
+  const dateDiff = (d1, d2, unit = "days") => {
+    const diff = Math.abs(new Date(d1) - new Date(d2));
+    if (unit === "seconds") return diff / 1e3;
+    if (unit === "minutes") return diff / (1e3 * 60);
+    if (unit === "hours") return diff / (1e3 * 60 * 60);
+    return diff / (1e3 * 60 * 60 * 24);
+  };
+  const registerDateTimeHelpers = (register) => {
+    register("now", now);
+    register("today", today);
+    register("date", date);
+    register("formatDate", formatDate);
+    register("year", year);
+    register("month", month);
+    register("day", day);
+    register("weekday", weekday);
+    register("addDays", addDays);
+    register("dateDiff", dateDiff);
+  };
+  const number = (val, decimals = 2) => Number(val).toFixed(decimals);
+  const currency = (val, symbol = "$", decimals = 2) => {
+    return symbol + Number(val).toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+  const percent = (val, decimals = 0) => (Number(val) * 100).toFixed(decimals) + "%";
+  const thousands = (val) => String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const registerFormatHelpers = (register) => {
+    register("number", number);
+    register("currency", currency);
+    register("percent", percent);
+    register("thousands", thousands);
+  };
+  const lookup = (val, searchArr, resultArr) => {
+    if (!Array.isArray(searchArr)) return void 0;
+    const idx = searchArr.indexOf(val);
+    return idx !== -1 && Array.isArray(resultArr) ? resultArr[idx] : void 0;
+  };
+  const vlookup = (val, table, colIdx) => {
+    if (!Array.isArray(table)) return void 0;
+    const row = table.find((r) => Array.isArray(r) && r[0] === val);
+    return row ? row[colIdx - 1] : void 0;
+  };
+  const index = (arr, idx) => Array.isArray(arr) ? arr[idx] : void 0;
+  const match = (val, arr) => Array.isArray(arr) ? arr.indexOf(val) : -1;
+  const registerLookupHelpers = (register) => {
+    register("lookup", lookup);
+    register("vlookup", vlookup);
+    register("index", index);
+    register("match", match);
+  };
+  const sum = (...args) => args.reduce((a, b) => a + (Number(b) || 0), 0);
+  const avg = (...args) => args.length === 0 ? 0 : sum(...args) / args.length;
+  const min = (...args) => Math.min(...args);
+  const max = (...args) => Math.max(...args);
+  const median = (...args) => {
+    if (args.length === 0) return 0;
+    const sorted = [...args].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+  };
+  const stdev = (...args) => {
+    if (args.length === 0) return 0;
+    const mean = avg(...args);
+    const squareDiffs = args.map((value) => Math.pow(value - mean, 2));
+    return Math.sqrt(avg(...squareDiffs));
+  };
+  const variance = (...args) => {
+    if (args.length === 0) return 0;
+    const mean = avg(...args);
+    const squareDiffs = args.map((value) => Math.pow(value - mean, 2));
+    return avg(...squareDiffs);
+  };
+  const registerStatsHelpers = (register) => {
+    register("sum", sum);
+    register("avg", avg);
+    register("min", min);
+    register("max", max);
+    register("median", median);
+    register("stdev", stdev);
+    register("var", variance);
+  };
+  const set = (target, val) => {
+    if (target && typeof target === "object" && "value" in target) {
+      target.value = val;
+    } else if (target && typeof target === "function" && "value" in target) {
+      target.value = val;
+    } else if (target && typeof target === "object" && val && typeof val === "object") {
+      Object.assign(target, val);
+    }
+    return val;
+  };
+  const increment = (target, by = 1) => {
+    const hasValue = target && (typeof target === "object" || typeof target === "function") && "value" in target;
+    const current = hasValue ? target.value : 0;
+    const next = Number(current) + Number(by);
+    return set(target, next);
+  };
+  const decrement = (target, by = 1) => {
+    const hasValue = target && (typeof target === "object" || typeof target === "function") && "value" in target;
+    const current = hasValue ? target.value : 0;
+    const next = Number(current) - Number(by);
+    return set(target, next);
+  };
+  const toggle = (target) => {
+    const hasValue = target && (typeof target === "object" || typeof target === "function") && "value" in target;
+    const current = hasValue ? target.value : false;
+    return set(target, !current);
+  };
+  const push = (target, item) => {
+    const current = target && typeof target === "object" && "value" in target ? target.value : [];
+    if (Array.isArray(current)) {
+      const next = [...current, item];
+      return set(target, next);
+    }
+    return current;
+  };
+  const pop = (target) => {
+    const current = target && typeof target === "object" && "value" in target ? target.value : [];
+    if (Array.isArray(current) && current.length > 0) {
+      const next = current.slice(0, -1);
+      set(target, next);
+    }
+    return current;
+  };
+  const assign = (target, obj) => {
+    const current = target && typeof target === "object" && "value" in target ? target.value : {};
+    const next = { ...current, ...obj };
+    return set(target, next);
+  };
+  const clear = (target) => {
+    const current = target && typeof target === "object" && "value" in target ? target.value : null;
+    if (Array.isArray(current)) return set(target, []);
+    if (typeof current === "object" && current !== null) return set(target, {});
+    return set(target, null);
+  };
+  const registerStateHelpers = (register) => {
+    const opts = { pathAware: true };
+    register("set", set, opts);
+    register("increment", increment, opts);
+    register("++", increment, opts);
+    register("decrement", decrement, opts);
+    register("--", decrement, opts);
+    register("toggle", toggle, opts);
+    register("!!", toggle, opts);
+    register("push", push, opts);
+    register("pop", pop, opts);
+    register("assign", assign, opts);
+    register("clear", clear, opts);
+  };
+  const fetchHelper = (url, options = {}) => {
+    const fetchOptions = { ...options };
+    const headers = { ...fetchOptions.headers };
+    let body = fetchOptions.body;
+    if (body !== void 0) {
+      if (body !== null && typeof body === "object") {
+        body = JSON.stringify(body);
+        if (!headers["Content-Type"]) {
+          headers["Content-Type"] = "application/json";
+        }
+      } else {
+        body = String(body);
+        if (!headers["Content-Type"]) {
+          headers["Content-Type"] = "text/plain";
+        }
+      }
+    }
+    fetchOptions.body = body;
+    fetchOptions.headers = headers;
+    return globalThis.fetch(url, fetchOptions);
+  };
+  const registerNetworkHelpers = (register) => {
+    register("fetch", fetchHelper);
+  };
+  const _LV = globalThis.__LIGHTVIEW_INTERNALS__ || (globalThis.__LIGHTVIEW_INTERNALS__ = {
+    currentEffect: null,
+    registry: /* @__PURE__ */ new Map(),
+    dependencyMap: /* @__PURE__ */ new WeakMap()
+    // Tracking signals -> subscribers
+  });
+  const signal = (initialValue, optionsOrName) => {
+    let name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
+    const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
+    if (name && storage) {
+      try {
+        const stored = storage.getItem(name);
+        if (stored !== null) {
+          initialValue = JSON.parse(stored);
+        }
+      } catch (e) {
+      }
+    }
+    let value = initialValue;
+    const subscribers = /* @__PURE__ */ new Set();
+    const f = (...args) => {
+      if (args.length === 0) return f.value;
+      f.value = args[0];
+    };
+    Object.defineProperty(f, "value", {
+      get() {
+        if (_LV.currentEffect) {
+          subscribers.add(_LV.currentEffect);
+          _LV.currentEffect.dependencies.add(subscribers);
+        }
+        return value;
+      },
+      set(newValue) {
+        if (value !== newValue) {
+          value = newValue;
+          if (name && storage) {
+            try {
+              storage.setItem(name, JSON.stringify(value));
+            } catch (e) {
+            }
+          }
+          [...subscribers].forEach((effect2) => effect2());
+        }
+      }
+    });
+    if (name) {
+      if (_LV.registry.has(name)) {
+        if (_LV.registry.get(name) !== f) {
+          throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+        }
+      } else {
+        _LV.registry.set(name, f);
+      }
+    }
+    return f;
+  };
+  const getSignal = (name, defaultValue) => {
+    if (!_LV.registry.has(name) && defaultValue !== void 0) {
+      return signal(defaultValue, name);
+    }
+    return _LV.registry.get(name);
+  };
+  signal.get = getSignal;
+  const effect = (fn) => {
+    const execute = () => {
+      if (!execute.active || execute.running) return;
+      execute.dependencies.forEach((dep) => dep.delete(execute));
+      execute.dependencies.clear();
+      execute.running = true;
+      _LV.currentEffect = execute;
+      try {
+        fn();
+      } finally {
+        _LV.currentEffect = null;
+        execute.running = false;
+      }
+    };
+    execute.active = true;
+    execute.running = false;
+    execute.dependencies = /* @__PURE__ */ new Set();
+    execute.stop = () => {
+      execute.dependencies.forEach((dep) => dep.delete(execute));
+      execute.dependencies.clear();
+      execute.active = false;
+    };
+    execute();
+    return execute;
+  };
+  const getRegistry = () => _LV.registry;
+  const stateCache = /* @__PURE__ */ new WeakMap();
+  const stateSignals = /* @__PURE__ */ new WeakMap();
+  const parents = /* @__PURE__ */ new WeakMap();
+  const protoMethods = (proto, test) => Object.getOwnPropertyNames(proto).filter((k) => typeof proto[k] === "function" && test(k));
+  const DATE_TRACKING = protoMethods(Date.prototype, (k) => /^(to|get|valueOf)/.test(k));
+  const DATE_MUTATING = protoMethods(Date.prototype, (k) => /^set/.test(k));
+  const ARRAY_TRACKING = [
+    "map",
+    "forEach",
+    "filter",
+    "find",
+    "findIndex",
+    "some",
+    "every",
+    "reduce",
+    "reduceRight",
+    "includes",
+    "indexOf",
+    "lastIndexOf",
+    "join",
+    "slice",
+    "concat",
+    "flat",
+    "flatMap",
+    "at",
+    "entries",
+    "keys",
+    "values"
+  ];
+  const ARRAY_MUTATING = ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"];
+  const ARRAY_ITERATION = ["map", "forEach", "filter", "find", "findIndex", "some", "every", "flatMap"];
+  const getOrSet = (map2, key, factory) => {
+    let v = map2.get(key);
+    if (!v) {
+      v = factory();
+      map2.set(key, v);
+    }
+    return v;
+  };
+  const proxyGet = (target, prop, receiver, signals) => {
+    if (prop === "__parent__") return parents.get(receiver);
+    if (!signals.has(prop)) {
+      signals.set(prop, signal(Reflect.get(target, prop, receiver)));
+    }
+    const signal$1 = signals.get(prop);
+    const val = signal$1.value;
+    if (typeof val === "object" && val !== null) {
+      const childProxy = state(val);
+      parents.set(childProxy, receiver);
+      return childProxy;
+    }
+    return val;
+  };
+  const proxySet = (target, prop, value, receiver, signals) => {
+    if (!signals.has(prop)) {
+      signals.set(prop, signal(Reflect.get(target, prop, receiver)));
+    }
+    const success = Reflect.set(target, prop, value, receiver);
+    const signal$1 = signals.get(prop);
+    if (success && signal$1) signal$1.value = value;
+    return success;
+  };
+  const createSpecialProxy = (obj, monitor, trackingProps = []) => {
+    const signals = getOrSet(stateSignals, obj, () => /* @__PURE__ */ new Map());
+    if (!signals.has(monitor)) {
+      const initialValue = typeof obj[monitor] === "function" ? obj[monitor].call(obj) : obj[monitor];
+      signals.set(monitor, signal(initialValue));
+    }
+    const isDate = obj instanceof Date;
+    const isArray = Array.isArray(obj);
+    const trackingMethods = isDate ? DATE_TRACKING : isArray ? ARRAY_TRACKING : trackingProps;
+    const mutatingMethods = isDate ? DATE_MUTATING : isArray ? ARRAY_MUTATING : [];
+    return new Proxy(obj, {
+      get(target, prop, receiver) {
+        if (prop === "__parent__") return parents.get(receiver);
+        const value = target[prop];
+        if (typeof value === "function") {
+          const isTracking = trackingMethods.includes(prop);
+          const isMutating = mutatingMethods.includes(prop);
+          return function(...args) {
+            if (isTracking) {
+              const sig = signals.get(monitor);
+              if (sig) void sig.value;
+            }
+            const startValue = typeof target[monitor] === "function" ? target[monitor].call(target) : target[monitor];
+            if (isArray && ARRAY_ITERATION.includes(prop) && typeof args[0] === "function") {
+              const originalCallback = args[0];
+              args[0] = function(element, index2, array) {
+                const wrappedElement = typeof element === "object" && element !== null ? state(element) : element;
+                if (wrappedElement && typeof wrappedElement === "object") {
+                  parents.set(wrappedElement, receiver);
+                }
+                return originalCallback.call(this, wrappedElement, index2, array);
+              };
+            }
+            const result = value.apply(target, args);
+            const endValue = typeof target[monitor] === "function" ? target[monitor].call(target) : target[monitor];
+            if (startValue !== endValue || isMutating) {
+              const sig = signals.get(monitor);
+              if (sig && sig.value !== endValue) {
+                sig.value = endValue;
+              }
+            }
+            return result;
+          };
+        }
+        if (prop === monitor) {
+          const sig = signals.get(monitor);
+          return sig ? sig.value : Reflect.get(target, prop, receiver);
+        }
+        if (isArray && !isNaN(parseInt(prop))) {
+          const monitorSig = signals.get(monitor);
+          if (monitorSig) void monitorSig.value;
+        }
+        return proxyGet(target, prop, receiver, signals);
+      },
+      set(target, prop, value, receiver) {
+        if (prop === monitor) {
+          const success = Reflect.set(target, prop, value, receiver);
+          if (success) {
+            const sig = signals.get(monitor);
+            if (sig) sig.value = value;
+          }
+          return success;
+        }
+        return proxySet(target, prop, value, receiver, signals);
+      }
+    });
+  };
+  const state = (obj, optionsOrName) => {
+    if (typeof obj !== "object" || obj === null) return obj;
+    const name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
+    const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
+    if (name && storage) {
+      try {
+        const item = storage.getItem(name);
+        if (item) {
+          const loaded = JSON.parse(item);
+          Array.isArray(obj) && Array.isArray(loaded) ? (obj.length = 0, obj.push(...loaded)) : Object.assign(obj, loaded);
+        }
+      } catch (e) {
+      }
+    }
+    let proxy = stateCache.get(obj);
+    if (!proxy) {
+      const isArray = Array.isArray(obj), isDate = obj instanceof Date;
+      const isSpecial = isArray || isDate;
+      const monitor = isArray ? "length" : isDate ? "getTime" : null;
+      if (isSpecial || !(obj instanceof RegExp || obj instanceof Map || obj instanceof Set || obj instanceof WeakMap || obj instanceof WeakSet)) {
+        proxy = isSpecial ? createSpecialProxy(obj, monitor) : new Proxy(obj, {
+          get(t, p, r) {
+            if (p === "__parent__") return parents.get(r);
+            return proxyGet(t, p, r, getOrSet(stateSignals, t, () => /* @__PURE__ */ new Map()));
+          },
+          set(t, p, v, r) {
+            return proxySet(t, p, v, r, getOrSet(stateSignals, t, () => /* @__PURE__ */ new Map()));
+          }
+        });
+        stateCache.set(obj, proxy);
+      } else return obj;
+    }
+    if (name && storage) {
+      effect(() => {
+        try {
+          storage.setItem(name, JSON.stringify(proxy));
+        } catch (e) {
+        }
+      });
+    }
+    if (name) {
+      const registry = getRegistry();
+      if (registry.has(name)) {
+        if (registry.get(name) !== proxy) {
+          throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+        }
+      } else {
+        registry.set(name, proxy);
+      }
+    }
+    return proxy;
+  };
+  const getState = (name, defaultValue) => {
+    const registry = getRegistry();
+    if (!registry.has(name) && defaultValue !== void 0) {
+      return state(defaultValue, name);
+    }
+    return registry.get(name);
+  };
+  state.get = getState;
+  registerMathHelpers(registerHelper);
+  registerLogicHelpers(registerHelper);
+  registerStringHelpers(registerHelper);
+  registerArrayHelpers(registerHelper);
+  registerCompareHelpers(registerHelper);
+  registerConditionalHelpers(registerHelper);
+  registerDateTimeHelpers(registerHelper);
+  registerFormatHelpers(registerHelper);
+  registerLookupHelpers(registerHelper);
+  registerStatsHelpers(registerHelper);
+  registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
+  registerNetworkHelpers(registerHelper);
+  const localStates = /* @__PURE__ */ new WeakMap();
+  const getContext = (node, event = null) => {
+    const chain = [];
+    let cur = node;
+    const ShadowRoot = globalThis.ShadowRoot;
+    while (cur) {
+      const local = localStates.get(cur);
+      if (local) chain.unshift(local);
+      cur = cur.parentElement || (ShadowRoot && cur.parentNode instanceof ShadowRoot ? cur.parentNode.host : null);
+    }
+    const globalRegistry = getRegistry();
+    const handler = {
+      get(target, prop, receiver) {
+        var _a;
+        if (prop === "$event" || prop === "event") return event;
+        if (prop === "__parent__") return void 0;
+        for (let i = chain.length - 1; i >= 0; i--) {
+          const s = chain[i];
+          if (prop in s) return s[prop];
+        }
+        if (globalRegistry && globalRegistry.has(prop)) return globalRegistry.get(prop);
+        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
+        if (globalState && prop in globalState) return globalState[prop];
+        return void 0;
+      },
+      set(target, prop, value, receiver) {
+        var _a;
+        for (let i = chain.length - 1; i >= 0; i--) {
+          const s = chain[i];
+          if (prop in s) {
+            s[prop] = value;
+            return true;
+          }
+        }
+        if (chain.length > 0) {
+          chain[chain.length - 1][prop] = value;
+          return true;
+        }
+        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
+        if (globalState) {
+          globalState[prop] = value;
+          return true;
+        }
+        return false;
+      },
+      has(target, prop) {
+        var _a;
+        if (prop === "$event" || prop === "event") return !!event;
+        for (const s of chain) if (prop in s) return true;
+        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
+        if (globalState && prop in globalState) return true;
+        return false;
+      },
+      ownKeys(target) {
+        var _a;
+        const keys = /* @__PURE__ */ new Set();
+        if (event) {
+          keys.add("$event");
+          keys.add("event");
+        }
+        for (const s of chain) {
+          for (const key in s) keys.add(key);
+        }
+        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
+        if (globalState) {
+          for (const key in globalState) keys.add(key);
+        }
+        return Array.from(keys);
+      },
+      getOwnPropertyDescriptor(target, prop) {
+        return { enumerable: true, configurable: true };
+      }
+    };
+    return new Proxy({}, handler);
+  };
+  const handleCDOMState = (node) => {
+    var _a;
+    const attr = node["cdom-state"] || node.getAttribute("cdom-state");
+    if (!attr || localStates.has(node)) return;
+    try {
+      const data = typeof attr === "object" ? attr : JSON.parse(attr);
+      const s = state(data);
+      localStates.set(node, s);
+    } catch (e) {
+      (_a = globalThis.console) == null ? void 0 : _a.error("LightviewCDOM: Failed to parse cdom-state", e);
+    }
+  };
+  const handleCDOMBind = (node) => {
+    const path = node["cdom-bind"] || node.getAttribute("cdom-bind");
+    if (!path) return;
+    const type = node.type || "";
+    const tagName = node.tagName.toLowerCase();
+    let prop = "value";
+    let event = "input";
+    if (type === "checkbox" || type === "radio") {
+      prop = "checked";
+      event = "change";
+    } else if (tagName === "select") {
+      event = "change";
+    }
+    const context = getContext(node);
+    let target = resolvePathAsContext(path, context);
+    if (target && target.isBindingTarget && target.value === void 0) {
+      const val = node[prop];
+      if (val !== void 0 && val !== "") {
+        set(context, { [target.key]: val });
+        target = resolvePathAsContext(path, context);
+      }
+    }
+    effect(() => {
+      const val = unwrapSignal(target);
+      if (node[prop] !== val) {
+        node[prop] = val === void 0 ? "" : val;
+      }
+    });
+    node.addEventListener(event, () => {
+      const val = node[prop];
+      if (target && target.isBindingTarget) {
+        target.value = val;
+      } else {
+        set(context, { [path]: val });
+      }
+    });
+  };
+  const activate = (root = document.body) => {
+    const walk = (node) => {
+      if (node.nodeType === 1) {
+        if (node.hasAttribute("cdom-state")) handleCDOMState(node);
+        if (node.hasAttribute("cdom-bind")) handleCDOMBind(node);
+      }
+      let child = node.firstChild;
+      while (child) {
+        walk(child);
+        child = child.nextSibling;
+      }
+    };
+    walk(root);
+  };
+  const hydrate = (node, parent = null) => {
+    if (!node) return node;
+    if (typeof node === "string" && node.startsWith("$")) {
+      return parseExpression(node, parent);
+    }
+    if (Array.isArray(node)) {
+      return node.map((item) => hydrate(item, parent));
+    }
+    if (node instanceof String) {
+      return node.toString();
+    }
+    if (typeof node === "object" && node !== null) {
+      if (parent && !("__parent__" in node)) {
+        Object.defineProperty(node, "__parent__", {
+          value: parent,
+          enumerable: false,
+          writable: true,
+          configurable: true
+        });
+      }
+      if (!node.tag) {
+        let potentialTag = null;
+        for (const key in node) {
+          if (key === "children" || key === "attributes" || key === "tag" || key.startsWith("cdom-") || key.startsWith("on") || key === "__parent__") {
+            continue;
+          }
+          const attrNames = [
+            // Form/input attributes
+            "type",
+            "name",
+            "value",
+            "placeholder",
+            "step",
+            "min",
+            "max",
+            "pattern",
+            "disabled",
+            "checked",
+            "selected",
+            "readonly",
+            "required",
+            "multiple",
+            "rows",
+            "cols",
+            "size",
+            "maxlength",
+            "minlength",
+            "autocomplete",
+            // Common element attributes
+            "id",
+            "class",
+            "className",
+            "style",
+            "title",
+            "tabindex",
+            "role",
+            "href",
+            "src",
+            "alt",
+            "width",
+            "height",
+            "target",
+            "rel",
+            // Data attributes
+            "data",
+            "label",
+            "text",
+            "description",
+            "content",
+            // Common data property names
+            "price",
+            "qty",
+            "items",
+            "count",
+            "total",
+            "amount",
+            "url"
+          ];
+          if (attrNames.includes(key)) {
+            continue;
+          }
+          potentialTag = key;
+          break;
+        }
+        if (potentialTag) {
+          const content = node[potentialTag];
+          if (content !== void 0 && content !== null) {
+            node.tag = potentialTag;
+            if (Array.isArray(content)) {
+              node.children = content;
+            } else if (typeof content === "object") {
+              node.attributes = node.attributes || {};
+              for (const k in content) {
+                if (k === "children") {
+                  node.children = content[k];
+                } else if (k.startsWith("cdom-")) {
+                  node[k] = content[k];
+                } else {
+                  node.attributes[k] = content[k];
+                }
+              }
+            } else {
+              node.children = [content];
+            }
+            delete node[potentialTag];
+          }
+        }
+      }
+      for (const key in node) {
+        const value = node[key];
+        if (key === "cdom-state") {
+          continue;
+        }
+        if (typeof value === "string" && value.startsWith("$")) {
+          if (key.startsWith("on")) {
+            node[key] = (event) => {
+              const element = event.currentTarget;
+              const context = getContext(element, event);
+              const result = resolveExpression(value, context);
+              if (result && typeof result === "object" && result.isLazy && typeof result.resolve === "function") {
+                return result.resolve(event);
+              }
+              return result;
+            };
+          } else if (key === "children") {
+            node[key] = [parseExpression(value, node)];
+          } else {
+            node[key] = parseExpression(value, node);
+          }
+        } else if (key === "attributes" && typeof value === "object" && value !== null) {
+          for (const attrKey in value) {
+            const attrValue = value[attrKey];
+            if (typeof attrValue === "string" && attrValue.startsWith("$")) {
+              if (attrKey.startsWith("on")) {
+                value[attrKey] = (event) => {
+                  const element = event.currentTarget;
+                  const context = getContext(element, event);
+                  const result = resolveExpression(attrValue, context);
+                  if (result && typeof result === "object" && result.isLazy && typeof result.resolve === "function") {
+                    return result.resolve(event);
+                  }
+                  return result;
+                };
+              } else {
+                value[attrKey] = parseExpression(attrValue, node);
+              }
+            }
+          }
+          node[key] = value;
+        } else {
+          node[key] = hydrate(value, node);
+        }
+      }
+      return node;
+    }
+    return node;
+  };
+  const LightviewCDOM2 = {
+    registerHelper,
+    parseExpression,
+    resolvePath,
+    resolvePathAsContext,
+    resolveExpression,
+    parseCDOMC,
+    unwrapSignal,
+    getContext,
+    handleCDOMState,
+    handleCDOMBind,
+    activate,
+    hydrate,
+    version: "1.0.0"
+  };
+  if (typeof window !== "undefined") {
+    globalThis.LightviewCDOM = LightviewCDOM2;
+  }
+  exports.activate = activate;
+  exports.default = LightviewCDOM2;
+  exports.getContext = getContext;
+  exports.handleCDOMBind = handleCDOMBind;
+  exports.handleCDOMState = handleCDOMState;
+  exports.hydrate = hydrate;
+  Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
+  return exports;
+}({});

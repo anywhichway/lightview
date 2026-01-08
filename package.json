@@ -10,7 +10,7 @@
     "dev": "wrangler pages dev . --port 3000",
     "preview": "npm run build && wrangler pages dev ./dist --port 8788",
     "build": "node build-bundles.mjs && node build.js",
-    "watch": "node watch.js",
+    "watch": "node build-bundles.mjs && node build.js --watch --env=dev",
     "deploy": "npm run build && wrangler pages deploy dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

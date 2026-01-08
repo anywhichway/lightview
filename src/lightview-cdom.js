@@ -131,11 +131,11 @@ export const getContext = (node, event = null) => {
  * Handles cdom-state directive.
  */
 export const handleCDOMState = (node) => {
-    const attr = node.getAttribute('cdom-state');
+    const attr = node['cdom-state'] || node.getAttribute('cdom-state');
     if (!attr || localStates.has(node)) return;
 
     try {
-        const data = JSON.parse(attr);
+        const data = typeof attr === 'object' ? attr : JSON.parse(attr);
         // Use imported state factory
         const s = state(data);
         localStates.set(node, s);
@@ -148,7 +148,7 @@ export const handleCDOMState = (node) => {
  * Handles cdom-bind directive.
  */
 export const handleCDOMBind = (node) => {
-    const path = node.getAttribute('cdom-bind');
+    const path = node['cdom-bind'] || node.getAttribute('cdom-bind');
     if (!path) return;
 
     const type = node.type || '';
@@ -196,26 +196,6 @@ export const handleCDOMBind = (node) => {
     });
 };
 
-/**
- * Handles cdom-on: directive.
- */
-export const handleCDOMOn = (node) => {
-    Array.from(node.attributes).forEach(attr => {
-        if (attr.name.startsWith('cdom-on:')) {
-            const eventName = attr.name.slice(8);
-            const expr = attr.value;
-
-            node.addEventListener(eventName, (event) => {
-                const context = getContext(node, event);
-                const result = resolveExpression(expr, context);
-                // If it's a lazy value (e.g. contains $event or _), resolve it now
-                if (result && typeof result === 'object' && result.isLazy && typeof result.resolve === 'function') {
-                    result.resolve(event);
-                }
-            });
-        }
-    });
-};
 
 /**
  * Scans a subtree and activates CDOM directives.
@@ -225,7 +205,6 @@ export const activate = (root = document.body) => {
         if (node.nodeType === 1) {
             if (node.hasAttribute('cdom-state')) handleCDOMState(node);
             if (node.hasAttribute('cdom-bind')) handleCDOMBind(node);
-            handleCDOMOn(node);
         }
         let child = node.firstChild;
         while (child) {
@@ -271,8 +250,129 @@ export const hydrate = (node, parent = null) => {
             });
         }
 
+        // NEW: Normalize cDOM shorthand { tag: content } -> { tag: 'tag', ...content }
+        // But skip if this looks like pure data (no potential tag keys)
+        if (!node.tag) {
+            let potentialTag = null;
+            for (const key in node) {
+                // Skip reserved keys and directives
+                if (key === 'children' || key === 'attributes' || key === 'tag' ||
+                    key.startsWith('cdom-') || key.startsWith('on') || key === '__parent__') {
+                    continue;
+                }
+                // Skip common HTML attribute names (not tag names)
+                const attrNames = [
+                    // Form/input attributes
+                    'type', 'name', 'value', 'placeholder', 'step', 'min', 'max', 'pattern',
+                    'disabled', 'checked', 'selected', 'readonly', 'required', 'multiple',
+                    'rows', 'cols', 'size', 'maxlength', 'minlength', 'autocomplete',
+                    // Common element attributes
+                    'id', 'class', 'className', 'style', 'title', 'tabindex', 'role',
+                    'href', 'src', 'alt', 'width', 'height', 'target', 'rel',
+                    // Data attributes
+                    'data', 'label', 'text', 'description', 'content',
+                    // Common data property names
+                    'price', 'qty', 'items', 'count', 'total', 'amount', 'url'
+                ];
+                if (attrNames.includes(key)) {
+                    continue;
+                }
+                // If we find a key that looks like a tag name, use it
+                potentialTag = key;
+                break;
+            }
+
+            if (potentialTag) {
+                const content = node[potentialTag];
+                if (content !== undefined && content !== null) {
+                    node.tag = potentialTag;
+                    // Move the content into the node
+                    if (Array.isArray(content)) {
+                        node.children = content;
+                    } else if (typeof content === 'object') {
+                        // Separate children, directives from attributes
+                        node.attributes = node.attributes || {};
+                        for (const k in content) {
+                            if (k === 'children') {
+                                node.children = content[k];
+                            } else if (k.startsWith('cdom-')) {
+                                // cDOM directives go on the node directly
+                                node[k] = content[k];
+                            } else {
+                                // Everything else (including event handlers) is an attribute
+                                node.attributes[k] = content[k];
+                            }
+                        }
+                    } else {
+                        // Treat primitive value as text child
+                        node.children = [content];
+                    }
+                    // Remove the shorthand key to avoid processing it again
+                    delete node[potentialTag];
+                }
+            }
+        }
+
+        // Process each property
         for (const key in node) {
-            node[key] = hydrate(node[key], node);
+            const value = node[key];
+
+            // SKIP cdom-state value - it's application data, not DOM structure
+            if (key === 'cdom-state') {
+                // Don't hydrate state data, just leave it as-is
+                continue;
+            }
+
+            // Handle $ expressions - convert to reactive computed values or event handlers
+            if (typeof value === 'string' && value.startsWith('$')) {
+                if (key.startsWith('on')) {
+                    // Event handlers: create a function that resolves the expression with event context
+                    node[key] = (event) => {
+                        const element = event.currentTarget;
+                        const context = getContext(element, event);
+                        const result = resolveExpression(value, context);
+
+                        // If it's a lazy value (contains $event or _), resolve it
+                        if (result && typeof result === 'object' && result.isLazy && typeof result.resolve === 'function') {
+                            return result.resolve(event);
+                        }
+                        return result;
+                    };
+                } else if (key === 'children') {
+                    // Children must always be an array. If it's a reactive expression (like $map),
+                    // wrap the computed signal in an array so Lightview can process it.
+                    node[key] = [parseExpression(value, node)];
+                } else {
+                    // Other properties: create a computed expression that evaluates reactively
+                    node[key] = parseExpression(value, node);
+                }
+            } else if (key === 'attributes' && typeof value === 'object' && value !== null) {
+                // Process attributes object - convert $expressions there too
+                for (const attrKey in value) {
+                    const attrValue = value[attrKey];
+                    if (typeof attrValue === 'string' && attrValue.startsWith('$')) {
+                        if (attrKey.startsWith('on')) {
+                            // Event handlers in attributes
+                            value[attrKey] = (event) => {
+                                const element = event.currentTarget;
+                                const context = getContext(element, event);
+                                const result = resolveExpression(attrValue, context);
+                                if (result && typeof result === 'object' && result.isLazy && typeof result.resolve === 'function') {
+                                    return result.resolve(event);
+                                }
+                                return result;
+                            };
+                        } else {
+                            // Other reactive attributes
+                            value[attrKey] = parseExpression(attrValue, node);
+                        }
+                    }
+                }
+                node[key] = value;
+            } else {
+                // Recursively hydrate other values
+                node[key] = hydrate(value, node);
+            }
         }
         return node;
     }
@@ -291,7 +391,6 @@ const LightviewCDOM = {
     getContext,
     handleCDOMState,
     handleCDOMBind,
-    handleCDOMOn,
     activate,
     hydrate,
     version: '1.0.0'
