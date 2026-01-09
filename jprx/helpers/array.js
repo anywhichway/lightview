@@ -17,8 +17,13 @@ export const map = (arr, transform) => {
     if (typeof transform === 'string') {
         return arr.map(item => (item && typeof item === 'object') ? item[transform] : item);
     }
-    if (transform && transform.isLazy) {
+    // Check for LazyValue (has isLazy property and resolve method)
+    if (transform && transform.isLazy && typeof transform.resolve === 'function') {
         return arr.map(item => transform.resolve(item));
+    }
+    // If it's a plain function
+    if (typeof transform === 'function') {
+        return arr.map(transform);
     }
     return arr;
 };
@@ -54,9 +59,9 @@ export const length = (arg) => Array.isArray(arg) ? arg.length : (arg ? String(a
 
 export const registerArrayHelpers = (register) => {
     register('count', count);
-    register('filter', filter);
-    register('map', map);
-    register('find', find);
+    register('filter', filter, { lazyAware: true });
+    register('map', map, { lazyAware: true });
+    register('find', find, { lazyAware: true });
     register('unique', unique);
     register('sort', sort);
     register('reverse', reverse);

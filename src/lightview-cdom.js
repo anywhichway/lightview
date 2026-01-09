@@ -3,19 +3,19 @@
  * The Reactive Path and Expression Engine for Lightview.
  */
 
-import { registerHelper, parseExpression, resolvePath, resolvePathAsContext, resolveExpression, parseCDOMC, unwrapSignal, BindingTarget } from '../cdom/parser.js';
-import { registerMathHelpers } from '../cdom/helpers/math.js';
-import { registerLogicHelpers } from '../cdom/helpers/logic.js';
-import { registerStringHelpers } from '../cdom/helpers/string.js';
-import { registerArrayHelpers } from '../cdom/helpers/array.js';
-import { registerCompareHelpers } from '../cdom/helpers/compare.js';
-import { registerConditionalHelpers } from '../cdom/helpers/conditional.js';
-import { registerDateTimeHelpers } from '../cdom/helpers/datetime.js';
-import { registerFormatHelpers } from '../cdom/helpers/format.js';
-import { registerLookupHelpers } from '../cdom/helpers/lookup.js';
-import { registerStatsHelpers } from '../cdom/helpers/stats.js';
-import { registerStateHelpers, set } from '../cdom/helpers/state.js';
-import { registerNetworkHelpers } from '../cdom/helpers/network.js';
+import { registerHelper, registerOperator, parseExpression, resolvePath, resolvePathAsContext, resolveExpression, parseCDOMC, parseJPRX, unwrapSignal, BindingTarget } from '../jprx/parser.js';
+import { registerMathHelpers } from '../jprx/helpers/math.js';
+import { registerLogicHelpers } from '../jprx/helpers/logic.js';
+import { registerStringHelpers } from '../jprx/helpers/string.js';
+import { registerArrayHelpers } from '../jprx/helpers/array.js';
+import { registerCompareHelpers } from '../jprx/helpers/compare.js';
+import { registerConditionalHelpers } from '../jprx/helpers/conditional.js';
+import { registerDateTimeHelpers } from '../jprx/helpers/datetime.js';
+import { registerFormatHelpers } from '../jprx/helpers/format.js';
+import { registerLookupHelpers } from '../jprx/helpers/lookup.js';
+import { registerStatsHelpers } from '../jprx/helpers/stats.js';
+import { registerStateHelpers, set } from '../jprx/helpers/state.js';
+import { registerNetworkHelpers } from '../jprx/helpers/network.js';
 
 import { signal, effect, getRegistry } from './reactivity/signal.js';
 import { state } from './reactivity/state.js';
@@ -34,6 +34,28 @@ registerStatsHelpers(registerHelper);
 registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
 registerNetworkHelpers(registerHelper);
 
+// Register Standard Operators
+// Mutation operators (prefix and postfix)
+registerOperator('increment', '++', 'prefix', 80);
+registerOperator('increment', '++', 'postfix', 80);
+registerOperator('decrement', '--', 'prefix', 80);
+registerOperator('decrement', '--', 'postfix', 80);
+registerOperator('toggle', '!!', 'prefix', 80);
+
+// Math infix operators (for expression syntax like $/a + $/b)
+// These REQUIRE surrounding whitespace to avoid ambiguity with path separators (especially for /)
+registerOperator('+', '+', 'infix', 50);
+registerOperator('-', '-', 'infix', 50);
+registerOperator('*', '*', 'infix', 60);
+registerOperator('/', '/', 'infix', 60);
+
+// Comparison infix operators
+registerOperator('gt', '>', 'infix', 40);
+registerOperator('lt', '<', 'infix', 40);
+registerOperator('gte', '>=', 'infix', 40);
+registerOperator('lte', '<=', 'infix', 40);
+registerOperator('neq', '!=', 'infix', 40);
+
 const localStates = new WeakMap();
 
 /**
@@ -47,9 +69,9 @@ export const getContext = (node, event = null) => {
 
     // Collate all ancestor states
     while (cur) {
-        const local = localStates.get(cur);
+        const local = localStates.get(cur) || (cur && typeof cur === 'object' ? cur.__state__ : null);
         if (local) chain.unshift(local);
-        cur = cur.parentElement || (ShadowRoot && cur.parentNode instanceof ShadowRoot ? cur.parentNode.host : null);
+        cur = cur.parentElement || (cur && typeof cur === 'object' ? cur.__parent__ : null) || (ShadowRoot && cur.parentNode instanceof ShadowRoot ? cur.parentNode.host : null);
     }
 
     // Access global registry for fallback
@@ -67,19 +89,22 @@ export const getContext = (node, event = null) => {
             }
 
             // Fall back to global state accessed via registry
-            if (globalRegistry && globalRegistry.has(prop)) return globalRegistry.get(prop);
+            if (globalRegistry && globalRegistry.has(prop)) return unwrapSignal(globalRegistry.get(prop));
 
             // Or maybe global state object if user manually set Lightview.state
             const globalState = globalThis.Lightview?.state;
-            if (globalState && prop in globalState) return globalState[prop];
+            if (globalState && prop in globalState) return unwrapSignal(globalState[prop]);
 
             return undefined;
         },
         set(target, prop, value, receiver) {
+
+
             // Search chain for existing property to update
             for (let i = chain.length - 1; i >= 0; i--) {
                 const s = chain[i];
                 if (prop in s) {
+
                     s[prop] = value;
                     return true;
                 }
@@ -87,25 +112,42 @@ export const getContext = (node, event = null) => {
 
             // If not found, set on the most local state if it exists
             if (chain.length > 0) {
+
                 chain[chain.length - 1][prop] = value;
                 return true;
             }
 
             // Fall back to global state
             const globalState = globalThis.Lightview?.state;
-            if (globalState) {
+            if (globalState && prop in globalState) {
+
                 globalState[prop] = value;
                 return true;
             }
 
+            // Fall back to global registry
+            if (globalRegistry && globalRegistry.has(prop)) {
+                const s = globalRegistry.get(prop);
+
+                // Signals are functions with a .value property
+                if (s && (typeof s === 'object' || typeof s === 'function') && 'value' in s) {
+                    s.value = value;
+                    return true;
+                }
+            }
+
+
             return false;
         },
         has(target, prop) {
-            if (prop === '$event' || prop === 'event') return !!event;
-            for (const s of chain) if (prop in s) return true;
-            const globalState = globalThis.Lightview?.state;
-            if (globalState && prop in globalState) return true;
-            return false;
+            const exists = (prop === '$event' || prop === 'event' || !!chain.find(s => prop in s));
+            const inGlobal = (globalThis.Lightview?.state && prop in globalThis.Lightview.state) || (globalRegistry && globalRegistry.has(prop));
+
+            const isStructural = prop === 'constructor' || prop === 'toJSON' || prop === 'value' || prop === 'isLazy';
+            if (!isStructural) {
+
+            }
+            return exists || inGlobal;
         },
         ownKeys(target) {
             const keys = new Set();
@@ -131,7 +173,7 @@ export const getContext = (node, event = null) => {
  * Handles cdom-state directive.
  */
 export const handleCDOMState = (node) => {
-    const attr = node['cdom-state'] || node.getAttribute('cdom-state');
+    const attr = node['cdom-state'] || (node.getAttribute && node.getAttribute('cdom-state'));
     if (!attr || localStates.has(node)) return;
 
     try {
@@ -139,6 +181,10 @@ export const handleCDOMState = (node) => {
         // Use imported state factory
         const s = state(data);
         localStates.set(node, s);
+        // Also attach to the object for non-DOM traversal (e.g. during hydration)
+        if (node && typeof node === 'object') {
+            node.__state__ = s;
+        }
     } catch (e) {
         globalThis.console?.error('LightviewCDOM: Failed to parse cdom-state', e);
     }
@@ -313,13 +359,18 @@ export const hydrate = (node, parent = null) => {
             }
         }
 
+        // IMPORTANT: Handle cdom-state FIRST before any other processing
+        // This ensures state is available when children expressions are evaluated
+        if (node['cdom-state']) {
+            handleCDOMState(node);
+        }
+
         // Process each property
         for (const key in node) {
             const value = node[key];
 
-            // SKIP cdom-state value - it's application data, not DOM structure
+            // Skip cdom-state as we already processed it
             if (key === 'cdom-state') {
-                // Don't hydrate state data, just leave it as-is
                 continue;
             }
 
@@ -382,11 +433,13 @@ export const hydrate = (node, parent = null) => {
 
 const LightviewCDOM = {
     registerHelper,
+    registerOperator,
     parseExpression,
     resolvePath,
     resolvePathAsContext,
     resolveExpression,
     parseCDOMC,
+    parseJPRX,
     unwrapSignal,
     getContext,
     handleCDOMState,

@@ -21,7 +21,7 @@ const distDir = path.join(rootDir, 'dist');
 const docsDir = path.join(rootDir, 'docs');
 const componentsDir = path.join(rootDir, 'components');
 const middlewareDir = path.join(rootDir, 'middleware');
-const cdomDir = path.join(rootDir, 'cdom');
+const jprxDir = path.join(rootDir, 'jprx');
 
 // Configuration
 // Files in root that should be copied
@@ -162,12 +162,14 @@ async function build() {
         console.warn('Warning: middleware directory not found.');
     }
 
-    // 6. Copy cDOM Directory
-    if (fs.existsSync(cdomDir)) {
-        await copyDirWithMinify(cdomDir, path.join(distDir, 'cdom'));
-        console.log(`Copied: cdom directory${shouldMinify ? ' (JS files minified)' : ''}`);
+
+
+    // 7. Copy JPRX Directory
+    if (fs.existsSync(jprxDir)) {
+        await copyDirWithMinify(jprxDir, path.join(distDir, 'jprx'));
+        console.log(`Copied: jprx directory${shouldMinify ? ' (JS files minified)' : ''}`);
     } else {
-        console.warn('Warning: cdom directory not found.');
+        console.warn('Warning: jprx directory not found.');
     }
 
     console.log('Build complete! Assets are ready in ./dist');
@@ -240,9 +242,9 @@ if (isWatch) {
     // Initial build (bundles already built by npm script)
     runBuild().then(() => {
         // Watch all relevant directories
-        // src/ and cdom/ trigger bundle rebuilds
+        // src/ and jprx/ trigger bundle rebuilds
         watchDir(path.join(rootDir, 'src'), 'src/', true);
-        watchDir(cdomDir, 'cdom/', true);
+        watchDir(jprxDir, 'jprx/', true);
         // Other directories just get copied
         watchDir(docsDir, 'docs/');
         watchDir(componentsDir, 'components/');

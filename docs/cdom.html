@@ -1,5 +1,72 @@
-<!-- SEO-friendly SPA Shim -->
 <script src="/lightview-router.js?base=/index.html"></script>
+
+<style>
+    /* Syntax Tabs */
+    .syntax-tabs {
+        display: inline-flex;
+        gap: 0.25rem;
+        padding: 0.25rem;
+        background: #f1f5f9;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 1rem;
+    }
+
+    [data-theme="dark"] .syntax-tabs {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    .syntax-tab {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: none;
+        background: transparent;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #64748b;
+        transition: all 0.2s;
+    }
+
+    .syntax-tab:hover {
+        background: #ffffff;
+        color: #1e293b;
+    }
+
+    [data-theme="dark"] .syntax-tab:hover {
+        background: #334155;
+        color: #f1f5f9;
+    }
+
+    .syntax-tab-active {
+        background: #ffffff !important;
+        color: #6366f1 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] .syntax-tab-active {
+        background: #0f172a !important;
+        color: #818cf8 !important;
+    }
+</style>
+
+<script>
+    globalThis.switchCDOMTab = (tabId) => {
+        const tabs = ['jprx', 'jprxc', 'operators'];
+        tabs.forEach(t => {
+            const btn = document.getElementById(`tab-btn-${t}`);
+            const pane = document.getElementById(`pane-${t}`);
+            if (t === tabId) {
+                btn.classList.add('syntax-tab-active');
+                pane.style.display = 'block';
+            } else {
+                btn.classList.remove('syntax-tab-active');
+                pane.style.display = 'none';
+            }
+        });
+    };
+</script>
 
 <div class="docs-layout">
     <aside class="docs-sidebar" src="/docs/cdom-nav.html"></aside>
@@ -44,7 +111,7 @@
         "cdom-state": { count: 0 },
         children: [
             { h2: "Counter" },
-            { p: { children: ["Count: ", $/count] } },
+            { p: ["Count: ", $/count] },
             { button: { onclick: $increment(/count), children: ["+"] } },
             { button: { onclick: $decrement(/count), children: ["-"] } }
         ]
@@ -328,9 +395,22 @@
         <h2 id="shopping-cart">Shopping Cart Example</h2>
         <p>A more complete example showing reactive expressions with data transformations:</p>
 
-        <div class="code-block">
-            <pre><code>{ 
-    body: {
+        <div id="shopping-cart-example">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
+                    type: 'module',
+                    height: '350px',
+                    autoRun: true
+                });
+            </script><code contenteditable="true">// Shopping Cart: Demonstrating $map and $currency helpers
+await import('/lightview-cdom.js');
+const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
+const { $ } = Lightview;
+
+const cdomString = `{ 
+    div: {
         "cdom-state": {
             cart: {
                 items: [
@@ -340,81 +420,182 @@
             }
         },
         children: [
-            { h2: "Shopping Cart" },
+            { h3: "Shopping Cart" },
             { ul: { 
-                children: $map(/cart/items, { li: [_/name, " - ", $currency(_/price)] })
+                children: $map(/cart/items, { li: { children: [_/name, " - ", $currency(_/price)] } })
             }},
             { p: { 
-                class: "total",
+                style: "font-weight: bold; margin-top: 1rem;",
                 children: ["Total: ", $currency(sum(/cart/items...price))]
             }}
         ]
     }
-}</code></pre>
-        </div>
+}`;
 
-        <h3 class="text-sm font-bold opacity-70" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Rendered Output</h3>
-        <div class="card bg-base-200"
-            style="margin-bottom: 2rem; border: 1px solid var(--site-border); border-radius: 0.5rem;">
-            <div class="card-body" style="padding: 1.5rem; color: var(--bc);">
-                <h2 style="margin-top: 0; font-size: 1.5rem; font-weight: bold; color: var(--bc);">Shopping Cart</h2>
-                <ul style="margin-bottom: 1rem; padding-left: 1.5rem; list-style-type: disc;">
-                    <li>Apple - $1.00</li>
-                    <li>Orange - $2.00</li>
-                </ul>
-                <p style="font-weight: bold; font-size: 1.125rem;">Total: $3.00</p>
-            </div>
+const hydrated = hydrate(parseJPRX(cdomString));
+$('#example').content(hydrated);
+globalThis.LightviewCDOM.activate(hydrated.domEl);
+</code></pre>
         </div>
 
         <!-- ===== INTERACTIVE EXAMPLE ===== -->
         <h2 id="interactive-example">Interactive Example</h2>
         <p>
-            This live counter demonstrates cDOM's key features: reactive state, two-way binding, and event handlers.
+            Choose a syntax to see how the same reactive counter can be defined using standard JSON, concise JPRXC, or
+            operator syntax.
         </p>
 
-        <pre><script>
-            examplify(document.currentScript.nextElementSibling, {
-                at: document.currentScript.parentElement,
-                scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
-                type: 'module',
-                height: '250px',
-                autoRun: true
-            });
-        </script><code contenteditable="true">// Import cDOM functions
+        <div role="tablist" class="syntax-tabs">
+            <button id="tab-btn-jprx" class="syntax-tab syntax-tab-active" onclick="switchCDOMTab('jprx')">JPRX
+                (Standard)</button>
+            <button id="tab-btn-jprxc" class="syntax-tab" onclick="switchCDOMTab('jprxc')">JPRXC (Concise)</button>
+            <button id="tab-btn-operators" class="syntax-tab" onclick="switchCDOMTab('operators')">Operators</button>
+        </div>
+
+        <!-- JPRX Pane -->
+        <div id="pane-jprx">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
+                    type: 'module',
+                    height: '250px',
+                    autoRun: true
+                });
+            </script><code contenteditable="true">// JPRX: Standard JSON format (strict)
 await import('/lightview-cdom.js');
-const { parseCDOMC, hydrate } = globalThis.LightviewCDOM;
+const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
 const { signal, $ } = Lightview;
 
-// Create a named signal for the counter
 const count = signal(0, 'count');
 
-// Define the cDOM structure
 const cdomString = `{
-    div: {
-        children: [
-            { h3: ["Counter Demo"] },
-            { p: { children: ["Count: ", $/count] }},
-            { div: { children: [
-                { button: { onclick: $decrement(/count), children: ["-"] } },
-                { button: { onclick: $increment(/count), children: ["+"] } }
-            ]}},
-            { p: { children: [
-                "Set value: ",
-                { input: { type: "number", value: $/count, "cdom-bind": $/count } }
+    "div": {
+        "children": [
+            { "h3": ["Standard JPRX Counter"] },
+            { "p": { "children": ["Count: ", "$/count"] }},
+            { "div": { "children": [
+                { "button": { "onclick": "$decrement(/count)", "children": ["-"] } },
+                { "button": { "onclick": "$increment(/count)", "children": ["+"] } }
             ]}}
         ]
     }
 }`;
 
-// Parse, hydrate, and render
-const parsed = parseCDOMC(cdomString);
-const hydrated = hydrate(parsed);
-const example = $('#example');
-example.content(hydrated);
-
-// Activate directives
-globalThis.LightviewCDOM.activate(example.domEl);
+const hydrated = hydrate(parseJPRX(cdomString));
+$('#example').content(hydrated);
+globalThis.LightviewCDOM.activate(hydrated.domEl);
 </code></pre>
+        </div>
+
+        <!-- JPRXC Pane -->
+        <div id="pane-jprxc" style="display: none;">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
+                    type: 'module',
+                    height: '250px'
+                });
+            </script><code contenteditable="true">// JPRXC: Concise format (unquoted keys, comments)
+await import('/lightview-cdom.js');
+const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
+const { signal, $ } = Lightview;
+
+const count = signal(0, 'count');
+
+const cdomString = `{
+    div: {
+        children: [
+            { h3: ["Concise Counter"] },
+            { p: { children: ["Count: ", $/count] }},
+            { div: { children: [
+                { button: { onclick: $decrement(/count), children: ["-"] } },
+                { button: { onclick: $increment(/count), children: ["+"] } }
+            ]}}
+        ]
+    }
+}`;
+
+const hydrated = hydrate(parseJPRX(cdomString));
+$('#example').content(hydrated);
+globalThis.LightviewCDOM.activate(hydrated.domEl);
+</code></pre>
+        </div>
+
+        <!-- Operators Pane -->
+        <div id="pane-operators" style="display: none;">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
+                    type: 'module',
+                    height: '250px'
+                });
+            </script><code contenteditable="true">// Operators: Using $++/path and $--/path
+await import('/lightview-cdom.js');
+const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
+const { signal, $ } = Lightview;
+
+const count = signal(0, 'count');
+
+const cdomString = `{
+    div: {
+        children: [
+            { h3: ["Operator Counter"] },
+            { p: { children: ["Count: ", $/count] }},
+            { div: { children: [
+                // Prefix operators: $-- and $++
+                { button: { onclick: $--/count, children: ["-"] } },
+                { button: { onclick: $++/count, children: ["+"] } }
+            ]}}
+        ]
+    }
+}`;
+
+const hydrated = hydrate(parseJPRX(cdomString));
+$('#example').content(hydrated);
+globalThis.LightviewCDOM.activate(hydrated.domEl);
+</code></pre>
+        </div>
+
+        <!-- ===== OPERATOR SYNTAX EXAMPLE ===== -->
+        <h2 id="operator-syntax">Operator Syntax</h2>
+        <p>
+            JPRX now supports <strong>prefix</strong> and <strong>postfix</strong> operator syntax as alternatives to
+            function calls.
+            This makes expressions more concise and familiar to JavaScript developers.
+        </p>
+
+        <h3>Equivalent Expressions</h3>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Function Syntax</th>
+                    <th>Operator Syntax</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>$increment(/count)</code></td>
+                    <td><code>$++/count</code> or <code>$/count++</code></td>
+                    <td>Increment by 1</td>
+                </tr>
+                <tr>
+                    <td><code>$decrement(/count)</code></td>
+                    <td><code>$--/count</code> or <code>$/count--</code></td>
+                    <td>Decrement by 1</td>
+                </tr>
+                <tr>
+                    <td><code>$toggle(/enabled)</code></td>
+                    <td><code>$!!/enabled</code></td>
+                    <td>Toggle boolean (prefix only)</td>
+                </tr>
+            </tbody>
+        </table>
+
+
 
         <!-- ===== EVENTS ===== -->
         <h2 id="events">Events and Interaction</h2>
@@ -498,12 +679,12 @@ LightviewCDOM.activate(document.getElementById('myApp'));</code></pre>
 const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
         </div>
 
-        <h3 id="api-parseCDOMC">parseCDOMC(string)</h3>
+        <h3 id="api-parseJPRX">parseJPRX(string)</h3>
         <p>
             Parses cDOM's concise syntax (unquoted keys, JPRX expressions) into a JavaScript object.
         </p>
         <div class="code-block">
-            <pre><code>const obj = LightviewCDOM.parseCDOMC(`{ div: { children: [$/name] } }`);</code></pre>
+            <pre><code>const obj = LightviewCDOM.parseJPRX(`{ div: { children: [$/name] } }`);</code></pre>
         </div>
 
         <h3 id="api-registerHelper">registerHelper(name, fn, options?)</h3>

@@ -1944,9 +1944,33 @@
   }
   const helpers = /* @__PURE__ */ new Map();
   const helperOptions = /* @__PURE__ */ new Map();
+  const operators = {
+    prefix: /* @__PURE__ */ new Map(),
+    // e.g., '++' -> { helper: 'increment', precedence: 70 }
+    postfix: /* @__PURE__ */ new Map(),
+    // e.g., '++' -> { helper: 'increment', precedence: 70 }
+    infix: /* @__PURE__ */ new Map()
+    // e.g., '+' -> { helper: 'add', precedence: 50 }
+  };
+  const DEFAULT_PRECEDENCE = {
+    prefix: 80,
+    postfix: 80,
+    infix: 50
+  };
   const registerHelper = (name, fn, options = {}) => {
     helpers.set(name, fn);
     if (options) helperOptions.set(name, options);
+  };
+  const registerOperator = (helperName, symbol, position, precedence) => {
+    var _a;
+    if (!["prefix", "postfix", "infix"].includes(position)) {
+      throw new Error(`Invalid operator position: ${position}. Must be 'prefix', 'postfix', or 'infix'.`);
+    }
+    if (!helpers.has(helperName)) {
+      (_a = globalThis.console) == null ? void 0 : _a.warn(`LightviewCDOM: Operator "${symbol}" registered for helper "${helperName}" which is not yet registered.`);
+    }
+    const prec = precedence ?? DEFAULT_PRECEDENCE[position];
+    operators[position].set(symbol, { helper: helperName, precedence: prec });
   };
   const getLV = () => globalThis.Lightview || null;
   const getRegistry = () => {
@@ -2010,6 +2034,14 @@
     if (path === ".") return unwrapSignal(context);
     if (path.startsWith("$/")) {
       const [rootName, ...rest] = path.slice(2).split("/");
+      let cur = context;
+      while (cur) {
+        const localState = cur.__state__;
+        if (localState && rootName in localState) {
+          return traverse(localState[rootName], rest);
+        }
+        cur = cur.__parent__;
+      }
       const rootSignal = registry2 == null ? void 0 : registry2.get(rootName);
       if (!rootSignal) return void 0;
       return traverse(rootSignal, rest);
@@ -2036,8 +2068,16 @@
     const registry2 = getRegistry();
     if (path === ".") return context;
     if (path.startsWith("$/")) {
-      const segments = path.slice(2).split(/[\/.]/);
+      const segments = path.slice(2).split(/[/.]/);
       const rootName = segments.shift();
+      let cur = context;
+      while (cur) {
+        const localState = cur.__state__;
+        if (localState && rootName in localState) {
+          return traverseAsContext(localState[rootName], segments);
+        }
+        cur = cur.__parent__;
+      }
       const rootSignal = registry2 == null ? void 0 : registry2.get(rootName);
       if (!rootSignal) return void 0;
       return traverseAsContext(rootSignal, segments);
@@ -2098,6 +2138,49 @@
         isLazy: true
       };
     }
+    if (arg.startsWith("{") || arg.startsWith("[")) {
+      try {
+        const data = parseJPRX(arg);
+        const resolveTemplate = (node, context2) => {
+          if (typeof node === "string") {
+            if (node.startsWith("$")) {
+              const res = resolveExpression(node, context2);
+              const final = res instanceof LazyValue ? res.resolve(context2) : res;
+              return unwrapSignal(final);
+            }
+            if (node === "_" || node.startsWith("_/") || node.startsWith("_.")) {
+              const path = node.startsWith("_.") || node.startsWith("_/") ? node.slice(2) : node.slice(2);
+              const res = node === "_" ? context2 : resolvePath(path, context2);
+              return unwrapSignal(res);
+            }
+            if (node.startsWith("../")) return unwrapSignal(resolvePath(node, context2));
+          }
+          if (Array.isArray(node)) return node.map((n) => resolveTemplate(n, context2));
+          if (node && typeof node === "object") {
+            const res = {};
+            for (const k in node) res[k] = resolveTemplate(node[k], context2);
+            return res;
+          }
+          return node;
+        };
+        const hasReactive = (obj) => {
+          if (typeof obj === "string") {
+            return obj.startsWith("$") || obj.startsWith("_") || obj.startsWith("../");
+          }
+          if (Array.isArray(obj)) return obj.some(hasReactive);
+          if (obj && typeof obj === "object") return Object.values(obj).some(hasReactive);
+          return false;
+        };
+        if (hasReactive(data)) {
+          return {
+            value: new LazyValue((context2) => resolveTemplate(data, context2)),
+            isLazy: true
+          };
+        }
+        return { value: data, isLiteral: true };
+      } catch (e) {
+      }
+    }
     if (arg.includes("(")) {
       let nestedExpr = arg;
       if (arg.startsWith("/")) {
@@ -2111,31 +2194,32 @@
       }
       return { value: val, isSignal: false };
     }
-    const isExplosion = arg.endsWith("...");
-    const pathStr = isExplosion ? arg.slice(0, -3) : arg;
     let normalizedPath;
-    if (pathStr.startsWith("/")) {
-      normalizedPath = "$" + pathStr;
-    } else if (pathStr.startsWith("$") || pathStr.startsWith("./") || pathStr.startsWith("../")) {
-      normalizedPath = pathStr;
+    if (arg.startsWith("/")) {
+      normalizedPath = "$" + arg;
+    } else if (arg.startsWith("$") || arg.startsWith("./") || arg.startsWith("../")) {
+      normalizedPath = arg;
     } else if (globalMode) {
-      normalizedPath = `$/${pathStr}`;
+      normalizedPath = `$/${arg}`;
     } else {
-      normalizedPath = `./${pathStr}`;
+      normalizedPath = `./${arg}`;
     }
-    if (isExplosion) {
-      const pathParts = normalizedPath.split("/");
-      const propName = pathParts.pop();
-      const parentPath = pathParts.join("/");
-      const parent = parentPath ? resolvePath(parentPath, context) : context;
+    const explosionIdx = arg.indexOf("...");
+    if (explosionIdx !== -1) {
+      const normExplosionIdx = normalizedPath.indexOf("...");
+      const pathPart = normalizedPath.slice(0, normExplosionIdx);
+      const propName = arg.slice(explosionIdx + 3);
+      const parent = resolvePath(pathPart, context);
       const unwrappedParent = unwrapSignal(parent);
       if (Array.isArray(unwrappedParent)) {
         const values = unwrappedParent.map((item) => {
           const unwrappedItem = unwrapSignal(item);
-          return unwrappedItem && unwrappedItem[propName];
+          if (!propName) return unwrappedItem;
+          return unwrappedItem && typeof unwrappedItem === "object" ? unwrapSignal(unwrappedItem[propName]) : void 0;
         });
         return { value: values, isExplosion: true };
       } else if (unwrappedParent && typeof unwrappedParent === "object") {
+        if (!propName) return { value: unwrappedParent, isExplosion: true };
         const val = unwrappedParent[propName];
         return { value: unwrapSignal(val), isExplosion: true };
       }
@@ -2144,9 +2228,421 @@
     const value = resolvePathAsContext(normalizedPath, context);
     return { value, isExplosion: false };
   };
+  const TokenType = {
+    PATH: "PATH",
+    // $/user/age, ./name, ../parent
+    LITERAL: "LITERAL",
+    // 123, "hello", true, false, null
+    OPERATOR: "OPERATOR",
+    // +, -, *, /, ++, --, etc.
+    LPAREN: "LPAREN",
+    // (
+    RPAREN: "RPAREN",
+    // )
+    COMMA: "COMMA",
+    // ,
+    EXPLOSION: "EXPLOSION",
+    // ... suffix
+    PLACEHOLDER: "PLACEHOLDER",
+    // _, _/path
+    EVENT: "EVENT",
+    // $event, $event.target
+    EOF: "EOF"
+  };
+  const getOperatorSymbols = () => {
+    const allOps = /* @__PURE__ */ new Set([
+      ...operators.prefix.keys(),
+      ...operators.postfix.keys(),
+      ...operators.infix.keys()
+    ]);
+    return [...allOps].sort((a, b) => b.length - a.length);
+  };
+  const tokenize = (expr) => {
+    const tokens = [];
+    let i = 0;
+    const len2 = expr.length;
+    const opSymbols = getOperatorSymbols();
+    while (i < len2) {
+      if (/\s/.test(expr[i])) {
+        i++;
+        continue;
+      }
+      if (expr[i] === "$" && i + 1 < len2) {
+        let isOpAfter = false;
+        for (const op of opSymbols) {
+          if (expr.slice(i + 1, i + 1 + op.length) === op) {
+            isOpAfter = true;
+            break;
+          }
+        }
+        if (isOpAfter) {
+          i++;
+          continue;
+        }
+      }
+      if (expr[i] === "(") {
+        tokens.push({ type: TokenType.LPAREN, value: "(" });
+        i++;
+        continue;
+      }
+      if (expr[i] === ")") {
+        tokens.push({ type: TokenType.RPAREN, value: ")" });
+        i++;
+        continue;
+      }
+      if (expr[i] === ",") {
+        tokens.push({ type: TokenType.COMMA, value: "," });
+        i++;
+        continue;
+      }
+      let matchedOp = null;
+      for (const op of opSymbols) {
+        if (expr.slice(i, i + op.length) === op) {
+          const before = i > 0 ? expr[i - 1] : " ";
+          const after = i + op.length < len2 ? expr[i + op.length] : " ";
+          const isInfix = operators.infix.has(op);
+          const isPrefix = operators.prefix.has(op);
+          const isPostfix = operators.postfix.has(op);
+          if (isInfix && !isPrefix && !isPostfix) {
+            if (/\s/.test(before) && /\s/.test(after)) {
+              matchedOp = op;
+              break;
+            }
+            continue;
+          }
+          const validBefore = /[\s)]/.test(before) || i === 0 || tokens.length === 0 || tokens[tokens.length - 1].type === TokenType.LPAREN || tokens[tokens.length - 1].type === TokenType.COMMA || tokens[tokens.length - 1].type === TokenType.OPERATOR;
+          const validAfter = /[\s($./'"0-9_]/.test(after) || i + op.length >= len2 || opSymbols.some((o) => expr.slice(i + op.length).startsWith(o));
+          if (validBefore || validAfter) {
+            matchedOp = op;
+            break;
+          }
+        }
+      }
+      if (matchedOp) {
+        tokens.push({ type: TokenType.OPERATOR, value: matchedOp });
+        i += matchedOp.length;
+        continue;
+      }
+      if (expr[i] === '"' || expr[i] === "'") {
+        const quote = expr[i];
+        let str = "";
+        i++;
+        while (i < len2 && expr[i] !== quote) {
+          if (expr[i] === "\\" && i + 1 < len2) {
+            i++;
+            if (expr[i] === "n") str += "\n";
+            else if (expr[i] === "t") str += "	";
+            else str += expr[i];
+          } else {
+            str += expr[i];
+          }
+          i++;
+        }
+        i++;
+        tokens.push({ type: TokenType.LITERAL, value: str });
+        continue;
+      }
+      if (/\d/.test(expr[i]) || expr[i] === "-" && /\d/.test(expr[i + 1]) && (tokens.length === 0 || tokens[tokens.length - 1].type === TokenType.OPERATOR || tokens[tokens.length - 1].type === TokenType.LPAREN || tokens[tokens.length - 1].type === TokenType.COMMA)) {
+        let num = "";
+        if (expr[i] === "-") {
+          num = "-";
+          i++;
+        }
+        while (i < len2 && /[\d.]/.test(expr[i])) {
+          num += expr[i];
+          i++;
+        }
+        tokens.push({ type: TokenType.LITERAL, value: parseFloat(num) });
+        continue;
+      }
+      if (expr[i] === "_" && (i + 1 >= len2 || !/[a-zA-Z0-9]/.test(expr[i + 1]) || expr[i + 1] === "/" || expr[i + 1] === ".")) {
+        let placeholder = "_";
+        i++;
+        if (i < len2 && (expr[i] === "/" || expr[i] === ".")) {
+          while (i < len2 && !/[\s,)(]/.test(expr[i])) {
+            placeholder += expr[i];
+            i++;
+          }
+        }
+        tokens.push({ type: TokenType.PLACEHOLDER, value: placeholder });
+        continue;
+      }
+      if (expr.slice(i, i + 6) === "$event") {
+        let eventPath = "$event";
+        i += 6;
+        while (i < len2 && /[a-zA-Z0-9_./]/.test(expr[i])) {
+          eventPath += expr[i];
+          i++;
+        }
+        tokens.push({ type: TokenType.EVENT, value: eventPath });
+        continue;
+      }
+      if (expr[i] === "$" || expr[i] === "." || expr[i] === "/") {
+        let path = "";
+        while (i < len2) {
+          let isOp = false;
+          for (const op of opSymbols) {
+            if (expr.slice(i, i + op.length) === op) {
+              const isInfix = operators.infix.has(op);
+              const isPrefix = operators.prefix.has(op);
+              const isPostfix = operators.postfix.has(op);
+              if (isInfix && !isPrefix && !isPostfix) {
+                const after = i + op.length < len2 ? expr[i + op.length] : " ";
+                if (/\s/.test(expr[i - 1]) && /\s/.test(after)) {
+                  isOp = true;
+                  break;
+                }
+                continue;
+              }
+              if (path.length > 0 && path[path.length - 1] !== "/") {
+                isOp = true;
+                break;
+              }
+            }
+          }
+          if (isOp) break;
+          if (/[\s,()]/.test(expr[i])) break;
+          if (expr.slice(i, i + 3) === "...") {
+            break;
+          }
+          path += expr[i];
+          i++;
+        }
+        if (expr.slice(i, i + 3) === "...") {
+          tokens.push({ type: TokenType.PATH, value: path });
+          tokens.push({ type: TokenType.EXPLOSION, value: "..." });
+          i += 3;
+        } else {
+          tokens.push({ type: TokenType.PATH, value: path });
+        }
+        continue;
+      }
+      if (/[a-zA-Z]/.test(expr[i])) {
+        let ident = "";
+        while (i < len2 && /[a-zA-Z0-9_]/.test(expr[i])) {
+          ident += expr[i];
+          i++;
+        }
+        if (ident === "true") tokens.push({ type: TokenType.LITERAL, value: true });
+        else if (ident === "false") tokens.push({ type: TokenType.LITERAL, value: false });
+        else if (ident === "null") tokens.push({ type: TokenType.LITERAL, value: null });
+        else tokens.push({ type: TokenType.PATH, value: ident });
+        continue;
+      }
+      i++;
+    }
+    tokens.push({ type: TokenType.EOF, value: null });
+    return tokens;
+  };
+  const hasOperatorSyntax = (expr) => {
+    if (!expr || typeof expr !== "string") return false;
+    if (expr.includes("(")) return false;
+    if (/^\$(\+\+|--|!!)\/?/.test(expr)) {
+      return true;
+    }
+    if (/(\+\+|--)$/.test(expr)) {
+      return true;
+    }
+    if (/\s+([+\-*/]|>|<|>=|<=|!=)\s+/.test(expr)) {
+      return true;
+    }
+    return false;
+  };
+  class PrattParser {
+    constructor(tokens, context, isGlobalMode = false) {
+      this.tokens = tokens;
+      this.pos = 0;
+      this.context = context;
+      this.isGlobalMode = isGlobalMode;
+    }
+    peek() {
+      return this.tokens[this.pos] || { type: TokenType.EOF, value: null };
+    }
+    consume() {
+      return this.tokens[this.pos++];
+    }
+    expect(type) {
+      const tok = this.consume();
+      if (tok.type !== type) {
+        throw new Error(`JPRX: Expected ${type} but got ${tok.type}`);
+      }
+      return tok;
+    }
+    /**
+     * Get binding power (precedence) for an infix or postfix operator.
+     */
+    getInfixPrecedence(op) {
+      const infixInfo = operators.infix.get(op);
+      if (infixInfo) return infixInfo.precedence;
+      const postfixInfo = operators.postfix.get(op);
+      if (postfixInfo) return postfixInfo.precedence;
+      return 0;
+    }
+    /**
+     * Parse an expression with given minimum precedence.
+     */
+    parseExpression(minPrecedence = 0) {
+      let left = this.parsePrefix();
+      let tok = this.peek();
+      while (tok.type === TokenType.OPERATOR) {
+        const prec = this.getInfixPrecedence(tok.value);
+        if (prec < minPrecedence) break;
+        if (operators.postfix.has(tok.value) && !operators.infix.has(tok.value)) {
+          this.consume();
+          left = { type: "Postfix", operator: tok.value, operand: left };
+          tok = this.peek();
+          continue;
+        }
+        if (operators.infix.has(tok.value)) {
+          this.consume();
+          const right = this.parseExpression(prec + 1);
+          left = { type: "Infix", operator: tok.value, left, right };
+          tok = this.peek();
+          continue;
+        }
+        this.consume();
+        const nextTok = this.peek();
+        if (nextTok.type === TokenType.PATH || nextTok.type === TokenType.LITERAL || nextTok.type === TokenType.LPAREN || nextTok.type === TokenType.PLACEHOLDER || nextTok.type === TokenType.EVENT || nextTok.type === TokenType.OPERATOR && operators.prefix.has(nextTok.value)) {
+          const right = this.parseExpression(prec + 1);
+          left = { type: "Infix", operator: tok.value, left, right };
+        } else {
+          left = { type: "Postfix", operator: tok.value, operand: left };
+        }
+        tok = this.peek();
+      }
+      return left;
+    }
+    /**
+     * Parse a prefix expression (literals, paths, prefix operators, groups).
+     */
+    parsePrefix() {
+      const tok = this.peek();
+      if (tok.type === TokenType.OPERATOR && operators.prefix.has(tok.value)) {
+        this.consume();
+        const prefixInfo = operators.prefix.get(tok.value);
+        const operand = this.parseExpression(prefixInfo.precedence);
+        return { type: "Prefix", operator: tok.value, operand };
+      }
+      if (tok.type === TokenType.LPAREN) {
+        this.consume();
+        const inner = this.parseExpression(0);
+        this.expect(TokenType.RPAREN);
+        return inner;
+      }
+      if (tok.type === TokenType.LITERAL) {
+        this.consume();
+        return { type: "Literal", value: tok.value };
+      }
+      if (tok.type === TokenType.PLACEHOLDER) {
+        this.consume();
+        return { type: "Placeholder", value: tok.value };
+      }
+      if (tok.type === TokenType.EVENT) {
+        this.consume();
+        return { type: "Event", value: tok.value };
+      }
+      if (tok.type === TokenType.PATH) {
+        this.consume();
+        const nextTok = this.peek();
+        if (nextTok.type === TokenType.EXPLOSION) {
+          this.consume();
+          return { type: "Explosion", path: tok.value };
+        }
+        return { type: "Path", value: tok.value };
+      }
+      if (tok.type === TokenType.EOF) {
+        return { type: "Literal", value: void 0 };
+      }
+      throw new Error(`JPRX: Unexpected token ${tok.type}: ${tok.value}`);
+    }
+  }
+  const evaluateAST = (ast, context, forMutation = false) => {
+    if (!ast) return void 0;
+    switch (ast.type) {
+      case "Literal":
+        return ast.value;
+      case "Path": {
+        const resolved = forMutation ? resolvePathAsContext(ast.value, context) : resolvePath(ast.value, context);
+        return forMutation ? resolved : unwrapSignal(resolved);
+      }
+      case "Placeholder": {
+        return new LazyValue((item) => {
+          if (ast.value === "_") return item;
+          const path = ast.value.startsWith("_.") ? ast.value.slice(2) : ast.value.slice(2);
+          return resolvePath(path, item);
+        });
+      }
+      case "Event": {
+        return new LazyValue((event) => {
+          if (ast.value === "$event") return event;
+          const path = ast.value.startsWith("$event.") ? ast.value.slice(7) : ast.value.slice(7);
+          return resolvePath(path, event);
+        });
+      }
+      case "Explosion": {
+        const result = resolveArgument(ast.path + "...", context, false);
+        return result.value;
+      }
+      case "Prefix": {
+        const opInfo = operators.prefix.get(ast.operator);
+        if (!opInfo) {
+          throw new Error(`JPRX: Unknown prefix operator: ${ast.operator}`);
+        }
+        const helper = helpers.get(opInfo.helper);
+        if (!helper) {
+          throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
+        }
+        const opts = helperOptions.get(opInfo.helper) || {};
+        const operand = evaluateAST(ast.operand, context, opts.pathAware);
+        return helper(operand);
+      }
+      case "Postfix": {
+        const opInfo = operators.postfix.get(ast.operator);
+        if (!opInfo) {
+          throw new Error(`JPRX: Unknown postfix operator: ${ast.operator}`);
+        }
+        const helper = helpers.get(opInfo.helper);
+        if (!helper) {
+          throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
+        }
+        const opts = helperOptions.get(opInfo.helper) || {};
+        const operand = evaluateAST(ast.operand, context, opts.pathAware);
+        return helper(operand);
+      }
+      case "Infix": {
+        const opInfo = operators.infix.get(ast.operator);
+        if (!opInfo) {
+          throw new Error(`JPRX: Unknown infix operator: ${ast.operator}`);
+        }
+        const helper = helpers.get(opInfo.helper);
+        if (!helper) {
+          throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
+        }
+        const opts = helperOptions.get(opInfo.helper) || {};
+        const left = evaluateAST(ast.left, context, opts.pathAware);
+        const right = evaluateAST(ast.right, context, false);
+        return helper(unwrapSignal(left), unwrapSignal(right));
+      }
+      default:
+        throw new Error(`JPRX: Unknown AST node type: ${ast.type}`);
+    }
+  };
+  const parseWithPratt = (expr, context) => {
+    const tokens = tokenize(expr);
+    const parser = new PrattParser(tokens, context);
+    const ast = parser.parseExpression(0);
+    return evaluateAST(ast, context);
+  };
   const resolveExpression = (expr, context) => {
-    var _a;
+    var _a, _b;
     if (typeof expr !== "string") return expr;
+    if (hasOperatorSyntax(expr)) {
+      try {
+        return parseWithPratt(expr, context);
+      } catch (e) {
+        (_a = globalThis.console) == null ? void 0 : _a.warn("JPRX: Pratt parser failed, falling back to legacy:", e.message);
+      }
+    }
     const funcStart = expr.indexOf("(");
     if (funcStart !== -1 && expr.endsWith(")")) {
       const fullPath = expr.slice(0, funcStart).trim();
@@ -2164,7 +2660,7 @@
       }
       const helper = helpers.get(funcName);
       if (!helper) {
-        (_a = globalThis.console) == null ? void 0 : _a.warn(`LightviewCDOM: Helper "${funcName}" not found.`);
+        (_b = globalThis.console) == null ? void 0 : _b.warn(`LightviewCDOM: Helper "${funcName}" not found.`);
         return expr;
       }
       const options = helperOptions.get(funcName) || {};
@@ -2196,14 +2692,17 @@
         const res = resolveArgument(arg, baseContext, useGlobalMode);
         if (res.isLazy) hasLazy = true;
         const shouldUnwrap = !(options.pathAware && i === 0);
-        let val = shouldUnwrap ? unwrapSignal(res.value) : res.value;
+        let val = res.value;
+        if (shouldUnwrap && !(val && val.isLazy)) {
+          val = unwrapSignal(val);
+        }
         if (res.isExplosion && Array.isArray(val)) {
-          resolvedArgs.push(...val.map((v) => shouldUnwrap ? unwrapSignal(v) : v));
+          resolvedArgs.push(...val.map((v) => shouldUnwrap && !(v && v.isLazy) ? unwrapSignal(v) : v));
         } else {
           resolvedArgs.push(val);
         }
       }
-      if (hasLazy) {
+      if (hasLazy && !options.lazyAware) {
         return new LazyValue((contextOverride) => {
           const finalArgs = resolvedArgs.map((arg, i) => {
             const shouldUnwrap = !(options.pathAware && i === 0);
@@ -2420,6 +2919,129 @@
     const res = parseValue();
     return res;
   };
+  const parseJPRX = (input) => {
+    var _a, _b;
+    let result = "";
+    let i = 0;
+    const len2 = input.length;
+    while (i < len2) {
+      const char = input[i];
+      if (char === "/" && input[i + 1] === "/") {
+        while (i < len2 && input[i] !== "\n") i++;
+        continue;
+      }
+      if (char === "/" && input[i + 1] === "*") {
+        i += 2;
+        while (i < len2 && !(input[i] === "*" && input[i + 1] === "/")) i++;
+        i += 2;
+        continue;
+      }
+      if (char === '"' || char === "'") {
+        const quote = char;
+        result += '"';
+        i++;
+        while (i < len2 && input[i] !== quote) {
+          const c = input[i];
+          if (c === "\\") {
+            result += "\\";
+            i++;
+            if (i < len2) {
+              const next = input[i];
+              if (next === '"') result += '\\"';
+              else result += next;
+              i++;
+            }
+          } else if (c === '"') {
+            result += '\\"';
+            i++;
+          } else if (c === "\n") {
+            result += "\\n";
+            i++;
+          } else if (c === "\r") {
+            result += "\\r";
+            i++;
+          } else if (c === "	") {
+            result += "\\t";
+            i++;
+          } else {
+            result += c;
+            i++;
+          }
+        }
+        result += '"';
+        i++;
+        continue;
+      }
+      if (char === "$") {
+        let expr = "";
+        let parenDepth = 0;
+        let braceDepth = 0;
+        let bracketDepth = 0;
+        let inExprQuote = null;
+        while (i < len2) {
+          const c = input[i];
+          if (inExprQuote) {
+            if (c === inExprQuote && input[i - 1] !== "\\") inExprQuote = null;
+          } else if (c === '"' || c === "'") {
+            inExprQuote = c;
+          } else {
+            if (parenDepth === 0 && braceDepth === 0 && bracketDepth === 0) {
+              if (/[\s,}\]:]/.test(c) && expr.length > 1) break;
+            }
+            if (c === "(") parenDepth++;
+            else if (c === ")") parenDepth--;
+            else if (c === "{") braceDepth++;
+            else if (c === "}") braceDepth--;
+            else if (c === "[") bracketDepth++;
+            else if (c === "]") bracketDepth--;
+          }
+          expr += c;
+          i++;
+        }
+        result += JSON.stringify(expr);
+        continue;
+      }
+      if (/[a-zA-Z_./]/.test(char)) {
+        let word = "";
+        while (i < len2 && /[a-zA-Z0-9_$/.-]/.test(input[i])) {
+          word += input[i];
+          i++;
+        }
+        let j = i;
+        while (j < len2 && /\s/.test(input[j])) j++;
+        if (input[j] === ":") {
+          result += `"${word}"`;
+        } else {
+          if (word === "true" || word === "false" || word === "null") {
+            result += word;
+          } else if (!isNaN(Number(word))) {
+            result += word;
+          } else {
+            result += `"${word}"`;
+          }
+        }
+        continue;
+      }
+      if (/[\d]/.test(char) || char === "-" && /\d/.test(input[i + 1])) {
+        let num = "";
+        while (i < len2 && /[\d.\-eE]/.test(input[i])) {
+          num += input[i];
+          i++;
+        }
+        result += num;
+        continue;
+      }
+      result += char;
+      i++;
+    }
+    try {
+      return JSON.parse(result);
+    } catch (e) {
+      (_a = globalThis.console) == null ? void 0 : _a.error("parseJPRX: JSON parse failed", e);
+      (_b = globalThis.console) == null ? void 0 : _b.error("Transformed input:", result);
+      throw e;
+    }
+  };
   const add = (...args) => args.reduce((a, b) => Number(a) + Number(b), 0);
   const subtract = (a, b) => Number(a) - Number(b);
   const multiply = (...args) => args.reduce((a, b) => Number(a) * Number(b), 1);
@@ -2519,8 +3141,11 @@
     if (typeof transform === "string") {
       return arr.map((item) => item && typeof item === "object" ? item[transform] : item);
     }
-    if (transform && transform.isLazy) {
+    if (transform && transform.isLazy && typeof transform.resolve === "function") {
       return arr.map((item) => transform.resolve(item));
+    }
+    if (typeof transform === "function") {
+      return arr.map(transform);
     }
     return arr;
   };
@@ -2551,9 +3176,9 @@
   const length = (arg) => Array.isArray(arg) ? arg.length : arg ? String(arg).length : 0;
   const registerArrayHelpers = (register) => {
     register("count", count);
-    register("filter", filter);
-    register("map", map);
-    register("find", find);
+    register("filter", filter, { lazyAware: true });
+    register("map", map, { lazyAware: true });
+    register("find", find, { lazyAware: true });
     register("unique", unique);
     register("sort", sort);
     register("reverse", reverse);
@@ -2816,15 +3441,29 @@
   registerStatsHelpers(registerHelper);
   registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
   registerNetworkHelpers(registerHelper);
+  registerOperator("increment", "++", "prefix", 80);
+  registerOperator("increment", "++", "postfix", 80);
+  registerOperator("decrement", "--", "prefix", 80);
+  registerOperator("decrement", "--", "postfix", 80);
+  registerOperator("toggle", "!!", "prefix", 80);
+  registerOperator("+", "+", "infix", 50);
+  registerOperator("-", "-", "infix", 50);
+  registerOperator("*", "*", "infix", 60);
+  registerOperator("/", "/", "infix", 60);
+  registerOperator("gt", ">", "infix", 40);
+  registerOperator("lt", "<", "infix", 40);
+  registerOperator("gte", ">=", "infix", 40);
+  registerOperator("lte", "<=", "infix", 40);
+  registerOperator("neq", "!=", "infix", 40);
   const localStates = /* @__PURE__ */ new WeakMap();
   const getContext = (node, event = null) => {
     const chain = [];
     let cur = node;
     const ShadowRoot2 = globalThis.ShadowRoot;
     while (cur) {
-      const local = localStates.get(cur);
+      const local = localStates.get(cur) || (cur && typeof cur === "object" ? cur.__state__ : null);
       if (local) chain.unshift(local);
-      cur = cur.parentElement || (ShadowRoot2 && cur.parentNode instanceof ShadowRoot2 ? cur.parentNode.host : null);
+      cur = cur.parentElement || (cur && typeof cur === "object" ? cur.__parent__ : null) || (ShadowRoot2 && cur.parentNode instanceof ShadowRoot2 ? cur.parentNode.host : null);
     }
     const globalRegistry = getRegistry$1();
     const handler = {
@@ -2836,9 +3475,9 @@
           const s = chain[i];
           if (prop in s) return s[prop];
         }
-        if (globalRegistry && globalRegistry.has(prop)) return globalRegistry.get(prop);
+        if (globalRegistry && globalRegistry.has(prop)) return unwrapSignal(globalRegistry.get(prop));
         const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
-        if (globalState && prop in globalState) return globalState[prop];
+        if (globalState && prop in globalState) return unwrapSignal(globalState[prop]);
         return void 0;
       },
       set(target, prop, value, receiver) {
@@ -2855,19 +3494,24 @@
           return true;
         }
         const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
-        if (globalState) {
+        if (globalState && prop in globalState) {
           globalState[prop] = value;
           return true;
+        }
+        if (globalRegistry && globalRegistry.has(prop)) {
+          const s = globalRegistry.get(prop);
+          if (s && (typeof s === "object" || typeof s === "function") && "value" in s) {
+            s.value = value;
+            return true;
+          }
         }
         return false;
       },
       has(target, prop) {
         var _a;
-        if (prop === "$event" || prop === "event") return !!event;
-        for (const s of chain) if (prop in s) return true;
-        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
-        if (globalState && prop in globalState) return true;
-        return false;
+        const exists = prop === "$event" || prop === "event" || !!chain.find((s) => prop in s);
+        const inGlobal = ((_a = globalThis.Lightview) == null ? void 0 : _a.state) && prop in globalThis.Lightview.state || globalRegistry && globalRegistry.has(prop);
+        return exists || inGlobal;
       },
       ownKeys(target) {
         var _a;
@@ -2893,12 +3537,15 @@
   };
   const handleCDOMState = (node) => {
     var _a;
-    const attr = node["cdom-state"] || node.getAttribute("cdom-state");
+    const attr = node["cdom-state"] || node.getAttribute && node.getAttribute("cdom-state");
     if (!attr || localStates.has(node)) return;
     try {
       const data = typeof attr === "object" ? attr : JSON.parse(attr);
       const s = state(data);
       localStates.set(node, s);
+      if (node && typeof node === "object") {
+        node.__state__ = s;
+      }
     } catch (e) {
       (_a = globalThis.console) == null ? void 0 : _a.error("LightviewCDOM: Failed to parse cdom-state", e);
     }
@@ -3062,6 +3709,9 @@
           }
         }
       }
+      if (node["cdom-state"]) {
+        handleCDOMState(node);
+      }
       for (const key in node) {
         const value = node[key];
         if (key === "cdom-state") {
@@ -3113,11 +3763,13 @@
   };
   const LightviewCDOM = {
     registerHelper,
+    registerOperator,
     parseExpression,
     resolvePath,
     resolvePathAsContext,
     resolveExpression,
     parseCDOMC,
+    parseJPRX,
     unwrapSignal,
     getContext,
     handleCDOMState,

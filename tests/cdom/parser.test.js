@@ -1,18 +1,18 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import Lightview from '../../src/lightview.js';
 import LightviewX from '../../src/lightview-x.js';
-import { resolvePath, parseExpression, registerHelper, parseCDOMC } from '../../cdom/parser.js';
-import { registerMathHelpers } from '../../cdom/helpers/math.js';
-import { registerLogicHelpers } from '../../cdom/helpers/logic.js';
-import { registerStringHelpers } from '../../cdom/helpers/string.js';
-import { registerArrayHelpers } from '../../cdom/helpers/array.js';
-import { registerCompareHelpers } from '../../cdom/helpers/compare.js';
-import { registerConditionalHelpers } from '../../cdom/helpers/conditional.js';
-import { registerDateTimeHelpers } from '../../cdom/helpers/datetime.js';
-import { registerFormatHelpers } from '../../cdom/helpers/format.js';
-import { registerLookupHelpers } from '../../cdom/helpers/lookup.js';
-import { registerStatsHelpers } from '../../cdom/helpers/stats.js';
-import { registerStateHelpers } from '../../cdom/helpers/state.js';
+import { resolvePath, parseExpression, registerHelper, parseCDOMC } from '../../jprx/parser.js';
+import { registerMathHelpers } from '../../jprx/helpers/math.js';
+import { registerLogicHelpers } from '../../jprx/helpers/logic.js';
+import { registerStringHelpers } from '../../jprx/helpers/string.js';
+import { registerArrayHelpers } from '../../jprx/helpers/array.js';
+import { registerCompareHelpers } from '../../jprx/helpers/compare.js';
+import { registerConditionalHelpers } from '../../jprx/helpers/conditional.js';
+import { registerDateTimeHelpers } from '../../jprx/helpers/datetime.js';
+import { registerFormatHelpers } from '../../jprx/helpers/format.js';
+import { registerLookupHelpers } from '../../jprx/helpers/lookup.js';
+import { registerStatsHelpers } from '../../jprx/helpers/stats.js';
+import { registerStateHelpers } from '../../jprx/helpers/state.js';
 import { hydrate } from '../../src/lightview-cdom.js';
 
 describe('cdom Parser', () => {

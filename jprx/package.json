@@ -1,0 +1,24 @@
+{
+    "name": "jprx",
+    "version": "1.0.0",
+    "description": "JSON Reactive Path eXpressions - A reactive expression language for JSON data",
+    "main": "index.js",
+    "type": "module",
+    "keywords": [
+        "json",
+        "reactive",
+        "expressions",
+        "path",
+        "json-pointer",
+        "state-management"
+    ],
+    "author": "Simon Y. Blackwell, AnyWhichWay LLC",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/anywhichway/lightview",
+        "directory": "jprx"
+    },
+    "peerDependencies": {},
+    "devDependencies": {}
+}
