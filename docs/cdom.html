@@ -53,7 +53,7 @@
 
 <script>
     globalThis.switchCDOMTab = (tabId) => {
-        const tabs = ['jprx', 'jprxc', 'operators'];
+        const tabs = ['jprx', 'jprxc', 'operators', 'embedded'];
         tabs.forEach(t => {
             const btn = document.getElementById(`tab-btn-${t}`);
             const pane = document.getElementById(`pane-${t}`);
@@ -92,14 +92,9 @@
         <p>
             cDOM uses <strong>JPRX (JSON Pointer Reactive eXpressions)</strong> as its expression language. JPRX
             extends <a href="https://www.rfc-editor.org/rfc/rfc6901" target="_blank">JSON Pointer (RFC 6901)</a>
-            with reactivity, relative paths, and helper functions.
-        </p>
-        <p>
-            If you wish to explore the implementation further, you can visit the <a
-                href="https://github.com/anywhichway/lightview" target="_blank">GitHub repository</a>, browse the <a
-                href="https://github.com/anywhichway/lightview/tree/main/cdom" target="_blank">cdom directory</a>, and
-            check out the <a href="https://github.com/anywhichway/lightview/tree/main/tests/cdom" target="_blank">cdom
-                unit tests</a>.
+            with reactivity, relative paths, and helper functions. It also provides deep integration with
+            <a href="https://json-schema.org/" target="_blank">JSON Schema</a> (Standard Draft 7+) for
+            industrial-strength data validation and automatic type coercion.
         </p>
 
         <!-- ===== SIMPLE EXAMPLE ===== -->
@@ -108,12 +103,12 @@
         <div class="code-block">
             <pre><code>{
     div: {
-        "cdom-state": { count: 0 },
+        onmount: $state({ count: 0 }, { name: 'local', schema: 'auto', scope: $this }),
         children: [
             { h2: "Counter" },
-            { p: ["Count: ", $/count] },
-            { button: { onclick: $increment(/count), children: ["+"] } },
-            { button: { onclick: $decrement(/count), children: ["-"] } }
+            { p: ["Count: ", $/local/count] },
+            { button: { onclick: $++/local/count, children: ["+"] } },
+            { button: { onclick: $--/local/count, children: ["-"] } }
         ]
     }
 }</code></pre>
@@ -122,11 +117,14 @@
             This defines a counter with:
         </p>
         <ul>
-            <li><code>cdom-state</code> — Local reactive state with <code>count: 0</code></li>
-            <li><code>$/count</code> — A path that reactively displays the count value</li>
-            <li><code>$increment(/count)</code> — Increment the count when clicked</li>
-            <li><code>$decrement(/count)</code> — Decrement the count when clicked</li>
+            <li><code>onmount</code> — A Lightview lifecycle hook where we initialize state.</li>
+            <li><code>$state(...)</code> — An initializer that creates local reactive state.</li>
+            <li><code>scope: $this</code> — Explicitly attaches the state to the current element.</li>
+            <li><code>$/local/count</code> — A path that reactively displays the count value.</li>
         </ul>
+        <p>
+            The UI automatically updates whenever <code>count</code> changes — no manual DOM manipulation required.
+        </p>
         <p>
             The UI automatically updates whenever <code>count</code> changes — no manual DOM manipulation required.
         </p>
@@ -187,7 +185,7 @@
         </table>
         <p>
             Once inside a JPRX expression, paths follow <strong>JSON Pointer</strong> syntax. The <code>$</code>
-            is only needed at the start of the expression.
+            is only needed at the start of the expression for paths or function names.
         </p>
 
         <h3 id="JPRX-anatomy">Anatomy of a Path</h3>
@@ -317,79 +315,137 @@
         <h2 id="integration">Lightview Integration</h2>
         <p>
             cDOM integrates seamlessly with Lightview's existing DOM formats. You can use JPRX expressions
-            in any of Lightview's hypermedia formats:
+            in any of Lightview's hypermedia formats just by loading <code>lightview-cdom.js</code>:
         </p>
-
         <h3>vDOM (Virtual DOM)</h3>
-        <p>JPRX expressions work directly in vDOM arrays:</p>
+        <p>JPRX expressions work directly in vDOM arrays or objects:</p>
         <div class="code-block">
-            <pre><code>["div", { class: "counter" },
-    ["p", "Count: ", "$/count"],
-    ["button", { onclick: "$increment(/count)" }, "+"]
-]</code></pre>
+            <pre><code>// vDOM formal object
+{
+    tag: "div",
+    attributes: { class: "counter" },
+    children: [
+        { tag: "p", children: ["Count: ", $/local/count] },
+        { tag: "button", attributes: { onclick: $++/local/count }, children: ["+"] }
+    ]
+}</code></pre>
         </div>
 
         <h3>oDOM (Object DOM)</h3>
         <p>JPRX expressions work in oDOM objects:</p>
         <div class="code-block">
             <pre><code>{
-    tag: "div",
-    attributes: { class: "counter" },
-    children: [
-        { tag: "p", children: ["Count: ", "$/count"] },
-        { tag: "button", attributes: { onclick: "$increment(/count)" }, children: ["+"] }
-    ]
+    div: {
+        class: "counter",
+        children: [
+            { p: { children: ["Count: ", $/local/count] } },
+            { button: { onclick: $++/local/count, children: ["+"] } }
+        ]
+    }
 }</code></pre>
         </div>
 
-        <h3>cDOM Shorthand</h3>
-        <p>cDOM's concise shorthand syntax:</p>
+        <h3>cDOM Shorthand (JPRXC)</h3>
+        <p>cDOM's concise shorthand syntax. Note that cDOM does not require quoting attribute names or JPRX
+            expressions and you can include comments:</p>
         <div class="code-block">
             <pre><code>{
     div: {
         class: "counter",
+        // This is a JPRXC comment
         children: [
-            { p: ["Count: ", $/count] },
-            { button: { onclick: "$increment(/count)", children: ["+"] } }
+            { p: ["Count: ", $/local/count] },
+            { button: { onclick: $++/local/count, children: ["+"] } }
         ]
     }
 }</code></pre>
         </div>
 
-        <!-- ===== DIRECTIVES ===== -->
-        <h2 id="directives">Directives</h2>
+        <h2 id="state-binding">State & Binding</h2>
         <p>
-            cDOM provides custom attributes (directives) to bridge static HTML and reactive state.
+            cDOM does not use attribute directives for state it uses lifecycle events and helpers instead.
         </p>
 
-        <h3 id="cdom-state">cdom-state</h3>
+        <h3 id="lifecycle-state">Lifecycle State</h3>
         <p>
-            Defines local reactive state on an element. Children can access this state using relative paths.
+            In Lightview, you initialize state within the <code>onmount</code> hook. The <code>$state</code> and
+            <code>$signal</code> helpers accept an options object where you can specify a <code>scope</code>,
+            as well as <code>schema</code> requirements.
         </p>
-        <div class="code-block">
+
+        <h4>Using a Registered Schema</h4>
+        <div class="code-block" style="margin-bottom: 1rem;">
+            <pre><code>// 1. Register centrally in JS
+Lightview.registerSchema('User', { name: 'string', age: 'number' });
+
+// 2. Use in cDOM
+{ "onmount": "$state({}, { name: 'profile', schema: 'User', scope: $this })" }</code></pre>
+        </div>
+
+        <h4>Standard Schema Behaviors</h4>
+        <p>
+            When using the <code>schema</code> option, you can use these standard behaviors:
+        </p>
+        <ul style="margin-bottom: 2rem;">
+            <li><strong>"auto"</strong>: Infers a fixed schema from the initial value. Strict type checking (throws on
+                mismatch).</li>
+            <li><strong>"dynamic"</strong>: Like auto, but allows adding new properties to the state object.</li>
+            <li><strong>"polymorphic"</strong>: The most powerful setting. It includes <strong>"dynamic"</strong>
+                behavior and automatically <strong>coerces</strong> values to match the inferred type (e.g., "50" ->
+                50).
+            </li>
+        </ul>
+
+        <h4>Example: Polymorphic Coercion</h4>
+        <div class="code-block" style="margin-bottom: 2rem;">
             <pre><code>{ 
     div: { 
-        "cdom-state": { count: 0, name: "Guest" }, 
+        "onmount": "$state({ count: 0 }, { 
+            name: 'local', 
+            schema: 'polymorphic',
+            scope: $this 
+        })", 
         children: [
-            { p: ["Hello, ", $/name] },
-            { p: ["Count: ", $/count] }
+            { p: ["Typing '10' into a bind will save it as the number 10."] }
         ]
     }
 }</code></pre>
         </div>
-
-        <h3 id="cdom-bind">cdom-bind</h3>
         <p>
-            Creates two-way data binding between an input and a reactive path.
+            By scoping the state to the element, you can create multiple independent instances of components.
+            Lightview uses a high-performance <strong>up-tree search</strong> to resolve these names.
+        </p>
+
+        <h3 id="bind-helper">Two-Way Binding ($bind)</h3>
+        <p>
+            Two-way data binding is achieved via the <code>$bind(path)</code> helper.
         </p>
         <div class="code-block">
-            <pre><code>{ input: { type: "text", "cdom-bind": "$/user/name", placeholder: "Enter name" } }
-{ input: { type: "checkbox", "cdom-bind": "$/settings/enabled" } }</code></pre>
+            <pre><code>{ input: { type: "text", value: "$bind(/profile/name)", placeholder: "Enter name" } }
+{ input: { type: "checkbox", checked: "$bind(/settings/enabled)" } }</code></pre>
         </div>
+
+        <h4 id="binding-transformations">Handling Transformations</h4>
         <p>
-            <strong>Smart Initialization:</strong> If the state is <code>undefined</code>,
-            <code>cdom-bind</code> will use the input's initial value to populate the state.
+            Because <code>$bind</code> is strict (it only accepts direct paths), you cannot pass a computation
+            like <code>$bind(upper(/name))</code>. To transform data during binding, you have two choices:
         </p>
+        <ul>
+            <li>
+                <strong>Manual Transformation:</strong> Use an <code>oninput</code> handler:
+                <code>{ oninput: "$set(/name, upper($event/target/value))" }</code>
+            </li>
+            <li>
+                <strong>Schema Transformation:</strong> Define a <code>transform</code> in your schema:
+                <div class="code-block" style="margin-top: 0.5rem;">
+                    <pre><code>Lightview.registerSchema('Profile', { 
+    name: { type: 'string', transform: 'upper' } 
+});</code></pre>
+                </div>
+                The state manager will automatically apply the transformation during the write-back phase of
+                <code>$bind</code>.
+            </li>
+        </ul>
 
         <!-- ===== SHOPPING CART EXAMPLE ===== -->
         <h2 id="shopping-cart">Shopping Cart Example</h2>
@@ -411,22 +467,22 @@ const { $ } = Lightview;
 
 const cdomString = `{ 
     div: {
-        "cdom-state": {
+        "onmount": "$state({
             cart: {
                 items: [
-                    { name: "Apple", price: 1.00 },
-                    { name: "Orange", price: 2.00 }
+                    { name: 'Apple', price: 1.00 },
+                    { name: 'Orange', price: 2.00 }
                 ]
             }
-        },
+        }, 'store')",
         children: [
             { h3: "Shopping Cart" },
             { ul: { 
-                children: $map(/cart/items, { li: { children: [_/name, " - ", $currency(_/price)] } })
+                children: $map(/store/cart/items, { li: { children: [_/name, " - ", $currency(_/price)] } })
             }},
             { p: { 
                 style: "font-weight: bold; margin-top: 1rem;",
-                children: ["Total: ", $currency(sum(/cart/items...price))]
+                children: ["Total: ", $currency(sum(/store/cart/items...price))]
             }}
         ]
     }
@@ -434,8 +490,7 @@ const cdomString = `{
 
 const hydrated = hydrate(parseJPRX(cdomString));
 $('#example').content(hydrated);
-globalThis.LightviewCDOM.activate(hydrated.domEl);
-</code></pre>
+</code></pre></code></pre>
         </div>
 
         <!-- ===== INTERACTIVE EXAMPLE ===== -->
@@ -450,6 +505,8 @@ globalThis.LightviewCDOM.activate(hydrated.domEl);
                 (Standard)</button>
             <button id="tab-btn-jprxc" class="syntax-tab" onclick="switchCDOMTab('jprxc')">JPRXC (Concise)</button>
             <button id="tab-btn-operators" class="syntax-tab" onclick="switchCDOMTab('operators')">Operators</button>
+            <button id="tab-btn-embedded" class="syntax-tab" onclick="switchCDOMTab('embedded')">Embedded
+                Signals</button>
         </div>
 
         <!-- JPRX Pane -->
@@ -559,10 +616,44 @@ globalThis.LightviewCDOM.activate(hydrated.domEl);
 </code></pre>
         </div>
 
+        <!-- Embedded Pane -->
+        <div id="pane-embedded" style="display: none;">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
+                    type: 'module',
+                    height: '250px'
+                });
+            </script><code contenteditable="true">// Embedded Signals: Using onmount to initialize local state
+await import('/lightview-cdom.js');
+const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
+const { $ } = Lightview;
+
+const cdomString = `{
+    div: {
+        // Initialize a named signal explicitly scoped to '$this' element.
+        onmount: $signal(0, { name: 'count', scope: $this }),
+        children: [
+            { h3: ["Embedded Counter"] },
+            { p: ["Count: ", $/count] },
+            { div: { children: [
+                { button: { onclick: $--/count, children: ["-"] } },
+                { button: { onclick: $++/count, children: ["+"] } }
+            ]}}
+        ]
+    }
+}`;
+
+const hydrated = hydrate(parseJPRX(cdomString));
+$('#example').content(hydrated);
+</code></pre>
+        </div>
+
         <!-- ===== OPERATOR SYNTAX EXAMPLE ===== -->
         <h2 id="operator-syntax">Operator Syntax</h2>
         <p>
-            JPRX now supports <strong>prefix</strong> and <strong>postfix</strong> operator syntax as alternatives to
+            JPRX supports <strong>prefix</strong> and <strong>postfix</strong> operator syntax as alternatives to
             function calls.
             This makes expressions more concise and familiar to JavaScript developers.
         </p>
@@ -608,8 +699,8 @@ globalThis.LightviewCDOM.activate(hydrated.domEl);
             Use standard event attributes with JPRX expressions:
         </p>
         <div class="code-block">
-            <pre><code>{ button: { onclick: $(++, $/count), children: ["Click Me"] } }
-{ input: { oninput: $set($/name, $event/target/value) } }</code></pre>
+            <pre><code>{ button: { onclick: $++/count, children: ["Click Me"] } }
+{ input: { oninput: $set(/name, $event/target/value) } }</code></pre>
         </div>
 
         <h3 id="events-llm">LLM-Generated Interaction</h3>
@@ -685,6 +776,17 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
         </p>
         <div class="code-block">
             <pre><code>const obj = LightviewCDOM.parseJPRX(`{ div: { children: [$/name] } }`);</code></pre>
+        </div>
+
+        <h3 id="api-registerSchema">registerSchema(name, definition)</h3>
+        <p>
+            Registers a reusable schema for state validation and initialization. Supported behaviors include
+            <code>"auto"</code> (strict/fixed), <code>"dynamic"</code> (strict/expandable), and
+            <code>"polymorphic"</code> (coerce/expandable).
+        </p>
+        <div class="code-block">
+            <pre><code>Lightview.registerSchema('User', { name: 'string', age: 'number' });
+// Usable in JPRX: $state({}, { name: 'profile', schema: 'User' })</code></pre>
         </div>
 
         <h3 id="api-registerHelper">registerHelper(name, fn, options?)</h3>
@@ -772,10 +874,10 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
             <pre><code>lookup, vlookup, index, match</code></pre>
         </div>
 
-        <h3 id="helpers-mutation">State Mutation</h3>
-        <p>Modify reactive state from event handlers.</p>
+        <h3 id="helpers-mutation">State & Lifecycle</h3>
+        <p>Initialize and modify reactive state.</p>
         <div class="code-block">
-            <pre><code>set, increment (++), decrement (--), toggle (!!), push, pop, assign, clear</code></pre>
+            <pre><code>state, signal, bind, set, increment (++), decrement (--), toggle (!!), push, pop, assign, clear</code></pre>
         </div>
 
         <h3 id="helpers-network">Network</h3>

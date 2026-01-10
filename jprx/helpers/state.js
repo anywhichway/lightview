@@ -64,6 +64,24 @@ export const clear = (target) => {
     return set(target, null);
 };
 
+export function $state(val, options) {
+    if (globalThis.Lightview) {
+        const finalOptions = typeof options === 'string' ? { name: options } : options;
+        return globalThis.Lightview.state(val, finalOptions);
+    }
+    throw new Error('JPRX: $state requires a UI library implementation.');
+}
+
+export function $signal(val, options) {
+    if (globalThis.Lightview) {
+        const finalOptions = typeof options === 'string' ? { name: options } : options;
+        return globalThis.Lightview.signal(val, finalOptions);
+    }
+    throw new Error('JPRX: $signal requires a UI library implementation.');
+}
+
+export const $bind = (path, options) => ({ __JPRX_BIND__: true, path, options });
+
 export const registerStateHelpers = (register) => {
     const opts = { pathAware: true };
     register('set', set, opts);
@@ -77,4 +95,7 @@ export const registerStateHelpers = (register) => {
     register('pop', pop, opts);
     register('assign', assign, opts);
     register('clear', clear, opts);
+    register('state', $state);
+    register('signal', $signal);
+    register('bind', $bind);
 };

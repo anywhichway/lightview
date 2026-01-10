@@ -1,4 +1,5 @@
-import { signal, effect, computed, getRegistry } from './reactivity/signal.js';
+import { signal, effect, computed, getRegistry, internals } from './reactivity/signal.js';
+import { state, getState } from './reactivity/state.js';
 
 const core = {
     get currentEffect() {
@@ -305,6 +306,25 @@ const makeReactiveAttributes = (attributes, domNode) => {
                 domNode.setAttribute(key, value);
             }
             reactiveAttrs[key] = value;
+        } else if (typeof value === 'object' && value !== null && Lightview.hooks.processAttribute) {
+            const processed = Lightview.hooks.processAttribute(domNode, key, value);
+            if (processed !== undefined) {
+                reactiveAttrs[key] = processed;
+            } else if (key === 'style') {
+                // Style object support (merged from below)
+                Object.entries(value).forEach(([styleKey, styleValue]) => {
+                    if (typeof styleValue === 'function') {
+                        const runner = effect(() => { domNode.style[styleKey] = styleValue(); });
+                        trackEffect(domNode, runner);
+                    } else {
+                        domNode.style[styleKey] = styleValue;
+                    }
+                });
+                reactiveAttrs[key] = value;
+            } else {
+                setAttributeValue(domNode, key, value);
+                reactiveAttrs[key] = value;
+            }
         } else if (typeof value === 'function') {
             // Reactive binding
             const runner = effect(() => {
@@ -316,19 +336,6 @@ const makeReactiveAttributes = (attributes, domNode) => {
                 }
             });
             trackEffect(domNode, runner);
-            reactiveAttrs[key] = value;
-        } else if (key === 'style' && typeof value === 'object') {
-            // Handle style object which may contain reactive values
-            Object.entries(value).forEach(([styleKey, styleValue]) => {
-                if (typeof styleValue === 'function') {
-                    const runner = effect(() => {
-                        domNode.style[styleKey] = styleValue();
-                    });
-                    trackEffect(domNode, runner);
-                } else {
-                    domNode.style[styleKey] = styleValue;
-                }
-            });
             reactiveAttrs[key] = value;
         } else {
             // Static attribute - handle undefined/null/boolean properly
@@ -595,6 +602,9 @@ const tags = new Proxy({}, {
 });
 
 const Lightview = {
+    state,
+    getState,
+    registerSchema: (name, definition) => internals.schemas.set(name, definition),
     signal,
     get: signal.get,
     computed,
@@ -608,14 +618,22 @@ const Lightview = {
     hooks: {
         onNonStandardHref: null,
         processChild: null,
-        validateUrl: null
+        processAttribute: null,
+        validateUrl: null,
+        validate: (value, schema) => internals.hooks.validate(value, schema)
     },
     // Internals exposed for extensions
     internals: {
         core,
         domToElement,
         wrapDomElement,
-        setupChildren
+        setupChildren,
+        trackEffect,
+        localRegistries: internals.localRegistries,
+        futureSignals: internals.futureSignals,
+        schemas: internals.schemas,
+        parents: internals.parents,
+        hooks: internals.hooks
     }
 };
 

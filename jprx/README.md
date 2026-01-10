@@ -10,8 +10,15 @@ JPRX is a **syntax** and an **expression engine**. While this repository provide
 
 - **Declarative Power**: Define relationships between data points as easily as writing an Excel formula.
 - **Security**: JPRX strictly avoids `eval()`. Expressions are handled by a custom high-performance Pratt parser and a registry of pre-defined helpers, making it safe for dynamic content.
-- **Portability**: Because JPRX expressions are strings within JSON structures, they are easily serialized, stored, and sent over the wire.
-- **Platform Agnostic**: While Lightview is the first implementation, JPRX can be used in any environment that manages reactive state.
+- **Portability**: JPRX expressions are strings within JSON, making them easily serialized and platform-agnostic.
+- **Schema-First**: Integrated support for JSON Schema and shorthand descriptors provides industrial-strength validation and "future-proof" reactivity.
+
+## UI Library Requirements
+
+To fully support JPRX, an underlying UI library **MUST** provide:
+- **Mount Lifecycle**: A hook (e.g., `onmount`) where state initialization can occur. JPRX relies on the library to trigger these initializers.
+- **Event Handling**: Support for standard event handlers (like `oninput`, `onclick`) **SHOULD** be provided, though exact implementations may vary by platform.
+- **Reactivity**: A way to resolve paths to reactive primitives (e.g., Signals or Proxies).
 
 ## Syntax & Features
 
@@ -21,110 +28,102 @@ JPRX extends the base JSON Pointer syntax with:
 |---------|--------|-------------|
 | **Global Path** | `$/user/name` | Access global state via an absolute path. |
 | **Relative Path** | `./count` | Access properties relative to the current context. |
-| **Parent Path** | `../id` | Traverse up the state hierarchy. |
+| **Parent Path** | `../id` | Traverse up the state hierarchy (UP-tree search). |
 | **Functions** | `$sum(/items...price)` | Call registered core helpers. |
 | **Explosion** | `/items...name` | Extract a property from every object in an array (spread). |
 | **Operators** | `$++/count`, `$/a + $/b` | Familiar JS-style prefix, postfix, and infix operators. |
-| **Placeholders** | `_` (item), `$event` | Context-aware placeholders for iteration and interaction. |
+| **Placeholders** | `_` (item), `$this`, `$event` | Context-aware placeholders for iteration and interaction. |
+| **Two-Way Binding**| `$bind(/user/name)`| Create a managed, two-way reactive link for inputs. |
 
-## Human & AI Utility
+Once inside a JPRX expression, the `$` prefix is only needed at the start of the expression for paths or function names.
 
-JPRX is uniquely positioned to bridge the gap between human developers and AI coding assistants:
+## State Management
 
-### For Humans: "The Excel Paradigm"
-Humans are often familiar with the "recalculation" model of spreadsheets. JPRX brings this to UI development. Instead of writing complex "glue code" (event listeners, state updates, DOM manipulation), developers specify the *formula* for a UI element once, and it stays updated forever.
+JPRX utilizes explicit state initializers within lifecycle hooks:
 
-### For AI: Structured & Concise
-Large Language Models (LLMs) are exceptionally good at generating structured data (JSON) and formulaic expressions. They are often prone to errors when generating large blocks of imperative JavaScript logic. JPRX provides a high-level, declarative "target" for AI to aim at, resulting in:
-- **Higher Accuracy**: Less boilerplate means fewer places for the AI to hallucinate.
-- **Safety**: AI can generate UI logic that remains sandboxed and secure.
-- **Compactness**: Entire interactive components can be described in a few lines of JSON.
+### Scoped State
+States can be attached to specific scopes (such as a DOM node or Component instance) using the `scope` property in the options argument.
+- **Up-tree Resolution**: When resolving a path, JPRX walks up the provided scope chain looking for the nearest owner of that name.
+- **Future Signals**: JPRX allows subscription to a named signal *before* it is initialized. The system will automatically "hook up" once the state is created via `$state` or `$signal`.
 
-## Operators
+### The `$state` and `$signal` Helpers
+- `$state(value, { name: 'user', schema: 'UserProfile', scope: event.target })`
+- `$signal(0, { name: 'count', schema: 'auto' })`
 
-JPRX supports a wide range of operators that provide a more concise and familiar syntax than function calls.
+## Schema Registry & Validation
 
-### Arithmetic & Logic (Infix)
-Infix operators require surrounding whitespace in JPRX to avoid ambiguity with path separators.
+JPRX integrates with a global Schema Registry via `jprx.registerSchema(name, definition)`.
 
-- **Arithmetic**: `+`, `-`, `*`, `/`, `mod`, `pow`
-- **Comparison**: `>`, `<`, `>=`, `<=`, `==`, `!=`
-- **Logic**: `&&`, `||`
+### Registering and Using Schemas
+```javascript
+// 1. Register a schema centrally
+jprx.registerSchema('UserProfile', {
+  name: "string",
+  age: "number",
+  email: { type: "string", format: "email" }
+});
 
-*Example:* `$/a + $/b * 10 > $/threshold`
+// 2. Reference the registered schema by name (Scoped)
+const user = $state({}, { name: 'user', schema: 'UserProfile', scope: $this });
 
-### Mutation & Unary (Prefix/Postfix)
-These operators are typically used in event handlers or for immediate state transformation.
+// 3. Use the 'polymorphic' shorthand for auto-coercion
+const settings = $state({ volume: 50 }, { name: 'settings', schema: 'polymorphic' });
+// Result: settings.volume = "60" will automatically coerce to the number 60.
+```
 
-- **Increment**: `$++/count` (prefix) or `$/count++` (postfix)
-- **Decrement**: `$--/count` (prefix) or `$/count--` (postfix)
-- **Toggle**: `$!!/enabled` (logical NOT/toggle)
+- **Polymorphic Schemas**:
+  - **`"auto"`**: Infers the fixed schema from the initial value. Strict type checking (e.g., setting a number to a string throws). New properties are not allowed.
+  - **`"dynamic"`**: Like `auto`, but allows new properties to be added to the state object.
+  - **`"polymorphic"`**: Includes **`dynamic`** behavior and automatically coerces values to match the inferred type (e.g., "50" -> 50) rather than throwing.
+  - **Shorthand**: A simple object like `{ name: "string" }` is internally normalized to a JSON Schema.
 
-## Helper Functions
+### Transformation Schemas
+Schemas can define transformations that occur during state updates, ensuring data remains in a consistent format regardless of how it was input.
 
-JPRX includes a comprehensive library of built-in helpers. For security, only registered helpers are available—there is no access to the global JavaScript environment.
+```json
+{
+  "type": "object",
+  "properties": {
+    "username": {
+      "type": "string",
+      "transform": "lower"
+    }
+  }
+}
+```
+*Note: The `$bind` helper uses these transformations to automatically clean data as the user types.*
 
-### Math
-`add`, `sub`, `mul`, `div`, `mod`, `pow`, `sqrt`, `abs`, `round`, `ceil`, `floor`, `min`, `max`
+## Two-Way Binding with `$bind`
 
-### Stats
-`sum`, `avg`, `min`, `max`, `median`, `stdev`, `var`
+The `$bind(path)` helper creates a managed, two-way link between the UI and a state path.
 
-### String
-`upper`, `lower`, `trim`, `capitalize`, `titleCase`, `contains`, `startsWith`, `endsWith`, `replace`, `split`, `join`, `concat`, `len`, `default`
+### Strictness
+To ensure unambiguous data flow, `$bind` only accepts direct paths. It cannot be used directly with computed expressions like `$bind(upper(/name))`.
 
-### Array
-`count`, `map`, `filter`, `find`, `unique`, `sort`, `reverse`, `first`, `last`, `slice`, `flatten`, `join`, `len`
+### Handling Transformations
+If you need to transform data during a two-way binding, there are two primary approaches:
+1. **Event-Based**: Use a manual `oninput` handler to apply the transformation, e.g., `$set(/name, upper($event/target/value))`.
+2. **Schema-Based**: Define a `transform` or `pattern` in the schema for the path. The `$bind` helper will respect the schema rules during the write-back phase.
 
-### Logic & Comparison
-`if`, `and`, `or`, `not`, `eq`, `neq`, `gt`, `lt`, `gte`, `lte`, `between`, `in`
-
-### Formatting
-`number`, `currency`, `percent`, `thousands`
-
-### DateTime
-`now`, `today`, `date`, `formatDate`, `year`, `month`, `day`, `weekday`, `addDays`, `dateDiff`
-
-### Lookup
-`lookup`, `vlookup`, `index`, `match`
-
-### State Mutation
-`set`, `increment`, `decrement`, `toggle`, `push`, `pop`, `assign`, `clear`
-
-### Network
-`fetch(url, options?)` - *Auto-serializes JSON bodies and handles content-types.*
+---
 
 ## Example
 
-A simple reactive counter described in JPRX syntax:
+A modern, lifecycle-based reactive counter:
 
 ```json
 {
   "div": {
-    "cdom-state": { "count": 0 },
+    "onmount": $state({ count: 0 }, { name: 'counter', schema: 'auto', scope: $this }),
     "children": [
-      { "h2": "Counter" },
-      { "p": ["Current Count: ", "$/count"] },
-      { "button": { "onclick": "$increment(/count)", "children": ["+"] } },
-      { "button": { "onclick": "$decrement(/count)", "children": ["-"] } }
+      { "h2": "Modern JPRX Counter" },
+      { "p": ["Current Count: ", $/counter/count] },
+      { "button": { "onclick": $++/counter/count, "children": ["+"] } },
+      { "button": { "onclick": $--/counter/count, "children": ["-"] } }
     ]
   }
 }
 ```
-
-## Reference Implementation: Lightview
-
-JPRX was originally developed for [Lightview](https://github.com/anywhichway/lightview) to power its **Computational DOM (cDOM)**. Lightview serves as the primary example of how a UI library can hydrate JPRX expressions into a live, reactive interface.
-
-If you are building a UI library and want to support reactive JSON structures, this parser provides the foundation.
-
-## Getting Started
-
-The JPRX package contains:
-1. `parser.js`: The core Pratt parser and path resolution logic.
-2. `helpers/`: A comprehensive library of math, logic, string, array, formatting, and state helpers.
-
-To use JPRX, you typically register your state-management primitives (like Signals or Proxies) with the parser's registry, and then call `hydrate()` or `resolveExpression()` to activate the logic.
 
 ---
 © 2026 Simon Y. Blackwell, AnyWhichWay LLC. Licensed under MIT.

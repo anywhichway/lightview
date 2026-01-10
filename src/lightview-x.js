@@ -1573,6 +1573,114 @@ const customElementWrapper = (Component, config = {}) => {
     };
 };
 
+
+/**
+ * JSON Schema Lite Validator (Draft 7 Compatible)
+ * Implements a lightweight validation engine for LightviewX.
+ */
+const validateJSONSchema = (value, schema) => {
+    if (!schema) return true;
+    const errors = [];
+    const internals = globalThis.Lightview?.internals;
+
+    const check = (val, sch, path = '') => {
+        if (!sch) return true;
+
+        // Resolve named schemas
+        if (typeof sch === 'string') {
+            const registered = internals?.schemas?.get(sch);
+            if (registered) return check(val, registered, path);
+            return true; // Unknown named schema passes by default or could throw
+        }
+
+        const type = sch.type;
+        const getType = (v) => {
+            if (v === null) return 'null';
+            if (Array.isArray(v)) return 'array';
+            return typeof v;
+        };
+        const currentType = getType(val);
+
+        // 1. Type Validation
+        if (type && type !== currentType) {
+            if (type === 'integer' && Number.isInteger(val)) { /* OK */ }
+            else if (!(type === 'number' && typeof val === 'number')) {
+                errors.push({ path, message: `Expected type ${type}, got ${currentType}`, keyword: 'type' });
+                return false;
+            }
+        }
+
+        // 2. String Validation
+        if (currentType === 'string') {
+            if (sch.minLength !== undefined && val.length < sch.minLength) errors.push({ path, keyword: 'minLength' });
+            if (sch.maxLength !== undefined && val.length > sch.maxLength) errors.push({ path, keyword: 'maxLength' });
+            if (sch.pattern !== undefined && !new RegExp(sch.pattern).test(val)) errors.push({ path, keyword: 'pattern' });
+            if (sch.format === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) errors.push({ path, keyword: 'format' });
+        }
+
+        // 3. Number Validation
+        if (currentType === 'number') {
+            if (sch.minimum !== undefined && val < sch.minimum) errors.push({ path, keyword: 'minimum' });
+            if (sch.maximum !== undefined && val > sch.maximum) errors.push({ path, keyword: 'maximum' });
+            if (sch.multipleOf !== undefined && val % sch.multipleOf !== 0) errors.push({ path, keyword: 'multipleOf' });
+        }
+
+        // 4. Object Validation
+        if (currentType === 'object') {
+            if (sch.required && Array.isArray(sch.required)) {
+                for (const key of sch.required) {
+                    if (!(key in val)) errors.push({ path: path ? `${path}.${key}` : key, keyword: 'required' });
+                }
+            }
+            if (sch.properties) {
+                for (const key in sch.properties) {
+                    if (key in val) check(val[key], sch.properties[key], path ? `${path}.${key}` : key);
+                }
+            }
+            if (sch.additionalProperties === false) {
+                for (const key in val) {
+                    if (!sch.properties || !(key in sch.properties)) errors.push({ path: path ? `${path}.${key}` : key, keyword: 'additionalProperties' });
+                }
+            }
+        }
+
+        // 5. Array Validation
+        if (currentType === 'array') {
+            if (sch.minItems !== undefined && val.length < sch.minItems) errors.push({ path, keyword: 'minItems' });
+            if (sch.maxItems !== undefined && val.length > sch.maxItems) errors.push({ path, keyword: 'maxItems' });
+            if (sch.uniqueItems && new Set(val).size !== val.length) errors.push({ path, keyword: 'uniqueItems' });
+            if (sch.items) {
+                val.forEach((item, i) => check(item, sch.items, `${path}[${i}]`));
+            }
+        }
+
+        // 6. Const & Enum
+        if (sch.const !== undefined && val !== sch.const) errors.push({ path, keyword: 'const' });
+        if (sch.enum && !sch.enum.includes(val)) errors.push({ path, keyword: 'enum' });
+
+        return errors.length === 0;
+    };
+
+    const valid = check(value, schema);
+    return valid || errors; // Return true or the array of errors
+};
+
+// Hook into Lightview core validation
+const lvInternals = globalThis.__LIGHTVIEW_INTERNALS__ || globalThis.Lightview?.internals;
+if (lvInternals) {
+    const hooks = lvInternals.hooks || (globalThis.Lightview?.hooks);
+    if (hooks) {
+        hooks.validate = (value, schema) => {
+            const result = validateJSONSchema(value, schema);
+            if (result === true) return true;
+            // If validation fails, we throw to prevent state update
+            const msg = result.map(e => `${e.path || 'root'}: failed ${e.keyword}${e.message ? ' (' + e.message + ')' : ''}`).join(', ');
+            throw new Error(`Lightview Validation Error: ${msg}`);
+        };
+    }
+    if (globalThis.Lightview) globalThis.Lightview.validate = validateJSONSchema;
+}
+
 // Export for module usage
 const LightviewX = {
     state,
@@ -1591,6 +1699,7 @@ const LightviewX = {
     preloadComponentCSS,
     createCustomElement,
     customElementWrapper,
+    validate: validateJSONSchema,
     internals: {
         handleSrcAttribute,
         parseElements

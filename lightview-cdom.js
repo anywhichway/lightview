@@ -17,6 +17,9 @@ var LightviewCDOM = function(exports) {
   };
   const registerHelper = (name, fn, options = {}) => {
     helpers.set(name, fn);
+    if (globalThis.__LIGHTVIEW_INTERNALS__) {
+      globalThis.__LIGHTVIEW_INTERNALS__.helpers.set(name, fn);
+    }
     if (options) helperOptions.set(name, options);
   };
   const registerOperator = (helperName, symbol, position, precedence) => {
@@ -31,7 +34,7 @@ var LightviewCDOM = function(exports) {
     operators[position].set(symbol, { helper: helperName, precedence: prec });
   };
   const getLV = () => globalThis.Lightview || null;
-  const getRegistry$1 = () => {
+  const getRegistry = () => {
     var _a;
     return ((_a = getLV()) == null ? void 0 : _a.registry) || null;
   };
@@ -88,21 +91,14 @@ var LightviewCDOM = function(exports) {
   };
   const resolvePath = (path, context) => {
     if (typeof path !== "string") return path;
-    const registry = getRegistry$1();
+    const registry = getRegistry();
     if (path === ".") return unwrapSignal(context);
     if (path.startsWith("$/")) {
       const [rootName, ...rest] = path.slice(2).split("/");
-      let cur = context;
-      while (cur) {
-        const localState = cur.__state__;
-        if (localState && rootName in localState) {
-          return traverse(localState[rootName], rest);
-        }
-        cur = cur.__parent__;
-      }
-      const rootSignal = registry == null ? void 0 : registry.get(rootName);
-      if (!rootSignal) return void 0;
-      return traverse(rootSignal, rest);
+      const LV = getLV();
+      const root = LV ? LV.get(rootName, { scope: (context == null ? void 0 : context.__node__) || context }) : registry == null ? void 0 : registry.get(rootName);
+      if (!root) return void 0;
+      return traverse(root, rest);
     }
     if (path.startsWith("./")) {
       return traverse(context, path.slice(2).split("/"));
@@ -123,22 +119,15 @@ var LightviewCDOM = function(exports) {
   };
   const resolvePathAsContext = (path, context) => {
     if (typeof path !== "string") return path;
-    const registry = getRegistry$1();
+    const registry = getRegistry();
     if (path === ".") return context;
     if (path.startsWith("$/")) {
       const segments = path.slice(2).split(/[/.]/);
       const rootName = segments.shift();
-      let cur = context;
-      while (cur) {
-        const localState = cur.__state__;
-        if (localState && rootName in localState) {
-          return traverseAsContext(localState[rootName], segments);
-        }
-        cur = cur.__parent__;
-      }
-      const rootSignal = registry == null ? void 0 : registry.get(rootName);
-      if (!rootSignal) return void 0;
-      return traverseAsContext(rootSignal, segments);
+      const LV = getLV();
+      const root = LV ? LV.get(rootName, { scope: (context == null ? void 0 : context.__node__) || context }) : registry == null ? void 0 : registry.get(rootName);
+      if (!root) return void 0;
+      return traverseAsContext(root, segments);
     }
     if (path.startsWith("./")) {
       return traverseAsContext(context, path.slice(2).split(/[\/.]/));
@@ -166,6 +155,7 @@ var LightviewCDOM = function(exports) {
       return this.fn(context);
     }
   }
+  const isNode = (val) => val && typeof val === "object" && globalThis.Node && val instanceof globalThis.Node;
   const resolveArgument = (arg, context, globalMode = false) => {
     if (arg.startsWith("'") && arg.endsWith("'") || arg.startsWith('"') && arg.endsWith('"')) {
       return { value: arg.slice(1, -1), isLiteral: true };
@@ -186,9 +176,21 @@ var LightviewCDOM = function(exports) {
         isLazy: true
       };
     }
+    if (arg === "$this" || arg.startsWith("$this/") || arg.startsWith("$this.")) {
+      return {
+        value: new LazyValue((context2) => {
+          const node = (context2 == null ? void 0 : context2.__node__) || context2;
+          if (arg === "$this") return node;
+          const path = arg.startsWith("$this.") ? arg.slice(6) : arg.slice(6);
+          return resolvePath(path, node);
+        }),
+        isLazy: true
+      };
+    }
     if (arg === "$event" || arg.startsWith("$event/") || arg.startsWith("$event.")) {
       return {
-        value: new LazyValue((event) => {
+        value: new LazyValue((context2) => {
+          const event = (context2 == null ? void 0 : context2.$event) || (context2 == null ? void 0 : context2.event) || context2;
           if (arg === "$event") return event;
           const path = arg.startsWith("$event.") ? arg.slice(7) : arg.slice(7);
           return resolvePath(path, event);
@@ -205,6 +207,18 @@ var LightviewCDOM = function(exports) {
               const res = resolveExpression(node, context2);
               const final = res instanceof LazyValue ? res.resolve(context2) : res;
               return unwrapSignal(final);
+            }
+            if (node === "$this" || node.startsWith("$this/") || node.startsWith("$this.")) {
+              const path = node.startsWith("$this.") || node.startsWith("$this/") ? node.slice(6) : node.slice(6);
+              const ctxNode = (context2 == null ? void 0 : context2.__node__) || context2;
+              const res = node === "$this" ? ctxNode : resolvePath(path, ctxNode);
+              return unwrapSignal(res);
+            }
+            if (node === "$event" || node.startsWith("$event/") || node.startsWith("$event.")) {
+              const path = node.startsWith("$event.") || node.startsWith("$event/") ? node.slice(7) : node.slice(7);
+              const event = (context2 == null ? void 0 : context2.$event) || (context2 == null ? void 0 : context2.event) || (context2 && !isNode(context2) ? context2 : null);
+              const res = node === "$event" ? event : resolvePath(path, event);
+              return unwrapSignal(res);
             }
             if (node === "_" || node.startsWith("_/") || node.startsWith("_.")) {
               const path = node.startsWith("_.") || node.startsWith("_/") ? node.slice(2) : node.slice(2);
@@ -303,6 +317,8 @@ var LightviewCDOM = function(exports) {
     // ... suffix
     PLACEHOLDER: "PLACEHOLDER",
     // _, _/path
+    THIS: "THIS",
+    // $this
     EVENT: "EVENT",
     // $event, $event.target
     EOF: "EOF"
@@ -423,6 +439,16 @@ var LightviewCDOM = function(exports) {
           }
         }
         tokens.push({ type: TokenType.PLACEHOLDER, value: placeholder });
+        continue;
+      }
+      if (expr.slice(i, i + 5) === "$this") {
+        let thisPath = "$this";
+        i += 5;
+        while (i < len2 && /[a-zA-Z0-9_./]/.test(expr[i])) {
+          thisPath += expr[i];
+          i++;
+        }
+        tokens.push({ type: TokenType.THIS, value: thisPath });
         continue;
       }
       if (expr.slice(i, i + 6) === "$event") {
@@ -595,6 +621,10 @@ var LightviewCDOM = function(exports) {
         this.consume();
         return { type: "Placeholder", value: tok.value };
       }
+      if (tok.type === TokenType.THIS) {
+        this.consume();
+        return { type: "This", value: tok.value };
+      }
       if (tok.type === TokenType.EVENT) {
         this.consume();
         return { type: "Event", value: tok.value };
@@ -630,8 +660,17 @@ var LightviewCDOM = function(exports) {
           return resolvePath(path, item);
         });
       }
+      case "This": {
+        return new LazyValue((context2) => {
+          const node = (context2 == null ? void 0 : context2.__node__) || context2;
+          if (ast.value === "$this") return node;
+          const path = ast.value.startsWith("$this.") ? ast.value.slice(6) : ast.value.slice(6);
+          return resolvePath(path, node);
+        });
+      }
       case "Event": {
-        return new LazyValue((event) => {
+        return new LazyValue((context2) => {
+          const event = (context2 == null ? void 0 : context2.$event) || (context2 == null ? void 0 : context2.event) || context2;
           if (ast.value === "$event") return event;
           const path = ast.value.startsWith("$event.") ? ast.value.slice(7) : ast.value.slice(7);
           return resolvePath(path, event);
@@ -770,7 +809,7 @@ var LightviewCDOM = function(exports) {
           return helper(...finalArgs);
         });
       }
-      const result = helper(...resolvedArgs);
+      const result = helper.apply((context == null ? void 0 : context.__node__) || null, resolvedArgs);
       return unwrapSignal(result);
     }
     return unwrapSignal(resolvePath(expr, context));
@@ -1449,6 +1488,21 @@ var LightviewCDOM = function(exports) {
     if (typeof current === "object" && current !== null) return set(target, {});
     return set(target, null);
   };
+  function $state(val, options) {
+    if (globalThis.Lightview) {
+      const finalOptions = typeof options === "string" ? { name: options } : options;
+      return globalThis.Lightview.state(val, finalOptions);
+    }
+    throw new Error("JPRX: $state requires a UI library implementation.");
+  }
+  function $signal(val, options) {
+    if (globalThis.Lightview) {
+      const finalOptions = typeof options === "string" ? { name: options } : options;
+      return globalThis.Lightview.signal(val, finalOptions);
+    }
+    throw new Error("JPRX: $signal requires a UI library implementation.");
+  }
+  const $bind = (path, options) => ({ __JPRX_BIND__: true, path, options });
   const registerStateHelpers = (register) => {
     const opts = { pathAware: true };
     register("set", set, opts);
@@ -1462,6 +1516,9 @@ var LightviewCDOM = function(exports) {
     register("pop", pop, opts);
     register("assign", assign, opts);
     register("clear", clear, opts);
+    register("state", $state);
+    register("signal", $signal);
+    register("bind", $bind);
   };
   const fetchHelper = (url, options = {}) => {
     const fetchOptions = { ...options };
@@ -1490,281 +1547,27 @@ var LightviewCDOM = function(exports) {
   const _LV = globalThis.__LIGHTVIEW_INTERNALS__ || (globalThis.__LIGHTVIEW_INTERNALS__ = {
     currentEffect: null,
     registry: /* @__PURE__ */ new Map(),
-    dependencyMap: /* @__PURE__ */ new WeakMap()
-    // Tracking signals -> subscribers
+    // Global name -> Signal/Proxy
+    localRegistries: /* @__PURE__ */ new WeakMap(),
+    // Object/Element -> Map(name -> Signal/Proxy)
+    futureSignals: /* @__PURE__ */ new Map(),
+    // name -> Set of (signal) => void
+    schemas: /* @__PURE__ */ new Map(),
+    // name -> Schema (Draft 7+ or Shorthand)
+    parents: /* @__PURE__ */ new WeakMap(),
+    // Proxy -> Parent (Proxy/Element)
+    helpers: /* @__PURE__ */ new Map(),
+    // name -> function (used for transforms and expressions)
+    hooks: {
+      validate: (value, schema) => true
+      // Hook for extensions (like JPRX) to provide full validation
+    }
   });
-  const signal = (initialValue, optionsOrName) => {
-    let name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
-    const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
-    if (name && storage) {
-      try {
-        const stored = storage.getItem(name);
-        if (stored !== null) {
-          initialValue = JSON.parse(stored);
-        }
-      } catch (e) {
-      }
-    }
-    let value = initialValue;
-    const subscribers = /* @__PURE__ */ new Set();
-    const f = (...args) => {
-      if (args.length === 0) return f.value;
-      f.value = args[0];
-    };
-    Object.defineProperty(f, "value", {
-      get() {
-        if (_LV.currentEffect) {
-          subscribers.add(_LV.currentEffect);
-          _LV.currentEffect.dependencies.add(subscribers);
-        }
-        return value;
-      },
-      set(newValue) {
-        if (value !== newValue) {
-          value = newValue;
-          if (name && storage) {
-            try {
-              storage.setItem(name, JSON.stringify(value));
-            } catch (e) {
-            }
-          }
-          [...subscribers].forEach((effect2) => effect2());
-        }
-      }
-    });
-    if (name) {
-      if (_LV.registry.has(name)) {
-        if (_LV.registry.get(name) !== f) {
-          throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
-        }
-      } else {
-        _LV.registry.set(name, f);
-      }
-    }
-    return f;
-  };
-  const getSignal = (name, defaultValue) => {
-    if (!_LV.registry.has(name) && defaultValue !== void 0) {
-      return signal(defaultValue, name);
-    }
-    return _LV.registry.get(name);
-  };
-  signal.get = getSignal;
-  const effect = (fn) => {
-    const execute = () => {
-      if (!execute.active || execute.running) return;
-      execute.dependencies.forEach((dep) => dep.delete(execute));
-      execute.dependencies.clear();
-      execute.running = true;
-      _LV.currentEffect = execute;
-      try {
-        fn();
-      } finally {
-        _LV.currentEffect = null;
-        execute.running = false;
-      }
-    };
-    execute.active = true;
-    execute.running = false;
-    execute.dependencies = /* @__PURE__ */ new Set();
-    execute.stop = () => {
-      execute.dependencies.forEach((dep) => dep.delete(execute));
-      execute.dependencies.clear();
-      execute.active = false;
-    };
-    execute();
-    return execute;
-  };
-  const getRegistry = () => _LV.registry;
-  const stateCache = /* @__PURE__ */ new WeakMap();
-  const stateSignals = /* @__PURE__ */ new WeakMap();
-  const parents = /* @__PURE__ */ new WeakMap();
+  const internals = _LV;
+  const { parents, schemas, hooks } = internals;
   const protoMethods = (proto, test) => Object.getOwnPropertyNames(proto).filter((k) => typeof proto[k] === "function" && test(k));
-  const DATE_TRACKING = protoMethods(Date.prototype, (k) => /^(to|get|valueOf)/.test(k));
-  const DATE_MUTATING = protoMethods(Date.prototype, (k) => /^set/.test(k));
-  const ARRAY_TRACKING = [
-    "map",
-    "forEach",
-    "filter",
-    "find",
-    "findIndex",
-    "some",
-    "every",
-    "reduce",
-    "reduceRight",
-    "includes",
-    "indexOf",
-    "lastIndexOf",
-    "join",
-    "slice",
-    "concat",
-    "flat",
-    "flatMap",
-    "at",
-    "entries",
-    "keys",
-    "values"
-  ];
-  const ARRAY_MUTATING = ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"];
-  const ARRAY_ITERATION = ["map", "forEach", "filter", "find", "findIndex", "some", "every", "flatMap"];
-  const getOrSet = (map2, key, factory) => {
-    let v = map2.get(key);
-    if (!v) {
-      v = factory();
-      map2.set(key, v);
-    }
-    return v;
-  };
-  const proxyGet = (target, prop, receiver, signals) => {
-    if (prop === "__parent__") return parents.get(receiver);
-    if (!signals.has(prop)) {
-      signals.set(prop, signal(Reflect.get(target, prop, receiver)));
-    }
-    const signal$1 = signals.get(prop);
-    const val = signal$1.value;
-    if (typeof val === "object" && val !== null) {
-      const childProxy = state(val);
-      parents.set(childProxy, receiver);
-      return childProxy;
-    }
-    return val;
-  };
-  const proxySet = (target, prop, value, receiver, signals) => {
-    if (!signals.has(prop)) {
-      signals.set(prop, signal(Reflect.get(target, prop, receiver)));
-    }
-    const success = Reflect.set(target, prop, value, receiver);
-    const signal$1 = signals.get(prop);
-    if (success && signal$1) signal$1.value = value;
-    return success;
-  };
-  const createSpecialProxy = (obj, monitor, trackingProps = []) => {
-    const signals = getOrSet(stateSignals, obj, () => /* @__PURE__ */ new Map());
-    if (!signals.has(monitor)) {
-      const initialValue = typeof obj[monitor] === "function" ? obj[monitor].call(obj) : obj[monitor];
-      signals.set(monitor, signal(initialValue));
-    }
-    const isDate = obj instanceof Date;
-    const isArray = Array.isArray(obj);
-    const trackingMethods = isDate ? DATE_TRACKING : isArray ? ARRAY_TRACKING : trackingProps;
-    const mutatingMethods = isDate ? DATE_MUTATING : isArray ? ARRAY_MUTATING : [];
-    return new Proxy(obj, {
-      get(target, prop, receiver) {
-        if (prop === "__parent__") return parents.get(receiver);
-        const value = target[prop];
-        if (typeof value === "function") {
-          const isTracking = trackingMethods.includes(prop);
-          const isMutating = mutatingMethods.includes(prop);
-          return function(...args) {
-            if (isTracking) {
-              const sig = signals.get(monitor);
-              if (sig) void sig.value;
-            }
-            const startValue = typeof target[monitor] === "function" ? target[monitor].call(target) : target[monitor];
-            if (isArray && ARRAY_ITERATION.includes(prop) && typeof args[0] === "function") {
-              const originalCallback = args[0];
-              args[0] = function(element, index2, array) {
-                const wrappedElement = typeof element === "object" && element !== null ? state(element) : element;
-                if (wrappedElement && typeof wrappedElement === "object") {
-                  parents.set(wrappedElement, receiver);
-                }
-                return originalCallback.call(this, wrappedElement, index2, array);
-              };
-            }
-            const result = value.apply(target, args);
-            const endValue = typeof target[monitor] === "function" ? target[monitor].call(target) : target[monitor];
-            if (startValue !== endValue || isMutating) {
-              const sig = signals.get(monitor);
-              if (sig && sig.value !== endValue) {
-                sig.value = endValue;
-              }
-            }
-            return result;
-          };
-        }
-        if (prop === monitor) {
-          const sig = signals.get(monitor);
-          return sig ? sig.value : Reflect.get(target, prop, receiver);
-        }
-        if (isArray && !isNaN(parseInt(prop))) {
-          const monitorSig = signals.get(monitor);
-          if (monitorSig) void monitorSig.value;
-        }
-        return proxyGet(target, prop, receiver, signals);
-      },
-      set(target, prop, value, receiver) {
-        if (prop === monitor) {
-          const success = Reflect.set(target, prop, value, receiver);
-          if (success) {
-            const sig = signals.get(monitor);
-            if (sig) sig.value = value;
-          }
-          return success;
-        }
-        return proxySet(target, prop, value, receiver, signals);
-      }
-    });
-  };
-  const state = (obj, optionsOrName) => {
-    if (typeof obj !== "object" || obj === null) return obj;
-    const name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
-    const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
-    if (name && storage) {
-      try {
-        const item = storage.getItem(name);
-        if (item) {
-          const loaded = JSON.parse(item);
-          Array.isArray(obj) && Array.isArray(loaded) ? (obj.length = 0, obj.push(...loaded)) : Object.assign(obj, loaded);
-        }
-      } catch (e) {
-      }
-    }
-    let proxy = stateCache.get(obj);
-    if (!proxy) {
-      const isArray = Array.isArray(obj), isDate = obj instanceof Date;
-      const isSpecial = isArray || isDate;
-      const monitor = isArray ? "length" : isDate ? "getTime" : null;
-      if (isSpecial || !(obj instanceof RegExp || obj instanceof Map || obj instanceof Set || obj instanceof WeakMap || obj instanceof WeakSet)) {
-        proxy = isSpecial ? createSpecialProxy(obj, monitor) : new Proxy(obj, {
-          get(t, p, r) {
-            if (p === "__parent__") return parents.get(r);
-            return proxyGet(t, p, r, getOrSet(stateSignals, t, () => /* @__PURE__ */ new Map()));
-          },
-          set(t, p, v, r) {
-            return proxySet(t, p, v, r, getOrSet(stateSignals, t, () => /* @__PURE__ */ new Map()));
-          }
-        });
-        stateCache.set(obj, proxy);
-      } else return obj;
-    }
-    if (name && storage) {
-      effect(() => {
-        try {
-          storage.setItem(name, JSON.stringify(proxy));
-        } catch (e) {
-        }
-      });
-    }
-    if (name) {
-      const registry = getRegistry();
-      if (registry.has(name)) {
-        if (registry.get(name) !== proxy) {
-          throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
-        }
-      } else {
-        registry.set(name, proxy);
-      }
-    }
-    return proxy;
-  };
-  const getState = (name, defaultValue) => {
-    const registry = getRegistry();
-    if (!registry.has(name) && defaultValue !== void 0) {
-      return state(defaultValue, name);
-    }
-    return registry.get(name);
-  };
-  state.get = getState;
+  protoMethods(Date.prototype, (k) => /^(to|get|valueOf)/.test(k));
+  protoMethods(Date.prototype, (k) => /^set/.test(k));
   registerMathHelpers(registerHelper);
   registerLogicHelpers(registerHelper);
   registerStringHelpers(registerHelper);
@@ -1791,153 +1594,55 @@ var LightviewCDOM = function(exports) {
   registerOperator("gte", ">=", "infix", 40);
   registerOperator("lte", "<=", "infix", 40);
   registerOperator("neq", "!=", "infix", 40);
-  const localStates = /* @__PURE__ */ new WeakMap();
   const getContext = (node, event = null) => {
-    const chain = [];
-    let cur = node;
-    const ShadowRoot = globalThis.ShadowRoot;
-    while (cur) {
-      const local = localStates.get(cur) || (cur && typeof cur === "object" ? cur.__state__ : null);
-      if (local) chain.unshift(local);
-      cur = cur.parentElement || (cur && typeof cur === "object" ? cur.__parent__ : null) || (ShadowRoot && cur.parentNode instanceof ShadowRoot ? cur.parentNode.host : null);
-    }
-    const globalRegistry = getRegistry();
-    const handler = {
-      get(target, prop, receiver) {
-        var _a;
+    return new Proxy({}, {
+      get(_, prop) {
         if (prop === "$event" || prop === "event") return event;
-        if (prop === "__parent__") return void 0;
-        for (let i = chain.length - 1; i >= 0; i--) {
-          const s = chain[i];
-          if (prop in s) return s[prop];
-        }
-        if (globalRegistry && globalRegistry.has(prop)) return unwrapSignal(globalRegistry.get(prop));
-        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
-        if (globalState && prop in globalState) return unwrapSignal(globalState[prop]);
-        return void 0;
+        if (prop === "$this" || prop === "this" || prop === "__node__") return node;
+        return unwrapSignal(globalThis.Lightview.getState(prop, { scope: node }));
       },
-      set(target, prop, value, receiver) {
-        var _a;
-        for (let i = chain.length - 1; i >= 0; i--) {
-          const s = chain[i];
-          if (prop in s) {
-            s[prop] = value;
-            return true;
-          }
-        }
-        if (chain.length > 0) {
-          chain[chain.length - 1][prop] = value;
+      set(_, prop, value) {
+        const res = globalThis.Lightview.getState(prop, { scope: node });
+        if (res && (typeof res === "object" || typeof res === "function") && "value" in res) {
+          res.value = value;
           return true;
-        }
-        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
-        if (globalState && prop in globalState) {
-          globalState[prop] = value;
-          return true;
-        }
-        if (globalRegistry && globalRegistry.has(prop)) {
-          const s = globalRegistry.get(prop);
-          if (s && (typeof s === "object" || typeof s === "function") && "value" in s) {
-            s.value = value;
-            return true;
-          }
         }
         return false;
-      },
-      has(target, prop) {
-        var _a;
-        const exists = prop === "$event" || prop === "event" || !!chain.find((s) => prop in s);
-        const inGlobal = ((_a = globalThis.Lightview) == null ? void 0 : _a.state) && prop in globalThis.Lightview.state || globalRegistry && globalRegistry.has(prop);
-        return exists || inGlobal;
-      },
-      ownKeys(target) {
-        var _a;
-        const keys = /* @__PURE__ */ new Set();
-        if (event) {
-          keys.add("$event");
-          keys.add("event");
-        }
-        for (const s of chain) {
-          for (const key in s) keys.add(key);
-        }
-        const globalState = (_a = globalThis.Lightview) == null ? void 0 : _a.state;
-        if (globalState) {
-          for (const key in globalState) keys.add(key);
-        }
-        return Array.from(keys);
-      },
-      getOwnPropertyDescriptor(target, prop) {
-        return { enumerable: true, configurable: true };
-      }
-    };
-    return new Proxy({}, handler);
-  };
-  const handleCDOMState = (node) => {
-    var _a;
-    const attr = node["cdom-state"] || node.getAttribute && node.getAttribute("cdom-state");
-    if (!attr || localStates.has(node)) return;
-    try {
-      const data = typeof attr === "object" ? attr : JSON.parse(attr);
-      const s = state(data);
-      localStates.set(node, s);
-      if (node && typeof node === "object") {
-        node.__state__ = s;
-      }
-    } catch (e) {
-      (_a = globalThis.console) == null ? void 0 : _a.error("LightviewCDOM: Failed to parse cdom-state", e);
-    }
-  };
-  const handleCDOMBind = (node) => {
-    const path = node["cdom-bind"] || node.getAttribute("cdom-bind");
-    if (!path) return;
-    const type = node.type || "";
-    const tagName = node.tagName.toLowerCase();
-    let prop = "value";
-    let event = "input";
-    if (type === "checkbox" || type === "radio") {
-      prop = "checked";
-      event = "change";
-    } else if (tagName === "select") {
-      event = "change";
-    }
-    const context = getContext(node);
-    let target = resolvePathAsContext(path, context);
-    if (target && target.isBindingTarget && target.value === void 0) {
-      const val = node[prop];
-      if (val !== void 0 && val !== "") {
-        set(context, { [target.key]: val });
-        target = resolvePathAsContext(path, context);
-      }
-    }
-    effect(() => {
-      const val = unwrapSignal(target);
-      if (node[prop] !== val) {
-        node[prop] = val === void 0 ? "" : val;
       }
     });
-    node.addEventListener(event, () => {
-      const val = node[prop];
-      if (target && target.isBindingTarget) {
-        target.value = val;
-      } else {
-        set(context, { [path]: val });
+  };
+  globalThis.Lightview.hooks.processAttribute = (domNode, key, value) => {
+    if (value == null ? void 0 : value.__JPRX_BIND__) {
+      const { path, options } = value;
+      const type = domNode.type || "";
+      const tagName = domNode.tagName.toLowerCase();
+      let prop = "value";
+      let event = "input";
+      if (type === "checkbox" || type === "radio") {
+        prop = "checked";
+        event = "change";
+      } else if (tagName === "select") {
+        event = "change";
       }
-    });
+      const res = globalThis.Lightview.get(path.replace(/^\$/, ""), { scope: domNode });
+      const runner = globalThis.Lightview.effect(() => {
+        const val = unwrapSignal(res);
+        if (domNode[prop] !== val) {
+          domNode[prop] = val === void 0 ? "" : val;
+        }
+      });
+      globalThis.Lightview.internals.trackEffect(domNode, runner);
+      domNode.addEventListener(event, () => {
+        if (res && "value" in res) res.value = domNode[prop];
+      });
+      return unwrapSignal(res) ?? domNode[prop];
+    }
+    return void 0;
   };
   const activate = (root = document.body) => {
-    const walk = (node) => {
-      if (node.nodeType === 1) {
-        if (node.hasAttribute("cdom-state")) handleCDOMState(node);
-        if (node.hasAttribute("cdom-bind")) handleCDOMBind(node);
-      }
-      let child = node.firstChild;
-      while (child) {
-        walk(child);
-        child = child.nextSibling;
-      }
-    };
-    walk(root);
   };
   const hydrate = (node, parent = null) => {
+    var _a, _b, _c;
     if (!node) return node;
     if (typeof node === "string" && node.startsWith("$")) {
       return parseExpression(node, parent);
@@ -1945,123 +1650,50 @@ var LightviewCDOM = function(exports) {
     if (Array.isArray(node)) {
       return node.map((item) => hydrate(item, parent));
     }
-    if (node instanceof String) {
-      return node.toString();
-    }
+    if (node instanceof String) return node.toString();
     if (typeof node === "object" && node !== null) {
       if (parent && !("__parent__" in node)) {
-        Object.defineProperty(node, "__parent__", {
-          value: parent,
-          enumerable: false,
-          writable: true,
-          configurable: true
-        });
+        Object.defineProperty(node, "__parent__", { value: parent, enumerable: false, writable: true });
+        (_c = (_b = (_a = globalThis.Lightview) == null ? void 0 : _a.internals) == null ? void 0 : _b.parents) == null ? void 0 : _c.set(node, parent);
       }
       if (!node.tag) {
         let potentialTag = null;
+        const reserved = ["children", "attributes", "tag", "__parent__"];
         for (const key in node) {
-          if (key === "children" || key === "attributes" || key === "tag" || key.startsWith("cdom-") || key.startsWith("on") || key === "__parent__") {
-            continue;
-          }
-          const attrNames = [
-            // Form/input attributes
-            "type",
-            "name",
-            "value",
-            "placeholder",
-            "step",
-            "min",
-            "max",
-            "pattern",
-            "disabled",
-            "checked",
-            "selected",
-            "readonly",
-            "required",
-            "multiple",
-            "rows",
-            "cols",
-            "size",
-            "maxlength",
-            "minlength",
-            "autocomplete",
-            // Common element attributes
-            "id",
-            "class",
-            "className",
-            "style",
-            "title",
-            "tabindex",
-            "role",
-            "href",
-            "src",
-            "alt",
-            "width",
-            "height",
-            "target",
-            "rel",
-            // Data attributes
-            "data",
-            "label",
-            "text",
-            "description",
-            "content",
-            // Common data property names
-            "price",
-            "qty",
-            "items",
-            "count",
-            "total",
-            "amount",
-            "url"
-          ];
-          if (attrNames.includes(key)) {
-            continue;
-          }
+          if (reserved.includes(key) || key.startsWith("on")) continue;
           potentialTag = key;
           break;
         }
         if (potentialTag) {
           const content = node[potentialTag];
-          if (content !== void 0 && content !== null) {
-            node.tag = potentialTag;
-            if (Array.isArray(content)) {
-              node.children = content;
-            } else if (typeof content === "object") {
-              node.attributes = node.attributes || {};
-              for (const k in content) {
-                if (k === "children") {
-                  node.children = content[k];
-                } else if (k.startsWith("cdom-")) {
-                  node[k] = content[k];
-                } else {
-                  node.attributes[k] = content[k];
-                }
-              }
-            } else {
-              node.children = [content];
+          node.tag = potentialTag;
+          if (Array.isArray(content)) {
+            node.children = content;
+          } else if (typeof content === "object") {
+            node.attributes = node.attributes || {};
+            for (const k in content) {
+              if (k === "children") node.children = content[k];
+              else node.attributes[k] = content[k];
             }
-            delete node[potentialTag];
-          }
+          } else node.children = [content];
+          delete node[potentialTag];
         }
-      }
-      if (node["cdom-state"]) {
-        handleCDOMState(node);
       }
       for (const key in node) {
         const value = node[key];
-        if (key === "cdom-state") {
-          continue;
-        }
         if (typeof value === "string" && value.startsWith("$")) {
-          if (key.startsWith("on")) {
-            node[key] = (event) => {
-              const element = event.currentTarget;
-              const context = getContext(element, event);
+          if (key === "onmount" || key === "onunmount") {
+            node[key] = (domNode) => {
+              const context = getContext(domNode);
               const result = resolveExpression(value, context);
-              if (result && typeof result === "object" && result.isLazy && typeof result.resolve === "function") {
-                return result.resolve(event);
-              }
+              if (result == null ? void 0 : result.isLazy) return result.resolve(domNode);
+              return result;
+            };
+          } else if (key.startsWith("on")) {
+            node[key] = (event) => {
+              const context = getContext(event.currentTarget, event);
+              const result = resolveExpression(value, context);
+              if (result == null ? void 0 : result.isLazy) return result.resolve(event);
               return result;
             };
           } else if (key === "children") {
@@ -2075,23 +1707,17 @@ var LightviewCDOM = function(exports) {
             if (typeof attrValue === "string" && attrValue.startsWith("$")) {
               if (attrKey.startsWith("on")) {
                 value[attrKey] = (event) => {
-                  const element = event.currentTarget;
-                  const context = getContext(element, event);
+                  const context = getContext(event.currentTarget, event);
                   const result = resolveExpression(attrValue, context);
-                  if (result && typeof result === "object" && result.isLazy && typeof result.resolve === "function") {
-                    return result.resolve(event);
-                  }
+                  if (result == null ? void 0 : result.isLazy) return result.resolve(event);
                   return result;
                 };
               } else {
                 value[attrKey] = parseExpression(attrValue, node);
               }
-            }
+            } else value[attrKey] = hydrate(attrValue, node);
           }
-          node[key] = value;
-        } else {
-          node[key] = hydrate(value, node);
-        }
+        } else node[key] = hydrate(value, node);
       }
       return node;
     }
@@ -2108,8 +1734,10 @@ var LightviewCDOM = function(exports) {
     parseJPRX,
     unwrapSignal,
     getContext,
-    handleCDOMState,
-    handleCDOMBind,
+    handleCDOMState: () => {
+    },
+    handleCDOMBind: () => {
+    },
     activate,
     hydrate,
     version: "1.0.0"
@@ -2120,8 +1748,6 @@ var LightviewCDOM = function(exports) {
   exports.activate = activate;
   exports.default = LightviewCDOM2;
   exports.getContext = getContext;
-  exports.handleCDOMBind = handleCDOMBind;
-  exports.handleCDOMState = handleCDOMState;
   exports.hydrate = hydrate;
   Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
   return exports;

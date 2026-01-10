@@ -1,0 +1,199 @@
+<!-- SEO-friendly SPA Shim -->
+<script src="/lightview-router.js?base=/index.html"></script>
+
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="./nav.html"></aside>
+
+    <main class="docs-content">
+        <h1>Schemas & Validation</h1>
+        <p>
+            Lightview provides an industrial-strength schema registry and validation engine for managing complex
+            reactive
+            state. It ensures your data remains clean, consistent, and "future-proofed."
+        </p>
+
+        <h2>The Goal: Data Integrity</h2>
+        <p>
+            In a reactive application, "dirty" data (like a string accidentally saved as a number) can cause cascades of
+            errors in computed signals and UI templates. Schemas solve this by providing a single source of truth for
+            what your state should look like.
+        </p>
+
+        <h2>Core Behaviors</h2>
+        <p>
+            Standard Lightview reactivity (in <code>lightview.js</code>) supports three built-in schema behaviors that
+            handle the basic structure of your state:
+        </p>
+        <ul style="margin-bottom: 2rem;">
+            <li><strong>"auto"</strong>: Infers a fixed schema from the initial value. Prevents adding new properties
+                and enforces strict type checking.</li>
+            <li><strong>"dynamic"</strong>: Like auto, but allows the state object to grow with new properties.</li>
+            <li><strong>"polymorphic"</strong>: The most powerful setting. It includes <strong>"dynamic"</strong>
+                behavior
+                (allowing growth) and automatically <strong>coerces</strong> values to match the initial type (e.g.,
+                setting "100" to
+                a number property will save it as the number 100).</li>
+        </ul>
+
+        <h2>JSON Schema Lite (Lightview X)</h2>
+        <p>
+            When you load <code>lightview-x.js</code>, the schema engine is upgraded to a "JSON Schema Lite" validator.
+            It supports standard Draft 7 keywords while remaining incredibly lightweight.
+        </p>
+
+        <h3>Supported Keywords</h3>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Keywords</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>String</strong></td>
+                    <td><code>minLength</code>, <code>maxLength</code>, <code>pattern</code>,
+                        <code>format: 'email'</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Number</strong></td>
+                    <td><code>minimum</code>, <code>maximum</code>, <code>multipleOf</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Object</strong></td>
+                    <td><code>required</code>, <code>properties</code>, <code>additionalProperties: false</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Array</strong></td>
+                    <td><code>items</code>, <code>minItems</code>, <code>maxItems</code>, <code>uniqueItems</code></td>
+                </tr>
+                <tr>
+                    <td><strong>General</strong></td>
+                    <td><code>type</code>, <code>enum</code>, <code>const</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="transformations">Transformation Helpers</h2>
+        <p>
+            Unlike industry-standard validators (which only allow/disallow data), Lightview's engine supports
+            <strong>declarative transformations</strong>. This allows you to specify how data should be "cleaned" before
+            it hits the state.
+        </p>
+        <pre><code>const UserSchema = {
+    type: "object",
+    properties: {
+        username: { 
+            type: "string", 
+            transform: "lower"  // Using a registered helper name
+        },
+        salary: { 
+            type: "number",
+            transform: (v) => Math.round(v) // Using an inline function
+        }
+    }
+};
+
+const user = state({ username: 'ALICE', salary: 50212.55 }, { schema: UserSchema });
+// user.username is 'alice' (via "lower")
+// user.salary is 50213 (via inline function)</code></pre>
+
+        <p>
+            When using a <strong>string</strong> for the transform (like <code>"lower"</code>), Lightview looks for a
+            matching function in the global registry. This requires that the helper has been registered via JPRX
+            (requires <code>lightview-cdom.js</code>) or manually in <code>Lightview.helpers</code>.
+        </p>
+
+        <div class="code-block info"
+            style="border-left: 4px solid #3b82f6; padding: 1rem; background: #eff6ff; margin-bottom: 2rem;">
+            <strong>🔍 Naming Tip:</strong> When using string names for transforms, use the <strong>bare helper
+                name</strong> (e.g., <code>"lower"</code>, <code>"round"</code>). You do <strong>not</strong> need a
+            leading <code>$</code>.
+        </div>
+
+        <h3>Loading Helpers</h3>
+        <p>
+            When using the <code>transform</code> keyword, Lightview searches for the named function in the following
+            order:
+        </p>
+        <ol style="margin-bottom: 2rem;">
+            <li><strong>JPRX Helpers</strong>: Any helper registered via <code>registerHelper</code> (requires
+                <code>lightview-cdom.js</code>).
+            </li>
+            <li><strong>Public API</strong>: Functions attached to <code>Lightview.helpers</code>.</li>
+            <li><strong>Inline</strong>: You can also pass a function directly to the <code>transform</code> property.
+            </li>
+        </ol>
+
+        <div class="code-block info"
+            style="border-left: 4px solid #3b82f6; padding: 1rem; background: #eff6ff; margin-bottom: 2rem;">
+            <strong>💡 Note:</strong> To use JPRX helpers (like <code>math</code>, <code>string</code>, or
+            <code>array</code> helpers) for state transformations, you must ensure <code>lightview-cdom.js</code> is
+            loaded before your state is initialized.
+        </div>
+
+        <h2 id="comparison">Lite vs. Full Validators</h2>
+        <p>
+            Why use our "Lite" engine instead of a full validator like <strong>Ajv</strong>?
+        </p>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Lightview Lite</th>
+                    <th>Full (Ajv, etc.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Size</strong></td>
+                    <td>~2KB (built-in)</td>
+                    <td>~40KB+ (external)</td>
+                </tr>
+                <tr>
+                    <td><strong>Transformation</strong></td>
+                    <td>✅ First-class support</td>
+                    <td>❌ Not supported (Validators only)</td>
+                </tr>
+                <tr>
+                    <td><strong>Performance</strong></td>
+                    <td>🚀 Optimized for UI cycles</td>
+                    <td>Heavy overhead for simple checks</td>
+                </tr>
+                <tr>
+                    <td><strong>Spec Compliance</strong></td>
+                    <td>Basic Draft 7 (No <code>$ref</code>)</td>
+                    <td>100% Full Specification</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Using a Full Validator</h3>
+        <p>
+            If you have complex enterprise schemas that require full specification compliance, you can swap out the
+            Lightview engine for any industry-standard validator:
+        </p>
+        <div class="code-block warning"
+            style="border-left: 4px solid #f59e0b; padding: 1rem; background: #fffbeb; margin-bottom: 2rem;">
+            <strong>⚠️ Warning:</strong> If you swap the validator, you will lose support for the declarative
+            <code>transform</code> keyword in your schemas unless your external validator also supports it.
+        </div>
+        <pre><code>import Ajv from "ajv";
+const ajv = new Ajv();
+
+// Swap the validation hook
+Lightview.internals.hooks.validate = (value, schema) => {
+    const valid = ajv.validate(schema, value);
+    if (!valid) throw new Error(ajv.errorsText());
+    return true;
+};</code></pre>
+
+        <h2>Summary</h2>
+        <p>
+            Use <strong>Schemas</strong> whenever you are building forms, handling API data, or managing critical
+            application settings. By letting the schema handle the "cleaning" (transformation) and "guardrails"
+            (validation), your application logic remains simple and focused on user experience.
+        </p>
+    </main>
+</div>

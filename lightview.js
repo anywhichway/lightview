@@ -3,27 +3,45 @@
   const _LV = globalThis.__LIGHTVIEW_INTERNALS__ || (globalThis.__LIGHTVIEW_INTERNALS__ = {
     currentEffect: null,
     registry: /* @__PURE__ */ new Map(),
-    dependencyMap: /* @__PURE__ */ new WeakMap()
-    // Tracking signals -> subscribers
+    // Global name -> Signal/Proxy
+    localRegistries: /* @__PURE__ */ new WeakMap(),
+    // Object/Element -> Map(name -> Signal/Proxy)
+    futureSignals: /* @__PURE__ */ new Map(),
+    // name -> Set of (signal) => void
+    schemas: /* @__PURE__ */ new Map(),
+    // name -> Schema (Draft 7+ or Shorthand)
+    parents: /* @__PURE__ */ new WeakMap(),
+    // Proxy -> Parent (Proxy/Element)
+    helpers: /* @__PURE__ */ new Map(),
+    // name -> function (used for transforms and expressions)
+    hooks: {
+      validate: (value, schema) => true
+      // Hook for extensions (like JPRX) to provide full validation
+    }
   });
+  const lookup = (name, scope) => {
+    let current = scope;
+    while (current && typeof current === "object") {
+      const registry2 = _LV.localRegistries.get(current);
+      if (registry2 && registry2.has(name)) return registry2.get(name);
+      current = current.parentElement || _LV.parents.get(current);
+    }
+    return _LV.registry.get(name);
+  };
   const signal = (initialValue, optionsOrName) => {
-    let name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
+    const name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
     const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
+    const scope = optionsOrName == null ? void 0 : optionsOrName.scope;
     if (name && storage) {
       try {
         const stored = storage.getItem(name);
-        if (stored !== null) {
-          initialValue = JSON.parse(stored);
-        }
+        if (stored !== null) initialValue = JSON.parse(stored);
       } catch (e) {
       }
     }
     let value = initialValue;
     const subscribers = /* @__PURE__ */ new Set();
-    const f = (...args) => {
-      if (args.length === 0) return f.value;
-      f.value = args[0];
-    };
+    const f = (...args) => args.length === 0 ? f.value : f.value = args[0];
     Object.defineProperty(f, "value", {
       get() {
         if (_LV.currentEffect) {
@@ -46,21 +64,34 @@
       }
     });
     if (name) {
-      if (_LV.registry.has(name)) {
-        if (_LV.registry.get(name) !== f) {
-          throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
-        }
-      } else {
-        _LV.registry.set(name, f);
+      const registry2 = scope && typeof scope === "object" ? _LV.localRegistries.get(scope) || _LV.localRegistries.set(scope, /* @__PURE__ */ new Map()).get(scope) : _LV.registry;
+      if (registry2 && registry2.has(name) && registry2.get(name) !== f) {
+        throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+      }
+      if (registry2) registry2.set(name, f);
+      const futures = _LV.futureSignals.get(name);
+      if (futures) {
+        futures.forEach((resolve) => resolve(f));
       }
     }
     return f;
   };
-  const getSignal = (name, defaultValue) => {
-    if (!_LV.registry.has(name) && defaultValue !== void 0) {
-      return signal(defaultValue, name);
-    }
-    return _LV.registry.get(name);
+  const getSignal = (name, defaultValueOrOptions) => {
+    const options = typeof defaultValueOrOptions === "object" && defaultValueOrOptions !== null ? defaultValueOrOptions : { defaultValue: defaultValueOrOptions };
+    const { scope, defaultValue } = options;
+    const existing = lookup(name, scope);
+    if (existing) return existing;
+    if (defaultValue !== void 0) return signal(defaultValue, { name, scope });
+    const future = signal(void 0);
+    const handler = (realSignal) => {
+      future.value = realSignal.value;
+      effect(() => {
+        future.value = realSignal.value;
+      });
+    };
+    if (!_LV.futureSignals.has(name)) _LV.futureSignals.set(name, /* @__PURE__ */ new Set());
+    _LV.futureSignals.get(name).add(handler);
+    return future;
   };
   signal.get = getSignal;
   const effect = (fn) => {
@@ -96,9 +127,66 @@
     return sig;
   };
   const getRegistry = () => _LV.registry;
+  const internals = _LV;
+  const stateCache = /* @__PURE__ */ new WeakMap();
+  const stateSignals = /* @__PURE__ */ new WeakMap();
+  const stateSchemas = /* @__PURE__ */ new WeakMap();
+  const { parents, schemas, hooks } = internals;
+  const validate = (target, prop, value, schema) => {
+    var _a, _b;
+    const current = target[prop];
+    const type = typeof current;
+    const isNew = !(prop in target);
+    let behavior = schema;
+    if (typeof schema === "object" && schema !== null) behavior = schema.type;
+    if (behavior === "auto" && isNew) throw new Error(`Lightview: Cannot add new property "${prop}" to fixed 'auto' state.`);
+    if (behavior === "polymorphic" || typeof behavior === "object" && (behavior == null ? void 0 : behavior.coerce)) {
+      if (type === "number") return Number(value);
+      if (type === "boolean") return Boolean(value);
+      if (type === "string") return String(value);
+    } else if (behavior === "auto" || behavior === "dynamic") {
+      if (!isNew && typeof value !== type) {
+        throw new Error(`Lightview: Type mismatch for "${prop}". Expected ${type}, got ${typeof value}.`);
+      }
+    }
+    if (typeof schema === "object" && schema !== null && schema.transform) {
+      const trans = schema.transform;
+      const transformFn = typeof trans === "function" ? trans : internals.helpers.get(trans) || ((_b = (_a = globalThis.Lightview) == null ? void 0 : _a.helpers) == null ? void 0 : _b[trans]);
+      if (transformFn) value = transformFn(value);
+    }
+    if (hooks.validate(value, schema) === false) {
+      throw new Error(`Lightview: Validation failed for "${prop}".`);
+    }
+    return value;
+  };
   const protoMethods = (proto, test) => Object.getOwnPropertyNames(proto).filter((k) => typeof proto[k] === "function" && test(k));
-  protoMethods(Date.prototype, (k) => /^(to|get|valueOf)/.test(k));
-  protoMethods(Date.prototype, (k) => /^set/.test(k));
+  const DATE_TRACKING = protoMethods(Date.prototype, (k) => /^(to|get|valueOf)/.test(k));
+  const DATE_MUTATING = protoMethods(Date.prototype, (k) => /^set/.test(k));
+  const ARRAY_TRACKING = [
+    "map",
+    "forEach",
+    "filter",
+    "find",
+    "findIndex",
+    "some",
+    "every",
+    "reduce",
+    "reduceRight",
+    "includes",
+    "indexOf",
+    "lastIndexOf",
+    "join",
+    "slice",
+    "concat",
+    "flat",
+    "flatMap",
+    "at",
+    "entries",
+    "keys",
+    "values"
+  ];
+  const ARRAY_MUTATING = ["push", "pop", "shift", "unshift", "splice", "sort", "reverse", "fill", "copyWithin"];
+  const ARRAY_ITERATION = ["map", "forEach", "filter", "find", "findIndex", "some", "every", "flatMap"];
   const getOrSet = (map, key, factory) => {
     let v = map.get(key);
     if (!v) {
@@ -107,6 +195,169 @@
     }
     return v;
   };
+  const proxyGet = (target, prop, receiver, signals) => {
+    if (prop === "__parent__") return parents.get(receiver);
+    if (!signals.has(prop)) {
+      signals.set(prop, signal(Reflect.get(target, prop, receiver)));
+    }
+    const signal$1 = signals.get(prop);
+    const val = signal$1.value;
+    if (typeof val === "object" && val !== null) {
+      const childProxy = state(val);
+      parents.set(childProxy, receiver);
+      return childProxy;
+    }
+    return val;
+  };
+  const proxySet = (target, prop, value, receiver, signals) => {
+    const schema = stateSchemas.get(receiver);
+    const validatedValue = schema ? validate(target, prop, value, schema) : value;
+    if (!signals.has(prop)) {
+      signals.set(prop, signal(Reflect.get(target, prop, receiver)));
+    }
+    const success = Reflect.set(target, prop, validatedValue, receiver);
+    const signal$1 = signals.get(prop);
+    if (success && signal$1) signal$1.value = validatedValue;
+    return success;
+  };
+  const createSpecialProxy = (obj, monitor, trackingProps = []) => {
+    const signals = getOrSet(stateSignals, obj, () => /* @__PURE__ */ new Map());
+    if (!signals.has(monitor)) {
+      const initialValue = typeof obj[monitor] === "function" ? obj[monitor].call(obj) : obj[monitor];
+      signals.set(monitor, signal(initialValue));
+    }
+    const isDate = obj instanceof Date;
+    const isArray = Array.isArray(obj);
+    const trackingMethods = isDate ? DATE_TRACKING : isArray ? ARRAY_TRACKING : trackingProps;
+    const mutatingMethods = isDate ? DATE_MUTATING : isArray ? ARRAY_MUTATING : [];
+    return new Proxy(obj, {
+      get(target, prop, receiver) {
+        if (prop === "__parent__") return parents.get(receiver);
+        const value = target[prop];
+        if (typeof value === "function") {
+          const isTracking = trackingMethods.includes(prop);
+          const isMutating = mutatingMethods.includes(prop);
+          return function(...args) {
+            if (isTracking) {
+              const sig = signals.get(monitor);
+              if (sig) void sig.value;
+            }
+            const startValue = typeof target[monitor] === "function" ? target[monitor].call(target) : target[monitor];
+            if (isArray && ARRAY_ITERATION.includes(prop) && typeof args[0] === "function") {
+              const originalCallback = args[0];
+              args[0] = function(element2, index, array) {
+                const wrappedElement = typeof element2 === "object" && element2 !== null ? state(element2) : element2;
+                if (wrappedElement && typeof wrappedElement === "object") {
+                  parents.set(wrappedElement, receiver);
+                }
+                return originalCallback.call(this, wrappedElement, index, array);
+              };
+            }
+            const result = value.apply(target, args);
+            const endValue = typeof target[monitor] === "function" ? target[monitor].call(target) : target[monitor];
+            if (startValue !== endValue || isMutating) {
+              const sig = signals.get(monitor);
+              if (sig && sig.value !== endValue) {
+                sig.value = endValue;
+              }
+            }
+            return result;
+          };
+        }
+        if (prop === monitor) {
+          const sig = signals.get(monitor);
+          return sig ? sig.value : Reflect.get(target, prop, receiver);
+        }
+        if (isArray && !isNaN(parseInt(prop))) {
+          const monitorSig = signals.get(monitor);
+          if (monitorSig) void monitorSig.value;
+        }
+        return proxyGet(target, prop, receiver, signals);
+      },
+      set(target, prop, value, receiver) {
+        if (prop === monitor) {
+          const success = Reflect.set(target, prop, value, receiver);
+          if (success) {
+            const sig = signals.get(monitor);
+            if (sig) sig.value = value;
+          }
+          return success;
+        }
+        return proxySet(target, prop, value, receiver, signals);
+      }
+    });
+  };
+  const state = (obj, optionsOrName) => {
+    if (typeof obj !== "object" || obj === null) return obj;
+    const name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
+    const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
+    const scope = optionsOrName == null ? void 0 : optionsOrName.scope;
+    const schema = optionsOrName == null ? void 0 : optionsOrName.schema;
+    if (name && storage) {
+      try {
+        const item = storage.getItem(name);
+        if (item) {
+          const loaded = JSON.parse(item);
+          Array.isArray(obj) && Array.isArray(loaded) ? (obj.length = 0, obj.push(...loaded)) : Object.assign(obj, loaded);
+        }
+      } catch (e) {
+      }
+    }
+    let proxy = stateCache.get(obj);
+    if (!proxy) {
+      const isArray = Array.isArray(obj), isDate = obj instanceof Date;
+      const isSpecial = isArray || isDate;
+      const monitor = isArray ? "length" : isDate ? "getTime" : null;
+      if (isSpecial || !(obj instanceof RegExp || obj instanceof Map || obj instanceof Set || obj instanceof WeakMap || obj instanceof WeakSet)) {
+        proxy = isSpecial ? createSpecialProxy(obj, monitor) : new Proxy(obj, {
+          get(t, p, r) {
+            if (p === "__parent__") return parents.get(r);
+            return proxyGet(t, p, r, getOrSet(stateSignals, t, () => /* @__PURE__ */ new Map()));
+          },
+          set(t, p, v, r) {
+            return proxySet(t, p, v, r, getOrSet(stateSignals, t, () => /* @__PURE__ */ new Map()));
+          }
+        });
+        stateCache.set(obj, proxy);
+      } else return obj;
+    }
+    if (schema) stateSchemas.set(proxy, schema);
+    if (name && storage) {
+      effect(() => {
+        try {
+          storage.setItem(name, JSON.stringify(proxy));
+        } catch (e) {
+        }
+      });
+    }
+    if (name) {
+      const registry2 = scope && typeof scope === "object" ? internals.localRegistries.get(scope) || internals.localRegistries.set(scope, /* @__PURE__ */ new Map()).get(scope) : getRegistry();
+      if (registry2 && registry2.has(name) && registry2.get(name) !== proxy) {
+        throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+      }
+      if (registry2) registry2.set(name, proxy);
+      const futures = internals.futureSignals.get(name);
+      if (futures) {
+        futures.forEach((resolve) => resolve(proxy));
+      }
+    }
+    return proxy;
+  };
+  const getState = (name, defaultValueOrOptions) => {
+    const options = typeof defaultValueOrOptions === "object" && defaultValueOrOptions !== null ? defaultValueOrOptions : { defaultValue: defaultValueOrOptions };
+    const { scope, defaultValue } = options;
+    const existing = lookup(name, scope);
+    if (existing) return existing;
+    if (defaultValue !== void 0) return state(defaultValue, { name, scope });
+    const future = signal(void 0);
+    const handler = (realState) => {
+      future.value = realState;
+    };
+    if (!internals.futureSignals.has(name)) internals.futureSignals.set(name, /* @__PURE__ */ new Set());
+    internals.futureSignals.get(name).add(handler);
+    return future;
+  };
+  state.get = getState;
   const core = {
     get currentEffect() {
       return (globalThis.__LIGHTVIEW_INTERNALS__ || (globalThis.__LIGHTVIEW_INTERNALS__ = {})).currentEffect;
@@ -116,9 +367,9 @@
   const nodeStateFactory = () => ({ effects: [], onmount: null, onunmount: null });
   const registry = getRegistry();
   const trackEffect = (node, effectFn) => {
-    const state = getOrSet(nodeState, node, nodeStateFactory);
-    if (!state.effects) state.effects = [];
-    state.effects.push(effectFn);
+    const state2 = getOrSet(nodeState, node, nodeStateFactory);
+    if (!state2.effects) state2.effects = [];
+    state2.effects.push(effectFn);
   };
   const SHADOW_DOM_MARKER = Symbol("lightview.shadowDOM");
   const createShadowDOMMarker = (attributes, children) => ({
@@ -299,8 +550,8 @@
     const reactiveAttrs = {};
     for (let [key, value] of Object.entries(attributes)) {
       if (key === "onmount" || key === "onunmount") {
-        const state = getOrSet(nodeState, domNode, nodeStateFactory);
-        state[key] = value;
+        const state2 = getOrSet(nodeState, domNode, nodeStateFactory);
+        state2[key] = value;
         if (key === "onmount" && domNode.isConnected) {
           value(domNode);
         }
@@ -312,6 +563,26 @@
           domNode.setAttribute(key, value);
         }
         reactiveAttrs[key] = value;
+      } else if (typeof value === "object" && value !== null && Lightview.hooks.processAttribute) {
+        const processed = Lightview.hooks.processAttribute(domNode, key, value);
+        if (processed !== void 0) {
+          reactiveAttrs[key] = processed;
+        } else if (key === "style") {
+          Object.entries(value).forEach(([styleKey, styleValue]) => {
+            if (typeof styleValue === "function") {
+              const runner = effect(() => {
+                domNode.style[styleKey] = styleValue();
+              });
+              trackEffect(domNode, runner);
+            } else {
+              domNode.style[styleKey] = styleValue;
+            }
+          });
+          reactiveAttrs[key] = value;
+        } else {
+          setAttributeValue(domNode, key, value);
+          reactiveAttrs[key] = value;
+        }
       } else if (typeof value === "function") {
         const runner = effect(() => {
           const result = value();
@@ -322,18 +593,6 @@
           }
         });
         trackEffect(domNode, runner);
-        reactiveAttrs[key] = value;
-      } else if (key === "style" && typeof value === "object") {
-        Object.entries(value).forEach(([styleKey, styleValue]) => {
-          if (typeof styleValue === "function") {
-            const runner = effect(() => {
-              domNode.style[styleKey] = styleValue();
-            });
-            trackEffect(domNode, runner);
-          } else {
-            domNode.style[styleKey] = styleValue;
-          }
-        });
         reactiveAttrs[key] = value;
       } else {
         setAttributeValue(domNode, key, value);
@@ -513,6 +772,9 @@
     }
   });
   const Lightview = {
+    state,
+    getState,
+    registerSchema: (name, definition) => internals.schemas.set(name, definition),
     signal,
     get: signal.get,
     computed,
@@ -527,14 +789,22 @@
     hooks: {
       onNonStandardHref: null,
       processChild: null,
-      validateUrl: null
+      processAttribute: null,
+      validateUrl: null,
+      validate: (value, schema) => internals.hooks.validate(value, schema)
     },
     // Internals exposed for extensions
     internals: {
       core,
       domToElement,
       wrapDomElement,
-      setupChildren
+      setupChildren,
+      trackEffect,
+      localRegistries: internals.localRegistries,
+      futureSignals: internals.futureSignals,
+      schemas: internals.schemas,
+      parents: internals.parents,
+      hooks: internals.hooks
     }
   };
   if (typeof module !== "undefined" && module.exports) {

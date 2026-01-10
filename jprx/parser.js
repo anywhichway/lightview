@@ -28,6 +28,9 @@ const DEFAULT_PRECEDENCE = {
  */
 export const registerHelper = (name, fn, options = {}) => {
     helpers.set(name, fn);
+    if (globalThis.__LIGHTVIEW_INTERNALS__) {
+        globalThis.__LIGHTVIEW_INTERNALS__.helpers.set(name, fn);
+    }
     if (options) helperOptions.set(name, options);
 };
 
@@ -134,27 +137,12 @@ export const resolvePath = (path, context) => {
     if (path === '.') return unwrapSignal(context);
 
     // Global absolute path: $/something
-    // First check if the root is in the local context's state (cdom-state)
-    // This allows $/cart to resolve from cdom-state: { cart: {...} }
     if (path.startsWith('$/')) {
         const [rootName, ...rest] = path.slice(2).split('/');
-
-        // Check local state chain first (via __state__ property set by handleCDOMState)
-        let cur = context;
-        while (cur) {
-            const localState = cur.__state__;
-            if (localState && rootName in localState) {
-                return traverse(localState[rootName], rest);
-            }
-            cur = cur.__parent__;
-        }
-
-        // Then check global registry
-        const rootSignal = registry?.get(rootName);
-        if (!rootSignal) return undefined;
-
-        // Root can be a signal or a state proxy
-        return traverse(rootSignal, rest);
+        const LV = getLV();
+        const root = LV ? LV.get(rootName, { scope: context?.__node__ || context }) : registry?.get(rootName);
+        if (!root) return undefined;
+        return traverse(root, rest);
     }
 
     // Relative path from current context
@@ -197,26 +185,13 @@ export const resolvePathAsContext = (path, context) => {
     if (path === '.') return context;
 
     // Global absolute path: $/something
-    // First check if the root is in the local context's state (cdom-state)
     if (path.startsWith('$/')) {
         const segments = path.slice(2).split(/[/.]/);
         const rootName = segments.shift();
-
-        // Check local state chain first
-        let cur = context;
-        while (cur) {
-            const localState = cur.__state__;
-            if (localState && rootName in localState) {
-                return traverseAsContext(localState[rootName], segments);
-            }
-            cur = cur.__parent__;
-        }
-
-        // Then check global registry
-        const rootSignal = registry?.get(rootName);
-        if (!rootSignal) return undefined;
-
-        return traverseAsContext(rootSignal, segments);
+        const LV = getLV();
+        const root = LV ? LV.get(rootName, { scope: context?.__node__ || context }) : registry?.get(rootName);
+        if (!root) return undefined;
+        return traverseAsContext(root, segments);
     }
 
     // Relative path from current context
@@ -261,6 +236,11 @@ class LazyValue {
 }
 
 /**
+ * Node helper - identifies if a value is a DOM node.
+ */
+const isNode = (val) => val && typeof val === 'object' && globalThis.Node && val instanceof globalThis.Node;
+
+/**
  * Helper to resolve an argument which could be a literal, a path, or an explosion.
  * @param {string} arg - The argument string
  * @param {object} context - The local context object
@@ -294,10 +274,23 @@ const resolveArgument = (arg, context, globalMode = false) => {
         };
     }
 
-    // 5. Event Placeholder ($event)
+    // 5. Context Identifiers ($this, $event)
+    if (arg === '$this' || arg.startsWith('$this/') || arg.startsWith('$this.')) {
+        return {
+            value: new LazyValue((context) => {
+                const node = context?.__node__ || context;
+                if (arg === '$this') return node;
+                const path = arg.startsWith('$this.') ? arg.slice(6) : arg.slice(6);
+                return resolvePath(path, node);
+            }),
+            isLazy: true
+        };
+    }
+
     if (arg === '$event' || arg.startsWith('$event/') || arg.startsWith('$event.')) {
         return {
-            value: new LazyValue((event) => {
+            value: new LazyValue((context) => {
+                const event = context?.$event || context?.event || context;
                 if (arg === '$event') return event;
                 const path = arg.startsWith('$event.') ? arg.slice(7) : arg.slice(7);
                 return resolvePath(path, event);
@@ -318,6 +311,18 @@ const resolveArgument = (arg, context, globalMode = false) => {
                         const res = resolveExpression(node, context);
                         const final = (res instanceof LazyValue) ? res.resolve(context) : res;
                         return unwrapSignal(final);
+                    }
+                    if (node === '$this' || node.startsWith('$this/') || node.startsWith('$this.')) {
+                        const path = (node.startsWith('$this.') || node.startsWith('$this/')) ? node.slice(6) : node.slice(6);
+                        const ctxNode = context?.__node__ || context;
+                        const res = node === '$this' ? ctxNode : resolvePath(path, ctxNode);
+                        return unwrapSignal(res);
+                    }
+                    if (node === '$event' || node.startsWith('$event/') || node.startsWith('$event.')) {
+                        const path = (node.startsWith('$event.') || node.startsWith('$event/')) ? node.slice(7) : node.slice(7);
+                        const event = context?.$event || context?.event || (context && !isNode(context) ? context : null);
+                        const res = node === '$event' ? event : resolvePath(path, event);
+                        return unwrapSignal(res);
                     }
                     if (node === '_' || node.startsWith('_/') || node.startsWith('_.')) {
                         const path = (node.startsWith('_.') || node.startsWith('_/')) ? node.slice(2) : node.slice(2);
@@ -433,6 +438,7 @@ const TokenType = {
     COMMA: 'COMMA',         // ,
     EXPLOSION: 'EXPLOSION', // ... suffix
     PLACEHOLDER: 'PLACEHOLDER', // _, _/path
+    THIS: 'THIS',           // $this
     EVENT: 'EVENT',         // $event, $event.target
     EOF: 'EOF'
 };
@@ -617,6 +623,18 @@ const tokenize = (expr) => {
                 }
             }
             tokens.push({ type: TokenType.PLACEHOLDER, value: placeholder });
+            continue;
+        }
+
+        // $this placeholder
+        if (expr.slice(i, i + 5) === '$this') {
+            let thisPath = '$this';
+            i += 5;
+            while (i < len && /[a-zA-Z0-9_./]/.test(expr[i])) {
+                thisPath += expr[i];
+                i++;
+            }
+            tokens.push({ type: TokenType.THIS, value: thisPath });
             continue;
         }
 
@@ -871,6 +889,12 @@ class PrattParser {
             return { type: 'Placeholder', value: tok.value };
         }
 
+        // This
+        if (tok.type === TokenType.THIS) {
+            this.consume();
+            return { type: 'This', value: tok.value };
+        }
+
         // Event
         if (tok.type === TokenType.EVENT) {
             this.consume();
@@ -927,8 +951,18 @@ const evaluateAST = (ast, context, forMutation = false) => {
             });
         }
 
+        case 'This': {
+            return new LazyValue((context) => {
+                const node = context?.__node__ || context;
+                if (ast.value === '$this') return node;
+                const path = ast.value.startsWith('$this.') ? ast.value.slice(6) : ast.value.slice(6);
+                return resolvePath(path, node);
+            });
+        }
+
         case 'Event': {
-            return new LazyValue((event) => {
+            return new LazyValue((context) => {
+                const event = context?.$event || context?.event || context;
                 if (ast.value === '$event') return event;
                 const path = ast.value.startsWith('$event.') ? ast.value.slice(7) : ast.value.slice(7);
                 return resolvePath(path, event);
@@ -1117,7 +1151,7 @@ export const resolveExpression = (expr, context) => {
             });
         }
 
-        const result = helper(...resolvedArgs);
+        const result = helper.apply(context?.__node__ || null, resolvedArgs);
         return unwrapSignal(result);
     }
 

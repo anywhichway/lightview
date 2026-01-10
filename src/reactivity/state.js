@@ -3,12 +3,53 @@
  * Provides deeply reactive state by wrapping objects/arrays in Proxies.
  */
 
-import { signal as signalFactory, effect, getRegistry } from './signal.js';
+import { signal as signalFactory, effect, getRegistry, internals, lookup } from './signal.js';
 
-// Internal helpers and caches
+// Internal caches
 const stateCache = new WeakMap();
 const stateSignals = new WeakMap();
-const parents = new WeakMap();
+const stateSchemas = new WeakMap();
+const { parents, schemas, hooks } = internals;
+
+/**
+ * Core Validation & Coercion
+ */
+const validate = (target, prop, value, schema) => {
+    const current = target[prop];
+    const type = typeof current;
+    const isNew = !(prop in target);
+
+    // 1. Resolve schema behavior
+    let behavior = schema;
+    if (typeof schema === 'object' && schema !== null) behavior = schema.type;
+
+    if (behavior === 'auto' && isNew) throw new Error(`Lightview: Cannot add new property "${prop}" to fixed 'auto' state.`);
+
+    // 2. Perform Validation/Coercion
+    if (behavior === 'polymorphic' || (typeof behavior === 'object' && behavior?.coerce)) {
+        if (type === 'number') return Number(value);
+        if (type === 'boolean') return Boolean(value);
+        if (type === 'string') return String(value);
+    } else if (behavior === 'auto' || behavior === 'dynamic') {
+        if (!isNew && typeof value !== type) {
+            throw new Error(`Lightview: Type mismatch for "${prop}". Expected ${type}, got ${typeof value}.`);
+        }
+    }
+
+    // 3. Perform Transformations (Lightview Extension)
+    if (typeof schema === 'object' && schema !== null && schema.transform) {
+        const trans = schema.transform;
+        const transformFn = typeof trans === 'function' ? trans : (internals.helpers.get(trans) || globalThis.Lightview?.helpers?.[trans]);
+        if (transformFn) value = transformFn(value);
+    }
+
+    // 4. Delegation to hooks (for full JSON Schema support in JPRX/Lightview-X)
+    if (hooks.validate(value, schema) === false) {
+        throw new Error(`Lightview: Validation failed for "${prop}".`);
+    }
+
+    return value;
+};
 
 // Build method lists dynamically from prototypes
 const protoMethods = (proto, test) => Object.getOwnPropertyNames(proto).filter(k => typeof proto[k] === 'function' && test(k));
@@ -48,12 +89,15 @@ const proxyGet = (target, prop, receiver, signals) => {
 };
 
 const proxySet = (target, prop, value, receiver, signals) => {
+    const schema = stateSchemas.get(receiver);
+    const validatedValue = schema ? validate(target, prop, value, schema) : value;
+
     if (!signals.has(prop)) {
         signals.set(prop, signalFactory(Reflect.get(target, prop, receiver)));
     }
-    const success = Reflect.set(target, prop, value, receiver);
+    const success = Reflect.set(target, prop, validatedValue, receiver);
     const signal = signals.get(prop);
-    if (success && signal) signal.value = value;
+    if (success && signal) signal.value = validatedValue;
     return success;
 };
 
@@ -154,6 +198,8 @@ export const state = (obj, optionsOrName) => {
 
     const name = typeof optionsOrName === 'string' ? optionsOrName : optionsOrName?.name;
     const storage = optionsOrName?.storage;
+    const scope = optionsOrName?.scope;
+    const schema = optionsOrName?.schema;
 
     if (name && storage) {
         try {
@@ -162,7 +208,7 @@ export const state = (obj, optionsOrName) => {
                 const loaded = JSON.parse(item);
                 Array.isArray(obj) && Array.isArray(loaded) ? (obj.length = 0, obj.push(...loaded)) : Object.assign(obj, loaded);
             }
-        } catch (e) { /* Storage access denied or corrupted JSON */ }
+        } catch (e) { /* Ignore */ }
     }
 
     let proxy = stateCache.get(obj);
@@ -183,20 +229,25 @@ export const state = (obj, optionsOrName) => {
         } else return obj;
     }
 
+    if (schema) stateSchemas.set(proxy, schema);
+
     if (name && storage) {
         effect(() => {
-            try { storage.setItem(name, JSON.stringify(proxy)); } catch (e) { /* Persistence failed */ }
+            try { storage.setItem(name, JSON.stringify(proxy)); } catch (e) { /* Ignore */ }
         });
     }
 
     if (name) {
-        const registry = getRegistry();
-        if (registry.has(name)) {
-            if (registry.get(name) !== proxy) {
-                throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
-            }
-        } else {
-            registry.set(name, proxy);
+        const registry = (scope && typeof scope === 'object') ? (internals.localRegistries.get(scope) || internals.localRegistries.set(scope, new Map()).get(scope)) : getRegistry();
+        if (registry && registry.has(name) && registry.get(name) !== proxy) {
+            throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+        }
+        if (registry) registry.set(name, proxy);
+
+        // Resolve future signal waiters
+        const futures = internals.futureSignals.get(name);
+        if (futures) {
+            futures.forEach(resolve => resolve(proxy));
         }
     }
 
@@ -204,14 +255,26 @@ export const state = (obj, optionsOrName) => {
 };
 
 /**
- * Gets a named state from the registry.
+ * Gets a named state using up-tree search starting from scope.
  */
-export const getState = (name, defaultValue) => {
-    const registry = getRegistry();
-    if (!registry.has(name) && defaultValue !== undefined) {
-        return state(defaultValue, name);
-    }
-    return registry.get(name);
+export const getState = (name, defaultValueOrOptions) => {
+    const options = typeof defaultValueOrOptions === 'object' && defaultValueOrOptions !== null ? defaultValueOrOptions : { defaultValue: defaultValueOrOptions };
+    const { scope, defaultValue } = options;
+
+    const existing = lookup(name, scope);
+    if (existing) return existing;
+
+    if (defaultValue !== undefined) return state(defaultValue, { name, scope });
+
+    // Future State Resolution (similar to getSignal)
+    const future = signalFactory(undefined);
+    const handler = (realState) => {
+        future.value = realState;
+    };
+    if (!internals.futureSignals.has(name)) internals.futureSignals.set(name, new Set());
+    internals.futureSignals.get(name).add(handler);
+
+    return future;
 };
 
 state.get = getState;

@@ -1,29 +1,48 @@
 (function() {
   "use strict";
+  var _a, _b;
   const _LV = globalThis.__LIGHTVIEW_INTERNALS__ || (globalThis.__LIGHTVIEW_INTERNALS__ = {
     currentEffect: null,
     registry: /* @__PURE__ */ new Map(),
-    dependencyMap: /* @__PURE__ */ new WeakMap()
-    // Tracking signals -> subscribers
+    // Global name -> Signal/Proxy
+    localRegistries: /* @__PURE__ */ new WeakMap(),
+    // Object/Element -> Map(name -> Signal/Proxy)
+    futureSignals: /* @__PURE__ */ new Map(),
+    // name -> Set of (signal) => void
+    schemas: /* @__PURE__ */ new Map(),
+    // name -> Schema (Draft 7+ or Shorthand)
+    parents: /* @__PURE__ */ new WeakMap(),
+    // Proxy -> Parent (Proxy/Element)
+    helpers: /* @__PURE__ */ new Map(),
+    // name -> function (used for transforms and expressions)
+    hooks: {
+      validate: (value, schema) => true
+      // Hook for extensions (like JPRX) to provide full validation
+    }
   });
+  const lookup = (name, scope) => {
+    let current = scope;
+    while (current && typeof current === "object") {
+      const registry = _LV.localRegistries.get(current);
+      if (registry && registry.has(name)) return registry.get(name);
+      current = current.parentElement || _LV.parents.get(current);
+    }
+    return _LV.registry.get(name);
+  };
   const signal = (initialValue, optionsOrName) => {
-    let name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
+    const name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
     const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
+    const scope = optionsOrName == null ? void 0 : optionsOrName.scope;
     if (name && storage) {
       try {
         const stored = storage.getItem(name);
-        if (stored !== null) {
-          initialValue = JSON.parse(stored);
-        }
+        if (stored !== null) initialValue = JSON.parse(stored);
       } catch (e) {
       }
     }
     let value = initialValue;
     const subscribers = /* @__PURE__ */ new Set();
-    const f = (...args) => {
-      if (args.length === 0) return f.value;
-      f.value = args[0];
-    };
+    const f = (...args) => args.length === 0 ? f.value : f.value = args[0];
     Object.defineProperty(f, "value", {
       get() {
         if (_LV.currentEffect) {
@@ -46,21 +65,34 @@
       }
     });
     if (name) {
-      if (_LV.registry.has(name)) {
-        if (_LV.registry.get(name) !== f) {
-          throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
-        }
-      } else {
-        _LV.registry.set(name, f);
+      const registry = scope && typeof scope === "object" ? _LV.localRegistries.get(scope) || _LV.localRegistries.set(scope, /* @__PURE__ */ new Map()).get(scope) : _LV.registry;
+      if (registry && registry.has(name) && registry.get(name) !== f) {
+        throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+      }
+      if (registry) registry.set(name, f);
+      const futures = _LV.futureSignals.get(name);
+      if (futures) {
+        futures.forEach((resolve) => resolve(f));
       }
     }
     return f;
   };
-  const getSignal = (name, defaultValue) => {
-    if (!_LV.registry.has(name) && defaultValue !== void 0) {
-      return signal(defaultValue, name);
-    }
-    return _LV.registry.get(name);
+  const getSignal = (name, defaultValueOrOptions) => {
+    const options = typeof defaultValueOrOptions === "object" && defaultValueOrOptions !== null ? defaultValueOrOptions : { defaultValue: defaultValueOrOptions };
+    const { scope, defaultValue } = options;
+    const existing = lookup(name, scope);
+    if (existing) return existing;
+    if (defaultValue !== void 0) return signal(defaultValue, { name, scope });
+    const future = signal(void 0);
+    const handler = (realSignal) => {
+      future.value = realSignal.value;
+      effect(() => {
+        future.value = realSignal.value;
+      });
+    };
+    if (!_LV.futureSignals.has(name)) _LV.futureSignals.set(name, /* @__PURE__ */ new Set());
+    _LV.futureSignals.get(name).add(handler);
+    return future;
   };
   signal.get = getSignal;
   const effect = (fn) => {
@@ -89,9 +121,38 @@
     return execute;
   };
   const getRegistry = () => _LV.registry;
+  const internals = _LV;
   const stateCache = /* @__PURE__ */ new WeakMap();
   const stateSignals = /* @__PURE__ */ new WeakMap();
-  const parents = /* @__PURE__ */ new WeakMap();
+  const stateSchemas = /* @__PURE__ */ new WeakMap();
+  const { parents, schemas, hooks } = internals;
+  const validate = (target, prop, value, schema) => {
+    var _a2, _b2;
+    const current = target[prop];
+    const type = typeof current;
+    const isNew = !(prop in target);
+    let behavior = schema;
+    if (typeof schema === "object" && schema !== null) behavior = schema.type;
+    if (behavior === "auto" && isNew) throw new Error(`Lightview: Cannot add new property "${prop}" to fixed 'auto' state.`);
+    if (behavior === "polymorphic" || typeof behavior === "object" && (behavior == null ? void 0 : behavior.coerce)) {
+      if (type === "number") return Number(value);
+      if (type === "boolean") return Boolean(value);
+      if (type === "string") return String(value);
+    } else if (behavior === "auto" || behavior === "dynamic") {
+      if (!isNew && typeof value !== type) {
+        throw new Error(`Lightview: Type mismatch for "${prop}". Expected ${type}, got ${typeof value}.`);
+      }
+    }
+    if (typeof schema === "object" && schema !== null && schema.transform) {
+      const trans = schema.transform;
+      const transformFn = typeof trans === "function" ? trans : internals.helpers.get(trans) || ((_b2 = (_a2 = globalThis.Lightview) == null ? void 0 : _a2.helpers) == null ? void 0 : _b2[trans]);
+      if (transformFn) value = transformFn(value);
+    }
+    if (hooks.validate(value, schema) === false) {
+      throw new Error(`Lightview: Validation failed for "${prop}".`);
+    }
+    return value;
+  };
   const protoMethods = (proto, test) => Object.getOwnPropertyNames(proto).filter((k) => typeof proto[k] === "function" && test(k));
   const DATE_TRACKING = protoMethods(Date.prototype, (k) => /^(to|get|valueOf)/.test(k));
   const DATE_MUTATING = protoMethods(Date.prototype, (k) => /^set/.test(k));
@@ -143,12 +204,14 @@
     return val;
   };
   const proxySet = (target, prop, value, receiver, signals) => {
+    const schema = stateSchemas.get(receiver);
+    const validatedValue = schema ? validate(target, prop, value, schema) : value;
     if (!signals.has(prop)) {
       signals.set(prop, signal(Reflect.get(target, prop, receiver)));
     }
-    const success = Reflect.set(target, prop, value, receiver);
+    const success = Reflect.set(target, prop, validatedValue, receiver);
     const signal$1 = signals.get(prop);
-    if (success && signal$1) signal$1.value = value;
+    if (success && signal$1) signal$1.value = validatedValue;
     return success;
   };
   const createSpecialProxy = (obj, monitor, trackingProps = []) => {
@@ -222,6 +285,8 @@
     if (typeof obj !== "object" || obj === null) return obj;
     const name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
     const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
+    const scope = optionsOrName == null ? void 0 : optionsOrName.scope;
+    const schema = optionsOrName == null ? void 0 : optionsOrName.schema;
     if (name && storage) {
       try {
         const item = storage.getItem(name);
@@ -250,6 +315,7 @@
         stateCache.set(obj, proxy);
       } else return obj;
     }
+    if (schema) stateSchemas.set(proxy, schema);
     if (name && storage) {
       effect(() => {
         try {
@@ -259,23 +325,31 @@
       });
     }
     if (name) {
-      const registry = getRegistry();
-      if (registry.has(name)) {
-        if (registry.get(name) !== proxy) {
-          throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
-        }
-      } else {
-        registry.set(name, proxy);
+      const registry = scope && typeof scope === "object" ? internals.localRegistries.get(scope) || internals.localRegistries.set(scope, /* @__PURE__ */ new Map()).get(scope) : getRegistry();
+      if (registry && registry.has(name) && registry.get(name) !== proxy) {
+        throw new Error(`Lightview: A signal or state with the name "${name}" is already registered.`);
+      }
+      if (registry) registry.set(name, proxy);
+      const futures = internals.futureSignals.get(name);
+      if (futures) {
+        futures.forEach((resolve) => resolve(proxy));
       }
     }
     return proxy;
   };
-  const getState = (name, defaultValue) => {
-    const registry = getRegistry();
-    if (!registry.has(name) && defaultValue !== void 0) {
-      return state(defaultValue, name);
-    }
-    return registry.get(name);
+  const getState = (name, defaultValueOrOptions) => {
+    const options = typeof defaultValueOrOptions === "object" && defaultValueOrOptions !== null ? defaultValueOrOptions : { defaultValue: defaultValueOrOptions };
+    const { scope, defaultValue } = options;
+    const existing = lookup(name, scope);
+    if (existing) return existing;
+    if (defaultValue !== void 0) return state(defaultValue, { name, scope });
+    const future = signal(void 0);
+    const handler = (realState) => {
+      future.value = realState;
+    };
+    if (!internals.futureSignals.has(name)) internals.futureSignals.set(name, /* @__PURE__ */ new Set());
+    internals.futureSignals.get(name).add(handler);
+    return future;
   };
   state.get = getState;
   const STANDARD_SRC_TAGS = ["img", "script", "iframe", "video", "audio", "source", "track", "embed", "input"];
@@ -309,7 +383,7 @@
     return keys.length === 1 && isValidTagName(keys[0]) && typeof obj[keys[0]] === "object";
   };
   const convertObjectDOM = (obj) => {
-    var _a, _b;
+    var _a2, _b2;
     if (typeof obj !== "object" || obj === null) return obj;
     if (Array.isArray(obj)) return obj.map(convertObjectDOM);
     if (obj.tag) return { ...obj, children: obj.children ? convertObjectDOM(obj.children) : [] };
@@ -317,7 +391,7 @@
     const tagKey = Object.keys(obj)[0];
     const content = obj[tagKey];
     const LV = typeof window !== "undefined" ? globalThis.Lightview : typeof globalThis !== "undefined" ? globalThis.Lightview : null;
-    const tag = ((_b = (_a = LV == null ? void 0 : LV.tags) == null ? void 0 : _a._customTags) == null ? void 0 : _b[tagKey]) || tagKey;
+    const tag = ((_b2 = (_a2 = LV == null ? void 0 : LV.tags) == null ? void 0 : _a2._customTags) == null ? void 0 : _b2[tagKey]) || tagKey;
     const { children, ...attributes } = content;
     return { tag, attributes, children: children ? convertObjectDOM(children) : [] };
   };
@@ -605,12 +679,12 @@
     const frag = document.createDocumentFragment();
     frag.appendChild(createMarker(markerId, false));
     elements.forEach((c) => {
-      var _a, _b, _c;
+      var _a2, _b2, _c;
       if (typeof c === "string") frag.appendChild(document.createTextNode(c));
       else if (c.domEl) frag.appendChild(c.domEl);
       else if (c instanceof Node) frag.appendChild(c);
       else {
-        const v = ((_c = (_a = globalThis.Lightview) == null ? void 0 : (_b = _a.hooks).processChild) == null ? void 0 : _c.call(_b, c)) || c;
+        const v = ((_c = (_a2 = globalThis.Lightview) == null ? void 0 : (_b2 = _a2.hooks).processChild) == null ? void 0 : _c.call(_b2, c)) || c;
         if (v.tag) {
           const n = element(v.tag, v.attributes || {}, v.children || []);
           if (n == null ? void 0 : n.domEl) frag.appendChild(n.domEl);
@@ -627,10 +701,10 @@
   };
   const isPath = (s) => typeof s === "string" && !isDangerousProtocol(s) && /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom|cdomc?))$/i.test(s);
   const fetchContent = async (src) => {
-    var _a;
+    var _a2;
     try {
       const LV = globalThis.Lightview;
-      if (((_a = LV == null ? void 0 : LV.hooks) == null ? void 0 : _a.validateUrl) && !LV.hooks.validateUrl(src)) {
+      if (((_a2 = LV == null ? void 0 : LV.hooks) == null ? void 0 : _a2.validateUrl) && !LV.hooks.validateUrl(src)) {
         console.warn(`[LightviewX] Fetch blocked by validateUrl hook: ${src}`);
         return null;
       }
@@ -655,10 +729,10 @@
     }
   };
   const parseElements = (content, isJson, isHtml, el, element, isCdom = false, ext = "") => {
-    var _a;
+    var _a2;
     if (isJson) return Array.isArray(content) ? content : [content];
     if (isCdom && ext === "cdomc") {
-      const parser = (_a = globalThis.LightviewCDOM) == null ? void 0 : _a.parseCDOMC;
+      const parser = (_a2 = globalThis.LightviewCDOM) == null ? void 0 : _a2.parseCDOMC;
       if (parser) {
         try {
           const obj = parser(content);
@@ -753,9 +827,9 @@
         if (root) {
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-              var _a;
+              var _a2;
               const id = targetHash.startsWith("#") ? targetHash.slice(1) : targetHash;
-              const target = root.getElementById ? root.getElementById(id) : (_a = root.querySelector) == null ? void 0 : _a.call(root, `#${id}`);
+              const target = root.getElementById ? root.getElementById(id) : (_a2 = root.querySelector) == null ? void 0 : _a2.call(root, `#${id}`);
               if (target) {
                 target.style.scrollMarginTop = "calc(var(--site-nav-height, 0px) + 2rem)";
                 target.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
@@ -782,7 +856,7 @@
     return { selector: targetStr, location: null };
   };
   const handleNonStandardHref = (e, { domToElement, wrapDomElement }) => {
-    var _a;
+    var _a2;
     const clickedEl = e.target.closest("[href]");
     if (!clickedEl) return;
     const tagName = clickedEl.tagName.toLowerCase();
@@ -790,7 +864,7 @@
     e.preventDefault();
     const href = clickedEl.getAttribute("href");
     const LV = globalThis.Lightview;
-    if (href && (isDangerousProtocol(href) || ((_a = LV == null ? void 0 : LV.hooks) == null ? void 0 : _a.validateUrl) && !LV.hooks.validateUrl(href))) {
+    if (href && (isDangerousProtocol(href) || ((_a2 = LV == null ? void 0 : LV.hooks) == null ? void 0 : _a2.validateUrl) && !LV.hooks.validateUrl(href))) {
       console.warn(`[LightviewX] Navigation or fetch blocked by security policy: ${href}`);
       return;
     }
@@ -950,9 +1024,9 @@
     return { events, exclusions, calls };
   };
   const globalBeforeInterceptor = async (e) => {
-    var _a, _b;
+    var _a2, _b2;
     if (e[BYPASS_FLAG]) return;
-    const target = (_b = (_a = e.target).closest) == null ? void 0 : _b.call(_a, "[lv-before]");
+    const target = (_b2 = (_a2 = e.target).closest) == null ? void 0 : _b2.call(_a2, "[lv-before]");
     if (!target) return;
     const { events, exclusions, calls } = parseBeforeAttribute(target.getAttribute("lv-before"));
     const isExcluded = exclusions.includes(e.type);
@@ -1348,7 +1422,7 @@
         }).filter(Boolean);
       }
       render() {
-        var _a, _b;
+        var _a2, _b2;
         const props = { useShadow: false };
         for (const attr of this.attributes) {
           const name = attr.name.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
@@ -1372,7 +1446,7 @@
         const vdomChildren = this.parseChildrenToVDOM();
         const children = Object.keys(childElements).length > 0 ? vdomChildren : [{ tag: globalThis.Lightview.tags.slot }];
         const result = Component(props, ...children);
-        if (((_b = (_a = globalThis.Lightview) == null ? void 0 : _a.internals) == null ? void 0 : _b.setupChildren) && this.themeWrapper) {
+        if (((_b2 = (_a2 = globalThis.Lightview) == null ? void 0 : _a2.internals) == null ? void 0 : _b2.setupChildren) && this.themeWrapper) {
           this.themeWrapper.innerHTML = "";
           globalThis.Lightview.internals.setupChildren([result], this.themeWrapper);
         }
@@ -1385,6 +1459,89 @@
       }
     };
   };
+  const validateJSONSchema = (value, schema) => {
+    var _a2;
+    if (!schema) return true;
+    const errors = [];
+    const internals2 = (_a2 = globalThis.Lightview) == null ? void 0 : _a2.internals;
+    const check = (val, sch, path = "") => {
+      var _a3;
+      if (!sch) return true;
+      if (typeof sch === "string") {
+        const registered = (_a3 = internals2 == null ? void 0 : internals2.schemas) == null ? void 0 : _a3.get(sch);
+        if (registered) return check(val, registered, path);
+        return true;
+      }
+      const type = sch.type;
+      const getType = (v) => {
+        if (v === null) return "null";
+        if (Array.isArray(v)) return "array";
+        return typeof v;
+      };
+      const currentType = getType(val);
+      if (type && type !== currentType) {
+        if (type === "integer" && Number.isInteger(val)) ;
+        else if (!(type === "number" && typeof val === "number")) {
+          errors.push({ path, message: `Expected type ${type}, got ${currentType}`, keyword: "type" });
+          return false;
+        }
+      }
+      if (currentType === "string") {
+        if (sch.minLength !== void 0 && val.length < sch.minLength) errors.push({ path, keyword: "minLength" });
+        if (sch.maxLength !== void 0 && val.length > sch.maxLength) errors.push({ path, keyword: "maxLength" });
+        if (sch.pattern !== void 0 && !new RegExp(sch.pattern).test(val)) errors.push({ path, keyword: "pattern" });
+        if (sch.format === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) errors.push({ path, keyword: "format" });
+      }
+      if (currentType === "number") {
+        if (sch.minimum !== void 0 && val < sch.minimum) errors.push({ path, keyword: "minimum" });
+        if (sch.maximum !== void 0 && val > sch.maximum) errors.push({ path, keyword: "maximum" });
+        if (sch.multipleOf !== void 0 && val % sch.multipleOf !== 0) errors.push({ path, keyword: "multipleOf" });
+      }
+      if (currentType === "object") {
+        if (sch.required && Array.isArray(sch.required)) {
+          for (const key of sch.required) {
+            if (!(key in val)) errors.push({ path: path ? `${path}.${key}` : key, keyword: "required" });
+          }
+        }
+        if (sch.properties) {
+          for (const key in sch.properties) {
+            if (key in val) check(val[key], sch.properties[key], path ? `${path}.${key}` : key);
+          }
+        }
+        if (sch.additionalProperties === false) {
+          for (const key in val) {
+            if (!sch.properties || !(key in sch.properties)) errors.push({ path: path ? `${path}.${key}` : key, keyword: "additionalProperties" });
+          }
+        }
+      }
+      if (currentType === "array") {
+        if (sch.minItems !== void 0 && val.length < sch.minItems) errors.push({ path, keyword: "minItems" });
+        if (sch.maxItems !== void 0 && val.length > sch.maxItems) errors.push({ path, keyword: "maxItems" });
+        if (sch.uniqueItems && new Set(val).size !== val.length) errors.push({ path, keyword: "uniqueItems" });
+        if (sch.items) {
+          val.forEach((item, i) => check(item, sch.items, `${path}[${i}]`));
+        }
+      }
+      if (sch.const !== void 0 && val !== sch.const) errors.push({ path, keyword: "const" });
+      if (sch.enum && !sch.enum.includes(val)) errors.push({ path, keyword: "enum" });
+      return errors.length === 0;
+    };
+    const valid = check(value, schema);
+    return valid || errors;
+  };
+  const lvInternals = globalThis.__LIGHTVIEW_INTERNALS__ || ((_a = globalThis.Lightview) == null ? void 0 : _a.internals);
+  if (lvInternals) {
+    const hooks2 = lvInternals.hooks || ((_b = globalThis.Lightview) == null ? void 0 : _b.hooks);
+    if (hooks2) {
+      hooks2.validate = (value, schema) => {
+        const result = validateJSONSchema(value, schema);
+        if (result === true) return true;
+        const msg = result.map((e) => `${e.path || "root"}: failed ${e.keyword}${e.message ? " (" + e.message + ")" : ""}`).join(", ");
+        throw new Error(`Lightview Validation Error: ${msg}`);
+      };
+    }
+    if (globalThis.Lightview) globalThis.Lightview.validate = validateJSONSchema;
+  }
   const LightviewX = {
     state,
     themeSignal,
@@ -1402,6 +1559,7 @@
     preloadComponentCSS,
     createCustomElement,
     customElementWrapper,
+    validate: validateJSONSchema,
     internals: {
       handleSrcAttribute,
       parseElements
