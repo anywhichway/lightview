@@ -1,0 +1,71 @@
+[
+    {
+        "name": "Global Path Resolution",
+        "state": {
+            "userName": "Alice"
+        },
+        "expression": "$/userName",
+        "expected": "Alice"
+    },
+    {
+        "name": "Deep Global Path Resolution",
+        "state": {
+            "user": {
+                "profile": {
+                    "name": "Bob"
+                }
+            }
+        },
+        "expression": "$/user/profile/name",
+        "expected": "Bob"
+    },
+    {
+        "name": "Relative Path Resolution",
+        "context": {
+            "age": 30
+        },
+        "expression": "./age",
+        "expected": 30
+    },
+    {
+        "name": "Math: Addition",
+        "state": {
+            "a": 5,
+            "b": 10
+        },
+        "expression": "$+(/a, /b)",
+        "expected": 15
+    },
+    {
+        "name": "Operator: Addition (Infix)",
+        "state": {
+            "a": 5,
+            "b": 10
+        },
+        "expression": "$/a + $/b",
+        "expected": 15
+    },
+    {
+        "name": "Logic: If (True)",
+        "state": {
+            "isVip": true
+        },
+        "expression": "$if(/isVip, \"Gold\", \"Silver\")",
+        "expected": "Gold"
+    },
+    {
+        "name": "Explosion Operator",
+        "state": {
+            "items": [
+                {
+                    "p": 10
+                },
+                {
+                    "p": 20
+                }
+            ]
+        },
+        "expression": "$sum(/items...p)",
+        "expected": 30
+    }
+]

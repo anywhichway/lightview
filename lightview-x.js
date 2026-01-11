@@ -85,10 +85,15 @@
     if (defaultValue !== void 0) return signal(defaultValue, { name, scope });
     const future = signal(void 0);
     const handler = (realSignal) => {
-      future.value = realSignal.value;
-      effect(() => {
+      const hasValue = realSignal && (typeof realSignal === "object" || typeof realSignal === "function") && "value" in realSignal;
+      if (hasValue) {
         future.value = realSignal.value;
-      });
+        effect(() => {
+          future.value = realSignal.value;
+        });
+      } else {
+        future.value = realSignal;
+      }
     };
     if (!_LV.futureSignals.has(name)) _LV.futureSignals.set(name, /* @__PURE__ */ new Set());
     _LV.futureSignals.get(name).add(handler);
@@ -765,11 +770,14 @@
       return null;
     }
   };
-  const updateTargetContent = (el, elements, raw, loc, contentHash, { element, setupChildren }, targetHash = null) => {
+  const updateTargetContent = (el, elements, raw, loc, contentHash, options, targetHash = null) => {
+    var _a2;
+    const { element, setupChildren, saveScrolls, restoreScrolls } = { ...options, ...(_a2 = globalThis.Lightview) == null ? void 0 : _a2.internals };
     const markerId = `${loc}-${contentHash.slice(0, 8)}`;
     let track = getOrSet(insertedContentMap, el.domEl, () => ({}));
     if (track[loc]) removeInsertedContent(el.domEl, `${loc}-${track[loc].slice(0, 8)}`);
     track[loc] = contentHash;
+    const scrollMap = saveScrolls ? saveScrolls() : null;
     const performScroll = (root) => {
       if (!targetHash) return;
       requestAnimationFrame(() => {
@@ -783,18 +791,24 @@
         });
       });
     };
+    const runRestore = (root) => {
+      if (restoreScrolls && scrollMap) restoreScrolls(scrollMap, root);
+    };
     if (loc === "shadow") {
       if (!el.domEl.shadowRoot) el.domEl.attachShadow({ mode: "open" });
       setupChildren(elements, el.domEl.shadowRoot);
       executeScripts(el.domEl.shadowRoot);
       performScroll(el.domEl.shadowRoot);
+      runRestore(el.domEl.shadowRoot);
     } else if (loc === "innerhtml") {
       el.children = elements;
       executeScripts(el.domEl);
       performScroll(document);
+      runRestore(el.domEl);
     } else {
       insert(elements, el.domEl, loc, markerId, { element, setupChildren });
       performScroll(document);
+      runRestore(el.domEl);
     }
   };
   const handleSrcAttribute = async (el, src, tagName, { element, setupChildren }) => {

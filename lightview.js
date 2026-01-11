@@ -84,10 +84,15 @@
     if (defaultValue !== void 0) return signal(defaultValue, { name, scope });
     const future = signal(void 0);
     const handler = (realSignal) => {
-      future.value = realSignal.value;
-      effect(() => {
+      const hasValue = realSignal && (typeof realSignal === "object" || typeof realSignal === "function") && "value" in realSignal;
+      if (hasValue) {
         future.value = realSignal.value;
-      });
+        effect(() => {
+          future.value = realSignal.value;
+        });
+      } else {
+        future.value = realSignal;
+      }
     };
     if (!_LV.futureSignals.has(name)) _LV.futureSignals.set(name, /* @__PURE__ */ new Set());
     _LV.futureSignals.get(name).add(handler);
@@ -366,6 +371,38 @@
   const nodeState = /* @__PURE__ */ new WeakMap();
   const nodeStateFactory = () => ({ effects: [], onmount: null, onunmount: null });
   const registry = getRegistry();
+  const scrollMemory = /* @__PURE__ */ new Map();
+  const initScrollMemory = () => {
+    if (typeof document === "undefined") return;
+    document.addEventListener("scroll", (e) => {
+      const el = e.target;
+      if (el === document || el === document.documentElement) return;
+      const key = el.id || el.getAttribute && el.getAttribute("data-preserve-scroll");
+      if (key) {
+        scrollMemory.set(key, { top: el.scrollTop, left: el.scrollLeft });
+      }
+    }, true);
+  };
+  if (typeof document !== "undefined") {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initScrollMemory);
+    } else {
+      initScrollMemory();
+    }
+  }
+  const saveScrolls = () => new Map(scrollMemory);
+  const restoreScrolls = (map, root = document) => {
+    if (!map || map.size === 0) return;
+    requestAnimationFrame(() => {
+      map.forEach((pos, key) => {
+        const node = document.getElementById(key) || document.querySelector(`[data-preserve-scroll="${key}"]`);
+        if (node) {
+          node.scrollTop = pos.top;
+          node.scrollLeft = pos.left;
+        }
+      });
+    });
+  };
   const trackEffect = (node, effectFn) => {
     const state2 = getOrSet(nodeState, node, nodeStateFactory);
     if (!state2.effects) state2.effects = [];
@@ -800,6 +837,8 @@
       wrapDomElement,
       setupChildren,
       trackEffect,
+      saveScrolls,
+      restoreScrolls,
       localRegistries: internals.localRegistries,
       futureSignals: internals.futureSignals,
       schemas: internals.schemas,

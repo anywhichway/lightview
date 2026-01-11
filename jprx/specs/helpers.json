@@ -1,0 +1,150 @@
+[
+    {
+        "name": "Math: Subtraction",
+        "expression": "$-(10, 3)",
+        "expected": 7
+    },
+    {
+        "name": "Math: Multiplication",
+        "expression": "$*(4, 5)",
+        "expected": 20
+    },
+    {
+        "name": "Math: Division",
+        "expression": "$/(20, 4)",
+        "expected": 5
+    },
+    {
+        "name": "Math: Round",
+        "expression": "$round(3.7)",
+        "expected": 4
+    },
+    {
+        "name": "String: Upper",
+        "expression": "$upper('hello')",
+        "expected": "HELLO"
+    },
+    {
+        "name": "String: Lower",
+        "expression": "$lower('WORLD')",
+        "expected": "world"
+    },
+    {
+        "name": "String: Concat",
+        "expression": "$concat('Hello', ' ', 'World')",
+        "expected": "Hello World"
+    },
+    {
+        "name": "String: Trim",
+        "expression": "$trim('  spaced  ')",
+        "expected": "spaced"
+    },
+    {
+        "name": "Logic: And (true)",
+        "expression": "$and(true, true)",
+        "expected": true
+    },
+    {
+        "name": "Logic: And (false)",
+        "expression": "$and(true, false)",
+        "expected": false
+    },
+    {
+        "name": "Logic: Or",
+        "expression": "$or(false, true)",
+        "expected": true
+    },
+    {
+        "name": "Logic: Not",
+        "expression": "$not(false)",
+        "expected": true
+    },
+    {
+        "name": "Compare: Greater Than",
+        "expression": "$gt(10, 5)",
+        "expected": true
+    },
+    {
+        "name": "Compare: Less Than",
+        "expression": "$lt(3, 7)",
+        "expected": true
+    },
+    {
+        "name": "Compare: Equal",
+        "expression": "$eq(5, 5)",
+        "expected": true
+    },
+    {
+        "name": "Conditional: If (true branch)",
+        "expression": "$if(true, 'Yes', 'No')",
+        "expected": "Yes"
+    },
+    {
+        "name": "Conditional: If (false branch)",
+        "expression": "$if(false, 'Yes', 'No')",
+        "expected": "No"
+    },
+    {
+        "name": "Stats: Average",
+        "expression": "$avg(10, 20, 30)",
+        "expected": 20
+    },
+    {
+        "name": "Stats: Min",
+        "expression": "$min(5, 2, 8)",
+        "expected": 2
+    },
+    {
+        "name": "Stats: Max",
+        "expression": "$max(5, 2, 8)",
+        "expected": 8
+    },
+    {
+        "name": "Array: Length",
+        "state": {
+            "items": [
+                "a",
+                "b",
+                "c"
+            ]
+        },
+        "expression": "$len(/items)",
+        "expected": 3
+    },
+    {
+        "name": "Array: Join",
+        "state": {
+            "items": [
+                "a",
+                "b",
+                "c"
+            ]
+        },
+        "expression": "$join(/items, '-')",
+        "expected": "a-b-c"
+    },
+    {
+        "name": "Array: First",
+        "state": {
+            "items": [
+                "a",
+                "b",
+                "c"
+            ]
+        },
+        "expression": "$first(/items)",
+        "expected": "a"
+    },
+    {
+        "name": "Array: Last",
+        "state": {
+            "items": [
+                "a",
+                "b",
+                "c"
+            ]
+        },
+        "expression": "$last(/items)",
+        "expected": "c"
+    }
+]

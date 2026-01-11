@@ -487,16 +487,17 @@ const tokenize = (expr) => {
         // In expressions like "$++/count", the $ is just the JPRX delimiter
         // and ++ is a prefix operator applied to /count
         if (expr[i] === '$' && i + 1 < len) {
-            // Check if next chars are an operator
-            let isOpAfter = false;
-            for (const op of opSymbols) {
+            // Check if next chars are a PREFIX operator (sort by length to match longest first)
+            const prefixOps = [...operators.prefix.keys()].sort((a, b) => b.length - a.length);
+            let isPrefixOp = false;
+            for (const op of prefixOps) {
                 if (expr.slice(i + 1, i + 1 + op.length) === op) {
-                    isOpAfter = true;
+                    isPrefixOp = true;
                     break;
                 }
             }
-            if (isOpAfter) {
-                // Skip the $, it's just a delimiter
+            if (isPrefixOp) {
+                // Skip the $, it's just a delimiter for a prefix operator (e.g., $++/count)
                 i++;
                 continue;
             }
@@ -814,7 +815,7 @@ class PrattParser {
             const prec = this.getInfixPrecedence(tok.value);
             if (prec < minPrecedence) break;
 
-            // Check if it's a postfix operator
+            // Check if it's a postfix-only operator
             if (operators.postfix.has(tok.value) && !operators.infix.has(tok.value)) {
                 this.consume();
                 left = { type: 'Postfix', operator: tok.value, operand: left };
@@ -830,6 +831,12 @@ class PrattParser {
                 left = { type: 'Infix', operator: tok.value, left, right };
                 tok = this.peek();
                 continue;
+            }
+
+            // Operator not registered as postfix or infix - treat as unknown and stop
+            // This prevents infinite loops when operators are tokenized but not registered
+            if (!operators.postfix.has(tok.value) && !operators.infix.has(tok.value)) {
+                break;
             }
 
             // Postfix that's also infix - context determines
@@ -1019,7 +1026,18 @@ const evaluateAST = (ast, context, forMutation = false) => {
             // For infix, typically first arg might be pathAware
             const left = evaluateAST(ast.left, context, opts.pathAware);
             const right = evaluateAST(ast.right, context, false);
-            return helper(unwrapSignal(left), unwrapSignal(right));
+
+            const finalArgs = [];
+
+            // Handle potentially exploded arguments (like in sum(/items...p))
+            // Although infix operators usually take exactly 2 args, we treat them consistently
+            if (Array.isArray(left) && ast.left.type === 'Explosion') finalArgs.push(...left);
+            else finalArgs.push(unwrapSignal(left));
+
+            if (Array.isArray(right) && ast.right.type === 'Explosion') finalArgs.push(...right);
+            else finalArgs.push(unwrapSignal(right));
+
+            return helper(...finalArgs);
         }
 
         default:

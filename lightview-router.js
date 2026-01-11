@@ -95,7 +95,10 @@
         return notFound ? notFound(ctx) : null;
       };
       const handleRequest = async (path) => {
+        var _a, _b;
         if (onStart) onStart(path);
+        const internals = (_a = globalThis.Lightview) == null ? void 0 : _a.internals;
+        const scrollMap = (_b = internals == null ? void 0 : internals.saveScrolls) == null ? void 0 : _b.call(internals);
         const res = await route(path);
         if (!res) return console.warn(`[Router] No route: ${path}`);
         if (res.ok && contentEl) {
@@ -106,6 +109,9 @@
             n.textContent = s.textContent;
             s.replaceWith(n);
           });
+          if ((internals == null ? void 0 : internals.restoreScrolls) && scrollMap) {
+            internals.restoreScrolls(scrollMap);
+          }
           const urlParts = path.split("#");
           const hash = urlParts.length > 1 ? "#" + urlParts[1] : "";
           if (hash) {

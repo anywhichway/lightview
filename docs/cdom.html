@@ -325,8 +325,8 @@
     tag: "div",
     attributes: { class: "counter" },
     children: [
-        { tag: "p", children: ["Count: ", $/local/count] },
-        { tag: "button", attributes: { onclick: $++/local/count }, children: ["+"] }
+        { tag: "p", children: ["Count: ", "$/local/count"] },
+        { tag: "button", attributes: { onclick: "$++/local/count }, children: ["+"] }
     ]
 }</code></pre>
         </div>
@@ -338,21 +338,21 @@
     div: {
         class: "counter",
         children: [
-            { p: { children: ["Count: ", $/local/count] } },
+            { p: { children: ["Count: ", "$/local/count] } },
             { button: { onclick: $++/local/count, children: ["+"] } }
         ]
     }
 }</code></pre>
         </div>
 
-        <h3>cDOM Shorthand (JPRXC)</h3>
+        <h3>cDOM Shorthand with JPRX</h3>
         <p>cDOM's concise shorthand syntax. Note that cDOM does not require quoting attribute names or JPRX
-            expressions and you can include comments:</p>
+            expressions like vDOM and oDOM do and you can include comments:</p>
         <div class="code-block">
             <pre><code>{
     div: {
         class: "counter",
-        // This is a JPRXC comment
+        // This is a JPRX comment
         children: [
             { p: ["Count: ", $/local/count] },
             { button: { onclick: $++/local/count, children: ["+"] } }

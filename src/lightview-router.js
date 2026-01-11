@@ -115,6 +115,11 @@
 
         const handleRequest = async (path) => {
             if (onStart) onStart(path);
+
+            // Snapshot scroll positions document-wide before content swap
+            const internals = globalThis.Lightview?.internals;
+            const scrollMap = internals?.saveScrolls?.();
+
             const res = await route(path);
             if (!res) return console.warn(`[Router] No route: ${path}`);
 
@@ -126,6 +131,11 @@
                     n.textContent = s.textContent;
                     s.replaceWith(n);
                 });
+
+                // Restore scroll positions after content has been updated
+                if (internals?.restoreScrolls && scrollMap) {
+                    internals.restoreScrolls(scrollMap);
+                }
 
                 // Handle hash scrolling if present in the target path
                 const urlParts = path.split('#');

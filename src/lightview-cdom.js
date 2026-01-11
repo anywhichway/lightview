@@ -124,6 +124,15 @@ globalThis.Lightview.hooks.processAttribute = (domNode, key, value) => {
  */
 export const activate = (root = document.body) => { };
 
+const makeEventHandler = (expr) => (eventOrNode) => {
+    const isEvent = eventOrNode && typeof eventOrNode === 'object' && 'target' in eventOrNode;
+    const target = isEvent ? (eventOrNode.currentTarget || eventOrNode.target) : eventOrNode;
+    const context = getContext(target, isEvent ? eventOrNode : null);
+    const result = resolveExpression(expr, context);
+    if (result && typeof result === 'object' && result.isLazy) return result.resolve(eventOrNode);
+    return result;
+};
+
 /**
  * Hydrates a static CDOM object into a reactive CDOM graph.
  * Traverses the object, converting expression strings ($...) into Signals/Computeds.
@@ -137,91 +146,82 @@ export const hydrate = (node, parent = null) => {
         return parseExpression(node, parent);
     }
 
+    if (typeof node !== 'object') return node;
+
     // 2. Handle Arrays
     if (Array.isArray(node)) {
         return node.map(item => hydrate(item, parent));
     }
 
-    // 3. Handle String Objects
+    // 2. Handle String Objects (rare but possible)
     if (node instanceof String) return node.toString();
 
-    // 4. Handle Objects (Nodes)
-    if (typeof node === 'object' && node !== null) {
-        // Parent link
-        if (parent && !('__parent__' in node)) {
-            Object.defineProperty(node, '__parent__', { value: parent, enumerable: false, writable: true });
-            globalThis.Lightview?.internals?.parents?.set(node, parent);
-        }
-
-        // oDOM Normalization
-        if (!node.tag) {
-            let potentialTag = null;
-            const reserved = ['children', 'attributes', 'tag', '__parent__'];
-            for (const key in node) {
-                if (reserved.includes(key) || key.startsWith('on')) continue;
-                potentialTag = key;
-                break;
-            }
-
-            if (potentialTag) {
-                const content = node[potentialTag];
-                node.tag = potentialTag;
-                if (Array.isArray(content)) {
-                    node.children = content;
-                } else if (typeof content === 'object') {
-                    node.attributes = node.attributes || {};
-                    for (const k in content) {
-                        if (k === 'children') node.children = content[k];
-                        else node.attributes[k] = content[k];
-                    }
-                } else node.children = [content];
-                delete node[potentialTag];
-            }
-        }
-
-        // Processing
-        for (const key in node) {
-            const value = node[key];
-            if (typeof value === 'string' && value.startsWith('$')) {
-                if (key === 'onmount' || key === 'onunmount') {
-                    node[key] = (domNode) => {
-                        const context = getContext(domNode);
-                        const result = resolveExpression(value, context);
-                        if (result?.isLazy) return result.resolve(domNode);
-                        return result;
-                    };
-                } else if (key.startsWith('on')) {
-                    node[key] = (event) => {
-                        const context = getContext(event.currentTarget, event);
-                        const result = resolveExpression(value, context);
-                        if (result?.isLazy) return result.resolve(event);
-                        return result;
-                    };
-                } else if (key === 'children') {
-                    node[key] = [parseExpression(value, node)];
-                } else {
-                    node[key] = parseExpression(value, node);
-                }
-            } else if (key === 'attributes' && typeof value === 'object' && value !== null) {
-                for (const attrKey in value) {
-                    const attrValue = value[attrKey];
-                    if (typeof attrValue === 'string' && attrValue.startsWith('$')) {
-                        if (attrKey.startsWith('on')) {
-                            value[attrKey] = (event) => {
-                                const context = getContext(event.currentTarget, event);
-                                const result = resolveExpression(attrValue, context);
-                                if (result?.isLazy) return result.resolve(event);
-                                return result;
-                            };
-                        } else {
-                            value[attrKey] = parseExpression(attrValue, node);
-                        }
-                    } else value[attrKey] = hydrate(attrValue, node);
-                }
-            } else node[key] = hydrate(value, node);
-        }
-        return node;
+    // 3. Handle Nodes
+    // Parent link
+    if (parent && !('__parent__' in node)) {
+        Object.defineProperty(node, '__parent__', { value: parent, enumerable: false, writable: true });
+        globalThis.Lightview?.internals?.parents?.set(node, parent);
     }
+
+    // oDOM Normalization - convert shorthand { div: "text" } to { tag: "div", children: ["text"] }
+    if (!node.tag) {
+        let potentialTag = null;
+        const reserved = ['children', 'attributes', 'tag', '__parent__'];
+        for (const key in node) {
+            if (reserved.includes(key) || key.startsWith('on')) continue;
+            potentialTag = key;
+            break;
+        }
+
+        if (potentialTag) {
+            const content = node[potentialTag];
+            node.tag = potentialTag;
+            if (Array.isArray(content)) {
+                node.children = content;
+            } else if (typeof content === 'object') {
+                node.attributes = node.attributes || {};
+                for (const k in content) {
+                    if (k === 'children') node.children = content[k];
+                    else node.attributes[k] = content[k];
+                }
+            } else node.children = [content];
+            delete node[potentialTag];
+        }
+    }
+
+    // Recursive Processing
+    for (const key in node) {
+        if (key === 'tag' || key === '__parent__') continue;
+        const value = node[key];
+
+        // Special case: attributes object
+        if (key === 'attributes' && typeof value === 'object' && value !== null) {
+            for (const attrKey in value) {
+                const attrVal = value[attrKey];
+                if (typeof attrVal === 'string' && attrVal.startsWith('$') && attrKey.startsWith('on')) {
+                    value[attrKey] = makeEventHandler(attrVal);
+                } else if (typeof attrVal === 'string' && attrVal.startsWith('$')) {
+                    value[attrKey] = parseExpression(attrVal, node);
+                } else if (typeof attrVal === 'object' && attrVal !== null) {
+                    value[attrKey] = hydrate(attrVal, node);
+                }
+            }
+            continue;
+        }
+
+        if (typeof value === 'string' && value.startsWith('$')) {
+            if (key === 'onmount' || key === 'onunmount' || key.startsWith('on')) {
+                node[key] = makeEventHandler(value);
+            } else if (key === 'children') {
+                node[key] = [parseExpression(value, node)];
+            } else {
+                node[key] = parseExpression(value, node);
+            }
+        } else {
+            node[key] = hydrate(value, node);
+        }
+    }
+
     return node;
 };
 

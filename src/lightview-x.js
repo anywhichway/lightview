@@ -622,11 +622,15 @@ const elementsFromSelector = (selector, element) => {
     }
 };
 
-const updateTargetContent = (el, elements, raw, loc, contentHash, { element, setupChildren }, targetHash = null) => {
+const updateTargetContent = (el, elements, raw, loc, contentHash, options, targetHash = null) => {
+    const { element, setupChildren, saveScrolls, restoreScrolls } = { ...options, ...globalThis.Lightview?.internals };
     const markerId = `${loc}-${contentHash.slice(0, 8)}`;
     let track = getOrSet(insertedContentMap, el.domEl, () => ({}));
     if (track[loc]) removeInsertedContent(el.domEl, `${loc}-${track[loc].slice(0, 8)}`);
     track[loc] = contentHash;
+
+    // Snapshot scroll positions document-wide before updating
+    const scrollMap = saveScrolls ? saveScrolls() : null;
 
     const performScroll = (root) => {
         if (!targetHash) return;
@@ -642,18 +646,25 @@ const updateTargetContent = (el, elements, raw, loc, contentHash, { element, set
         });
     };
 
+    const runRestore = (root) => {
+        if (restoreScrolls && scrollMap) restoreScrolls(scrollMap, root);
+    };
+
     if (loc === 'shadow') {
         if (!el.domEl.shadowRoot) el.domEl.attachShadow({ mode: 'open' });
         setupChildren(elements, el.domEl.shadowRoot);
         executeScripts(el.domEl.shadowRoot);
         performScroll(el.domEl.shadowRoot);
+        runRestore(el.domEl.shadowRoot);
     } else if (loc === 'innerhtml') {
         el.children = elements;
         executeScripts(el.domEl);
         performScroll(document);
+        runRestore(el.domEl);
     } else {
         insert(elements, el.domEl, loc, markerId, { element, setupChildren });
         performScroll(document);
+        runRestore(el.domEl);
     }
 };
 

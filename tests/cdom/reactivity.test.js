@@ -26,7 +26,7 @@ describe('cdom Reactivity', () => {
             { id: 2, amount: 200 }
         ], 'bills');
 
-        const totalExpr = LightviewCDOM.parseExpression('$/sum(bills/amount...)');
+        const totalExpr = LightviewCDOM.parseExpression('$/sum(bills...amount)');
         expect(totalExpr.value).toBe(300);
 
         // Update an existing item
@@ -155,19 +155,19 @@ describe('cdom Reactivity', () => {
         const hydrated = LightviewCDOM.hydrate(cdomcStructure);
 
         // 4. Inspect & Assert Initial State
-        const root = hydrated.div;
-        const header = root.children[0].div;
-        const stats = root.children[1].div;
-        const helpers = root.children[2].div;
+        const root = hydrated;
+        const header = root.children[0];
+        const stats = root.children[1];
+        const helpers = root.children[2];
 
-        expect(root.class.value).toBe('dark');
-        expect(header.children[0].h1.children[0].value).toBe('Bob');
-        expect(header.children[1].img.src.value).toBe('img.png');
-        expect(stats.children[0].span.children[1].value).toBe(10);
+        expect(root.attributes.class.value).toBe('dark');
+        expect(header.children[0].children[0].value).toBe('Bob');
+        expect(header.children[1].attributes.src.value).toBe('img.png');
+        expect(stats.children[0].children[1].value).toBe(10);
 
         // Assert Helpers Initial State
-        expect(helpers.children[0].p.children[0].value).toBe('BOB'); // upper('Bob')
-        expect(helpers.children[1].p.children[1].value).toBe(60); // sum(10, 50)
+        expect(helpers.children[0].children[0].value).toBe('BOB'); // upper('Bob')
+        expect(helpers.children[1].children[1].value).toBe(60); // sum(10, 50)
 
         // 5. Trigger Deep Updates
         profile.user.details.name = 'Robert';
@@ -175,12 +175,12 @@ describe('cdom Reactivity', () => {
         profile.user.stats.posts = 20;
 
         // 6. Assert Updates Propagated to cdomC Structure
-        expect(root.class.value).toBe('light'); // Top-level attr
-        expect(header.children[0].h1.children[0].value).toBe('Robert'); // Deep nested text
-        expect(stats.children[0].span.children[1].value).toBe(20); // Deep nested sibling
+        expect(root.attributes.class.value).toBe('light'); // Top-level attr
+        expect(header.children[0].children[0].value).toBe('Robert'); // Deep nested text
+        expect(stats.children[0].children[1].value).toBe(20); // Deep nested sibling
 
         // Assert Helpers Updated State
-        expect(helpers.children[0].p.children[0].value).toBe('ROBERT'); // upper('Robert')
-        expect(helpers.children[1].p.children[1].value).toBe(70); // sum(20, 50)
+        expect(helpers.children[0].children[0].value).toBe('ROBERT'); // upper('Robert')
+        expect(helpers.children[1].children[1].value).toBe(70); // sum(20, 50)
     });
 });

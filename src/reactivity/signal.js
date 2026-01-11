@@ -101,10 +101,16 @@ export const getSignal = (name, defaultValueOrOptions) => {
     const future = signal(undefined);
     const handler = (realSignal) => {
         // When the real signal appears, sync the future one
-        future.value = realSignal.value;
-        effect(() => { future.value = realSignal.value; });
-        // Also allow the future signal to proxy sets back to the real one?
-        // For now, simple one-way sync might be enough for resolution.
+        // If it's a signal (has .value), track its value. If it's a state proxy or object, it IS the value.
+        const hasValue = realSignal && (typeof realSignal === 'object' || typeof realSignal === 'function') && 'value' in realSignal;
+        if (hasValue) {
+            future.value = realSignal.value;
+            effect(() => {
+                future.value = realSignal.value;
+            });
+        } else {
+            future.value = realSignal;
+        }
     };
 
     if (!_LV.futureSignals.has(name)) _LV.futureSignals.set(name, new Set());

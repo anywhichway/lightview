@@ -15,6 +15,58 @@ const nodeStateFactory = () => ({ effects: [], onmount: null, onunmount: null })
 const registry = getRegistry();
 
 /**
+ * Persistent scroll memory - tracks scroll positions continuously via event listeners.
+ * Much more reliable than point-in-time snapshots.
+ */
+const scrollMemory = new Map();
+
+const initScrollMemory = () => {
+    if (typeof document === 'undefined') return;
+
+    // Use event delegation on document for scroll events
+    document.addEventListener('scroll', (e) => {
+        const el = e.target;
+        if (el === document || el === document.documentElement) return;
+
+        const key = el.id || (el.getAttribute && el.getAttribute('data-preserve-scroll'));
+        if (key) {
+            scrollMemory.set(key, { top: el.scrollTop, left: el.scrollLeft });
+        }
+    }, true); // Capture phase to catch all scroll events
+};
+
+// Initialize when DOM is ready
+if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initScrollMemory);
+    } else {
+        initScrollMemory();
+    }
+}
+
+/**
+ * Returns the current scroll memory (a snapshot of all tracked positions).
+ */
+const saveScrolls = () => new Map(scrollMemory);
+
+/**
+ * Restores scroll positions from a saved map.
+ */
+const restoreScrolls = (map, root = document) => {
+    if (!map || map.size === 0) return;
+    requestAnimationFrame(() => {
+        map.forEach((pos, key) => {
+            const node = document.getElementById(key) ||
+                document.querySelector(`[data-preserve-scroll="${key}"]`);
+            if (node) {
+                node.scrollTop = pos.top;
+                node.scrollLeft = pos.left;
+            }
+        });
+    });
+};
+
+/**
  * Assocates an effect with a DOM node for automatic cleanup when the node is removed.
  */
 const trackEffect = (node, effectFn) => {
@@ -629,6 +681,8 @@ const Lightview = {
         wrapDomElement,
         setupChildren,
         trackEffect,
+        saveScrolls,
+        restoreScrolls,
         localRegistries: internals.localRegistries,
         futureSignals: internals.futureSignals,
         schemas: internals.schemas,

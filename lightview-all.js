@@ -85,10 +85,15 @@
     if (defaultValue !== void 0) return signal(defaultValue, { name, scope });
     const future = signal(void 0);
     const handler = (realSignal) => {
-      future.value = realSignal.value;
-      effect(() => {
+      const hasValue = realSignal && (typeof realSignal === "object" || typeof realSignal === "function") && "value" in realSignal;
+      if (hasValue) {
         future.value = realSignal.value;
-      });
+        effect(() => {
+          future.value = realSignal.value;
+        });
+      } else {
+        future.value = realSignal;
+      }
     };
     if (!_LV.futureSignals.has(name)) _LV.futureSignals.set(name, /* @__PURE__ */ new Set());
     _LV.futureSignals.get(name).add(handler);
@@ -367,6 +372,38 @@
   const nodeState = /* @__PURE__ */ new WeakMap();
   const nodeStateFactory = () => ({ effects: [], onmount: null, onunmount: null });
   const registry = getRegistry$1();
+  const scrollMemory = /* @__PURE__ */ new Map();
+  const initScrollMemory = () => {
+    if (typeof document === "undefined") return;
+    document.addEventListener("scroll", (e) => {
+      const el = e.target;
+      if (el === document || el === document.documentElement) return;
+      const key = el.id || el.getAttribute && el.getAttribute("data-preserve-scroll");
+      if (key) {
+        scrollMemory.set(key, { top: el.scrollTop, left: el.scrollLeft });
+      }
+    }, true);
+  };
+  if (typeof document !== "undefined") {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initScrollMemory);
+    } else {
+      initScrollMemory();
+    }
+  }
+  const saveScrolls = () => new Map(scrollMemory);
+  const restoreScrolls = (map2, root = document) => {
+    if (!map2 || map2.size === 0) return;
+    requestAnimationFrame(() => {
+      map2.forEach((pos, key) => {
+        const node = document.getElementById(key) || document.querySelector(`[data-preserve-scroll="${key}"]`);
+        if (node) {
+          node.scrollTop = pos.top;
+          node.scrollLeft = pos.left;
+        }
+      });
+    });
+  };
   const trackEffect = (node, effectFn) => {
     const state2 = getOrSet(nodeState, node, nodeStateFactory);
     if (!state2.effects) state2.effects = [];
@@ -801,6 +838,8 @@
       wrapDomElement,
       setupChildren,
       trackEffect,
+      saveScrolls,
+      restoreScrolls,
       localRegistries: internals.localRegistries,
       futureSignals: internals.futureSignals,
       schemas: internals.schemas,
@@ -1294,11 +1333,14 @@
       return null;
     }
   };
-  const updateTargetContent = (el, elements, raw, loc, contentHash, { element: element2, setupChildren: setupChildren2 }, targetHash = null) => {
+  const updateTargetContent = (el, elements, raw, loc, contentHash, options, targetHash = null) => {
+    var _a2;
+    const { element: element2, setupChildren: setupChildren2, saveScrolls: saveScrolls2, restoreScrolls: restoreScrolls2 } = { ...options, ...(_a2 = globalThis.Lightview) == null ? void 0 : _a2.internals };
     const markerId = `${loc}-${contentHash.slice(0, 8)}`;
     let track = getOrSet(insertedContentMap, el.domEl, () => ({}));
     if (track[loc]) removeInsertedContent(el.domEl, `${loc}-${track[loc].slice(0, 8)}`);
     track[loc] = contentHash;
+    const scrollMap = saveScrolls2 ? saveScrolls2() : null;
     const performScroll = (root) => {
       if (!targetHash) return;
       requestAnimationFrame(() => {
@@ -1312,18 +1354,24 @@
         });
       });
     };
+    const runRestore = (root) => {
+      if (restoreScrolls2 && scrollMap) restoreScrolls2(scrollMap, root);
+    };
     if (loc === "shadow") {
       if (!el.domEl.shadowRoot) el.domEl.attachShadow({ mode: "open" });
       setupChildren2(elements, el.domEl.shadowRoot);
       executeScripts(el.domEl.shadowRoot);
       performScroll(el.domEl.shadowRoot);
+      runRestore(el.domEl.shadowRoot);
     } else if (loc === "innerhtml") {
       el.children = elements;
       executeScripts(el.domEl);
       performScroll(document);
+      runRestore(el.domEl);
     } else {
       insert(elements, el.domEl, loc, markerId, { element: element2, setupChildren: setupChildren2 });
       performScroll(document);
+      runRestore(el.domEl);
     }
   };
   const handleSrcAttribute = async (el, src, tagName, { element: element2, setupChildren: setupChildren2 }) => {
@@ -2461,14 +2509,15 @@
         continue;
       }
       if (expr[i] === "$" && i + 1 < len2) {
-        let isOpAfter = false;
-        for (const op of opSymbols) {
+        const prefixOps = [...operators.prefix.keys()].sort((a, b) => b.length - a.length);
+        let isPrefixOp = false;
+        for (const op of prefixOps) {
           if (expr.slice(i + 1, i + 1 + op.length) === op) {
-            isOpAfter = true;
+            isPrefixOp = true;
             break;
           }
         }
-        if (isOpAfter) {
+        if (isPrefixOp) {
           i++;
           continue;
         }
@@ -2703,6 +2752,9 @@
           tok = this.peek();
           continue;
         }
+        if (!operators.postfix.has(tok.value) && !operators.infix.has(tok.value)) {
+          break;
+        }
         this.consume();
         const nextTok = this.peek();
         if (nextTok.type === TokenType.PATH || nextTok.type === TokenType.LITERAL || nextTok.type === TokenType.LPAREN || nextTok.type === TokenType.PLACEHOLDER || nextTok.type === TokenType.EVENT || nextTok.type === TokenType.OPERATOR && operators.prefix.has(nextTok.value)) {
@@ -2837,7 +2889,12 @@
         const opts = helperOptions.get(opInfo.helper) || {};
         const left = evaluateAST(ast.left, context, opts.pathAware);
         const right = evaluateAST(ast.right, context, false);
-        return helper(unwrapSignal(left), unwrapSignal(right));
+        const finalArgs = [];
+        if (Array.isArray(left) && ast.left.type === "Explosion") finalArgs.push(...left);
+        else finalArgs.push(unwrapSignal(left));
+        if (Array.isArray(right) && ast.right.type === "Explosion") finalArgs.push(...right);
+        else finalArgs.push(unwrapSignal(right));
+        return helper(...finalArgs);
       }
       default:
         throw new Error(`JPRX: Unknown AST node type: ${ast.type}`);
@@ -3736,85 +3793,79 @@
   };
   const activate = (root = document.body) => {
   };
+  const makeEventHandler = (expr) => (eventOrNode) => {
+    const isEvent = eventOrNode && typeof eventOrNode === "object" && "target" in eventOrNode;
+    const target = isEvent ? eventOrNode.currentTarget || eventOrNode.target : eventOrNode;
+    const context = getContext(target, isEvent ? eventOrNode : null);
+    const result = resolveExpression(expr, context);
+    if (result && typeof result === "object" && result.isLazy) return result.resolve(eventOrNode);
+    return result;
+  };
   const hydrate = (node, parent = null) => {
     var _a2, _b2, _c;
     if (!node) return node;
     if (typeof node === "string" && node.startsWith("$")) {
       return parseExpression(node, parent);
     }
+    if (typeof node !== "object") return node;
     if (Array.isArray(node)) {
       return node.map((item) => hydrate(item, parent));
     }
     if (node instanceof String) return node.toString();
-    if (typeof node === "object" && node !== null) {
-      if (parent && !("__parent__" in node)) {
-        Object.defineProperty(node, "__parent__", { value: parent, enumerable: false, writable: true });
-        (_c = (_b2 = (_a2 = globalThis.Lightview) == null ? void 0 : _a2.internals) == null ? void 0 : _b2.parents) == null ? void 0 : _c.set(node, parent);
-      }
-      if (!node.tag) {
-        let potentialTag = null;
-        const reserved = ["children", "attributes", "tag", "__parent__"];
-        for (const key in node) {
-          if (reserved.includes(key) || key.startsWith("on")) continue;
-          potentialTag = key;
-          break;
-        }
-        if (potentialTag) {
-          const content = node[potentialTag];
-          node.tag = potentialTag;
-          if (Array.isArray(content)) {
-            node.children = content;
-          } else if (typeof content === "object") {
-            node.attributes = node.attributes || {};
-            for (const k in content) {
-              if (k === "children") node.children = content[k];
-              else node.attributes[k] = content[k];
-            }
-          } else node.children = [content];
-          delete node[potentialTag];
-        }
-      }
+    if (parent && !("__parent__" in node)) {
+      Object.defineProperty(node, "__parent__", { value: parent, enumerable: false, writable: true });
+      (_c = (_b2 = (_a2 = globalThis.Lightview) == null ? void 0 : _a2.internals) == null ? void 0 : _b2.parents) == null ? void 0 : _c.set(node, parent);
+    }
+    if (!node.tag) {
+      let potentialTag = null;
+      const reserved = ["children", "attributes", "tag", "__parent__"];
       for (const key in node) {
-        const value = node[key];
-        if (typeof value === "string" && value.startsWith("$")) {
-          if (key === "onmount" || key === "onunmount") {
-            node[key] = (domNode) => {
-              const context = getContext(domNode);
-              const result = resolveExpression(value, context);
-              if (result == null ? void 0 : result.isLazy) return result.resolve(domNode);
-              return result;
-            };
-          } else if (key.startsWith("on")) {
-            node[key] = (event) => {
-              const context = getContext(event.currentTarget, event);
-              const result = resolveExpression(value, context);
-              if (result == null ? void 0 : result.isLazy) return result.resolve(event);
-              return result;
-            };
-          } else if (key === "children") {
-            node[key] = [parseExpression(value, node)];
-          } else {
-            node[key] = parseExpression(value, node);
-          }
-        } else if (key === "attributes" && typeof value === "object" && value !== null) {
-          for (const attrKey in value) {
-            const attrValue = value[attrKey];
-            if (typeof attrValue === "string" && attrValue.startsWith("$")) {
-              if (attrKey.startsWith("on")) {
-                value[attrKey] = (event) => {
-                  const context = getContext(event.currentTarget, event);
-                  const result = resolveExpression(attrValue, context);
-                  if (result == null ? void 0 : result.isLazy) return result.resolve(event);
-                  return result;
-                };
-              } else {
-                value[attrKey] = parseExpression(attrValue, node);
-              }
-            } else value[attrKey] = hydrate(attrValue, node);
-          }
-        } else node[key] = hydrate(value, node);
+        if (reserved.includes(key) || key.startsWith("on")) continue;
+        potentialTag = key;
+        break;
       }
-      return node;
+      if (potentialTag) {
+        const content = node[potentialTag];
+        node.tag = potentialTag;
+        if (Array.isArray(content)) {
+          node.children = content;
+        } else if (typeof content === "object") {
+          node.attributes = node.attributes || {};
+          for (const k in content) {
+            if (k === "children") node.children = content[k];
+            else node.attributes[k] = content[k];
+          }
+        } else node.children = [content];
+        delete node[potentialTag];
+      }
+    }
+    for (const key in node) {
+      if (key === "tag" || key === "__parent__") continue;
+      const value = node[key];
+      if (key === "attributes" && typeof value === "object" && value !== null) {
+        for (const attrKey in value) {
+          const attrVal = value[attrKey];
+          if (typeof attrVal === "string" && attrVal.startsWith("$") && attrKey.startsWith("on")) {
+            value[attrKey] = makeEventHandler(attrVal);
+          } else if (typeof attrVal === "string" && attrVal.startsWith("$")) {
+            value[attrKey] = parseExpression(attrVal, node);
+          } else if (typeof attrVal === "object" && attrVal !== null) {
+            value[attrKey] = hydrate(attrVal, node);
+          }
+        }
+        continue;
+      }
+      if (typeof value === "string" && value.startsWith("$")) {
+        if (key === "onmount" || key === "onunmount" || key.startsWith("on")) {
+          node[key] = makeEventHandler(value);
+        } else if (key === "children") {
+          node[key] = [parseExpression(value, node)];
+        } else {
+          node[key] = parseExpression(value, node);
+        }
+      } else {
+        node[key] = hydrate(value, node);
+      }
     }
     return node;
   };

@@ -2,7 +2,7 @@
 <script src="/lightview-router.js?base=/index.html"></script>
 
 <div class="docs-layout">
-    <aside class="docs-sidebar" src="./nav.html"></aside>
+    <aside class="docs-sidebar" src="./nav.html" data-preserve-scroll="docs-nav"></aside>
 
     <main class="docs-content">
         <h1>State (Store)</h1>
@@ -11,7 +11,7 @@
             state tracks nested property changes automatically.
         </p>
 
-        <h2>The Problem with Signals + Objects</h2>
+        <h2 id="shortcomings">The Shortcomings of Signals</h2>
         <pre><code>// Signals only react to reassignment
 const user = signal({ name: 'Alice', age: 25 });
 
@@ -23,7 +23,7 @@ const items = signal([1, 2, 3]);
 items.value.push(4);           // ❌ Won't trigger updates!
 items.value = [...items.value, 4];  // ✅ Works, but tedious</code></pre>
 
-        <h2>State to the Rescue</h2>
+        <h2 id="state-to-the-rescue">State to the Rescue</h2>
         <pre><code>const { state } = LightviewX;
 
 // Deep reactivity - mutations work!
@@ -38,7 +38,7 @@ items.push(4);                 // ✅ Triggers updates!
 items[0] = 10;                 // ✅ Triggers updates!
 items.sort();                  // ✅ Triggers updates!</code></pre>
 
-        <h2>Nested Objects</h2>
+        <h2 id="nested-objects">Nested Objects</h2>
         <p>State tracks changes at any depth:</p>
         <pre><code>const app = state({
     user: {
@@ -58,7 +58,7 @@ app.user.profile.name = 'Bob';
 app.user.profile.settings.theme = 'light';
 app.items.push({ id: 1, text: 'Hello' });</code></pre>
 
-        <h2>In the UI</h2>
+        <h2 id="in-the-ui">In the UI</h2>
 
         <div class="code-example">
             <div class="code-example-preview" id="state-demo"></div>
@@ -84,7 +84,7 @@ div(
             </div>
         </div>
 
-        <h2>Array Methods</h2>
+        <h2 id="array-methods">Array Methods</h2>
         <p>All mutating array methods are reactive:</p>
         <pre><code>const items = state([1, 2, 3]);
 
@@ -97,7 +97,7 @@ items.sort();          // Sort in place
 items.reverse();       // Reverse in place
 items.fill(0);         // Fill with value</code></pre>
 
-        <h2>Named State</h2>
+        <h2 id="named-state">Named State</h2>
         <p>
             Like signals, you can name state objects for global access. This is especially useful for
             shared application state:
@@ -114,7 +114,7 @@ const globalState = state.get('app');
 // Get or create
 const settings = state.get('settings', { notifications: true });</code></pre>
 
-        <h2>Stored State</h2>
+        <h2 id="stored-state">Stored State</h2>
         <p>
             You can store named state objects in Storage objects (e.g. sessionStorage or localStorage) for persistence.
             It will be saved any time there is a change. Objects are automatically
@@ -130,7 +130,204 @@ const sameUser = state.get('user');
 const score = state.get('user', {storage:sessionStorage, defaultValue:{name:'Guest', theme:'dark'}});</code></pre>
         <p>Note: Manually updating the object in storage will not trigger updates.</p>
 
-        <h2>Signal vs State</h2>
+        <h2 id="schema-validation">Schema Validation</h2>
+        <p>
+            State objects can be validated and transformed using the <code>schema</code> option. This ensures data
+            integrity and can automatically coerce values to the expected types.
+        </p>
+        <pre><code>const user = state({ name: 'Alice', age: 25 }, { schema: 'auto' });
+
+user.age = 26;          // ✅ Works (same type)
+user.age = '30';        // ❌ Throws: Type mismatch
+user.status = 'active'; // ❌ Throws: Cannot add new property</code></pre>
+
+        <h3>Built-in Schema Behaviors</h3>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Behavior</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>"auto"</code></td>
+                    <td>Infers a fixed schema from the initial value. Prevents adding new properties and enforces strict
+                        type checking.</td>
+                </tr>
+                <tr>
+                    <td><code>"dynamic"</code></td>
+                    <td>Like <code>auto</code>, but allows the state object to grow with new properties.</td>
+                </tr>
+                <tr>
+                    <td><code>"polymorphic"</code></td>
+                    <td>Allows growth and automatically <strong>coerces</strong> values to match the initial type (e.g.,
+                        setting "100" to a number property saves it as the number 100).</td>
+                </tr>
+            </tbody>
+        </table>
+        <pre><code>// Polymorphic coerces types automatically
+const settings = state({ volume: 50, muted: false }, { schema: 'polymorphic' });
+
+settings.volume = '75';   // ✅ Coerced to number 75
+settings.muted = 'true';   // ✅ Coerced to boolean true
+settings.newProp = 'ok';  // ✅ Allowed (dynamic growth)</code></pre>
+
+        <h3 id="json-schema-lite">JSON Schema Lite</h3>
+        <p>
+            When you load <code>lightview-x.js</code>, the schema engine is upgraded to a "JSON Schema Lite" validator.
+            It supports standard Draft 7 keywords while remaining incredibly lightweight.
+        </p>
+
+        <h4>Supported Keywords</h4>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Keywords</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>String</strong></td>
+                    <td><code>minLength</code>, <code>maxLength</code>, <code>pattern</code>,
+                        <code>format: 'email'</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Number</strong></td>
+                    <td><code>minimum</code>, <code>maximum</code>, <code>multipleOf</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Object</strong></td>
+                    <td><code>required</code>, <code>properties</code>, <code>additionalProperties: false</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Array</strong></td>
+                    <td><code>items</code>, <code>minItems</code>, <code>maxItems</code>, <code>uniqueItems</code></td>
+                </tr>
+                <tr>
+                    <td><strong>General</strong></td>
+                    <td><code>type</code>, <code>enum</code>, <code>const</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 id="transformations">Transformation Helpers</h3>
+        <p>
+            Unlike industry-standard validators (which only allow/disallow data), Lightview's engine supports
+            <strong>declarative transformations</strong>. This allows you to specify how data should be "cleaned" before
+            it hits the state.
+        </p>
+        <pre><code>const UserSchema = {
+    type: "object",
+    properties: {
+        username: { 
+            type: "string", 
+            transform: "lower"  // Using a registered helper name
+        },
+        salary: { 
+            type: "number",
+            transform: (v) => Math.round(v) // Using an inline function
+        }
+    }
+};
+
+const user = state({ username: 'ALICE', salary: 50212.55 }, { schema: UserSchema });
+// user.username is 'alice' (via "lower")
+// user.salary is 50213 (via inline function)</code></pre>
+
+        <p>
+            When using a <strong>string</strong> for the transform (like <code>"lower"</code>), Lightview looks for a
+            matching function in the global registry. This requires that the helper has been registered via JPRX
+            (requires <code>lightview-cdom.js</code>) or manually in <code>Lightview.helpers</code>.
+        </p>
+
+        <div class="code-block info"
+            style="border-left: 4px solid #3b82f6; padding: 1rem; background: #eff6ff; margin-bottom: 2rem;">
+            <strong>🔍 Naming Tip:</strong> When using string names for transforms, use the <strong>bare helper
+                name</strong> (e.g., <code>"lower"</code>, <code>"round"</code>). You do <strong>not</strong> need a
+            leading <code>$</code>.
+        </div>
+
+        <h4>Loading Helpers</h4>
+        <p>
+            When using the <code>transform</code> keyword, Lightview searches for the named function in the following
+            order:
+        </p>
+        <ol style="margin-bottom: 2rem;">
+            <li><strong>JPRX Helpers</strong>: Any helper registered via <code>registerHelper</code> (requires
+                <code>lightview-cdom.js</code>).
+            </li>
+            <li><strong>Public API</strong>: Functions attached to <code>Lightview.helpers</code>.</li>
+            <li><strong>Inline</strong>: You can also pass a function directly to the <code>transform</code> property.
+            </li>
+        </ol>
+
+        <div class="code-block info"
+            style="border-left: 4px solid #3b82f6; padding: 1rem; background: #eff6ff; margin-bottom: 2rem;">
+            <strong>💡 Note:</strong> To use JPRX helpers (like <code>math</code>, <code>string</code>, or
+            <code>array</code> helpers) for state transformations, you must ensure <code>lightview-cdom.js</code> is
+            loaded before your state is initialized.
+        </div>
+
+        <h3 id="lite-vs-full">Lite vs. Full Validators</h3>
+        <p>
+            Why use our "Lite" engine instead of a full validator like <strong>Ajv</strong>?
+        </p>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Lightview Lite</th>
+                    <th>Full (Ajv, etc.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Size</strong></td>
+                    <td>~2KB (built-in)</td>
+                    <td>~40KB+ (external)</td>
+                </tr>
+                <tr>
+                    <td><strong>Transformation</strong></td>
+                    <td>✅ First-class support</td>
+                    <td>❌ Not supported (Validators only)</td>
+                </tr>
+                <tr>
+                    <td><strong>Performance</strong></td>
+                    <td>🚀 Optimized for UI cycles</td>
+                    <td>Heavy overhead for simple checks</td>
+                </tr>
+                <tr>
+                    <td><strong>Spec Compliance</strong></td>
+                    <td>Basic Draft 7 (No <code>$ref</code>)</td>
+                    <td>100% Full Specification</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 id="full-validator">Using a Full Validator</h4>
+        <p>
+            If you have complex enterprise schemas that require full specification compliance, you can swap out the
+            Lightview engine for any industry-standard validator:
+        </p>
+        <div class="code-block warning"
+            style="border-left: 4px solid #f59e0b; padding: 1rem; background: #fffbeb; margin-bottom: 2rem;">
+            <strong>⚠️ Warning:</strong> If you swap the validator, you will lose support for the declarative
+            <code>transform</code> keyword in your schemas unless your external validator also supports it.
+        </div>
+        <pre><code>import Ajv from "ajv";
+const ajv = new Ajv();
+
+// Swap the validation hook
+Lightview.internals.hooks.validate = (value, schema) => {
+    const valid = ajv.validate(schema, value);
+    if (!valid) throw new Error(ajv.errorsText());
+    return true;
+};</code></pre>
+
+        <h2 id="signal-vs-state">Signal vs State</h2>
         <table class="api-table">
             <thead>
                 <tr>

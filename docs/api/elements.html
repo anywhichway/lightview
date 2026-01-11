@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="../components/index.css">
 
 <div class="docs-layout">
-    <aside class="docs-sidebar" src="./nav.html"></aside>
+    <aside class="docs-sidebar" src="./nav.html" data-preserve-scroll="docs-nav"></aside>
 
     <main class="docs-content">
         <h1>Elements</h1>
@@ -119,9 +119,58 @@ $('#example').content(app);</code></pre>
 
         <h2 id="object-dom">Object DOM (oDOM)</h2>
         <p>
-            A more compact JSON representation provided by <strong>Lightview X</strong>. It uses the tag name as a key
-            to reduce verbosity.
+            A more compact JSON representation provided by <strong>Lightview X</strong>. In oDOM, an object with a
+            <strong>single key</strong> and an <strong>object value</strong> represents an element. The key is the
+            <strong>tag name</strong> (e.g., <code>"div"</code>, <code>"span"</code>) or a <strong>custom element
+                function name</strong>. The value object contains the element's attributes.
         </p>
+
+        <h3>Reserved Keys</h3>
+        <p>
+            Certain keys on the value object are reserved and have special meaning instead of being treated as
+            attributes:
+        </p>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>children</code></td>
+                    <td>An array of child elements, strings, or reactive functions.</td>
+                </tr>
+                <tr>
+                    <td><code>attributes</code></td>
+                    <td>An explicit attributes object (not needed in oDOM since non-reserved keys are attributes). If
+                        you use this attribute, Lighview MAY assume you are trying to use vDOM not oDOM. Avoid its use
+                        except for vDOM.
+                    </td>
+                </tr>
+                <tr>
+                    <td><code>tag</code></td>
+                    <td>Explicitly sets the tag name. If you use this attribute, Lighview MAY assume you are trying to
+                        use vDOM not oDOM. Avoid its use except for vDOM.</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>
+            All other keys on the value object are treated as <strong>attribute names</strong>. Keys starting with
+            <code>on</code> (like <code>onclick</code>, <code>onmouseenter</code>) are bound as event handlers.
+        </p>
+
+        <h3>Array Shorthand</h3>
+        <p>
+            If a tag key has an <strong>array</strong> as its value instead of an object, it is shorthand for
+            <code>{ &lt;key&gt;: { children: &lt;array&gt; } }</code>:
+        </p>
+        <pre><code>// These are equivalent:
+{ ul: [{ li: ['Item 1'] }, { li: ['Item 2'] }] }
+{ ul: { children: [{ li: { children: ['Item 1'] } }, { li: { children: ['Item 2'] } }] } }</code></pre>
+
+        <h3>Example</h3>
         <div id="syntax-object">
             <pre><script>
                 examplify(document.currentScript.nextElementSibling, {
@@ -134,7 +183,7 @@ $('#example').content(app);</code></pre>
             </script><code contenteditable="true">const { signal, tags, $ } = Lightview;
 const count = signal(0);
 const app = { div: { class: 'container', children: [
-    { h1: { children: ['Hello Lightview'] } },
+    { h1: ['Hello Lightview'] },
     { p: { children: [() => `Count: ${count.value}`] } },
     { button: { onclick: () => count.value++, children: ['Click me'] } }
 ]}};
@@ -197,27 +246,9 @@ const greeting = div(
 );
 // Initial result: <div>Hello, John Doe !</div></code></pre>
 
-        <h2 id="attributes-events">Attributes & Events</h2>
-        <p>
-            Pass attributes as the first argument (Tagged API) or in the attributes object (others):
-        </p>
-        <pre><code>// Standard attributes
-div({ 
-    id: 'my-div',
-    class: 'container active',
-    style: 'color: red;',
-    'data-value': '42'
-})
-
-// Reactive attributes - use functions!
-div({
-    class: () => isActive.value ? 'active' : 'inactive',
-    style: () => `opacity: ${visible.value ? 1 : 0}`,
-    disabled: () => isLoading.value
-})
-
-// Event handlers - use "on" prefix
-button({
+        <h2 id="attributes-events">Events</h2>
+        <p>Use standard event handlers prefixed with "on".</p>
+        <pre><code>button({
     onclick: (e) => handleClick(e),
     onmouseenter: () => setHovered(true),
     onmouseleave: () => setHovered(false)
