@@ -33,6 +33,96 @@ registerLookupHelpers(registerHelper);
 registerStatsHelpers(registerHelper);
 registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
 registerNetworkHelpers(registerHelper);
+registerHelper('$move', (selector, location = 'beforeend') => {
+    return {
+        isLazy: true,
+        resolve: (eventOrNode) => {
+            const isEvent = eventOrNode && typeof eventOrNode === 'object' && 'target' in eventOrNode;
+            const node = isEvent ? (eventOrNode.currentTarget || eventOrNode.target) : eventOrNode;
+            if (!(node instanceof Node) || !selector) return;
+
+            const target = document.querySelector(selector);
+            if (!target) {
+                console.warn(`[Lightview-CDOM] $move target not found: ${selector}`);
+                return;
+            }
+
+            // Identity logic: if node has ID, check for existing sibling or descendant in target
+            if (node.id) {
+                // We escape the ID for querySelector
+                const escapedId = CSS.escape(node.id);
+                // Check if the target itself is the node (unlikely but safe)
+                if (target.id === node.id && target !== node) {
+                    target.replaceWith(node);
+                    return;
+                }
+                // Check for existing element in target
+                const existing = target.querySelector(`#${escapedId}`);
+                if (existing && existing !== node) {
+                    existing.replaceWith(node);
+                    return;
+                }
+            }
+
+            // Use Lightview's standard placement logic
+            globalThis.Lightview.$(target).content(node, location);
+        }
+    };
+}, { pathAware: true });
+
+registerHelper('$mount', async (url, options = {}) => {
+    const { target = 'body', location = 'beforeend' } = options;
+
+    try {
+        const fetchOptions = { ...options };
+        delete fetchOptions.target;
+        delete fetchOptions.location;
+
+        const headers = { ...fetchOptions.headers };
+        let body = fetchOptions.body;
+
+        if (body !== undefined) {
+            if (body !== null && typeof body === 'object') {
+                body = JSON.stringify(body);
+                if (!headers['Content-Type']) headers['Content-Type'] = 'application/json';
+            } else {
+                body = String(body);
+                if (!headers['Content-Type']) headers['Content-Type'] = 'text/plain';
+            }
+            fetchOptions.body = body;
+            fetchOptions.headers = headers;
+        }
+
+        const response = await globalThis.fetch(url, fetchOptions);
+        const contentType = response.headers.get('Content-Type') || '';
+        const text = await response.text();
+
+        let content = text;
+        const isCDOM = contentType.includes('application/cdom') ||
+            contentType.includes('application/jprx') ||
+            contentType.includes('application/vdom') ||
+            contentType.includes('application/odom') ||
+            url.endsWith('.cdom') || url.endsWith('.jprx') ||
+            url.endsWith('.vdom') || url.endsWith('.odom');
+
+        if (isCDOM || (contentType.includes('application/json') && text.trim().startsWith('{'))) {
+            try {
+                content = hydrate(parseJPRX(text));
+            } catch (e) {
+                // Fail gracefully to text
+            }
+        }
+
+        const targetEl = document.querySelector(target);
+        if (targetEl) {
+            globalThis.Lightview.$(targetEl).content(content, location);
+        } else {
+            console.warn(`[Lightview-CDOM] $mount target not found: ${target}`);
+        }
+    } catch (err) {
+        console.error(`[Lightview-CDOM] $mount failed for ${url}:`, err);
+    }
+});
 
 // Register Standard Operators
 // Mutation operators (prefix and postfix)

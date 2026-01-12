@@ -3,7 +3,7 @@ var examplifyIdCounter = globalThis.examplifyIdCounter || 0;
 globalThis.examplifyIdCounter = examplifyIdCounter;
 
 globalThis.examplify = function examplify(target, options = {}) {
-    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false, useOrigin = null, language = 'js', autoRun = false } = options;
+    const { scripts, styles, modules, html, at, location = 'beforeBegin', type, height, minHeight = 100, maxHeight = Infinity, allowSameOrigin = false, useOrigin = null, language = 'js', autoRun = false, controls: showControls = true } = options;
     const originalContent = target.textContent;
     const autoResize = !height; // Auto-resize if no explicit height is provided
     const iframeId = `examplify-${++examplifyIdCounter}`;
@@ -17,6 +17,7 @@ globalThis.examplify = function examplify(target, options = {}) {
     const controls = document.createElement('div');
     const editable = target.getAttribute('contenteditable') == 'true';
     controls.className = 'examplify-controls';
+    if (!showControls) controls.style.display = 'none';
 
     // Controls HTML
     controls.innerHTML = `

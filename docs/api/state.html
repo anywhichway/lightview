@@ -38,6 +38,37 @@ items.push(4);                 // ✅ Triggers updates!
 items[0] = 10;                 // ✅ Triggers updates!
 items.sort();                  // ✅ Triggers updates!</code></pre>
 
+        <h2 id="state-function">State Function</h2>
+        <p>The <code>state</code> function is the primary initializer for reactive stores.</p>
+        <div class="code-block">
+            <pre><code>state(initialValue, nameOrOptions?)</code></pre>
+        </div>
+        <h3>Parameters</h3>
+        <ul>
+            <li><code>initialValue</code>: The object or array to be wrapped in a reactive proxy.</li>
+            <li><code>nameOrOptions</code> (Optional):
+                <ul>
+                    <li>If a <strong>string</strong>: This becomes the <code>name</code> of the state for global
+                        registration.</li>
+                    <li>If an <strong>object</strong>: Supported keys include:
+                        <ul>
+                            <li><code>name</code>: A unique identifier for the state in the registry.</li>
+                            <li><code>storage</code>: An object implementing the Storage interface (e.g.,
+                                <code>localStorage</code>) to enable persistence.
+                            </li>
+                            <li><code>scope</code>: A DOM element or object to bind the state's visibility for up-tree
+                                lookups.</li>
+                            <li><code>schema</code>: A validation behavior (<code>"auto"</code>, <code>"dynamic"</code>,
+                                <code>"polymorphic"</code>) or a formal registered JSON Schema name (see <a
+                                    href="#json-schema-lite">JSON Schema Lite</a> below).
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <p>See the examples in the sections below for detailed usage of these parameters.</p>
+
         <h2 id="nested-objects">Nested Objects</h2>
         <p>State tracks changes at any depth:</p>
         <pre><code>const app = state({
@@ -60,28 +91,47 @@ app.items.push({ id: 1, text: 'Hello' });</code></pre>
 
         <h2 id="in-the-ui">In the UI</h2>
 
-        <div class="code-example">
-            <div class="code-example-preview" id="state-demo"></div>
-            <div class="code-example-code">
-                <pre><code>const todos = state([
+        <div id="ui-example">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js'],
+                    type: 'module',
+                    height: '200px',
+                    autoRun: true,
+                    controls: false
+                });
+            </script><code>const { state } = LightviewX;
+const { tags, $ } = Lightview;
+const { div, ul, li, input, span, button } = tags;
+
+const todos = state([
     { text: 'Learn Lightview', done: true },
     { text: 'Build app', done: false }
 ]);
 
-div(
-    ul(() => todos.map((todo, i) => 
-        li(
-            input({ 
-                type: 'checkbox', 
-                checked: todo.done,
-                onchange: () => todos[i].done = !todos[i].done
-            }),
-            span(todo.text)
+const app = div({ style: 'padding: 1rem;' },
+    ul({ style: 'list-style: none; padding: 0; margin-bottom: 1rem;' }, 
+        () => todos.map((todo, i) => 
+            li({ style: 'display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;' },
+                input({ 
+                    type: 'checkbox', 
+                    checked: todo.done,
+                    onchange: () => todos[i].done = !todos[i].done,
+                    style: 'cursor: pointer;'
+                }),
+                span({ 
+                    style: () => todo.done ? 'text-decoration: line-through; opacity: 0.6;' : '' 
+                }, todo.text)
+            )
         )
-    )),
-    button({ onclick: () => todos.push({ text: 'New', done: false }) }, 'Add')
-)</code></pre>
-            </div>
+    ),
+    button({ 
+        onclick: () => todos.push({ text: `Task ${todos.length + 1}`, done: false }),
+    }, '+ Add Task')
+);
+
+$('#example').content(app);</code></pre>
         </div>
 
         <h2 id="array-methods">Array Methods</h2>
@@ -96,6 +146,15 @@ items.splice(1, 1);    // Remove at index
 items.sort();          // Sort in place
 items.reverse();       // Reverse in place
 items.fill(0);         // Fill with value</code></pre>
+        <h2 id="date-methods">Date Methods</h2>
+        <p>When a property is a <code>Date</code> object, all mutating methods are reactive. This includes all
+            <code>set*</code> methods (e.g. <code>setFullYear()</code>, <code>setDate()</code>, <code>setHours()</code>,
+            etc.):
+        </p>
+        <pre><code>const event = state({ date: new Date() });
+ 
+ // This will trigger UI updates
+ event.date.setFullYear(2025);</code></pre>
 
         <h2 id="named-state">Named State</h2>
         <p>
@@ -213,6 +272,24 @@ settings.newProp = 'ok';  // ✅ Allowed (dynamic growth)</code></pre>
             </tbody>
         </table>
 
+        <h4>Named Schemas</h4>
+        <p>
+            You can register schemas globally and reference them by name. This encourages reuse and keeps your
+            <code>state</code> initializations clean.
+        </p>
+        <pre><code>// 1. Register a schema
+Lightview.registerSchema('User', {
+    type: "object",
+    properties: {
+        username: { type: "string", minLength: 3 },
+        email: { type: "string", format: "email" }
+    },
+    required: ["username"]
+});
+
+// 2. Use it by name
+const user = state({ username: "alice" }, { schema: "User" });</code></pre>
+
         <h3 id="transformations">Transformation Helpers</h3>
         <p>
             Unlike industry-standard validators (which only allow/disallow data), Lightview's engine supports
@@ -240,7 +317,9 @@ const user = state({ username: 'ALICE', salary: 50212.55 }, { schema: UserSchema
         <p>
             When using a <strong>string</strong> for the transform (like <code>"lower"</code>), Lightview looks for a
             matching function in the global registry. This requires that the helper has been registered via JPRX
-            (requires <code>lightview-cdom.js</code>) or manually in <code>Lightview.helpers</code>.
+            (requires <code>lightview-cdom.js</code>) or manually in <code>Lightview.helpers</code>. For more details on
+            built-in
+            helpers, see the <a href="/docs/cdom.html">cDOM documentation</a>.
         </p>
 
         <div class="code-block info"
@@ -327,83 +406,5 @@ Lightview.internals.hooks.validate = (value, schema) => {
     return true;
 };</code></pre>
 
-        <h2 id="signal-vs-state">Signal vs State</h2>
-        <table class="api-table">
-            <thead>
-                <tr>
-                    <th>Use Signal</th>
-                    <th>Use State</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Primitives (numbers, strings, bools)</td>
-                    <td>Objects with nested properties</td>
-                </tr>
-                <tr>
-                    <td>Simple objects (replace whole thing)</td>
-                    <td>Objects you'll mutate in place</td>
-                </tr>
-                <tr>
-                    <td>Arrays you'll replace</td>
-                    <td>Arrays you'll push/pop/splice</td>
-                </tr>
-                <tr>
-                    <td>Slightly better performance</td>
-                    <td>More convenient API</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2>Pro Tip</h2>
-        <p>
-            You can mix both! Use signals for simple values and state for complex structures:
-        </p>
-        <pre><code>const isLoading = signal(false);      // Simple boolean → signal
-const error = signal(null);           // Simple value → signal
-const items = state([]);              // Array to mutate → state (from LightviewX)
-const formData = state({              // Object to mutate → state (from LightviewX)
-    name: '',
-    email: '',
-    message: ''
-});</code></pre>
     </main>
 </div>
-
-<script>
-    (function () {
-        const { tags } = Lightview;
-        const { state } = LightviewX;
-        const { div, ul, li, input, span, button } = tags;
-
-        const todos = state([
-            { text: 'Learn Lightview', done: true },
-            { text: 'Build something', done: false }
-        ]);
-
-        const demo = div({ style: 'padding: 0.5rem;' },
-            ul({ style: 'list-style: none; padding: 0; margin: 0 0 1rem;' },
-                () => todos.map((todo, i) =>
-                    li({ style: 'display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0;' },
-                        input({
-                            type: 'checkbox',
-                            checked: todo.done,
-                            onchange: () => todos[i].done = !todos[i].done,
-                            style: 'cursor: pointer;'
-                        }),
-                        span({
-                            style: () => `${todo.done ? 'text-decoration: line-through; opacity: 0.6;' : ''}`
-                        }, todo.text)
-                    )
-                )
-            ),
-            button({
-                onclick: () => todos.push({ text: `Task ${todos.length + 1}`, done: false }),
-                style: 'padding: 0.5rem 1rem; cursor: pointer; background: var(--site-primary); color: white; border: none; border-radius: 6px;'
-            }, '+ Add Task')
-        );
-
-        const container = document.getElementById('state-demo');
-        if (container) container.appendChild(demo.domEl);
-    })();
-</script>

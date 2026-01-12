@@ -34,8 +34,10 @@ JPRX extends the base JSON Pointer syntax with:
 | **Operators** | `$++/count`, `$/a + $/b` | Familiar JS-style prefix, postfix, and infix operators. |
 | **Placeholders** | `_` (item), `$this`, `$event` | Context-aware placeholders for iteration and interaction. |
 | **Two-Way Binding**| `$bind(/user/name)`| Create a managed, two-way reactive link for inputs. |
+| **DOM Patches**    | `$move(target, loc)`| Decentralized layout: Move/replace host element into a target. |
 
 Once inside a JPRX expression, the `$` prefix is only needed at the start of the expression for paths or function names.
+
 
 ## State Management
 
@@ -104,6 +106,46 @@ To ensure unambiguous data flow, `$bind` only accepts direct paths. It cannot be
 If you need to transform data during a two-way binding, there are two primary approaches:
 1. **Event-Based**: Use a manual `oninput` handler to apply the transformation, e.g., `$set(/name, upper($event/target/value))`.
 2. **Schema-Based**: Define a `transform` or `pattern` in the schema for the path. The `$bind` helper will respect the schema rules during the write-back phase.
+
+---
+
+## DOM Patches & Decentralized Layouts
+
+One of the most powerful features of JPRX in UI environments (like Lightview) is the ability to perform **Decentralized DOM Patches** via the `$move(target, location)` helper.
+
+### The Problem: LLM Streaming & Layouts
+When an LLM streams UI components, it often knows *what* it is creating before it knows exactly *where* that item belongs in a complex dashboard, or it may need to update an existing element that was created minutes ago.
+
+### The Solution: `$move`
+The `$move` helper allows a component to "place itself" into the document upon mounting. 
+
+```json
+{
+  "tag": "div",
+  "id": "weather-widget",
+  "onmount": "$move('#dashboard-sidebar', 'afterbegin')",
+  "content": "Sunny, 75°F"
+}
+```
+
+**Key Behaviors:**
+1. **Teleportation**: The host element is physically moved from the "Stream Container" (where it was born) to the specified `target` (e.g., `#dashboard-sidebar`).
+2. **Idempotent Updates**: If the moving element has an `id` (e.g., `weather-widget`) and an element with that same ID already exists at the destination, the existing element is **replaced**. This allows the LLM to "patch" the UI simply by streaming the updated version of the component.
+3. **Flicker-Free**: By rendering the stream in a hidden container, the element is moved and appears in its final destination instantly.
+
+### The Delivery Vehicle: `$mount`
+The `$mount(url, options?)` helper is the primary mechanism for fetching these decentralized updates.
+
+1. **Arrival**: `$mount` fetches the content and "lands" it at the end of the `document.body` (by default).
+2. **Mounting**: The content is hydrated and added to the DOM, triggering its `onmount` hook.
+3. **Teleportation**: If the content contains `$move`, it immediately relocates itself to its destination.
+
+This separation of concerns makes the system incredibly robust: `$mount` handles the **delivery**, while `$move` handles the **logic** of where the content belongs.
+
+### Why Decentralized?
+- **Low Overhead**: The LLM doesn't need to maintain a map of the entire DOM; it just needs to know the ID or Selector of where it wants to "push" its content.
+- **Independence**: Components are self-contained. A "Notification" component knows how to display itself AND where notification stacks live.
+- **Context Preservation**: In Lightview, moved elements retain their original reactive context ("backpack"), allowing them to stay linked to the stream that created them.
 
 ---
 

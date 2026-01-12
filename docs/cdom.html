@@ -77,6 +77,22 @@
             A declarative, expression-based way to build reactive UIs.
         </p>
 
+        <div class="experimental-notice"
+            style="margin: 1.5rem 0; padding: 1.25rem; border-radius: var(--site-radius); background: var(--site-accent-light); border: 1px solid var(--site-warning); color: var(--site-text);">
+            <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                <span style="font-size: 1.5rem;">⚠️</span>
+                <div>
+                    <strong style="display: block; margin-bottom: 0.25rem; font-size: 1.1rem;">Experimental
+                        Feature</strong>
+                    <p style="margin: 0; font-size: 0.95rem; opacity: 0.9;">
+                        cDOM and JPRX are currently in an <strong>experimental</strong> phase. The expression syntax,
+                        helper functions, and integration patterns are subject to change as we continue to evolve the
+                        library. Use with caution in production environments.
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <!-- ===== OVERVIEW ===== -->
         <h2 id="overview">Overview</h2>
         <p>
@@ -100,8 +116,21 @@
         <!-- ===== SIMPLE EXAMPLE ===== -->
         <h2 id="simple-example">Simple Example</h2>
         <p>Here's a simple counter in cDOM. Notice how the UI is purely declarative — no JavaScript logic:</p>
-        <div class="code-block">
-            <pre><code>{
+        <div id="simple-counter-demo">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
+                    type: 'module',
+                    height: '200px',
+                    autoRun: true,
+                    controls: false
+                });
+            </script><code>await import('/lightview-cdom.js');
+const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
+const { $ } = Lightview;
+
+const cdom = `{
     div: {
         onmount: $state({ count: 0 }, { name: 'local', schema: 'auto', scope: $this }),
         children: [
@@ -111,7 +140,9 @@
             { button: { onclick: $--/local/count, children: ["-"] } }
         ]
     }
-}</code></pre>
+}`;
+
+$('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
         </div>
         <p>
             This defines a counter with:
@@ -361,6 +392,72 @@
 }</code></pre>
         </div>
 
+        <!-- ===== DOM PATCHES ===== -->
+        <h2 id="dom-patches">DOM Patches & Decentralized Layouts</h2>
+        <p>
+            cDOM supports <strong>Decentralized Layouts</strong>, allowing components to "move themselves" to their
+            rightful
+            home in the DOM upon being created. This is especially powerful for LLM-driven streaming UIs.
+        </p>
+
+        <h3 id="helpers-move">$move(target, location?)</h3>
+        <p>
+            The <code>$move</code> helper (typically used in <code>onmount</code>) teleports the host element to a
+            different part of the document.
+        </p>
+        <div class="code-block">
+            <pre><code>{
+    div: {
+        id: "weather-widget",
+        onmount: $move('#sidebar', 'afterbegin'),
+        content: "Sunny, 75°F"
+    }
+}</code></pre>
+        </div>
+
+        <h4>Identity & Patching</h4>
+        <p>
+            If the moving element has a unique <code>id</code> and an element with that same ID already exists at the
+            destination,
+            the existing element is <strong>replaced</strong>. This turns <code>$move</code> into an idempotent
+            <strong>patch</strong>
+            command — simply stream the new version of the component with the same ID, and it will update the UI
+            automatically.
+        </p>
+
+        <h4>Placement Locations</h4>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>inner</code> / <code>shadow</code></td>
+                    <td>Replaces all children of the target.</td>
+                </tr>
+                <tr>
+                    <td><code>afterbegin</code> / <code>prepend</code></td>
+                    <td>Inserts at the start of the target.</td>
+                </tr>
+                <tr>
+                    <td><code>beforeend</code> / <code>append</code></td>
+                    <td>Inserts at the end of the target (default).</td>
+                </tr>
+                <tr>
+                    <td><code>outer</code> / <code>replace</code></td>
+                    <td>Replaces the target node itself.</td>
+                </tr>
+                <tr>
+                    <td><code>beforebegin</code> / <code>afterend</code></td>
+                    <td>Inserts before or after the target node.</td>
+                </tr>
+            </tbody>
+        </table>
+
+
         <h2 id="state-binding">State & Binding</h2>
         <p>
             cDOM does not use attribute directives for state it uses lifecycle events and helpers instead.
@@ -442,8 +539,9 @@ Lightview.registerSchema('User', { name: 'string', age: 'number' });
     name: { type: 'string', transform: 'upper' } 
 });</code></pre>
                 </div>
-                The state manager will automatically apply the transformation during the write-back phase of
-                <code>$bind</code>.
+                The state manager will automatically apply the <a
+                    href="/docs/api/state.html#transformations">transformation</a>
+                during the write-back phase of <code>$bind</code>.
             </li>
         </ul>
 
@@ -457,7 +555,7 @@ Lightview.registerSchema('User', { name: 'string', age: 'number' });
                     at: document.currentScript.parentElement,
                     scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
                     type: 'module',
-                    height: '350px',
+                    height: '250px',
                     autoRun: true
                 });
             </script><code contenteditable="true">// Shopping Cart: Demonstrating $map and $currency helpers
@@ -705,18 +803,25 @@ $('#example').content(hydrated);
 
         <h3 id="events-llm">LLM-Generated Interaction</h3>
         <p>
-            LLMs can generate event handlers to register interest in user actions:
+            LLMs can generate event handlers to register interest in user actions or trigger UI updates:
         </p>
         <div class="code-block">
-            <pre><code>{ 
-    button: {
-        onclick: $fetch('/api/notify', { method: 'POST', body: $event }),
-        children: ["Notify LLM"]
-    }
-}</code></pre>
+            <pre><code>// 1. Notify LLM of an event
+{ button: { onclick: $fetch('/api/notify', { method: 'POST', body: $event }), children: ["Notify"] } }
+
+// 2. Request a UI Patch from LLM
+{ button: { onclick: $mount('/api/update', { method: 'POST', body: $event }), children: ["Update UI"] } }</code></pre>
         </div>
         <p>
-            The <code>$event</code> placeholder gives the LLM full context of the interaction.
+            The <code>$event</code> placeholder gives the LLM full context of the interaction. When using
+            <code>$mount</code>, the server should respond with cDOM, vDOM, or oDOM content (see the
+            <a href="#helpers-network">Network section</a> for more details).
+        </p>
+        <p>
+            By default, <code>$mount</code> will <strong>append</strong> the response to the <code>body</code> and
+            then let it "rip itself out" and <strong>teleport</strong> to its final destination if the response
+            contains a <code>$move</code> helper. This "Safe Landing" strategy ensures decentralized layouts
+            work seamlessly without the patcher needing to know the exact destination.
         </p>
 
         <h3 id="events-lifecycle">The Interaction Lifecycle</h3>
@@ -883,12 +988,54 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
         <h3 id="helpers-network">Network</h3>
         <p>HTTP requests.</p>
         <div class="code-block">
-            <pre><code>fetch(url, options?)</code></pre>
+            <pre><code>fetch(url, options?)
+<span id="helpers-mount"></span>mount(url, options?)</span></code></pre>
         </div>
-        <p>
-            The <code>fetch</code> helper auto-serializes object bodies to JSON and sets
-            <code>Content-Type: application/json</code>.
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Option</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>method</code></td>
+                    <td><code>"GET"</code></td>
+                    <td>HTTP method (GET, POST, etc.)</td>
+                </tr>
+                <tr>
+                    <td><code>body</code></td>
+                    <td><code>undefined</code></td>
+                    <td>Request body. If an <strong>object</strong>, it is automatically stringified to JSON and the
+                        <code>Content-Type</code> is set to <code>application/json</code>.
+                    </td>
+                </tr>
+                <tr>
+                    <td><code>headers</code></td>
+                    <td><code>{}</code></td>
+                    <td>Additional HTTP headers.</td>
+                </tr>
+                <tr>
+                    <td><code>target</code></td>
+                    <td><code>"body"</code></td>
+                    <td>(<code>mount</code> only) CSS selector for destination.</td>
+                </tr>
+                <tr>
+                    <td><code>location</code></td>
+                    <td><code>"beforeend"</code></td>
+                    <td>(<code>mount</code> only) Placement relative to target.</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 1rem;">
+            The <code>mount</code> helper is the primary mechanism for **Hypermedia updates**. It fetches content
+            (cDOM, vDOM, or oDOM) and injects it into the DOM. If the content contains a <code>$move</code>
+            helper, it will automatically relocate itself upon mounting.
         </p>
+
+
 
     </main>
 </div>
