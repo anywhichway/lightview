@@ -1,7 +1,7 @@
 {
     "name": "jprx",
-    "version": "1.1.1",
-    "description": "JSON Reactive Path eXpressions - A reactive expression language for JSON data",
+    "version": "1.2.0",
+    "description": "JSON Path Reactive eXpressions - A reactive expression language for JSON data",
     "main": "index.js",
     "type": "module",
     "keywords": [

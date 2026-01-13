@@ -4,7 +4,7 @@
         "state": {
             "userName": "Alice"
         },
-        "expression": "$/userName",
+        "expression": "=/userName",
         "expected": "Alice"
     },
     {
@@ -16,7 +16,7 @@
                 }
             }
         },
-        "expression": "$/user/profile/name",
+        "expression": "=/user/profile/name",
         "expected": "Bob"
     },
     {
@@ -33,7 +33,7 @@
             "a": 5,
             "b": 10
         },
-        "expression": "$+(/a, /b)",
+        "expression": "=+(/a, /b)",
         "expected": 15
     },
     {
@@ -42,7 +42,7 @@
             "a": 5,
             "b": 10
         },
-        "expression": "$/a + $/b",
+        "expression": "=/a + =/b",
         "expected": 15
     },
     {
@@ -50,7 +50,7 @@
         "state": {
             "isVip": true
         },
-        "expression": "$if(/isVip, \"Gold\", \"Silver\")",
+        "expression": "=if(/isVip, \"Gold\", \"Silver\")",
         "expected": "Gold"
     },
     {
@@ -65,7 +65,7 @@
                 }
             ]
         },
-        "expression": "$sum(/items...p)",
+        "expression": "=sum(/items...p)",
         "expected": 30
     }
 ]

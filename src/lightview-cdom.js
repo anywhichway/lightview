@@ -33,7 +33,7 @@ registerLookupHelpers(registerHelper);
 registerStatsHelpers(registerHelper);
 registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
 registerNetworkHelpers(registerHelper);
-registerHelper('$move', (selector, location = 'beforeend') => {
+registerHelper('move', (selector, location = 'beforeend') => {
     return {
         isLazy: true,
         resolve: (eventOrNode) => {
@@ -43,7 +43,7 @@ registerHelper('$move', (selector, location = 'beforeend') => {
 
             const target = document.querySelector(selector);
             if (!target) {
-                console.warn(`[Lightview-CDOM] $move target not found: ${selector}`);
+                console.warn(`[Lightview-CDOM] move target not found: ${selector}`);
                 return;
             }
 
@@ -70,7 +70,7 @@ registerHelper('$move', (selector, location = 'beforeend') => {
     };
 }, { pathAware: true });
 
-registerHelper('$mount', async (url, options = {}) => {
+registerHelper('mount', async (url, options = {}) => {
     const { target = 'body', location = 'beforeend' } = options;
 
     try {
@@ -187,7 +187,7 @@ globalThis.Lightview.hooks.processAttribute = (domNode, key, value) => {
             event = 'change';
         }
 
-        const res = globalThis.Lightview.get(path.replace(/^\$/, ''), { scope: domNode });
+        const res = globalThis.Lightview.get(path.replace(/^=/, ''), { scope: domNode });
 
         // State -> DOM
         const runner = globalThis.Lightview.effect(() => {
@@ -225,14 +225,18 @@ const makeEventHandler = (expr) => (eventOrNode) => {
 
 /**
  * Hydrates a static CDOM object into a reactive CDOM graph.
- * Traverses the object, converting expression strings ($...) into Signals/Computeds.
+ * Traverses the object, converting expression strings (=...) into Signals/Computeds.
  * Establishes a __parent__ link for relative path resolution.
  */
 export const hydrate = (node, parent = null) => {
     if (!node) return node;
 
-    // 1. Handle Expressions (Strings starting with $)
-    if (typeof node === 'string' && node.startsWith('$')) {
+    // 1. Handle Escape and Expressions
+    // Escape sequence: '= at start produces a literal string starting with =
+    if (typeof node === 'string' && node.startsWith("'=")) {
+        return node.slice(1); // Strip the ' and return as literal
+    }
+    if (typeof node === 'string' && node.startsWith('=')) {
         return parseExpression(node, parent);
     }
 
@@ -288,10 +292,15 @@ export const hydrate = (node, parent = null) => {
         if (key === 'attributes' && typeof value === 'object' && value !== null) {
             for (const attrKey in value) {
                 const attrVal = value[attrKey];
-                if (typeof attrVal === 'string' && attrVal.startsWith('$') && attrKey.startsWith('on')) {
-                    value[attrKey] = makeEventHandler(attrVal);
-                } else if (typeof attrVal === 'string' && attrVal.startsWith('$')) {
-                    value[attrKey] = parseExpression(attrVal, node);
+                // Escape sequence: '= at start produces a literal string starting with =
+                if (typeof attrVal === 'string' && attrVal.startsWith("'=")) {
+                    value[attrKey] = attrVal.slice(1);
+                } else if (typeof attrVal === 'string' && attrVal.startsWith('=')) {
+                    if (attrKey.startsWith('on')) {
+                        value[attrKey] = makeEventHandler(attrVal);
+                    } else {
+                        value[attrKey] = parseExpression(attrVal, node);
+                    }
                 } else if (typeof attrVal === 'object' && attrVal !== null) {
                     value[attrKey] = hydrate(attrVal, node);
                 }
@@ -299,7 +308,10 @@ export const hydrate = (node, parent = null) => {
             continue;
         }
 
-        if (typeof value === 'string' && value.startsWith('$')) {
+        // Escape sequence: '= at start produces a literal string starting with =
+        if (typeof value === 'string' && value.startsWith("'=")) {
+            node[key] = value.slice(1);
+        } else if (typeof value === 'string' && value.startsWith('=')) {
             if (key === 'onmount' || key === 'onunmount' || key.startsWith('on')) {
                 node[key] = makeEventHandler(value);
             } else if (key === 'children') {

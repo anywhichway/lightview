@@ -29,7 +29,7 @@
     }
     return _LV.registry.get(name);
   };
-  const signal = (initialValue, optionsOrName) => {
+  const signal$1 = (initialValue, optionsOrName) => {
     const name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
     const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
     const scope = optionsOrName == null ? void 0 : optionsOrName.scope;
@@ -82,8 +82,8 @@
     const { scope, defaultValue } = options;
     const existing = lookup$1(name, scope);
     if (existing) return existing;
-    if (defaultValue !== void 0) return signal(defaultValue, { name, scope });
-    const future = signal(void 0);
+    if (defaultValue !== void 0) return signal$1(defaultValue, { name, scope });
+    const future = signal$1(void 0);
     const handler = (realSignal) => {
       const hasValue = realSignal && (typeof realSignal === "object" || typeof realSignal === "function") && "value" in realSignal;
       if (hasValue) {
@@ -99,7 +99,7 @@
     _LV.futureSignals.get(name).add(handler);
     return future;
   };
-  signal.get = getSignal;
+  signal$1.get = getSignal;
   const effect = (fn) => {
     const execute = () => {
       if (!execute.active || execute.running) return;
@@ -126,7 +126,7 @@
     return execute;
   };
   const computed = (fn) => {
-    const sig = signal(void 0);
+    const sig = signal$1(void 0);
     effect(() => {
       sig.value = fn();
     });
@@ -204,12 +204,12 @@
   const proxyGet = (target, prop, receiver, signals) => {
     if (prop === "__parent__") return parents.get(receiver);
     if (!signals.has(prop)) {
-      signals.set(prop, signal(Reflect.get(target, prop, receiver)));
+      signals.set(prop, signal$1(Reflect.get(target, prop, receiver)));
     }
-    const signal$1 = signals.get(prop);
-    const val = signal$1.value;
+    const signal2 = signals.get(prop);
+    const val = signal2.value;
     if (typeof val === "object" && val !== null) {
-      const childProxy = state(val);
+      const childProxy = state$1(val);
       parents.set(childProxy, receiver);
       return childProxy;
     }
@@ -219,18 +219,18 @@
     const schema = stateSchemas.get(receiver);
     const validatedValue = schema ? validate(target, prop, value, schema) : value;
     if (!signals.has(prop)) {
-      signals.set(prop, signal(Reflect.get(target, prop, receiver)));
+      signals.set(prop, signal$1(Reflect.get(target, prop, receiver)));
     }
     const success = Reflect.set(target, prop, validatedValue, receiver);
-    const signal$1 = signals.get(prop);
-    if (success && signal$1) signal$1.value = validatedValue;
+    const signal2 = signals.get(prop);
+    if (success && signal2) signal2.value = validatedValue;
     return success;
   };
   const createSpecialProxy = (obj, monitor, trackingProps = []) => {
     const signals = getOrSet(stateSignals, obj, () => /* @__PURE__ */ new Map());
     if (!signals.has(monitor)) {
       const initialValue = typeof obj[monitor] === "function" ? obj[monitor].call(obj) : obj[monitor];
-      signals.set(monitor, signal(initialValue));
+      signals.set(monitor, signal$1(initialValue));
     }
     const isDate = obj instanceof Date;
     const isArray = Array.isArray(obj);
@@ -252,7 +252,7 @@
             if (isArray && ARRAY_ITERATION.includes(prop) && typeof args[0] === "function") {
               const originalCallback = args[0];
               args[0] = function(element2, index2, array) {
-                const wrappedElement = typeof element2 === "object" && element2 !== null ? state(element2) : element2;
+                const wrappedElement = typeof element2 === "object" && element2 !== null ? state$1(element2) : element2;
                 if (wrappedElement && typeof wrappedElement === "object") {
                   parents.set(wrappedElement, receiver);
                 }
@@ -293,7 +293,7 @@
       }
     });
   };
-  const state = (obj, optionsOrName) => {
+  const state$1 = (obj, optionsOrName) => {
     if (typeof obj !== "object" || obj === null) return obj;
     const name = typeof optionsOrName === "string" ? optionsOrName : optionsOrName == null ? void 0 : optionsOrName.name;
     const storage = optionsOrName == null ? void 0 : optionsOrName.storage;
@@ -354,8 +354,8 @@
     const { scope, defaultValue } = options;
     const existing = lookup$1(name, scope);
     if (existing) return existing;
-    if (defaultValue !== void 0) return state(defaultValue, { name, scope });
-    const future = signal(void 0);
+    if (defaultValue !== void 0) return state$1(defaultValue, { name, scope });
+    const future = signal$1(void 0);
     const handler = (realState) => {
       future.value = realState;
     };
@@ -363,7 +363,7 @@
     internals.futureSignals.get(name).add(handler);
     return future;
   };
-  state.get = getState;
+  state$1.get = getState;
   const core = {
     get currentEffect() {
       return (globalThis.__LIGHTVIEW_INTERNALS__ || (globalThis.__LIGHTVIEW_INTERNALS__ = {})).currentEffect;
@@ -810,11 +810,11 @@
     }
   });
   const Lightview = {
-    state,
+    state: state$1,
     getState,
     registerSchema: (name, definition) => internals.schemas.set(name, definition),
-    signal,
-    get: signal.get,
+    signal: signal$1,
+    get: signal$1.get,
     computed,
     effect,
     registry,
@@ -1021,7 +1021,7 @@
       return null;
     }
   };
-  const themeSignal = signal(
+  const themeSignal = signal$1(
     typeof document !== "undefined" && document.documentElement.getAttribute("data-theme") || getSavedTheme() || "light"
   );
   const setTheme = (themeName) => {
@@ -1818,7 +1818,7 @@
         }
       }
       return processTemplateChild(child, {
-        state,
+        state: state$1,
         signal: LV.signal
       });
     };
@@ -2120,7 +2120,7 @@
     if (globalThis.Lightview) globalThis.Lightview.validate = validateJSONSchema;
   }
   const LightviewX = {
-    state,
+    state: state$1,
     themeSignal,
     setTheme,
     registerStyleSheet,
@@ -2260,7 +2260,7 @@
     if (typeof path !== "string") return path;
     const registry2 = getRegistry();
     if (path === ".") return unwrapSignal(context);
-    if (path.startsWith("$/")) {
+    if (path.startsWith("=/")) {
       const [rootName, ...rest] = path.slice(2).split("/");
       const LV = getLV();
       const root = LV ? LV.get(rootName, { scope: (context == null ? void 0 : context.__node__) || context }) : registry2 == null ? void 0 : registry2.get(rootName);
@@ -2288,7 +2288,7 @@
     if (typeof path !== "string") return path;
     const registry2 = getRegistry();
     if (path === ".") return context;
-    if (path.startsWith("$/")) {
+    if (path.startsWith("=/")) {
       const segments = path.slice(2).split(/[/.]/);
       const rootName = segments.shift();
       const LV = getLV();
@@ -2370,7 +2370,7 @@
         const data = parseJPRX(arg);
         const resolveTemplate = (node, context2) => {
           if (typeof node === "string") {
-            if (node.startsWith("$")) {
+            if (node.startsWith("=")) {
               const res = resolveExpression(node, context2);
               const final = res instanceof LazyValue ? res.resolve(context2) : res;
               return unwrapSignal(final);
@@ -2404,7 +2404,7 @@
         };
         const hasReactive = (obj) => {
           if (typeof obj === "string") {
-            return obj.startsWith("$") || obj.startsWith("_") || obj.startsWith("../");
+            return obj.startsWith("=") || obj.startsWith("_") || obj.startsWith("../");
           }
           if (Array.isArray(obj)) return obj.some(hasReactive);
           if (obj && typeof obj === "object") return Object.values(obj).some(hasReactive);
@@ -2423,9 +2423,9 @@
     if (arg.includes("(")) {
       let nestedExpr = arg;
       if (arg.startsWith("/")) {
-        nestedExpr = "$" + arg;
-      } else if (globalMode && !arg.startsWith("$") && !arg.startsWith("./")) {
-        nestedExpr = `$/${arg}`;
+        nestedExpr = "=" + arg;
+      } else if (globalMode && !arg.startsWith("=") && !arg.startsWith("./")) {
+        nestedExpr = `=/${arg}`;
       }
       const val = resolveExpression(nestedExpr, context);
       if (val instanceof LazyValue) {
@@ -2435,11 +2435,11 @@
     }
     let normalizedPath;
     if (arg.startsWith("/")) {
-      normalizedPath = "$" + arg;
-    } else if (arg.startsWith("$") || arg.startsWith("./") || arg.startsWith("../")) {
+      normalizedPath = "=" + arg;
+    } else if (arg.startsWith("=") || arg.startsWith("./") || arg.startsWith("../")) {
       normalizedPath = arg;
     } else if (globalMode) {
-      normalizedPath = `$/${arg}`;
+      normalizedPath = `=/${arg}`;
     } else {
       normalizedPath = `./${arg}`;
     }
@@ -2508,7 +2508,7 @@
         i++;
         continue;
       }
-      if (expr[i] === "$" && i + 1 < len2) {
+      if (expr[i] === "=" && i + 1 < len2) {
         const prefixOps = [...operators.prefix.keys()].sort((a, b) => b.length - a.length);
         let isPrefixOp = false;
         for (const op of prefixOps) {
@@ -2553,7 +2553,7 @@
             continue;
           }
           const validBefore = /[\s)]/.test(before) || i === 0 || tokens.length === 0 || tokens[tokens.length - 1].type === TokenType.LPAREN || tokens[tokens.length - 1].type === TokenType.COMMA || tokens[tokens.length - 1].type === TokenType.OPERATOR;
-          const validAfter = /[\s($./'"0-9_]/.test(after) || i + op.length >= len2 || opSymbols.some((o) => expr.slice(i + op.length).startsWith(o));
+          const validAfter = /[\s(=./'"0-9_]/.test(after) || i + op.length >= len2 || opSymbols.some((o) => expr.slice(i + op.length).startsWith(o));
           if (validBefore || validAfter) {
             matchedOp = op;
             break;
@@ -2629,7 +2629,7 @@
         tokens.push({ type: TokenType.EVENT, value: eventPath });
         continue;
       }
-      if (expr[i] === "$" || expr[i] === "." || expr[i] === "/") {
+      if (expr[i] === "=" || expr[i] === "." || expr[i] === "/") {
         let path = "";
         while (i < len2) {
           let isOp = false;
@@ -2689,7 +2689,7 @@
   const hasOperatorSyntax = (expr) => {
     if (!expr || typeof expr !== "string") return false;
     if (expr.includes("(")) return false;
-    if (/^\$(\+\+|--|!!)\/?/.test(expr)) {
+    if (/^=(\+\+|--|!!)\/?/.test(expr)) {
       return true;
     }
     if (/(\+\+|--)$/.test(expr)) {
@@ -2921,14 +2921,14 @@
       const fullPath = expr.slice(0, funcStart).trim();
       const argsStr = expr.slice(funcStart + 1, -1);
       const segments = fullPath.split("/");
-      let funcName = segments.pop().replace(/^\$/, "");
+      let funcName = segments.pop().replace(/^=/, "");
       if (funcName === "" && (segments.length > 0 || fullPath === "/")) {
         funcName = "/";
       }
       const navPath = segments.join("/");
-      const isGlobalExpr = expr.startsWith("$/") || expr.startsWith("$");
+      const isGlobalExpr = expr.startsWith("=/") || expr.startsWith("=");
       let baseContext = context;
-      if (navPath && navPath !== "$") {
+      if (navPath && navPath !== "=") {
         baseContext = resolvePathAsContext(navPath, context);
       }
       const helper = helpers.get(funcName);
@@ -2961,7 +2961,7 @@
       let hasLazy = false;
       for (let i = 0; i < argsList.length; i++) {
         const arg = argsList[i];
-        const useGlobalMode = isGlobalExpr && (navPath === "$" || !navPath);
+        const useGlobalMode = isGlobalExpr && (navPath === "=" || !navPath);
         const res = resolveArgument(arg, baseContext, useGlobalMode);
         if (res.isLazy) hasLazy = true;
         const shouldUnwrap = !(options.pathAware && i === 0);
@@ -3107,7 +3107,7 @@
         i++;
       }
       const word = input.slice(start, i);
-      if (word.startsWith("$")) {
+      if (word.startsWith("=")) {
         return word;
       }
       if (word === "true") return true;
@@ -3245,7 +3245,7 @@
         i++;
         continue;
       }
-      if (char === "$") {
+      if (char === "=") {
         let expr = "";
         let parenDepth = 0;
         let braceDepth = 0;
@@ -3274,7 +3274,7 @@
         result += JSON.stringify(expr);
         continue;
       }
-      if (/[a-zA-Z_./]/.test(char)) {
+      if (/[a-zA-Z_$/./]/.test(char)) {
         let word = "";
         while (i < len2 && /[a-zA-Z0-9_$/.-]/.test(input[i])) {
           word += input[i];
@@ -3664,21 +3664,21 @@
     if (typeof current === "object" && current !== null) return set(target, {});
     return set(target, null);
   };
-  function $state(val, options) {
+  function state(val, options) {
     if (globalThis.Lightview) {
       const finalOptions = typeof options === "string" ? { name: options } : options;
       return globalThis.Lightview.state(val, finalOptions);
     }
     throw new Error("JPRX: $state requires a UI library implementation.");
   }
-  function $signal(val, options) {
+  function signal(val, options) {
     if (globalThis.Lightview) {
       const finalOptions = typeof options === "string" ? { name: options } : options;
       return globalThis.Lightview.signal(val, finalOptions);
     }
     throw new Error("JPRX: $signal requires a UI library implementation.");
   }
-  const $bind = (path, options) => ({ __JPRX_BIND__: true, path, options });
+  const bind = (path, options) => ({ __JPRX_BIND__: true, path, options });
   const registerStateHelpers = (register) => {
     const opts = { pathAware: true };
     register("set", set, opts);
@@ -3692,9 +3692,9 @@
     register("pop", pop, opts);
     register("assign", assign, opts);
     register("clear", clear, opts);
-    register("state", $state);
-    register("signal", $signal);
-    register("bind", $bind);
+    register("state", state);
+    register("signal", signal);
+    register("bind", bind);
   };
   const fetchHelper = (url, options = {}) => {
     const fetchOptions = { ...options };
@@ -3732,7 +3732,7 @@
   registerStatsHelpers(registerHelper);
   registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
   registerNetworkHelpers(registerHelper);
-  registerHelper("$move", (selector, location = "beforeend") => {
+  registerHelper("move", (selector, location = "beforeend") => {
     return {
       isLazy: true,
       resolve: (eventOrNode) => {
@@ -3741,7 +3741,7 @@
         if (!(node instanceof Node) || !selector) return;
         const target = document.querySelector(selector);
         if (!target) {
-          console.warn(`[Lightview-CDOM] $move target not found: ${selector}`);
+          console.warn(`[Lightview-CDOM] move target not found: ${selector}`);
           return;
         }
         if (node.id) {
@@ -3760,7 +3760,7 @@
       }
     };
   }, { pathAware: true });
-  registerHelper("$mount", async (url, options = {}) => {
+  registerHelper("mount", async (url, options = {}) => {
     const { target = "body", location = "beforeend" } = options;
     try {
       const fetchOptions = { ...options };
@@ -3844,7 +3844,7 @@
       } else if (tagName === "select") {
         event = "change";
       }
-      const res = globalThis.Lightview.get(path.replace(/^\$/, ""), { scope: domNode });
+      const res = globalThis.Lightview.get(path.replace(/^=/, ""), { scope: domNode });
       const runner = globalThis.Lightview.effect(() => {
         const val = unwrapSignal(res);
         if (domNode[prop] !== val) {
@@ -3872,7 +3872,10 @@
   const hydrate = (node, parent = null) => {
     var _a2, _b2, _c;
     if (!node) return node;
-    if (typeof node === "string" && node.startsWith("$")) {
+    if (typeof node === "string" && node.startsWith("'=")) {
+      return node.slice(1);
+    }
+    if (typeof node === "string" && node.startsWith("=")) {
       return parseExpression(node, parent);
     }
     if (typeof node !== "object") return node;
@@ -3913,17 +3916,23 @@
       if (key === "attributes" && typeof value === "object" && value !== null) {
         for (const attrKey in value) {
           const attrVal = value[attrKey];
-          if (typeof attrVal === "string" && attrVal.startsWith("$") && attrKey.startsWith("on")) {
-            value[attrKey] = makeEventHandler(attrVal);
-          } else if (typeof attrVal === "string" && attrVal.startsWith("$")) {
-            value[attrKey] = parseExpression(attrVal, node);
+          if (typeof attrVal === "string" && attrVal.startsWith("'=")) {
+            value[attrKey] = attrVal.slice(1);
+          } else if (typeof attrVal === "string" && attrVal.startsWith("=")) {
+            if (attrKey.startsWith("on")) {
+              value[attrKey] = makeEventHandler(attrVal);
+            } else {
+              value[attrKey] = parseExpression(attrVal, node);
+            }
           } else if (typeof attrVal === "object" && attrVal !== null) {
             value[attrKey] = hydrate(attrVal, node);
           }
         }
         continue;
       }
-      if (typeof value === "string" && value.startsWith("$")) {
+      if (typeof value === "string" && value.startsWith("'=")) {
+        node[key] = value.slice(1);
+      } else if (typeof value === "string" && value.startsWith("=")) {
         if (key === "onmount" || key === "onunmount" || key.startsWith("on")) {
           node[key] = makeEventHandler(value);
         } else if (key === "children") {

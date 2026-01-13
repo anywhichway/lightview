@@ -136,8 +136,8 @@ export const resolvePath = (path, context) => {
     // Current context: .
     if (path === '.') return unwrapSignal(context);
 
-    // Global absolute path: $/something
-    if (path.startsWith('$/')) {
+    // Global absolute path: =/something
+    if (path.startsWith('=/')) {
         const [rootName, ...rest] = path.slice(2).split('/');
         const LV = getLV();
         const root = LV ? LV.get(rootName, { scope: context?.__node__ || context }) : registry?.get(rootName);
@@ -184,8 +184,8 @@ export const resolvePathAsContext = (path, context) => {
     // Current context: .
     if (path === '.') return context;
 
-    // Global absolute path: $/something
-    if (path.startsWith('$/')) {
+    // Global absolute path: =/something
+    if (path.startsWith('=/')) {
         const segments = path.slice(2).split(/[/.]/);
         const rootName = segments.shift();
         const LV = getLV();
@@ -304,10 +304,9 @@ const resolveArgument = (arg, context, globalMode = false) => {
         try {
             const data = parseJPRX(arg);
 
-            // Define a recursive resolver for template objects
             const resolveTemplate = (node, context) => {
                 if (typeof node === 'string') {
-                    if (node.startsWith('$')) {
+                    if (node.startsWith('=')) {
                         const res = resolveExpression(node, context);
                         const final = (res instanceof LazyValue) ? res.resolve(context) : res;
                         return unwrapSignal(final);
@@ -340,10 +339,9 @@ const resolveArgument = (arg, context, globalMode = false) => {
                 return node;
             };
 
-            // Check if it contains any reactive parts
             const hasReactive = (obj) => {
                 if (typeof obj === 'string') {
-                    return obj.startsWith('$') || obj.startsWith('_') || obj.startsWith('../');
+                    return obj.startsWith('=') || obj.startsWith('_') || obj.startsWith('../');
                 }
                 if (Array.isArray(obj)) return obj.some(hasReactive);
                 if (obj && typeof obj === 'object') return Object.values(obj).some(hasReactive);
@@ -366,9 +364,9 @@ const resolveArgument = (arg, context, globalMode = false) => {
     if (arg.includes('(')) {
         let nestedExpr = arg;
         if (arg.startsWith('/')) {
-            nestedExpr = '$' + arg;
-        } else if (globalMode && !arg.startsWith('$') && !arg.startsWith('./')) {
-            nestedExpr = `$/${arg}`;
+            nestedExpr = '=' + arg;
+        } else if (globalMode && !arg.startsWith('=') && !arg.startsWith('./')) {
+            nestedExpr = `=/${arg}`;
         }
 
         const val = resolveExpression(nestedExpr, context);
@@ -381,11 +379,11 @@ const resolveArgument = (arg, context, globalMode = false) => {
     // 8. Path normalization
     let normalizedPath;
     if (arg.startsWith('/')) {
-        normalizedPath = '$' + arg;
-    } else if (arg.startsWith('$') || arg.startsWith('./') || arg.startsWith('../')) {
+        normalizedPath = '=' + arg;
+    } else if (arg.startsWith('=') || arg.startsWith('./') || arg.startsWith('../')) {
         normalizedPath = arg;
     } else if (globalMode) {
-        normalizedPath = `$/${arg}`;
+        normalizedPath = `=/${arg}`;
     } else {
         normalizedPath = `./${arg}`;
     }
@@ -483,10 +481,10 @@ const tokenize = (expr) => {
             continue;
         }
 
-        // Special: $ followed immediately by an operator symbol
-        // In expressions like "$++/count", the $ is just the JPRX delimiter
+        // Special: = followed immediately by an operator symbol
+        // In expressions like "=++/count", the = is just the JPRX delimiter
         // and ++ is a prefix operator applied to /count
-        if (expr[i] === '$' && i + 1 < len) {
+        if (expr[i] === '=' && i + 1 < len) {
             // Check if next chars are a PREFIX operator (sort by length to match longest first)
             const prefixOps = [...operators.prefix.keys()].sort((a, b) => b.length - a.length);
             let isPrefixOp = false;
@@ -497,7 +495,7 @@ const tokenize = (expr) => {
                 }
             }
             if (isPrefixOp) {
-                // Skip the $, it's just a delimiter for a prefix operator (e.g., $++/count)
+                // Skip the =, it's just a delimiter for a prefix operator (e.g., =++/count)
                 i++;
                 continue;
             }
@@ -554,7 +552,7 @@ const tokenize = (expr) => {
                     tokens[tokens.length - 1].type === TokenType.LPAREN ||
                     tokens[tokens.length - 1].type === TokenType.COMMA ||
                     tokens[tokens.length - 1].type === TokenType.OPERATOR;
-                const validAfter = /[\s($./'"0-9_]/.test(after) ||
+                const validAfter = /[\s(=./'"0-9_]/.test(after) ||
                     i + op.length >= len ||
                     opSymbols.some(o => expr.slice(i + op.length).startsWith(o));
 
@@ -651,8 +649,8 @@ const tokenize = (expr) => {
             continue;
         }
 
-        // Paths: start with $, ., or /
-        if (expr[i] === '$' || expr[i] === '.' || expr[i] === '/') {
+        // Paths: start with =, ., or /
+        if (expr[i] === '=' || expr[i] === '.' || expr[i] === '/') {
             let path = '';
             // Consume the path, but stop at operators
             while (i < len) {
@@ -734,9 +732,9 @@ const tokenize = (expr) => {
  * Used to determine whether to use Pratt parser or legacy parser.
  * 
  * CONSERVATIVE: Only detect explicit patterns to avoid false positives.
- * - Prefix: $++/path, $--/path, $!!/path (operator immediately after $ before path)
- * - Postfix: $/path++ or $/path-- (operator at end of expression, not followed by ()
- * - Infix with spaces: $/path + $/other (spaces around operator)
+ * - Prefix: =++/path, =--/path, =!!/path (operator immediately after = before path)
+ * - Postfix: =/path++ or =/path-- (operator at end of expression, not followed by ()
+ * - Infix with spaces: =/path + =/other (spaces around operator)
  */
 const hasOperatorSyntax = (expr) => {
     if (!expr || typeof expr !== 'string') return false;
@@ -744,19 +742,19 @@ const hasOperatorSyntax = (expr) => {
     // Skip function calls - they use legacy parser
     if (expr.includes('(')) return false;
 
-    // Check for prefix operator pattern: $++ or $-- followed by /
-    // This catches: $++/counter, $--/value
-    if (/^\$(\+\+|--|!!)\/?/.test(expr)) {
+    // Check for prefix operator pattern: =++ or =-- followed by /
+    // This catches: =++/counter, =--/value
+    if (/^=(\+\+|--|!!)\/?/.test(expr)) {
         return true;
     }
 
     // Check for postfix operator pattern: path ending with ++ or --
-    // This catches: $/counter++, $/value--
+    // This catches: =/counter++, =/value--
     if (/(\+\+|--)$/.test(expr)) {
         return true;
     }
 
-    // Check for infix with explicit whitespace: $/a + $/b
+    // Check for infix with explicit whitespace: =/a + =/b
     // The spaces make it unambiguous that the symbol is an operator, not part of a path
     if (/\s+([+\-*/]|>|<|>=|<=|!=)\s+/.test(expr)) {
         return true;
@@ -1084,19 +1082,19 @@ export const resolveExpression = (expr, context) => {
         const argsStr = expr.slice(funcStart + 1, -1);
 
         const segments = fullPath.split('/');
-        let funcName = segments.pop().replace(/^\$/, '');
+        let funcName = segments.pop().replace(/^=/, '');
 
-        // Handle case where path ends in / (like $/ for division helper)
+        // Handle case where path ends in / (like =/ for division helper)
         if (funcName === '' && (segments.length > 0 || fullPath === '/')) {
             funcName = '/';
         }
 
         const navPath = segments.join('/');
 
-        const isGlobalExpr = expr.startsWith('$/') || expr.startsWith('$');
+        const isGlobalExpr = expr.startsWith('=/') || expr.startsWith('=');
 
         let baseContext = context;
-        if (navPath && navPath !== '$') {
+        if (navPath && navPath !== '=') {
             baseContext = resolvePathAsContext(navPath, context);
         }
 
@@ -1134,7 +1132,7 @@ export const resolveExpression = (expr, context) => {
         let hasLazy = false;
         for (let i = 0; i < argsList.length; i++) {
             const arg = argsList[i];
-            const useGlobalMode = isGlobalExpr && (navPath === '$' || !navPath);
+            const useGlobalMode = isGlobalExpr && (navPath === '=' || !navPath);
             const res = resolveArgument(arg, baseContext, useGlobalMode);
 
             if (res.isLazy) hasLazy = true;
@@ -1299,8 +1297,8 @@ export const parseCDOMC = (input) => {
 
         const word = input.slice(start, i);
 
-        // If word starts with $, preserve it as a string for cDOM expression parsing
-        if (word.startsWith('$')) {
+        // If word starts with =, preserve it as a string for cDOM expression parsing
+        if (word.startsWith('=')) {
             return word;
         }
 
@@ -1476,8 +1474,8 @@ export const parseJPRX = (input) => {
             continue;
         }
 
-        // Handle JPRX expressions starting with $ (MUST come before word handler!)
-        if (char === '$') {
+        // Handle JPRX expressions starting with = (MUST come before word handler!)
+        if (char === '=') {
             let expr = '';
             let parenDepth = 0;
             let braceDepth = 0;
@@ -1515,7 +1513,7 @@ export const parseJPRX = (input) => {
         }
 
         // Handle unquoted property names, identifiers, and paths
-        if (/[a-zA-Z_./]/.test(char)) {
+        if (/[a-zA-Z_$/./]/.test(char)) {
             let word = '';
             while (i < len && /[a-zA-Z0-9_$/.-]/.test(input[i])) {
                 word += input[i];

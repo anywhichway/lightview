@@ -1,4 +1,4 @@
-# JPRX (JSON Reactive Path eXpressions)
+# JPRX (JSON Path Reactive eXpressions)
 
 **JPRX** is a declarative, reactive expression syntax designed for JSON-based data structures. It extends [JSON Pointer (RFC 6901)](https://www.rfc-editor.org/rfc/rfc6901) with reactivity, relative paths, operator syntax, and a rich library of helper functions.
 
@@ -26,17 +26,17 @@ JPRX extends the base JSON Pointer syntax with:
 
 | Feature | Syntax | Description |
 |---------|--------|-------------|
-| **Global Path** | `$/user/name` | Access global state via an absolute path. |
+| **Global Path** | `=/user/name` | Access global state via an absolute path. |
 | **Relative Path** | `./count` | Access properties relative to the current context. |
 | **Parent Path** | `../id` | Traverse up the state hierarchy (UP-tree search). |
-| **Functions** | `$sum(/items...price)` | Call registered core helpers. |
+| **Functions** | `=sum(/items...price)` | Call registered core helpers. |
 | **Explosion** | `/items...name` | Extract a property from every object in an array (spread). |
-| **Operators** | `$++/count`, `$/a + $/b` | Familiar JS-style prefix, postfix, and infix operators. |
+| **Operators** | `=++/count`, `=/a + =/b` | Familiar JS-style prefix, postfix, and infix operators. |
 | **Placeholders** | `_` (item), `$this`, `$event` | Context-aware placeholders for iteration and interaction. |
-| **Two-Way Binding**| `$bind(/user/name)`| Create a managed, two-way reactive link for inputs. |
-| **DOM Patches**    | `$move(target, loc)`| Decentralized layout: Move/replace host element into a target. |
+| **Two-Way Binding**| `=bind(/user/name)`| Create a managed, two-way reactive link for inputs. |
+| **DOM Patches**    | `=move(target, loc)`| Decentralized layout: Move/replace host element into a target. |
 
-Once inside a JPRX expression, the `$` prefix is only needed at the start of the expression for paths or function names.
+Once inside a JPRX expression, the `=` prefix is only needed at the start of the expression for paths or function names.
 
 
 ## State Management
@@ -48,9 +48,9 @@ States can be attached to specific scopes (such as a DOM node or Component insta
 - **Up-tree Resolution**: When resolving a path, JPRX walks up the provided scope chain looking for the nearest owner of that name.
 - **Future Signals**: JPRX allows subscription to a named signal *before* it is initialized. The system will automatically "hook up" once the state is created via `$state` or `$signal`.
 
-### The `$state` and `$signal` Helpers
-- `$state(value, { name: 'user', schema: 'UserProfile', scope: event.target })`
-- `$signal(0, { name: 'count', schema: 'auto' })`
+### The `=state` and `=signal` Helpers
+- `=state(value, { name: 'user', schema: 'UserProfile', scope: event.target })`
+- `=signal(0, { name: 'count', schema: 'auto' })`
 
 ## Schema Registry & Validation
 
@@ -66,10 +66,10 @@ jprx.registerSchema('UserProfile', {
 });
 
 // 2. Reference the registered schema by name (Scoped)
-const user = $state({}, { name: 'user', schema: 'UserProfile', scope: $this });
+const user = =state({}, { name: 'user', schema: 'UserProfile', scope: $this });
 
 // 3. Use the 'polymorphic' shorthand for auto-coercion
-const settings = $state({ volume: 50 }, { name: 'settings', schema: 'polymorphic' });
+const settings = =state({ volume: 50 }, { name: 'settings', schema: 'polymorphic' });
 // Result: settings.volume = "60" will automatically coerce to the number 60.
 ```
 
@@ -93,37 +93,37 @@ Schemas can define transformations that occur during state updates, ensuring dat
   }
 }
 ```
-*Note: The `$bind` helper uses these transformations to automatically clean data as the user types.*
+*Note: The `=bind` helper uses these transformations to automatically clean data as the user types.*
 
-## Two-Way Binding with `$bind`
+## Two-Way Binding with `=bind`
 
-The `$bind(path)` helper creates a managed, two-way link between the UI and a state path.
+The `=bind(path)` helper creates a managed, two-way link between the UI and a state path.
 
 ### Strictness
-To ensure unambiguous data flow, `$bind` only accepts direct paths. It cannot be used directly with computed expressions like `$bind(upper(/name))`.
+To ensure unambiguous data flow, `=bind` only accepts direct paths. It cannot be used directly with computed expressions like `=bind(upper(/name))`.
 
 ### Handling Transformations
 If you need to transform data during a two-way binding, there are two primary approaches:
-1. **Event-Based**: Use a manual `oninput` handler to apply the transformation, e.g., `$set(/name, upper($event/target/value))`.
-2. **Schema-Based**: Define a `transform` or `pattern` in the schema for the path. The `$bind` helper will respect the schema rules during the write-back phase.
+1. **Event-Based**: Use a manual `oninput` handler to apply the transformation, e.g., `=set(/name, upper($event/target/value))`.
+2. **Schema-Based**: Define a `transform` or `pattern` in the schema for the path. The `=bind` helper will respect the schema rules during the write-back phase.
 
 ---
 
 ## DOM Patches & Decentralized Layouts
 
-One of the most powerful features of JPRX in UI environments (like Lightview) is the ability to perform **Decentralized DOM Patches** via the `$move(target, location)` helper.
+One of the most powerful features of JPRX in UI environments (like Lightview) is the ability to perform **Decentralized DOM Patches** via the `=move(target, location)` helper.
 
 ### The Problem: LLM Streaming & Layouts
 When an LLM streams UI components, it often knows *what* it is creating before it knows exactly *where* that item belongs in a complex dashboard, or it may need to update an existing element that was created minutes ago.
 
-### The Solution: `$move`
-The `$move` helper allows a component to "place itself" into the document upon mounting. 
+### The Solution: `=move`
+The `=move` helper allows a component to "place itself" into the document upon mounting. 
 
 ```json
 {
   "tag": "div",
   "id": "weather-widget",
-  "onmount": "$move('#dashboard-sidebar', 'afterbegin')",
+  "onmount": "=move('#dashboard-sidebar', 'afterbegin')",
   "content": "Sunny, 75°F"
 }
 ```
@@ -133,14 +133,14 @@ The `$move` helper allows a component to "place itself" into the document upon m
 2. **Idempotent Updates**: If the moving element has an `id` (e.g., `weather-widget`) and an element with that same ID already exists at the destination, the existing element is **replaced**. This allows the LLM to "patch" the UI simply by streaming the updated version of the component.
 3. **Flicker-Free**: By rendering the stream in a hidden container, the element is moved and appears in its final destination instantly.
 
-### The Delivery Vehicle: `$mount`
-The `$mount(url, options?)` helper is the primary mechanism for fetching these decentralized updates.
+### The Delivery Vehicle: `=mount`
+The `=mount(url, options?)` helper is the primary mechanism for fetching these decentralized updates.
 
-1. **Arrival**: `$mount` fetches the content and "lands" it at the end of the `document.body` (by default).
+1. **Arrival**: `=mount` fetches the content and "lands" it at the end of the `document.body` (by default).
 2. **Mounting**: The content is hydrated and added to the DOM, triggering its `onmount` hook.
-3. **Teleportation**: If the content contains `$move`, it immediately relocates itself to its destination.
+3. **Teleportation**: If the content contains `=move`, it immediately relocates itself to its destination.
 
-This separation of concerns makes the system incredibly robust: `$mount` handles the **delivery**, while `$move` handles the **logic** of where the content belongs.
+This separation of concerns makes the system incredibly robust: `=mount` handles the **delivery**, while `=move` handles the **logic** of where the content belongs.
 
 ### Why Decentralized?
 - **Low Overhead**: The LLM doesn't need to maintain a map of the entire DOM; it just needs to know the ID or Selector of where it wants to "push" its content.
@@ -156,12 +156,12 @@ A modern, lifecycle-based reactive counter:
 ```json
 {
   "div": {
-    "onmount": $state({ count: 0 }, { name: 'counter', schema: 'auto', scope: $this }),
+    "onmount": "=state({ count: 0 }, { name: 'counter', schema: 'auto', scope: $this })",
     "children": [
       { "h2": "Modern JPRX Counter" },
-      { "p": ["Current Count: ", $/counter/count] },
-      { "button": { "onclick": $++/counter/count, "children": ["+"] } },
-      { "button": { "onclick": $--/counter/count, "children": ["-"] } }
+      { "p": ["Current Count: ", "=/counter/count"] },
+      { "button": { "onclick": "=++/counter/count", "children": ["+"] } },
+      { "button": { "onclick": "=--/counter/count", "children": ["-"] } }
     ]
   }
 }

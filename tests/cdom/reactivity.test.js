@@ -12,7 +12,7 @@ describe('cdom Reactivity', () => {
 
     it('should update DOM-like values when signals change', () => {
         const title = Lightview.signal('Hello', 'pageTitle');
-        const expr = LightviewCDOM.parseExpression('$/pageTitle');
+        const expr = LightviewCDOM.parseExpression('=/pageTitle');
 
         expect(expr.value).toBe('Hello');
 
@@ -26,7 +26,8 @@ describe('cdom Reactivity', () => {
             { id: 2, amount: 200 }
         ], 'bills');
 
-        const totalExpr = LightviewCDOM.parseExpression('$/sum(bills...amount)');
+        // Correct syntax: =sum() is the function, /bills...amount is the argument
+        const totalExpr = LightviewCDOM.parseExpression('=sum(/bills...amount)');
         expect(totalExpr.value).toBe(300);
 
         // Update an existing item
@@ -44,7 +45,8 @@ describe('cdom Reactivity', () => {
 
     it('should handle conditional logic reactively', () => {
         const user = LightviewX.state({ loggedIn: false, name: 'Guest' }, 'user');
-        const greeting = LightviewCDOM.parseExpression('$/user/if(loggedIn, concat("Welcome, ", ./name), "Please Login")');
+        // Correct syntax: =if() is the function with paths as arguments
+        const greeting = LightviewCDOM.parseExpression('=if(/user/loggedIn, concat("Welcome, ", /user/name), "Please Login")');
 
         expect(greeting.value).toBe('Please Login');
 
@@ -52,6 +54,7 @@ describe('cdom Reactivity', () => {
         user.name = 'Alice';
         expect(greeting.value).toBe('Welcome, Alice');
     });
+
     it('should handle reactivity on multi-level nested objects', () => {
         const settings = LightviewX.state({
             theme: {
@@ -68,9 +71,9 @@ describe('cdom Reactivity', () => {
             }
         }, 'settings');
 
-        const colorExpr = LightviewCDOM.parseExpression('$/settings/theme/colors/primary');
-        const sizeExpr = LightviewCDOM.parseExpression('$/settings/theme/font/size');
-        const deepExpr = LightviewCDOM.parseExpression('$/concat(settings/theme/colors/primary, "-", settings/theme/font/size)');
+        const colorExpr = LightviewCDOM.parseExpression('=/settings/theme/colors/primary');
+        const sizeExpr = LightviewCDOM.parseExpression('=/settings/theme/font/size');
+        const deepExpr = LightviewCDOM.parseExpression('=concat(/settings/theme/colors/primary, "-", /settings/theme/font/size)');
 
         expect(colorExpr.value).toBe('blue');
         expect(sizeExpr.value).toBe('16px');
@@ -115,14 +118,14 @@ describe('cdom Reactivity', () => {
         const cdomcStructure = {
             div: {
                 id: 'profile-card',
-                class: '$/profile/ui/theme', // Bound to ui.theme
+                class: '=/profile/ui/theme', // Bound to ui.theme
                 children: [
                     {
                         div: {
                             class: 'header',
                             children: [
-                                { h1: { children: ['$/profile/user/details/name'] } }, // Bound to user.details.name
-                                { img: { src: '$/profile/user/details/avatar/src', alt: '$/profile/user/details/avatar/alt' } }
+                                { h1: { children: ['=/profile/user/details/name'] } }, // Bound to user.details.name
+                                { img: { src: '=/profile/user/details/avatar/src', alt: '=/profile/user/details/avatar/alt' } }
                             ]
                         }
                     },
@@ -130,8 +133,8 @@ describe('cdom Reactivity', () => {
                         div: {
                             class: 'stats',
                             children: [
-                                { span: { children: ["Posts: ", '$/profile/user/stats/posts'] } }, // Bound to user.stats.posts
-                                { span: { children: ["Followers: ", '$/profile/user/stats/followers'] } }
+                                { span: { children: ["Posts: ", '=/profile/user/stats/posts'] } }, // Bound to user.stats.posts
+                                { span: { children: ["Followers: ", '=/profile/user/stats/followers'] } }
                             ]
                         }
                     },
@@ -140,10 +143,10 @@ describe('cdom Reactivity', () => {
                         div: {
                             class: 'helpers-test',
                             children: [
-                                // Logic + String helpers: "HELLO BOB" or "HELLO USER"
-                                { p: { children: ['$/upper(if(profile/user/details/name, profile/user/details/name, "User"))'] } },
+                                // Correct syntax: =upper() is the function, with nested if() and path
+                                { p: { children: ['=upper(if(/profile/user/details/name, /profile/user/details/name, "User"))'] } },
                                 // Math + Stats helpers: Sum of posts and followers
-                                { p: { children: ['Total interactions: ', '$/sum(profile/user/stats/posts, profile/user/stats/followers)'] } }
+                                { p: { children: ['Total interactions: ', '=sum(/profile/user/stats/posts, /profile/user/stats/followers)'] } }
                             ]
                         }
                     }

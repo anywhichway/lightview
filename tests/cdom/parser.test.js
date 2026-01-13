@@ -21,13 +21,13 @@ describe('cdom Integration', () => {
     });
 
     describe('CDOMC Parser', () => {
-        it('parses unquoted $ expressions as strings', () => {
-            const input = '{ button: { onclick: $increment($/count), children: "Click" } }';
+        it('parses unquoted = expressions as strings', () => {
+            const input = '{ button: { onclick: =increment(=/count), children: "Click" } }';
             const result = parseCDOMC(input);
 
             expect(result).toEqual({
                 button: {
-                    onclick: '$increment($/count)',
+                    onclick: '=increment(=/count)',
                     children: 'Click'
                 }
             });
@@ -45,23 +45,23 @@ describe('cdom Integration', () => {
             });
         });
 
-        it('preserves $ prefix in simple paths', () => {
-            const input = '{ input: { cdom-bind: $/user/name } }';
+        it('preserves = prefix in simple paths', () => {
+            const input = '{ input: { cdom-bind: =/user/name } }';
             const result = parseCDOMC(input);
 
             expect(result).toEqual({
                 input: {
-                    'cdom-bind': '$/user/name'
+                    'cdom-bind': '=/user/name'
                 }
             });
         });
     });
 
     describe('Hydration', () => {
-        it('converts event handler $ expressions to functions', () => {
+        it('converts event handler = expressions to functions', () => {
             const input = {
                 button: {
-                    onclick: '$increment($/count)',
+                    onclick: '=increment(=/count)',
                     children: ['Click']
                 }
             };
@@ -73,7 +73,7 @@ describe('cdom Integration', () => {
             expect(result.children).toEqual(['Click']);
         });
 
-        it('preserves non-$ event handlers as strings', () => {
+        it('preserves non-= event handlers as strings', () => {
             const input = {
                 button: {
                     onclick: 'alert("hello")',
@@ -83,8 +83,22 @@ describe('cdom Integration', () => {
 
             const result = hydrate(input);
 
-            // onclick should remain a string (non-$ expression)
+            // onclick should remain a string (non-= expression)
             expect(result.attributes.onclick).toBe('alert("hello")');
+        });
+
+        it('handles escape sequence for literal = strings', () => {
+            // Test escape in children array context
+            const input = {
+                div: {
+                    children: ["'=E=mc²"]
+                }
+            };
+
+            const result = hydrate(input);
+
+            // Should strip the leading ' and keep the rest as literal
+            expect(result.children[0]).toBe('=E=mc²');
         });
     });
 });

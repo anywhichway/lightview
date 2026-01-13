@@ -132,12 +132,12 @@ const { $ } = Lightview;
 
 const cdom = `{
     div: {
-        onmount: $state({ count: 0 }, { name: 'local', schema: 'auto', scope: $this }),
+        onmount: =state({ count: 0 }, { name: 'local', schema: 'auto', scope: $this }),
         children: [
             { h2: "Counter" },
-            { p: ["Count: ", $/local/count] },
-            { button: { onclick: $++/local/count, children: ["+"] } },
-            { button: { onclick: $--/local/count, children: ["-"] } }
+            { p: ["Count: ", =/local/count] },
+            { button: { onclick: =++/local/count, children: ["+"] } },
+            { button: { onclick: =--/local/count, children: ["-"] } }
         ]
     }
 }`;
@@ -149,9 +149,9 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
         </p>
         <ul>
             <li><code>onmount</code> — A Lightview lifecycle hook where we initialize state.</li>
-            <li><code>$state(...)</code> — An initializer that creates local reactive state.</li>
+            <li><code>=state(...)</code> — An initializer that creates local reactive state.</li>
             <li><code>scope: $this</code> — Explicitly attaches the state to the current element.</li>
-            <li><code>$/local/count</code> — A path that reactively displays the count value.</li>
+            <li><code>=/local/count</code> — A path that reactively displays the count value.</li>
         </ul>
         <p>
             The UI automatically updates whenever <code>count</code> changes — no manual DOM manipulation required.
@@ -191,7 +191,7 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
 
         <h3 id="JPRX-delimiters">Delimiters</h3>
         <p>
-            JPRX expressions begin with a <code>$</code> delimiter:
+            JPRX expressions begin with a <code>=</code> delimiter:
         </p>
         <table class="api-table">
             <thead>
@@ -203,20 +203,40 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
             </thead>
             <tbody>
                 <tr>
-                    <td><code>$/</code></td>
+                    <td><code>=/</code></td>
                     <td>Access a path in the global registry</td>
-                    <td><code>$/users/0/name</code></td>
+                    <td><code>=/users/0/name</code></td>
                 </tr>
                 <tr>
-                    <td><code>$function(</code></td>
+                    <td><code>=function(</code></td>
                     <td>Call a helper function</td>
-                    <td><code>$sum(/items...price)</code></td>
+                    <td><code>=sum(/items...price)</code></td>
                 </tr>
             </tbody>
         </table>
         <p>
-            Once inside a JPRX expression, paths follow <strong>JSON Pointer</strong> syntax. The <code>$</code>
+            Once inside a JPRX expression, paths follow <strong>JSON Pointer</strong> syntax. The <code>=</code>
             is only needed at the start of the expression for paths or function names.
+        </p>
+
+        <h3 id="JPRX-escaping">Escaping the <code>=</code> Delimiter</h3>
+        <p>
+            When using <strong>oDOM</strong> or <strong>vDOM</strong> (Object DOM), any string value starting with
+            <code>=</code> is interpreted as a JPRX expression. If you need a literal string that begins with
+            an equals sign (e.g., a mathematical equation or status message), you can escape it by prefixing
+            with a single quote:
+        </p>
+        <div class="code-block" style="margin-bottom: 1rem;">
+            <pre><code>// Interpreted as JPRX expression:
+{ "p": "=/user/name" }  // Resolves the path /user/name
+
+// Escaped to produce a literal string:
+{ "p": "'=E=mc²" }      // Renders as "=E=mc²"
+{ "p": "'=42" }         // Renders as "=42"</code></pre>
+        </div>
+        <p>
+            The single-quote escape (<code>'=</code>) at the start of a string tells the parser to treat
+            the rest of the string (including the <code>=</code>) as literal content.
         </p>
 
         <h3 id="JPRX-anatomy">Anatomy of a Path</h3>
@@ -265,7 +285,7 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
             Paths can contain function calls to transform data:
         </p>
         <div class="code-block">
-            <pre><code>$currency(sum(map(filter(/orders, eq(_/status, 'paid')), _/total)...))</code></pre>
+            <pre><code>=currency(sum(map(filter(/orders, eq(_/status, 'paid')), _/total)...))</code></pre>
         </div>
         <ul>
             <li><strong>/orders</strong>: Access the <code>orders</code> collection (JSON Pointer)</li>
@@ -273,7 +293,7 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
             <li><strong>map(..., _/total)</strong>: Extract the <code>total</code> from each order</li>
             <li><strong>...</strong>: Explode the array into individual arguments</li>
             <li><strong>sum(...)</strong>: Add up all the totals</li>
-            <li><strong>$currency(...)</strong>: Format as currency string</li>
+            <li><strong>=currency(...)</strong>: Format as currency string</li>
         </ul>
 
         <h3 id="JPRX-placeholders">Placeholders</h3>
@@ -289,12 +309,12 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
                 <tr>
                     <td><code>_</code></td>
                     <td>Current item during iteration</td>
-                    <td><code>$map(/items, _/name)</code></td>
+                    <td><code>=map(/items, _/name)</code></td>
                 </tr>
                 <tr>
                     <td><code>$event</code></td>
                     <td>Event object in handlers</td>
-                    <td><code>$set($/selected, $event/target/value)</code></td>
+                    <td><code>=set(=/selected, $event/target/value)</code></td>
                 </tr>
             </tbody>
         </table>
@@ -327,12 +347,12 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
                 <tr>
                     <td><strong>Formulas</strong></td>
                     <td><code>=SUM(A1:A10)</code></td>
-                    <td><code>$sum(/items...price)</code></td>
+                    <td><code>=sum(/items...price)</code></td>
                 </tr>
                 <tr>
                     <td><strong>Path Resolution</strong></td>
                     <td>Cell References (A1, $B$2)</td>
-                    <td>JSON Pointer paths (./name, $/global)</td>
+                    <td>JSON Pointer paths (./name, =/global)</td>
                 </tr>
                 <tr>
                     <td><strong>Recalculation</strong></td>
@@ -356,8 +376,8 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
     tag: "div",
     attributes: { class: "counter" },
     children: [
-        { tag: "p", children: ["Count: ", "$/local/count"] },
-        { tag: "button", attributes: { onclick: "$++/local/count }, children: ["+"] }
+        { tag: "p", children: ["Count: ", "=/local/count"] },
+        { tag: "button", attributes: { onclick: "=++/local/count }, children: ["+"] }
     ]
 }</code></pre>
         </div>
@@ -369,8 +389,8 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
     div: {
         class: "counter",
         children: [
-            { p: { children: ["Count: ", "$/local/count] } },
-            { button: { onclick: $++/local/count, children: ["+"] } }
+            { p: { children: ["Count: ", "=/local/count] } },
+            { button: { onclick: =++/local/count, children: ["+"] } }
         ]
     }
 }</code></pre>
@@ -385,8 +405,8 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
         class: "counter",
         // This is a JPRX comment
         children: [
-            { p: ["Count: ", $/local/count] },
-            { button: { onclick: $++/local/count, children: ["+"] } }
+            { p: ["Count: ", =/local/count] },
+            { button: { onclick: =++/local/count, children: ["+"] } }
         ]
     }
 }</code></pre>
@@ -400,16 +420,16 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
             home in the DOM upon being created. This is especially powerful for LLM-driven streaming UIs.
         </p>
 
-        <h3 id="helpers-move">$move(target, location?)</h3>
+        <h3 id="helpers-move">=move(target, location?)</h3>
         <p>
-            The <code>$move</code> helper (typically used in <code>onmount</code>) teleports the host element to a
+            The <code>=move</code> helper (typically used in <code>onmount</code>) teleports the host element to a
             different part of the document.
         </p>
         <div class="code-block">
             <pre><code>{
     div: {
         id: "weather-widget",
-        onmount: $move('#sidebar', 'afterbegin'),
+        onmount: =move('#sidebar', 'afterbegin'),
         content: "Sunny, 75°F"
     }
 }</code></pre>
@@ -419,7 +439,7 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
         <p>
             If the moving element has a unique <code>id</code> and an element with that same ID already exists at the
             destination,
-            the existing element is <strong>replaced</strong>. This turns <code>$move</code> into an idempotent
+            the existing element is <strong>replaced</strong>. This turns <code>=move</code> into an idempotent
             <strong>patch</strong>
             command — simply stream the new version of the component with the same ID, and it will update the UI
             automatically.
@@ -465,8 +485,8 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
 
         <h3 id="lifecycle-state">Lifecycle State</h3>
         <p>
-            In Lightview, you initialize state within the <code>onmount</code> hook. The <code>$state</code> and
-            <code>$signal</code> helpers accept an options object where you can specify a <code>scope</code>,
+            In Lightview, you initialize state within the <code>onmount</code> hook. The <code>=state</code> and
+            <code>=signal</code> helpers accept an options object where you can specify a <code>scope</code>,
             as well as <code>schema</code> requirements.
         </p>
 
@@ -476,7 +496,7 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
 Lightview.registerSchema('User', { name: 'string', age: 'number' });
 
 // 2. Use in cDOM
-{ "onmount": "$state({}, { name: 'profile', schema: 'User', scope: $this })" }</code></pre>
+{ "onmount": "=state({}, { name: 'profile', schema: 'User', scope: $this })" }</code></pre>
         </div>
 
         <h4>Standard Schema Behaviors</h4>
@@ -497,7 +517,7 @@ Lightview.registerSchema('User', { name: 'string', age: 'number' });
         <div class="code-block" style="margin-bottom: 2rem;">
             <pre><code>{ 
     div: { 
-        "onmount": "$state({ count: 0 }, { 
+        "onmount": "=state({ count: 0 }, { 
             name: 'local', 
             schema: 'polymorphic',
             scope: $this 
@@ -515,22 +535,22 @@ Lightview.registerSchema('User', { name: 'string', age: 'number' });
 
         <h3 id="bind-helper">Two-Way Binding ($bind)</h3>
         <p>
-            Two-way data binding is achieved via the <code>$bind(path)</code> helper.
+            Two-way data binding is achieved via the <code>=bind(path)</code> helper.
         </p>
         <div class="code-block">
-            <pre><code>{ input: { type: "text", value: "$bind(/profile/name)", placeholder: "Enter name" } }
-{ input: { type: "checkbox", checked: "$bind(/settings/enabled)" } }</code></pre>
+            <pre><code>{ input: { type: "text", value: "=bind(/profile/name)", placeholder: "Enter name" } }
+{ input: { type: "checkbox", checked: "=bind(/settings/enabled)" } }</code></pre>
         </div>
 
         <h4 id="binding-transformations">Handling Transformations</h4>
         <p>
-            Because <code>$bind</code> is strict (it only accepts direct paths), you cannot pass a computation
-            like <code>$bind(upper(/name))</code>. To transform data during binding, you have two choices:
+            Because <code>=bind</code> is strict (it only accepts direct paths), you cannot pass a computation
+            like <code>=bind(upper(/name))</code>. To transform data during binding, you have two choices:
         </p>
         <ul>
             <li>
                 <strong>Manual Transformation:</strong> Use an <code>oninput</code> handler:
-                <code>{ oninput: "$set(/name, upper($event/target/value))" }</code>
+                <code>{ oninput: "=set(/name, upper($event/target/value))" }</code>
             </li>
             <li>
                 <strong>Schema Transformation:</strong> Define a <code>transform</code> in your schema:
@@ -541,7 +561,7 @@ Lightview.registerSchema('User', { name: 'string', age: 'number' });
                 </div>
                 The state manager will automatically apply the <a
                     href="/docs/api/state.html#transformations">transformation</a>
-                during the write-back phase of <code>$bind</code>.
+                during the write-back phase of <code>=bind</code>.
             </li>
         </ul>
 
@@ -565,7 +585,7 @@ const { $ } = Lightview;
 
 const cdomString = `{ 
     div: {
-        "onmount": "$state({
+        "onmount": "=state({
             cart: {
                 items: [
                     { name: 'Apple', price: 1.00 },
@@ -576,11 +596,11 @@ const cdomString = `{
         children: [
             { h3: "Shopping Cart" },
             { ul: { 
-                children: $map(/store/cart/items, { li: { children: [_/name, " - ", $currency(_/price)] } })
+                children: =map(/store/cart/items, { li: { children: [_/name, " - ", =currency(_/price)] } })
             }},
             { p: { 
                 style: "font-weight: bold; margin-top: 1rem;",
-                children: ["Total: ", $currency(sum(/store/cart/items...price))]
+                children: ["Total: ", =currency(sum(/store/cart/items...price))]
             }}
         ]
     }
@@ -628,10 +648,10 @@ const cdomString = `{
     "div": {
         "children": [
             { "h3": ["Standard JPRX Counter"] },
-            { "p": { "children": ["Count: ", "$/count"] }},
+            { "p": { "children": ["Count: ", "=/count"] }},
             { "div": { "children": [
-                { "button": { "onclick": "$decrement(/count)", "children": ["-"] } },
-                { "button": { "onclick": "$increment(/count)", "children": ["+"] } }
+                { "button": { "onclick": "=decrement(/count)", "children": ["-"] } },
+                { "button": { "onclick": "=increment(/count)", "children": ["+"] } }
             ]}}
         ]
     }
@@ -663,10 +683,10 @@ const cdomString = `{
     div: {
         children: [
             { h3: ["Concise Counter"] },
-            { p: { children: ["Count: ", $/count] }},
+            { p: { children: ["Count: ", =/count] }},
             { div: { children: [
-                { button: { onclick: $decrement(/count), children: ["-"] } },
-                { button: { onclick: $increment(/count), children: ["+"] } }
+                { button: { onclick: =decrement(/count), children: ["-"] } },
+                { button: { onclick: =increment(/count), children: ["+"] } }
             ]}}
         ]
     }
@@ -687,7 +707,7 @@ globalThis.LightviewCDOM.activate(hydrated.domEl);
                     type: 'module',
                     height: '250px'
                 });
-            </script><code contenteditable="true">// Operators: Using $++/path and $--/path
+            </script><code contenteditable="true">// Operators: Using =++/path and =--/path
 await import('/lightview-cdom.js');
 const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
 const { signal, $ } = Lightview;
@@ -698,11 +718,11 @@ const cdomString = `{
     div: {
         children: [
             { h3: ["Operator Counter"] },
-            { p: { children: ["Count: ", $/count] }},
+            { p: { children: ["Count: ", =/count] }},
             { div: { children: [
-                // Prefix operators: $-- and $++
-                { button: { onclick: $--/count, children: ["-"] } },
-                { button: { onclick: $++/count, children: ["+"] } }
+                // Prefix operators: =-- and =++
+                { button: { onclick: =--/count, children: ["-"] } },
+                { button: { onclick: =++/count, children: ["+"] } }
             ]}}
         ]
     }
@@ -731,13 +751,13 @@ const { $ } = Lightview;
 const cdomString = `{
     div: {
         // Initialize a named signal explicitly scoped to '$this' element.
-        onmount: $signal(0, { name: 'count', scope: $this }),
+        onmount: =signal(0, { name: 'count', scope: $this }),
         children: [
             { h3: ["Embedded Counter"] },
-            { p: ["Count: ", $/count] },
+            { p: ["Count: ", =/count] },
             { div: { children: [
-                { button: { onclick: $--/count, children: ["-"] } },
-                { button: { onclick: $++/count, children: ["+"] } }
+                { button: { onclick: =--/count, children: ["-"] } },
+                { button: { onclick: =++/count, children: ["+"] } }
             ]}}
         ]
     }
@@ -767,18 +787,18 @@ $('#example').content(hydrated);
             </thead>
             <tbody>
                 <tr>
-                    <td><code>$increment(/count)</code></td>
-                    <td><code>$++/count</code> or <code>$/count++</code></td>
+                    <td><code>=increment(/count)</code></td>
+                    <td><code>=++/count</code> or <code>=/count++</code></td>
                     <td>Increment by 1</td>
                 </tr>
                 <tr>
-                    <td><code>$decrement(/count)</code></td>
-                    <td><code>$--/count</code> or <code>$/count--</code></td>
+                    <td><code>=decrement(/count)</code></td>
+                    <td><code>=--/count</code> or <code>=/count--</code></td>
                     <td>Decrement by 1</td>
                 </tr>
                 <tr>
-                    <td><code>$toggle(/enabled)</code></td>
-                    <td><code>$!!/enabled</code></td>
+                    <td><code>=toggle(/enabled)</code></td>
+                    <td><code>=!!/enabled</code></td>
                     <td>Toggle boolean (prefix only)</td>
                 </tr>
             </tbody>
@@ -797,8 +817,8 @@ $('#example').content(hydrated);
             Use standard event attributes with JPRX expressions:
         </p>
         <div class="code-block">
-            <pre><code>{ button: { onclick: $++/count, children: ["Click Me"] } }
-{ input: { oninput: $set(/name, $event/target/value) } }</code></pre>
+            <pre><code>{ button: { onclick: =++/count, children: ["Click Me"] } }
+{ input: { oninput: =set(/name, $event/target/value) } }</code></pre>
         </div>
 
         <h3 id="events-llm">LLM-Generated Interaction</h3>
@@ -807,20 +827,20 @@ $('#example').content(hydrated);
         </p>
         <div class="code-block">
             <pre><code>// 1. Notify LLM of an event
-{ button: { onclick: $fetch('/api/notify', { method: 'POST', body: $event }), children: ["Notify"] } }
+{ button: { onclick: =fetch('/api/notify', { method: 'POST', body: $event }), children: ["Notify"] } }
 
 // 2. Request a UI Patch from LLM
-{ button: { onclick: $mount('/api/update', { method: 'POST', body: $event }), children: ["Update UI"] } }</code></pre>
+{ button: { onclick: =mount('/api/update', { method: 'POST', body: $event }), children: ["Update UI"] } }</code></pre>
         </div>
         <p>
             The <code>$event</code> placeholder gives the LLM full context of the interaction. When using
-            <code>$mount</code>, the server should respond with cDOM, vDOM, or oDOM content (see the
+            <code>=mount</code>, the server should respond with cDOM, vDOM, or oDOM content (see the
             <a href="#helpers-network">Network section</a> for more details).
         </p>
         <p>
-            By default, <code>$mount</code> will <strong>append</strong> the response to the <code>body</code> and
+            By default, <code>=mount</code> will <strong>append</strong> the response to the <code>body</code> and
             then let it "rip itself out" and <strong>teleport</strong> to its final destination if the response
-            contains a <code>$move</code> helper. This "Safe Landing" strategy ensures decentralized layouts
+            contains a <code>=move</code> helper. This "Safe Landing" strategy ensures decentralized layouts
             work seamlessly without the patcher needing to know the exact destination.
         </p>
 
@@ -871,7 +891,7 @@ LightviewCDOM.activate(document.getElementById('myApp'));</code></pre>
             Converts <code>$</code>-prefixed strings into reactive computed signals.
         </p>
         <div class="code-block">
-            <pre><code>const config = { title: "Dashboard", total: "$/cart/items...price" };
+            <pre><code>const config = { title: "Dashboard", total: "=/cart/items...price" };
 const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
         </div>
 
@@ -880,7 +900,7 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
             Parses cDOM's concise syntax (unquoted keys, JPRX expressions) into a JavaScript object.
         </p>
         <div class="code-block">
-            <pre><code>const obj = LightviewCDOM.parseJPRX(`{ div: { children: [$/name] } }`);</code></pre>
+            <pre><code>const obj = LightviewCDOM.parseJPRX(`{ div: { children: [=/name] } }`);</code></pre>
         </div>
 
         <h3 id="api-registerSchema">registerSchema(name, definition)</h3>
@@ -891,7 +911,7 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
         </p>
         <div class="code-block">
             <pre><code>Lightview.registerSchema('User', { name: 'string', age: 'number' });
-// Usable in JPRX: $state({}, { name: 'profile', schema: 'User' })</code></pre>
+// Usable in JPRX: =state({}, { name: 'profile', schema: 'User' })</code></pre>
         </div>
 
         <h3 id="api-registerHelper">registerHelper(name, fn, options?)</h3>
@@ -900,7 +920,7 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
         </p>
         <div class="code-block">
             <pre><code>LightviewCDOM.registerHelper('double', (x) => x * 2);
-// Now usable: $double($/count)</code></pre>
+// Now usable: =double(/count)</code></pre>
         </div>
 
         <!-- ===== JPRX HELPERS ===== -->
@@ -948,7 +968,7 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
         </div>
 
         <p class="text-sm italic opacity-80" style="margin-top: 1rem;">
-            Example: <code>$if(gt($/count, 10), 'Large', 'Small')</code>
+            Example: <code>=if(gt(=/count, 10), 'Large', 'Small')</code>
         </p>
 
         <h3 id="helpers-conditional">Conditional Aggregates</h3>
@@ -964,7 +984,7 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
         </div>
         <p class="text-xs italic opacity-70" style="margin-top: 0.5rem;">
             <strong>Explosion Operator:</strong> In JPRX, <code>...</code> is placed at the end of a path
-            (e.g., <code>$/items...price</code>) to expand arrays into arguments.
+            (e.g., <code>=/items...price</code>) to expand arrays into arguments.
         </p>
 
         <h3 id="helpers-datetime">DateTime</h3>
@@ -1031,7 +1051,7 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
         </table>
         <p style="margin-top: 1rem;">
             The <code>mount</code> helper is the primary mechanism for **Hypermedia updates**. It fetches content
-            (cDOM, vDOM, or oDOM) and injects it into the DOM. If the content contains a <code>$move</code>
+            (cDOM, vDOM, or oDOM) and injects it into the DOM. If the content contains a <code>=move</code>
             helper, it will automatically relocate itself upon mounting.
         </p>
 

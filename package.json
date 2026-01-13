@@ -35,7 +35,7 @@
     "wrangler": "^4.54.0"
   },
   "dependencies": {
-    "jprx": "^1.1.1",
+    "jprx": "^1.2.0",
     "linkedom": "^0.18.12",
     "marked": "^17.0.1"
   }
