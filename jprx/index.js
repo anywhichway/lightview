@@ -38,6 +38,7 @@ export { registerLookupHelpers } from './helpers/lookup.js';
 export { registerStatsHelpers } from './helpers/stats.js';
 export { registerStateHelpers, set } from './helpers/state.js';
 export { registerNetworkHelpers } from './helpers/network.js';
+export { registerCalcHelpers, calc } from './helpers/calc.js';
 
 // Convenience function to register all standard helpers
 export const registerAllHelpers = (registerFn) => {
@@ -53,6 +54,7 @@ export const registerAllHelpers = (registerFn) => {
     const { registerStatsHelpers } = require('./helpers/stats.js');
     const { registerStateHelpers } = require('./helpers/state.js');
     const { registerNetworkHelpers } = require('./helpers/network.js');
+    const { registerCalcHelpers } = require('./helpers/calc.js');
 
     registerMathHelpers(registerFn);
     registerLogicHelpers(registerFn);
@@ -66,4 +68,5 @@ export const registerAllHelpers = (registerFn) => {
     registerStatsHelpers(registerFn);
     registerStateHelpers((name, fn) => registerFn(name, fn, { pathAware: true }));
     registerNetworkHelpers(registerFn);
+    registerCalcHelpers(registerFn);
 };

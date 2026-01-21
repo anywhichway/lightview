@@ -164,7 +164,6 @@ export const resolvePath = (path, context) => {
     const unwrappedContext = unwrapSignal(context);
     if (unwrappedContext && typeof unwrappedContext === 'object') {
         if (path in unwrappedContext || unwrappedContext[path] !== undefined) {
-            // Use traverse with one segment to ensure signal unwrapping if context[path] is a signal
             return traverse(unwrappedContext, [path]);
         }
     }
@@ -1512,7 +1511,7 @@ export const parseJPRX = (input) => {
             continue;
         }
 
-        // Handle unquoted property names, identifiers, and paths
+        // Handle unquoted property names, identifiers, paths, and FUNCTION CALLS
         if (/[a-zA-Z_$/./]/.test(char)) {
             let word = '';
             while (i < len && /[a-zA-Z0-9_$/.-]/.test(input[i])) {
@@ -1520,13 +1519,46 @@ export const parseJPRX = (input) => {
                 i++;
             }
 
-            // Skip whitespace to check for :
+            // Skip whitespace to check what follows
             let j = i;
             while (j < len && /\s/.test(input[j])) j++;
 
             if (input[j] === ':') {
                 // It's a property name - quote it
                 result += `"${word}"`;
+            } else if (input[j] === '(') {
+                // It's a FUNCTION CALL - capture the entire expression with balanced parens
+                let expr = word;
+                i = j; // move to the opening paren
+                let parenDepth = 0;
+                let inQuote = null;
+
+                while (i < len) {
+                    const c = input[i];
+
+                    // Track quotes to avoid false paren matches inside strings
+                    if (inQuote) {
+                        if (c === inQuote && input[i - 1] !== '\\') inQuote = null;
+                    } else if (c === '"' || c === "'") {
+                        inQuote = c;
+                    } else {
+                        if (c === '(') parenDepth++;
+                        else if (c === ')') {
+                            parenDepth--;
+                            if (parenDepth === 0) {
+                                expr += c;
+                                i++;
+                                break;
+                            }
+                        }
+                    }
+
+                    expr += c;
+                    i++;
+                }
+
+                // Treat the function call as a JPRX expression by prefixing with =
+                result += JSON.stringify('=' + expr);
             } else {
                 // It's a value - check if it's a keyword
                 if (word === 'true' || word === 'false' || word === 'null') {

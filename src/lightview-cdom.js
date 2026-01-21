@@ -16,6 +16,7 @@ import { registerLookupHelpers } from '../jprx/helpers/lookup.js';
 import { registerStatsHelpers } from '../jprx/helpers/stats.js';
 import { registerStateHelpers, set } from '../jprx/helpers/state.js';
 import { registerNetworkHelpers } from '../jprx/helpers/network.js';
+import { registerCalcHelpers } from '../jprx/helpers/calc.js';
 
 import { signal, effect, getRegistry } from './reactivity/signal.js';
 import { state } from './reactivity/state.js';
@@ -33,6 +34,7 @@ registerLookupHelpers(registerHelper);
 registerStatsHelpers(registerHelper);
 registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
 registerNetworkHelpers(registerHelper);
+registerCalcHelpers(registerHelper);
 registerHelper('move', (selector, location = 'beforeend') => {
     return {
         isLazy: true,
@@ -219,7 +221,7 @@ const makeEventHandler = (expr) => (eventOrNode) => {
     const target = isEvent ? (eventOrNode.currentTarget || eventOrNode.target) : eventOrNode;
     const context = getContext(target, isEvent ? eventOrNode : null);
     const result = resolveExpression(expr, context);
-    if (result && typeof result === 'object' && result.isLazy) return result.resolve(eventOrNode);
+    if (result && typeof result === 'object' && result.isLazy) return result.resolve(context);
     return result;
 };
 

@@ -14,7 +14,7 @@ const allowedDirs = ['docs', 'components', 'middleware'];
 function build() {
     try {
         console.log('Running full build...');
-        execSync('node build-bundles.mjs',, { stdio: 'inherit' });
+        execSync('node build-bundles.mjs', { stdio: 'inherit' });
         execSync('node build.js --env=dev', { stdio: 'inherit' });
     } catch (e) {
         console.error('Build failed:', e);

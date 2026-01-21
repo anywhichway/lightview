@@ -1,6 +1,6 @@
 {
   "name": "lightview",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "description": "A lightweight reactive UI library with features of Bau, Juris, and HTMX",
   "main": "lightview.js",
   "workspaces": [
@@ -35,7 +35,8 @@
     "wrangler": "^4.54.0"
   },
   "dependencies": {
-    "jprx": "^1.2.0",
+    "expr-eval": "^2.0.2",
+    "jprx": "^1.2.1",
     "linkedom": "^0.18.12",
     "marked": "^17.0.1"
   }

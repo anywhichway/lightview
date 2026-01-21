@@ -14,6 +14,8 @@ export const abs = (val) => Math.abs(val);
 export const mod = (a, b) => a % b;
 export const pow = (a, b) => Math.pow(a, b);
 export const sqrt = (val) => Math.sqrt(val);
+export const negate = (val) => -Number(val);
+export const toPercent = (val) => Number(val) / 100;
 
 export const registerMathHelpers = (register) => {
     register('+', add);
@@ -31,4 +33,6 @@ export const registerMathHelpers = (register) => {
     register('mod', mod);
     register('pow', pow);
     register('sqrt', sqrt);
+    register('negate', negate);
+    register('toPercent', toPercent);
 };
