@@ -1,0 +1,316 @@
+/* === DESIGN TOKENS === */
+:root {
+    --calc-bg: linear-gradient(145deg, #1a1b2e 0%, #16172b 100%);
+    --calc-surface: rgba(255, 255, 255, 0.03);
+    --calc-surface-hover: rgba(255, 255, 255, 0.08);
+    --calc-border: rgba(255, 255, 255, 0.08);
+    --calc-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    --calc-glow: 0 0 80px rgba(99, 102, 241, 0.15);
+
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-dimmed: #64748b;
+
+    --btn-number: linear-gradient(145deg, #2a2d4a, #1e2039);
+    --btn-operator: linear-gradient(145deg, #4f46e5, #4338ca);
+    --btn-equals: linear-gradient(145deg, #10b981, #059669);
+    --btn-clear: linear-gradient(145deg, #ef4444, #dc2626);
+    --btn-function: linear-gradient(145deg, #3b3f5c, #2d3047);
+
+    --btn-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    --btn-shadow-pressed: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* === GLOBAL RESET & BASE === */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0f0f1a 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* Animated background orbs */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    z-index: 0;
+    animation: float 8s ease-in-out infinite;
+}
+
+body::before {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+}
+
+body::after {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, #10b981 0%, transparent 70%);
+    bottom: -100px;
+    right: -100px;
+    animation-delay: -4s;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(30px, 30px) scale(1.1);
+    }
+}
+
+/* === CALCULATOR CONTAINER === */
+.calculator {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 380px;
+    background: var(--calc-bg);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    box-shadow: var(--calc-shadow), var(--calc-glow);
+    border: 1px solid var(--calc-border);
+    backdrop-filter: blur(10px);
+}
+
+.calculator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    pointer-events: none;
+}
+
+/* === DISPLAY AREA === */
+.display {
+    background: var(--calc-surface);
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    margin-bottom: 24px;
+    border: 1px solid var(--calc-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+.expression {
+    font-size: 1rem;
+    color: var(--text-dimmed);
+    min-height: 1.5rem;
+    text-align: right;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    word-break: break-all;
+}
+
+.result {
+    font-size: 3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: right;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* === BUTTON GRID === */
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.btn {
+    aspect-ratio: 1;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    font-family: inherit;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.btn:hover::before {
+    opacity: 1;
+}
+
+.btn:active {
+    transform: scale(0.94);
+}
+
+.btn-number {
+    background: var(--btn-number);
+    color: var(--text-primary);
+    box-shadow: var(--btn-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-number:hover {
+    background: linear-gradient(145deg, #363a5c, #252846);
+}
+
+.btn-operator {
+    background: var(--btn-operator);
+    color: white;
+    box-shadow: var(--btn-shadow), 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.btn-operator:hover {
+    background: linear-gradient(145deg, #5d54f5, #4f46e5);
+    box-shadow: var(--btn-shadow), 0 0 30px rgba(99, 102, 241, 0.5);
+}
+
+.btn-equals {
+    background: var(--btn-equals);
+    color: white;
+    box-shadow: var(--btn-shadow), 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.btn-equals:hover {
+    background: linear-gradient(145deg, #22c994, #10b981);
+    box-shadow: var(--btn-shadow), 0 0 30px rgba(16, 185, 129, 0.5);
+}
+
+.btn-clear {
+    background: var(--btn-clear);
+    color: white;
+    box-shadow: var(--btn-shadow), 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
+.btn-clear:hover {
+    background: linear-gradient(145deg, #f87171, #ef4444);
+    box-shadow: var(--btn-shadow), 0 0 30px rgba(239, 68, 68, 0.4);
+}
+
+.btn-function {
+    background: var(--btn-function);
+    color: var(--text-secondary);
+    box-shadow: var(--btn-shadow);
+    font-size: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.btn-function:hover {
+    background: linear-gradient(145deg, #474b6e, #3b3f5c);
+    color: var(--text-primary);
+}
+
+.btn-wide {
+    grid-column: span 2;
+    aspect-ratio: auto;
+    height: 70px;
+}
+
+/* === BRANDING === */
+.branding {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--calc-border);
+}
+
+.branding span {
+    font-size: 0.75rem;
+    color: var(--text-dimmed);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.branding a {
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.branding a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 420px) {
+    .calculator {
+        padding: 20px;
+    }
+
+    .result {
+        font-size: 2.5rem;
+    }
+
+    .btn {
+        font-size: 1.25rem;
+    }
+
+    .buttons {
+        gap: 10px;
+    }
+}

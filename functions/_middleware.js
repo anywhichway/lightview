@@ -1,13 +1,30 @@
 import { marked } from 'marked';
-import { processServerScripts } from './processServerScripts.js';
+//import { processServerScripts } from './processServerScripts.js';
 
 export const onRequest = async (context) => {
     const url = new URL(context.request.url);
     const isMd = url.pathname.endsWith('.md');
     const isHtml = url.pathname.endsWith('.html') || (url.pathname.endsWith('/') && !url.pathname.includes('.'));
+    const isCdom = url.pathname.endsWith('.cdom');
+    console.log(`[Middleware] Processing: ${url.pathname}`);
+    // Intercept requests for .cdom files to set correct Content-Type
+    if (isCdom) {
+        console.log(`[Middleware] Processing: ${url.pathname}`);
+        const response = await context.next();
+        if (response.ok) {
+            const text = await response.text();
+            return new Response(text, {
+                status: 200,
+                headers: {
+                    'content-type': 'text/plain; charset=utf-8',
+                }
+            });
+        }
+        return response;
+    }
 
     // Intercept requests for .md and .html files
-    if (isMd || isHtml) {
+    if (isMd) { // || isHtml
         console.log(`[Middleware] Processing: ${url.pathname}`);
 
         // Fetch the asset (the actual file)
@@ -23,7 +40,7 @@ export const onRequest = async (context) => {
             }
 
             // 2. Process Server-Side Scripts (runat="server")
-            processedHtml = await processServerScripts(processedHtml, context.request);
+            //processedHtml = await processServerScripts(processedHtml, context.request);
 
             return new Response(processedHtml, {
                 status: 200,

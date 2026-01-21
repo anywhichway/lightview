@@ -102,4 +102,14 @@ if (isWatch) {
             }, 300); // 300ms debounce
         }
     });
+
+    // Also watch jprx directory for parser changes
+    watch(resolve(__dirname, 'jprx'), { recursive: true }, (event, filename) => {
+        if (filename && !filename.includes('~')) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                runBuilds();
+            }, 300);
+        }
+    });
 }

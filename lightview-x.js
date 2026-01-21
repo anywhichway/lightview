@@ -734,14 +734,15 @@
     }
   };
   const parseElements = (content, isJson, isHtml, el, element, isCdom = false, ext = "") => {
-    var _a2;
     if (isJson) return Array.isArray(content) ? content : [content];
     if (isCdom && ext === "cdomc") {
-      const parser = (_a2 = globalThis.LightviewCDOM) == null ? void 0 : _a2.parseCDOMC;
+      const CDOM = globalThis.LightviewCDOM;
+      const parser = CDOM == null ? void 0 : CDOM.parseCDOMC;
       if (parser) {
         try {
           const obj = parser(content);
-          return Array.isArray(obj) ? obj : [obj];
+          const hydrated = CDOM.hydrate ? CDOM.hydrate(obj) : obj;
+          return Array.isArray(hydrated) ? hydrated : [hydrated];
         } catch (e) {
           console.warn("LightviewX: Failed to parse .cdomc:", e);
           return [];

@@ -153,7 +153,7 @@ const localStates = new WeakMap();
 /**
  * Builds a reactive context object for a node by chaining all ancestor states.
  */
-export const getContext = (node, event = null) => {
+const getContext = (node, event = null) => {
     return new Proxy({}, {
         get(_, prop) {
             if (prop === '$event' || prop === 'event') return event;
@@ -214,7 +214,7 @@ globalThis.Lightview.hooks.processAttribute = (domNode, key, value) => {
 /**
  * Legacy activation no longer needed.
  */
-export const activate = (root = document.body) => { };
+const activate = (root = document.body) => { };
 
 const makeEventHandler = (expr) => (eventOrNode) => {
     const isEvent = eventOrNode && typeof eventOrNode === 'object' && 'target' in eventOrNode;
@@ -230,7 +230,7 @@ const makeEventHandler = (expr) => (eventOrNode) => {
  * Traverses the object, converting expression strings (=...) into Signals/Computeds.
  * Establishes a __parent__ link for relative path resolution.
  */
-export const hydrate = (node, parent = null) => {
+const hydrate = (node, parent = null) => {
     if (!node) return node;
 
     // 1. Handle Escape and Expressions
@@ -329,6 +329,12 @@ export const hydrate = (node, parent = null) => {
     return node;
 };
 
+// Prevent tree-shaking of parser functions by creating a side-effect
+// These are used externally by lightview-x.js for .cdomc file loading
+// The typeof check creates a runtime branch the bundler can't eliminate
+if (typeof parseCDOMC !== 'function') throw new Error('parseCDOMC not found');
+if (typeof parseJPRX !== 'function') throw new Error('parseJPRX not found');
+
 const LightviewCDOM = {
     registerHelper,
     registerOperator,
@@ -349,7 +355,8 @@ const LightviewCDOM = {
 
 // Global export for non-module usage
 if (typeof window !== 'undefined') {
-    globalThis.LightviewCDOM = LightviewCDOM;
+    globalThis.LightviewCDOM = {};
+    Object.assign(globalThis.LightviewCDOM, LightviewCDOM);
 }
 
 export default LightviewCDOM;

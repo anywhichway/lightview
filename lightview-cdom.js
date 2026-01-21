@@ -1,4 +1,4 @@
-var LightviewCDOM = function(exports) {
+var LightviewCDOM = function() {
   "use strict";
   const helpers = /* @__PURE__ */ new Map();
   const helperOptions = /* @__PURE__ */ new Map();
@@ -3504,6 +3504,8 @@ var LightviewCDOM = function(exports) {
     }
     return node;
   };
+  if (typeof parseCDOMC !== "function") throw new Error("parseCDOMC not found");
+  if (typeof parseJPRX !== "function") throw new Error("parseJPRX not found");
   const LightviewCDOM2 = {
     registerHelper,
     registerOperator,
@@ -3524,12 +3526,8 @@ var LightviewCDOM = function(exports) {
     version: "1.0.0"
   };
   if (typeof window !== "undefined") {
-    globalThis.LightviewCDOM = LightviewCDOM2;
+    globalThis.LightviewCDOM = {};
+    Object.assign(globalThis.LightviewCDOM, LightviewCDOM2);
   }
-  exports.activate = activate;
-  exports.default = LightviewCDOM2;
-  exports.getContext = getContext;
-  exports.hydrate = hydrate;
-  Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
-  return exports;
-}({});
+  return LightviewCDOM2;
+}();

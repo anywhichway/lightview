@@ -1,0 +1,76 @@
+// Pure cDOM/JPRX Calculator - No custom JavaScript helpers needed!
+// Uses only core JPRX helpers:
+// - state, set: state management
+// - if, eq: conditionals
+// - concat, contains: string operations
+// - negate, toPercent: math operations
+// - calc with $(): expression evaluation
+{
+    div: {
+        class: "calculator",
+        onmount: =state({
+            display: "0",
+            expr: "",
+            prev: "",
+            op: "",
+            waiting: false
+        }, { name: "c", schema: "polymorphic", scope: $this }),
+        children: [
+            // Display area
+            {
+                div: {
+                    class: "display",
+                    children: [
+                        { div: { class: "expression", children: [=/c/expr] } },
+                        { div: { class: "result", children: [=/c/display] } }
+                    ]
+                }
+            },
+            // Button grid
+            {
+                div: {
+                    class: "buttons",
+                    children: [
+                        // Row 1: AC, ±, %, ÷
+                        { button: { class: "btn btn-clear", onclick: =set(/c, { display: "0", expr: "", prev: "", op: "", waiting: false }), children: ["AC"] } },
+                        { button: { class: "btn btn-function", onclick: =set(/c, { display: negate(/c/display), waiting: true, expr: "" }), children: ["±"] } },
+                        { button: { class: "btn btn-function", onclick: =set(/c, { display: toPercent(/c/display), waiting: true, expr: "" }), children: ["%"] } },
+                        { button: { class: "btn btn-operator", onclick: =set(/c, { prev: indirect(/c/display), expr: concat(/c/display, " ÷"), op: "/", waiting: true }), children: ["÷"] } },
+                        
+                        // Row 2: 7, 8, 9, ×
+                        { button: { id: "7", class: "btn btn-number", onclick: =set(/c, { display: if(/c/waiting, $this.id, if(eq(/c/display, "0"), $this.id, concat(/c/display, $this.id))), waiting: false }), children: ["7"] } },
+                        { button: { id: "8", class: "btn btn-number", onclick: =set(/c, { display: if(/c/waiting, $this.id, if(eq(/c/display, "0"), $this.id, concat(/c/display, $this.id))), waiting: false }), children: ["8"] } },
+                        { button: { id: "9", class: "btn btn-number", onclick: =set(/c, { display: if(/c/waiting, $this.id, if(eq(/c/display, "0"), $this.id, concat(/c/display, $this.id))), waiting: false }), children: ["9"] } },
+                        { button: { class: "btn btn-operator", onclick: =set(/c, { prev: indirect(/c/display), expr: concat(/c/display, " ×"), op: "*", waiting: true }), children: ["×"] } },
+                        
+                        // Row 3: 4, 5, 6, −
+                        { button: { id: "4", class: "btn btn-number", onclick: =set(/c, { display: if(/c/waiting, $this.id, if(eq(/c/display, "0"), $this.id, concat(/c/display, $this.id))), waiting: false }), children: ["4"] } },
+                        { button: { id: "5", class: "btn btn-number", onclick: =set(/c, { display: if(/c/waiting, $this.id, if(eq(/c/display, "0"), $this.id, concat(/c/display, $this.id))), waiting: false }), children: ["5"] } },
+                        { button: { id: "6", class: "btn btn-number", onclick: =set(/c, { display: if(/c/waiting, $this.id, if(eq(/c/display, "0"), $this.id, concat(/c/display, $this.id))), waiting: false }), children: ["6"] } },
+                        { button: { class: "btn btn-operator", onclick: =set(/c, { prev: indirect(/c/display), expr: concat(/c/display, " −"), op: "-", waiting: true }), children: ["−"] } },
+                        
+                        // Row 4: 1, 2, 3, +
+                        { button: { id: "1", class: "btn btn-number", onclick: =set(/c, { display: if(/c/waiting, $this.id, if(eq(/c/display, "0"), $this.id, concat(/c/display, $this.id))), waiting: false }), children: ["1"] } },
+                        { button: { id: "2", class: "btn btn-number", onclick: =set(/c, { display: if(/c/waiting, $this.id, if(eq(/c/display, "0"), $this.id, concat(/c/display, $this.id))), waiting: false }), children: ["2"] } },
+                        { button: { id: "3", class: "btn btn-number", onclick: =set(/c, { display: if(/c/waiting, $this.id, if(eq(/c/display, "0"), $this.id, concat(/c/display, $this.id))), waiting: false }), children: ["3"] } },
+                        { button: { class: "btn btn-operator", onclick: =set(/c, { prev: indirect(/c/display), expr: concat(/c/display, " +"), op: "+", waiting: true }), children: ["+"] } },
+                        
+                        // Row 5: 0, ., =
+                        { button: { class: "btn btn-number btn-wide", onclick: =set(/c, { display: if(/c/waiting, "0", if(eq(/c/display, "0"), "0", concat(/c/display, "0"))), waiting: false }), children: ["0"] } },
+                        { button: { class: "btn btn-number", onclick: =set(/c, { display: if(/c/waiting, "0.", if(contains(/c/display, "."), /c/display, concat(/c/display, "."))), waiting: false }), children: ["."] } },
+                        { button: { class: "btn btn-equals", onclick: =set(/c, { display: if(eq(/c/op, ""), /c/display, calc(concat("$('/c/prev') ", /c/op, " $('/c/display')"))), expr: concat(/c/expr, " ", /c/display, " ="), prev: "", op: "", waiting: true }), children: ["="] } }
+                    ]
+                }
+            },
+            // Branding
+            {
+                div: {
+                    class: "branding",
+                    children: [
+                        { span: { children: ["Built with ", { a: { href: "https://github.com/anywhichway/lightview", target: "_blank", children: ["Lightview"] } }, " cDOM • No custom JS!"] } }
+                    ]
+                }
+            }
+        ]
+    }
+}

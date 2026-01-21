@@ -1297,14 +1297,15 @@
     }
   };
   const parseElements = (content, isJson, isHtml, el, element2, isCdom = false, ext = "") => {
-    var _a2;
     if (isJson) return Array.isArray(content) ? content : [content];
     if (isCdom && ext === "cdomc") {
-      const parser = (_a2 = globalThis.LightviewCDOM) == null ? void 0 : _a2.parseCDOMC;
+      const CDOM = globalThis.LightviewCDOM;
+      const parser = CDOM == null ? void 0 : CDOM.parseCDOMC;
       if (parser) {
         try {
           const obj = parser(content);
-          return Array.isArray(obj) ? obj : [obj];
+          const hydrated = CDOM.hydrate ? CDOM.hydrate(obj) : obj;
+          return Array.isArray(hydrated) ? hydrated : [hydrated];
         } catch (e) {
           console.warn("LightviewX: Failed to parse .cdomc:", e);
           return [];
@@ -5647,6 +5648,8 @@
     }
     return node;
   };
+  if (typeof parseCDOMC !== "function") throw new Error("parseCDOMC not found");
+  if (typeof parseJPRX !== "function") throw new Error("parseJPRX not found");
   const LightviewCDOM = {
     registerHelper,
     registerOperator,
@@ -5667,7 +5670,8 @@
     version: "1.0.0"
   };
   if (typeof window !== "undefined") {
-    globalThis.LightviewCDOM = LightviewCDOM;
+    globalThis.LightviewCDOM = {};
+    Object.assign(globalThis.LightviewCDOM, LightviewCDOM);
   }
   console.log("Lightview Full Bundle Loaded");
 })();

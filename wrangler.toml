@@ -13,3 +13,4 @@ compatibility_date = "2024-01-01"
 # Uncomment below for Workers mode (not Pages mode):
 [assets]
 directory = "./dist"
+
