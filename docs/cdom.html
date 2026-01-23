@@ -1063,15 +1063,16 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
         </div>
 
         <h3 id="helpers-dom">DOM & XPath</h3>
-        <p>Structural navigation and manipulation.</p>
+        <p>Structural navigation and manipulation. For fetching and mounting remote content, see the
+            <a href="#helpers-network">mount()</a> helper in the Network section.
+        </p>
         <div class="code-block">
             <pre><code>move(selector, location?), xpath(expression)</code></pre>
         </div>
         <p style="margin-top: 1rem;">
-            The <code>src</code> attribute handler is the primary mechanism for Hypermedia updates. It fetches
-            content
-            (cDOM, vDOM, or oDOM) and injects it into the DOM. If the content contains a <code>=move</code>
-            helper, it will automatically relocate itself upon mounting.
+            While <code>move</code> is for local placement, <code>mount</code> is used for remote Hypermedia updates.
+            It fetches content (cDOM, vDOM, or oDOM) and injects it into the DOM. If the content contains a
+            <code>=move</code> helper, it will automatically relocate itself upon mounting.
         </p>
         <table class="api-table">
             <thead>
