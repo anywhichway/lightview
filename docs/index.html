@@ -9,6 +9,10 @@
         <p class="hero-tagline">Reactive UI's done light</p>
         <p class="hero-description">
             More power. Less energy.
+            <br>
+            <a href="#ai-safe"
+                style="color: var(--site-primary); font-size: 1.25rem; font-weight: 700; text-decoration: none; display: inline-block; margin-top: 0.5rem; border-bottom: 2px solid var(--site-primary); padding-bottom: 2px;">AI
+                Safe</a>
         </p>
         <div class="hero-actions">
             <a href="./getting-started/" class="btn btn-primary btn-lg">Get Started</a>
@@ -107,9 +111,75 @@
     </div>
 </section>
 
+<!-- AI Catch Section -->
+<section class="section" id="ai-safe">
+    <div class="section-content"
+        style="background: linear-gradient(135deg, #1a1c2c 0%, #4a1942 100%); color: white; border-radius: 2rem; padding: 4rem 2rem; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); position: relative; overflow: hidden;">
+        <!-- Glowing background elements -->
+        <div
+            style="position: absolute; top: -20%; left: -10%; width: 50%; height: 140%; background: radial-gradient(circle, rgba(138, 43, 226, 0.2) 0%, transparent 70%); filter: blur(60px); pointer-events: none;">
+        </div>
+        <div
+            style="position: absolute; bottom: -20%; right: -10%; width: 50%; height: 140%; background: radial-gradient(circle, rgba(255, 20, 147, 0.15) 0%, transparent 70%); filter: blur(60px); pointer-events: none;">
+        </div>
 
+        <div style="position: relative; z-index: 1;">
+            <div class="section-header">
+                <h2 class="section-title" style="color: white; font-size: 2.5rem;">The AI-Safe UI Engine</h2>
+                <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.85); max-width: 800px; margin: 0 auto;">
+                    Lightview's <strong>cDOM</strong> and <strong>JPRX</strong> are purpose-built for the era of
+                    AI-driven development, providing a safe, standard-based foundation for agentic UI generation.
+                </p>
+            </div>
 
-<!-- Call to Action -->
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; margin-top: 3.5rem;">
+                <div
+                    style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1.5rem; padding: 2.5rem; transition: transform 0.3s ease;">
+                    <div
+                        style="width: 48px; height: 48px; background: rgba(138, 43, 226, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#a78bfa" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem;">Execution Safety</h3>
+                    <p style="color: rgba(255, 255, 255, 0.75); line-height: 1.6;">AI-generated UIs usually require
+                        risky JavaScript strings. cDOM creates reactive interfaces using <strong>pure JSON
+                            data</strong> and <a href="/docs/cdom.html#helpers"
+                            style="color: #a78bfa; text-decoration: underline; font-weight: 600;">over 50 built-in
+                            functions</a> that bring spreadsheet-like
+                        functionality to the DOM. No <code>eval()</code>, no <code>new Function()</code>, and zero
+                        custom
+                        JavaScript execution.</p>
+                </div>
+
+                <div
+                    style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1.5rem; padding: 2.5rem; transition: transform 0.3s ease;">
+                    <div
+                        style="width: 48px; height: 48px; background: rgba(255, 20, 147, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#fb7185" stroke-width="2">
+                            <path d="M7 21h10M12 21V3m0 0l-5 5m5-5l5 5" />
+                        </svg>
+                    </div>
+                    <h3 style="color: white; font-size: 1.5rem; margin-bottom: 1rem;">Standards-First Design</h3>
+                    <p style="color: rgba(255, 255, 255, 0.75); line-height: 1.6;">Built on <strong>JSON Pointers (RFC
+                            6901)</strong>, <strong>JPRX</strong> (JSON Pointer Reactive eXpressions), and
+                        <strong>standard XPath</strong>. AI agents describe complex relationships through standard
+                        schemas and proven path languages, not imperative logic.
+                    </p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 4rem;">
+                <a href="/docs/cdom.html" class="btn btn-primary btn-lg"
+                    style="background: white; color: #1a1c2c; border: none; font-weight: 600;">
+                    Unleash the Power of cDOM
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="section">
     <div class="section-content">
         <div class="section-header">
