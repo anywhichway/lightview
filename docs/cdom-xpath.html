@@ -1,0 +1,160 @@
+<script src="/lightview-router.js?base=/index.html"></script>
+
+<div class="docs-layout">
+    <aside class="docs-sidebar" src="/docs/cdom-nav.html"></aside>
+
+    <main class="docs-content">
+        <h1>XPath Navigation in cDOM</h1>
+        <p class="text-secondary" style="font-size: 1.125rem;">
+            Navigate and derive element properties from the existing DOM structure.
+        </p>
+
+        <div class="experimental-notice"
+            style="margin: 1.5rem 0; padding: 1.25rem; border-radius: var(--site-radius); background: var(--site-accent-light); border: 1px solid var(--site-warning); color: var(--site-text);">
+            <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                <span style="font-size: 1.5rem;">🚨</span>
+                <div>
+                    <strong style="display: block; margin-bottom: 0.25rem; font-size: 1.1rem;">cDOM vs JPRX</strong>
+                    <p style="margin: 0; font-size: 0.95rem; opacity: 0.9;">
+                        Static XPaths are availbale to <strong>cDOM</strong> during the construction phase,
+                        whereas <strong>JPRX</strong> has an <code>xpath</code> helper that returns a computed signal.
+                        See <a href="/docs/cdom.html#helpers-dom">JPRX documentation</a> on the helper for more info
+                        about xpath and reactivity.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="overview">Overview</h2>
+        <p>
+            cDOM allows elements to derive their properties from the existing DOM tree. This can be done statically
+            for one-time setup or reactively for values that change over time.
+        </p>
+        <ol>
+            <li><strong>Static XPath (<code>#</code> prefix)</strong>: Available to cDOM. Evaluated once during DOM
+                construction.</li>
+            <li><strong>Reactive XPath (<code>=xpath()</code> helper)</strong>: Available to JPRX. Evaluates as an
+                expression and returns a computed signal.</li>
+        </ol>
+
+        <h2 id="static-xpath">Static XPath (<code>#</code> prefix)</h2>
+        <p>
+            Static XPath expressions are perfect for keeping your definitions <strong>DRY (Don't Repeat
+                Yourself)</strong>.
+            By referencing values like <code>id</code> or <code>class</code> from parent elements, you avoid duplicating
+            data in your cDOM structure.
+        </p>
+
+
+        <div id="xpath-live-demo" style="margin: 2rem 0;">
+            <p class="text-sm font-bold opacity-60 uppercase mb-3">Live Interactive Example</p>
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
+                    type: 'module',
+                    height: '180px',
+                    autoRun: true
+                });
+            </script><code>await import('/lightview-cdom.js');
+const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
+const { $ } = Lightview;
+
+const cdom = `{
+    div: {
+        id: "profile-container",
+        class: "card",
+        "data-theme": "dark",
+        children: [
+            { h3: "User Profile" },
+            { button: { 
+                id: "7", 
+                // XPath #@id gets "7" from this button's id
+                // XPath #../@id gets "profile-container" from the parent div
+                children: ["Button ", #@id, " in section ", #../@id] 
+            }}
+        ]
+    }
+}`;
+
+$('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
+        </div>
+
+        <h2 id="allowed-axes">Allowed Axes (Backward-Looking Only)</h2>
+        <p>
+            To maintain high performance and safety during construction, cDOM only allows
+            <strong>backward-looking</strong>
+            XPath axes. You can reference nodes that are already constructed (parents, ancestors, earlier siblings).
+        </p>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Axis</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>self::</code> / <code>.</code></td>
+                    <td>The current node.</td>
+                </tr>
+                <tr>
+                    <td><code>parent::</code> / <code>..</code></td>
+                    <td>The parent element.</td>
+                </tr>
+                <tr>
+                    <td><code>ancestor::</code></td>
+                    <td>Higher-level ancestors.</td>
+                </tr>
+                <tr>
+                    <td><code>preceding-sibling::</code></td>
+                    <td>Elements that appear before the current one in the same parent.</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="text-warning">
+            <strong>Forbidden:</strong> <code>child::</code>, <code>descendant::</code>, and <code>following::</code>
+            axes are disabled as they could create infinite loops or reference nodes that do not exist yet.
+        </p>
+
+        <h2 id="reactive-xpath">Reactive XPath (<code>=xpath()</code>)</h2>
+        <p>
+            If you need an XPath expression to update reactively if attributes elsewhere in the DOM change,
+            use the <code>=xpath()</code> helper within a JPRX expression.
+        </p>
+        <div class="code-block">
+            <pre><code>{
+    div: {
+        title: "=xpath('../@data-section')",
+        class: "=concat('item ', xpath('../@theme'))"
+    }
+}</code></pre>
+        </div>
+
+        <h2 id="cdomc">Concise cDOM (cDOMC) Support</h2>
+        <p>
+            In cDOMC (the shorthand format used in <code>.cdomc</code> files), the parser is <strong>structurally
+                aware</strong>
+            of XPath expressions. You do not need to quote them even if they contain square brackets or spaces.
+        </p>
+        <div class="code-block">
+            <pre><code>// Clean unquoted syntax in .cdomc files
+{ 
+    button: { 
+        id: "7", 
+        children: [#../@id] 
+    } 
+}
+
+// Support for complex paths with predicates
+{ span: [#ancestor::div[@data-role='container']/@title] }</code></pre>
+        </div>
+
+        <h2 id="safety">Security & Safety</h2>
+        <p>
+            XPath navigation in cDOM is inherently safer than using arbitrary JavaScript for DOM traversal.
+            It provides a restricted, read-only view of the existing structural tree without the risks
+            of code injection or side effects.
+        </p>
+    </main>
+</div>

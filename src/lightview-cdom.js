@@ -3,7 +3,7 @@
  * The Reactive Path and Expression Engine for Lightview.
  */
 
-import { registerHelper, registerOperator, parseExpression, resolvePath, resolvePathAsContext, resolveExpression, parseCDOMC, parseJPRX, unwrapSignal, BindingTarget } from '../jprx/parser.js';
+import { registerHelper, registerOperator, parseExpression, resolvePath, resolvePathAsContext, resolveExpression, parseCDOMC, parseJPRX as oldParseJPRX, unwrapSignal, BindingTarget } from '../jprx/parser.js';
 import { registerMathHelpers } from '../jprx/helpers/math.js';
 import { registerLogicHelpers } from '../jprx/helpers/logic.js';
 import { registerStringHelpers } from '../jprx/helpers/string.js';
@@ -111,7 +111,7 @@ registerHelper('mount', async (url, options = {}) => {
 
         if (isCDOM || (contentType.includes('application/json') && text.trim().startsWith('{'))) {
             try {
-                content = hydrate(parseJPRX(text));
+                content = hydrate(parseCDOMC(text));
             } catch (e) {
                 // Fail gracefully to text
             }
@@ -352,6 +352,18 @@ const hydrate = (node, parent = null) => {
         }
     }
 
+    // 4. Automatic XPath Resolution
+    // If this is a top-level hydrated element, ensure it resolves its static XPaths on mount.
+    // We add it to node.attributes so Lightview's element() factory picks it up.
+    if (!parent && node.tag) {
+        node.attributes = node.attributes || {};
+        const originalOnMount = node.attributes.onmount;
+        node.attributes.onmount = (el) => {
+            if (typeof originalOnMount === 'function') originalOnMount(el);
+            resolveStaticXPath(el);
+        };
+    }
+
     return node;
 };
 
@@ -361,15 +373,18 @@ const hydrate = (node, parent = null) => {
  * @param {string} xpath - The XPath expression to validate
  */
 const validateXPath = (xpath) => {
+    if (!xpath) return;
+
     // Check for forbidden forward-looking axes
     const forbiddenAxes = /\b(child|descendant|following|following-sibling)::/;
     if (forbiddenAxes.test(xpath)) {
         throw new Error(`XPath: Forward-looking axes not allowed during DOM construction: ${xpath}`);
     }
 
-    // Also check for shorthand forward references like /div (implies child axis)
-    // But allow / for document root like /html
-    const hasShorthandChild = /\/[a-zA-Z]/.test(xpath) && !xpath.startsWith('/html');
+    // Check for shorthand forward references like /div (implies child axis)
+    // We allow '/' if it's followed by '@' (attribute), '.' (parent/self shorthand), 
+    // or is the start of the document root '/html'.
+    const hasShorthandChild = /\/(?![@.])(?![a-zA-Z0-9_-]+::)[a-zA-Z]/.test(xpath) && !xpath.startsWith('/html');
     if (hasShorthandChild) {
         throw new Error(`XPath: Shorthand child axis (/) not allowed during DOM construction: ${xpath}`);
     }
@@ -381,67 +396,81 @@ const validateXPath = (xpath) => {
  * Walks the tree and resolves all __xpath__ markers.
  * @param {Node} rootNode - The root DOM node to start walking from
  */
-const resolveStaticXPath = (rootNode) => {
-    if (!rootNode || !rootNode.nodeType) return;
-
-    const walker = document.createTreeWalker(
-        rootNode,
-        NodeFilter.SHOW_ALL
-    );
-
-    const nodesToProcess = [];
-    let node = walker.nextNode();
-    while (node) {
-        nodesToProcess.push(node);
-        node = walker.nextNode();
-    }
-
-    // Process all nodes
-    for (const node of nodesToProcess) {
-        // Check for XPath markers in attributes
-        if (node.nodeType === Node.ELEMENT_NODE) {
-            const attributes = [...node.attributes];
-            for (const attr of attributes) {
-                if (attr.name.startsWith('data-xpath-')) {
-                    const realAttr = attr.name.replace('data-xpath-', '');
-                    const xpath = attr.value;
-
-                    try {
-                        validateXPath(xpath);
-                        const result = document.evaluate(
-                            xpath,
-                            node,
-                            null,
-                            XPathResult.STRING_TYPE,
-                            null
-                        );
-                        node.setAttribute(realAttr, result.stringValue);
-                        node.removeAttribute(attr.name);
-                    } catch (e) {
-                        globalThis.console?.error(`[Lightview-CDOM] XPath resolution failed for attribute "${realAttr}":`, e.message);
-                    }
-                }
-            }
-        }
-
-        // Check for XPath markers in text nodes
-        if (node.__xpathExpr) {
-            const xpath = node.__xpathExpr;
+/**
+ * Resolves static XPath markers for attributes on a specific element.
+ */
+const resolveAttributeXPaths = (el) => {
+    const attributes = [...el.attributes];
+    for (const attr of attributes) {
+        if (attr.name.startsWith('data-xpath-')) {
+            const realAttr = attr.name.replace('data-xpath-', '');
             try {
-                validateXPath(xpath);
-                const result = document.evaluate(
-                    xpath,
-                    node,  // Use text node as context, not its parent!
+                validateXPath(attr.value);
+                const doc = globalThis.document || el.ownerDocument;
+                const result = doc.evaluate(
+                    attr.value,
+                    el,
                     null,
                     XPathResult.STRING_TYPE,
                     null
                 );
-                node.textContent = result.stringValue;
-                delete node.__xpathExpr;
+                el.setAttribute(realAttr, result.stringValue);
+                el.removeAttribute(attr.name);
             } catch (e) {
-                globalThis.console?.error(`[Lightview-CDOM] XPath resolution failed for text node:`, e.message);
+                globalThis.console?.error(`[Lightview-CDOM] XPath attribute error ("${realAttr}") at <${el.tagName.toLowerCase()} id="${el.id}">:`, e.message);
             }
         }
+    }
+};
+
+/**
+ * Resolves static XPath markers for a text node.
+ */
+const resolveTextNodeXPath = (node) => {
+    if (!node.__xpathExpr) return;
+    const xpath = node.__xpathExpr;
+    try {
+        validateXPath(xpath);
+        const doc = globalThis.document || node.ownerDocument;
+        // Use the parent node (the element) as the context for evaluation
+        // This avoids errors in browsers that don't support Text nodes as context nodes
+        // and keeps evaluation consistent with attributes.
+        const contextNode = node.parentNode || node;
+        const result = doc.evaluate(
+            xpath,
+            contextNode,
+            null,
+            XPathResult.STRING_TYPE,
+            null
+        );
+        node.textContent = result.stringValue;
+    } catch (e) {
+        globalThis.console?.error(`[Lightview-CDOM] XPath text node error on <${node.parentNode?.tagName.toLowerCase()} id="${node.parentNode?.id}">:`, e.message);
+    } finally {
+        delete node.__xpathExpr;
+    }
+};
+
+/**
+ * Walks the tree and resolves all __xpath__ markers.
+ * @param {Node} rootNode - The root DOM node to start walking from
+ */
+const resolveStaticXPath = (rootNode) => {
+    const node = rootNode instanceof Node ? rootNode : (rootNode?.domEl || rootNode);
+    if (!node || !node.nodeType) return;
+
+    // Process the root node itself
+    if (node.nodeType === Node.ELEMENT_NODE) resolveAttributeXPaths(node);
+    resolveTextNodeXPath(node);
+
+    // Process all descendants
+    const doc = globalThis.document || node.ownerDocument;
+    const walker = doc.createTreeWalker(node, NodeFilter.SHOW_ALL);
+    let current = walker.nextNode();
+    while (current) {
+        if (current.nodeType === Node.ELEMENT_NODE) resolveAttributeXPaths(current);
+        resolveTextNodeXPath(current);
+        current = walker.nextNode();
     }
 };
 
@@ -450,7 +479,7 @@ const resolveStaticXPath = (rootNode) => {
 // These are used externally by lightview-x.js for .cdomc file loading
 // The typeof check creates a runtime branch the bundler can't eliminate
 if (typeof parseCDOMC !== 'function') throw new Error('parseCDOMC not found');
-if (typeof parseJPRX !== 'function') throw new Error('parseJPRX not found');
+if (typeof oldParseJPRX !== 'function') throw new Error('oldParseJPRX not found');
 
 const LightviewCDOM = {
     registerHelper,
@@ -460,7 +489,8 @@ const LightviewCDOM = {
     resolvePathAsContext,
     resolveExpression,
     parseCDOMC,
-    parseJPRX,
+    parseJPRX: parseCDOMC, // Alias parseJPRX to the more robust parseCDOMC
+    oldParseJPRX,
     unwrapSignal,
     getContext,
     handleCDOMState: () => { },
@@ -468,7 +498,7 @@ const LightviewCDOM = {
     activate,
     hydrate,
     resolveStaticXPath,
-    version: '1.0.0'
+    version: '1.1.0'
 };
 
 // Global export for non-module usage
@@ -486,7 +516,8 @@ export {
     resolvePathAsContext,
     resolveExpression,
     parseCDOMC,
-    parseJPRX,
+    parseCDOMC as parseJPRX,
+    oldParseJPRX,
     unwrapSignal,
     BindingTarget,
     getContext,

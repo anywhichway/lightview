@@ -11,17 +11,11 @@ XPath support has been added to cDOM, allowing developers to navigate the DOM st
 - **Reactivity:** None - becomes a static string value
 - **Escape Sequence:** `'#` produces literal `#` string
 
-**Example:**
-```javascript
-{
-  tag: "button",
-  attributes: {
-    "data-parent-id": "#../@id",
-    "aria-labelledby": "#../../@label-id"
-  },
-  children: ["#../@aria-label"]
+  children: ["#@aria-label"]
 }
 ```
+
+**Note on Text Nodes:** Even though the XPath refers to a child of the element, it is evaluated relative to the element itself (`self::*`). This improves consistency between attributes and children, and avoids "Operation is not supported" errors in browsers when using a Text node as an XPath context.
 
 ### 2. Reactive XPath (`=xpath()` helper)
 - **Syntax:** `=xpath('expression')`
@@ -116,7 +110,7 @@ XPath support has been added to cDOM, allowing developers to navigate the DOM st
       data-parent-id: #../@id,
       class: "=concat(xpath('../@data-theme'), '-button')"
     },
-    children: [#../@aria-label]
+    children: [#@aria-label]
   }]
 }
 ```
@@ -135,7 +129,7 @@ XPath support has been added to cDOM, allowing developers to navigate the DOM st
       "data-parent-id": "#../@id",
       "class": "=concat(xpath('../@data-theme'), '-button')"
     },
-    "children": ["#../@aria-label"]
+    "children": ["#@aria-label"]
   }]
 }
 ```
@@ -152,12 +146,14 @@ Open in browser to verify:
 ## Key Features
 
 1. **Unquoted XPath in cDOMC**: Fully supported through structural integration with the parser character loop.
-   - ✅ Working: `children: [#../@id]`
+   - ✅ Working: `children: [#@id]`
    - ✅ Working: `children: [#div[@id='1']]` (Complex paths with brackets now work!)
    
 2. **Reactive xpath() helper**: Currently evaluates once via computed signal. Full reactivity with MutationObserver is TODO.
 
 3. **XPath complexity**: Works with paths like `../@id`, `../../@attr`, and predicate-based paths.
+
+4. **Consistency**: Both attributes and children evaluate XPath relative to the Element node. This avoids browser issues with Text node context and simplifies the developer's mental model.
 
 ## Implementation: Structural Parser Integration
 

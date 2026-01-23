@@ -1409,6 +1409,7 @@ export const parseExpression = (expr, context) => {
  * Supports unquoted keys/values and strictly avoids 'eval'.
  */
 export const parseCDOMC = (input) => {
+    if (typeof input !== 'string') return input;
     let i = 0;
     const len = input.length;
 
@@ -1666,6 +1667,7 @@ export const parseCDOMC = (input) => {
  * @returns {object} - Parsed JSON object
  */
 export const parseJPRX = (input) => {
+    if (typeof input !== 'string') return input;
     let result = '';
     let i = 0;
     const len = input.length;
@@ -1791,9 +1793,9 @@ export const parseJPRX = (input) => {
         }
 
         // Handle unquoted property names, identifiers, paths, and FUNCTION CALLS
-        if (/[a-zA-Z_$/./]/.test(char)) {
+        if (/[a-zA-Z_$\/.\/]/.test(char)) {
             let word = '';
-            while (i < len && /[a-zA-Z0-9_$/.-]/.test(input[i])) {
+            while (i < len && /[a-zA-Z0-9_$\/.-]/.test(input[i])) {
                 word += input[i];
                 i++;
             }

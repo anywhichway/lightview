@@ -520,10 +520,7 @@ const processChildren = (children, targetNode, clearExisting = true) => {
         }
     }
 
-    // Resolve static XPath expressions after DOM tree is constructed
-    if (typeof globalThis.LightviewCDOM?.resolveStaticXPath === 'function') {
-        globalThis.LightviewCDOM.resolveStaticXPath(targetNode);
-    }
+
 
     return childElements;
 };

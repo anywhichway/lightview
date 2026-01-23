@@ -108,8 +108,9 @@
         <p>
             cDOM uses <strong>JPRX (JSON Pointer Reactive eXpressions)</strong> as its expression language. JPRX
             extends <a href="https://www.rfc-editor.org/rfc/rfc6901" target="_blank">JSON Pointer (RFC 6901)</a>
-            with reactivity, relative paths, and helper functions. It also provides deep integration with
-            <a href="https://json-schema.org/" target="_blank">JSON Schema</a> (Standard Draft 7+) for
+            with reactivity, relative paths, and helper functions. cDOM also supports <strong>standard XPath</strong>
+            for powerful DOM navigation during element construction. Together with deep integration for
+            <a href="https://json-schema.org/" target="_blank">JSON Schema</a> (Standard Draft 7+), cDOM provides
             industrial-strength data validation and automatic type coercion.
         </p>
 
@@ -156,8 +157,57 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
         <p>
             The UI automatically updates whenever <code>count</code> changes — no manual DOM manipulation required.
         </p>
+
+        <!-- ===== XPATH NAVIGATION ===== -->
+        <h2 id="xpath-navigation">Using XPath</h2>
         <p>
-            The UI automatically updates whenever <code>count</code> changes — no manual DOM manipulation required.
+            cDOM allows elements to navigate and reference the DOM structure during construction using standard
+            <strong>XPath</strong>. This is strictly a <strong>cDOM feature</strong> (not JPRX) used for structural
+            navigation.
+        </p>
+        <p>
+            XPath is incredibly useful for keeping your definitions <strong>DRY (Don't Repeat Yourself)</strong> by
+            referencing existing attributes instead of repeating values.
+        </p>
+        <div id="xpath-demo">
+            <pre><script>
+                examplify(document.currentScript.nextElementSibling, {
+                    at: document.currentScript.parentElement,
+                    scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
+                    type: 'module',
+                    height: '180px',
+                    autoRun: true,
+                    controls: false
+                });
+            </script><code>await import('/lightview-cdom.js');
+const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
+const { $ } = Lightview;
+
+const cdom = `{
+    div: {
+        id: "profile-container",
+        class: "card",
+        "data-theme": "dark",
+        children: [
+            { h3: "User Profile" },
+            { button: { 
+                id: "7", 
+                // XPath #../@id gets the "7" from this button's id
+                // XPath #../../@id gets "profile-container" from the g-parent div
+                children: ["Button ", #../@id, " in section ", #../../@id] 
+            }}
+        ]
+    }
+}`;
+
+$('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
+        </div>
+        <p>
+            In the example above, the button's text is derived entirely from its own <code>id</code> and its
+            parent's <code>id</code> using <code>#../@id</code> and <code>#../../@id</code>.
+        </p>
+        <p>
+            For more details, see the <a href="/docs/cdom-xpath.html">Full XPath Documentation</a>.
         </p>
 
         <!-- ===== ADVANTAGES ===== -->
@@ -596,7 +646,7 @@ const cdomString = `{
         children: [
             { h3: "Shopping Cart" },
             { ul: { 
-                children: =map(/store/cart/items, { li: { children: [_/name, " - ", =currency(_/price)] } })
+                children: =map(/store/cart/items, { li: { children: [_/name, " - ", currency(_/price)] } })
             }},
             { p: { 
                 style: "font-weight: bold; margin-top: 1rem;",
@@ -1007,10 +1057,22 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
 
         <h3 id="helpers-network">Network</h3>
         <p>HTTP requests.</p>
-        <div class="code-block">
+        <div class="code-block" style="margin-bottom: 2rem;">
             <pre><code>fetch(url, options?)
 <span id="helpers-mount"></span>mount(url, options?)</span></code></pre>
         </div>
+
+        <h3 id="helpers-dom">DOM & XPath</h3>
+        <p>Structural navigation and manipulation.</p>
+        <div class="code-block">
+            <pre><code>move(selector, location?), xpath(expression)</code></pre>
+        </div>
+        <p style="margin-top: 1rem;">
+            The <code>src</code> attribute handler is the primary mechanism for Hypermedia updates. It fetches
+            content
+            (cDOM, vDOM, or oDOM) and injects it into the DOM. If the content contains a <code>=move</code>
+            helper, it will automatically relocate itself upon mounting.
+        </p>
         <table class="api-table">
             <thead>
                 <tr>
@@ -1049,13 +1111,10 @@ const liveConfig = LightviewCDOM.hydrate(config);</code></pre>
                 </tr>
             </tbody>
         </table>
-        <p style="margin-top: 1rem;">
-            The <code>mount</code> helper is the primary mechanism for **Hypermedia updates**. It fetches content
-            (cDOM, vDOM, or oDOM) and injects it into the DOM. If the content contains a <code>=move</code>
-            helper, it will automatically relocate itself upon mounting.
+        <p class="text-xs italic opacity-70" style="margin-top: 0.5rem;">
+            <strong>xpath(expression):</strong> Returns a reactive computed signal based on the DOM structure
+            at evaluation time. Note that full MutationObserver reactivity is currently a TODO.
+            For static DOM navigation, use the <code>#</code> prefix in cDOM.
         </p>
-
-
-
     </main>
 </div>

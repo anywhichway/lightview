@@ -19,7 +19,8 @@ export {
     resolvePathAsContext,
     resolveExpression,
     parseCDOMC,
-    parseJPRX,
+    parseCDOMC as parseJPRX,
+    parseJPRX as oldParseJPRX,
     unwrapSignal,
     getRegistry,
     BindingTarget

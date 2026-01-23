@@ -1018,6 +1018,7 @@ var LightviewCDOM = function(exports) {
     return LV.computed(() => resolveExpression$1(expr, context));
   };
   const parseCDOMC = (input) => {
+    if (typeof input !== "string") return input;
     let i = 0;
     const len2 = input.length;
     const skipWhitespace = () => {
@@ -1245,6 +1246,7 @@ var LightviewCDOM = function(exports) {
   };
   const parseJPRX = (input) => {
     var _a, _b;
+    if (typeof input !== "string") return input;
     let result = "";
     let i = 0;
     const len2 = input.length;
@@ -1344,9 +1346,9 @@ var LightviewCDOM = function(exports) {
         result += JSON.stringify(expr);
         continue;
       }
-      if (/[a-zA-Z_$/./]/.test(char)) {
+      if (/[a-zA-Z_$\/.\/]/.test(char)) {
         let word = "";
-        while (i < len2 && /[a-zA-Z0-9_$/.-]/.test(input[i])) {
+        while (i < len2 && /[a-zA-Z0-9_$\/.-]/.test(input[i])) {
           word += input[i];
           i++;
         }
@@ -3627,7 +3629,7 @@ var LightviewCDOM = function(exports) {
       const isCDOM = contentType.includes("application/cdom") || contentType.includes("application/jprx") || contentType.includes("application/vdom") || contentType.includes("application/odom") || url.endsWith(".cdom") || url.endsWith(".jprx") || url.endsWith(".vdom") || url.endsWith(".odom");
       if (isCDOM || contentType.includes("application/json") && text.trim().startsWith("{")) {
         try {
-          content = hydrate(parseJPRX(text));
+          content = hydrate(parseCDOMC(text));
         } catch (e) {
         }
       }
@@ -3803,77 +3805,89 @@ var LightviewCDOM = function(exports) {
         node[key] = hydrate(value, node);
       }
     }
+    if (!parent && node.tag) {
+      node.attributes = node.attributes || {};
+      const originalOnMount = node.attributes.onmount;
+      node.attributes.onmount = (el) => {
+        if (typeof originalOnMount === "function") originalOnMount(el);
+        resolveStaticXPath(el);
+      };
+    }
     return node;
   };
   const validateXPath = (xpath) => {
+    if (!xpath) return;
     const forbiddenAxes = /\b(child|descendant|following|following-sibling)::/;
     if (forbiddenAxes.test(xpath)) {
       throw new Error(`XPath: Forward-looking axes not allowed during DOM construction: ${xpath}`);
     }
-    const hasShorthandChild = /\/[a-zA-Z]/.test(xpath) && !xpath.startsWith("/html");
+    const hasShorthandChild = /\/(?![@.])(?![a-zA-Z0-9_-]+::)[a-zA-Z]/.test(xpath) && !xpath.startsWith("/html");
     if (hasShorthandChild) {
       throw new Error(`XPath: Shorthand child axis (/) not allowed during DOM construction: ${xpath}`);
     }
   };
-  const resolveStaticXPath = (rootNode) => {
-    var _a, _b;
-    if (!rootNode || !rootNode.nodeType) return;
-    const walker = document.createTreeWalker(
-      rootNode,
-      NodeFilter.SHOW_ALL
-    );
-    const nodesToProcess = [];
-    let node = walker.nextNode();
-    while (node) {
-      nodesToProcess.push(node);
-      node = walker.nextNode();
-    }
-    for (const node2 of nodesToProcess) {
-      if (node2.nodeType === Node.ELEMENT_NODE) {
-        const attributes = [...node2.attributes];
-        for (const attr of attributes) {
-          if (attr.name.startsWith("data-xpath-")) {
-            const realAttr = attr.name.replace("data-xpath-", "");
-            const xpath = attr.value;
-            try {
-              validateXPath(xpath);
-              const result = document.evaluate(
-                xpath,
-                node2,
-                null,
-                XPathResult.STRING_TYPE,
-                null
-              );
-              node2.setAttribute(realAttr, result.stringValue);
-              node2.removeAttribute(attr.name);
-            } catch (e) {
-              (_a = globalThis.console) == null ? void 0 : _a.error(`[Lightview-CDOM] XPath resolution failed for attribute "${realAttr}":`, e.message);
-            }
-          }
-        }
-      }
-      if (node2.__xpathExpr) {
-        const xpath = node2.__xpathExpr;
+  const resolveAttributeXPaths = (el) => {
+    var _a;
+    const attributes = [...el.attributes];
+    for (const attr of attributes) {
+      if (attr.name.startsWith("data-xpath-")) {
+        const realAttr = attr.name.replace("data-xpath-", "");
         try {
-          validateXPath(xpath);
-          const result = document.evaluate(
-            xpath,
-            node2,
-            // Use text node as context, not its parent!
+          validateXPath(attr.value);
+          const doc = globalThis.document || el.ownerDocument;
+          const result = doc.evaluate(
+            attr.value,
+            el,
             null,
             XPathResult.STRING_TYPE,
             null
           );
-          node2.textContent = result.stringValue;
-          delete node2.__xpathExpr;
+          el.setAttribute(realAttr, result.stringValue);
+          el.removeAttribute(attr.name);
         } catch (e) {
-          (_b = globalThis.console) == null ? void 0 : _b.error(`[Lightview-CDOM] XPath resolution failed for text node:`, e.message);
+          (_a = globalThis.console) == null ? void 0 : _a.error(`[Lightview-CDOM] XPath attribute error ("${realAttr}") at <${el.tagName.toLowerCase()} id="${el.id}">:`, e.message);
         }
       }
     }
   };
+  const resolveTextNodeXPath = (node) => {
+    var _a, _b, _c;
+    if (!node.__xpathExpr) return;
+    const xpath = node.__xpathExpr;
+    try {
+      validateXPath(xpath);
+      const doc = globalThis.document || node.ownerDocument;
+      const contextNode = node.parentNode || node;
+      const result = doc.evaluate(
+        xpath,
+        contextNode,
+        null,
+        XPathResult.STRING_TYPE,
+        null
+      );
+      node.textContent = result.stringValue;
+    } catch (e) {
+      (_c = globalThis.console) == null ? void 0 : _c.error(`[Lightview-CDOM] XPath text node error on <${(_a = node.parentNode) == null ? void 0 : _a.tagName.toLowerCase()} id="${(_b = node.parentNode) == null ? void 0 : _b.id}">:`, e.message);
+    } finally {
+      delete node.__xpathExpr;
+    }
+  };
+  const resolveStaticXPath = (rootNode) => {
+    const node = rootNode instanceof Node ? rootNode : (rootNode == null ? void 0 : rootNode.domEl) || rootNode;
+    if (!node || !node.nodeType) return;
+    if (node.nodeType === Node.ELEMENT_NODE) resolveAttributeXPaths(node);
+    resolveTextNodeXPath(node);
+    const doc = globalThis.document || node.ownerDocument;
+    const walker = doc.createTreeWalker(node, NodeFilter.SHOW_ALL);
+    let current = walker.nextNode();
+    while (current) {
+      if (current.nodeType === Node.ELEMENT_NODE) resolveAttributeXPaths(current);
+      resolveTextNodeXPath(current);
+      current = walker.nextNode();
+    }
+  };
   if (typeof parseCDOMC !== "function") throw new Error("parseCDOMC not found");
-  if (typeof parseJPRX !== "function") throw new Error("parseJPRX not found");
+  if (typeof parseJPRX !== "function") throw new Error("oldParseJPRX not found");
   const LightviewCDOM2 = {
     registerHelper,
     registerOperator,
@@ -3882,7 +3896,9 @@ var LightviewCDOM = function(exports) {
     resolvePathAsContext,
     resolveExpression: resolveExpression$1,
     parseCDOMC,
-    parseJPRX,
+    parseJPRX: parseCDOMC,
+    // Alias parseJPRX to the more robust parseCDOMC
+    oldParseJPRX: parseJPRX,
     unwrapSignal,
     getContext,
     handleCDOMState: () => {
@@ -3892,7 +3908,7 @@ var LightviewCDOM = function(exports) {
     activate,
     hydrate,
     resolveStaticXPath,
-    version: "1.0.0"
+    version: "1.1.0"
   };
   if (typeof window !== "undefined") {
     globalThis.LightviewCDOM = {};
@@ -3903,9 +3919,10 @@ var LightviewCDOM = function(exports) {
   exports.default = LightviewCDOM2;
   exports.getContext = getContext;
   exports.hydrate = hydrate;
+  exports.oldParseJPRX = parseJPRX;
   exports.parseCDOMC = parseCDOMC;
   exports.parseExpression = parseExpression;
-  exports.parseJPRX = parseJPRX;
+  exports.parseJPRX = parseCDOMC;
   exports.registerHelper = registerHelper;
   exports.registerOperator = registerOperator;
   exports.resolveExpression = resolveExpression$1;
