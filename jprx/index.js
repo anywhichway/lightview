@@ -39,6 +39,7 @@ export { registerStatsHelpers } from './helpers/stats.js';
 export { registerStateHelpers, set } from './helpers/state.js';
 export { registerNetworkHelpers } from './helpers/network.js';
 export { registerCalcHelpers, calc } from './helpers/calc.js';
+export { registerDOMHelpers } from './helpers/dom.js';
 
 // Convenience function to register all standard helpers
 export const registerAllHelpers = (registerFn) => {

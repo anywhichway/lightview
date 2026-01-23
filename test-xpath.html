@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPath Test</title>
+    <script type="module">
+        import { parseCDOMC, hydrate } from './src/lightview-cdom.js';
+
+        // Test 1: Static XPath in attributes
+        const cdomcInput = `{
+            tag: div,
+            attributes: {
+                id: parent-div,
+                data-theme: dark
+            },
+            children: [{
+                tag: button,
+                attributes: {
+                    data-parent-id: #../@id,
+                    data-parent-theme: #../@data-theme
+                },
+                children: ["Button with parent data"]
+            }]
+        }`;
+
+        console.log('Parsing cDOMC input...');
+        const parsed = parseCDOMC(cdomcInput);
+        console.log('Parsed:', parsed);
+
+        console.log('Hydrating...');
+        const hydrated = hydrate(parsed);
+        console.log('Hydrated:', hydrated);
+
+        // Mount to DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('app');
+            if (hydrated && hydrated.tag) {
+                const el = globalThis.Lightview.tags[hydrated.tag](
+                    hydrated.attributes || {},
+                    hydrated.children || []
+                );
+                container.appendChild(el.domEl);
+                console.log('Mounted to DOM');
+                console.log('Button element:', el.domEl.querySelector('button'));
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <h1>XPath Test</h1>
+    <div id="app"></div>
+
+    <h2>Test Cases:</h2>
+    <ul>
+        <li>Button should have <code>data-parent-id="parent-div"</code></li>
+        <li>Button should have <code>data-parent-theme="dark"</code></li>
+    </ul>
+</body>
+
+</html>

@@ -17,6 +17,7 @@ import { registerStatsHelpers } from '../jprx/helpers/stats.js';
 import { registerStateHelpers, set } from '../jprx/helpers/state.js';
 import { registerNetworkHelpers } from '../jprx/helpers/network.js';
 import { registerCalcHelpers } from '../jprx/helpers/calc.js';
+import { registerDOMHelpers } from '../jprx/helpers/dom.js';
 
 import { signal, effect, getRegistry } from './reactivity/signal.js';
 import { state } from './reactivity/state.js';
@@ -35,6 +36,7 @@ registerStatsHelpers(registerHelper);
 registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
 registerNetworkHelpers(registerHelper);
 registerCalcHelpers(registerHelper);
+registerDOMHelpers(registerHelper);
 registerHelper('move', (selector, location = 'beforeend') => {
     return {
         isLazy: true,
@@ -133,13 +135,14 @@ registerOperator('increment', '++', 'postfix', 80);
 registerOperator('decrement', '--', 'prefix', 80);
 registerOperator('decrement', '--', 'postfix', 80);
 registerOperator('toggle', '!!', 'prefix', 80);
+registerOperator('set', '=', 'infix', 20);
 
 // Math infix operators (for expression syntax like $/a + $/b)
 // These REQUIRE surrounding whitespace to avoid ambiguity with path separators (especially for /)
 registerOperator('+', '+', 'infix', 50);
-registerOperator('-', '-', 'infix', 50);
-registerOperator('*', '*', 'infix', 60);
-registerOperator('/', '/', 'infix', 60);
+registerOperator('-', '-', 'infix', 50, { requiresWhitespace: true });
+registerOperator('*', '*', 'infix', 60, { requiresWhitespace: true });
+registerOperator('/', '/', 'infix', 60, { requiresWhitespace: true });
 
 // Comparison infix operators
 registerOperator('gt', '>', 'infix', 40);
@@ -147,6 +150,9 @@ registerOperator('lt', '<', 'infix', 40);
 registerOperator('gte', '>=', 'infix', 40);
 registerOperator('lte', '<=', 'infix', 40);
 registerOperator('neq', '!=', 'infix', 40);
+registerOperator('strictNeq', '!==', 'infix', 40);
+registerOperator('eq', '==', 'infix', 40);
+registerOperator('strictEq', '===', 'infix', 40);
 
 const localStates = new WeakMap();
 
@@ -238,6 +244,14 @@ const hydrate = (node, parent = null) => {
     if (typeof node === 'string' && node.startsWith("'=")) {
         return node.slice(1); // Strip the ' and return as literal
     }
+    // Escape sequence: '# at start produces a literal string starting with #
+    if (typeof node === 'string' && node.startsWith("'#")) {
+        return node.slice(1); // Strip the ' and return as literal
+    }
+    // XPath expression: # at start marks for static resolution
+    if (typeof node === 'string' && node.startsWith('#')) {
+        return { __xpath__: node.slice(1), __static__: true };
+    }
     if (typeof node === 'string' && node.startsWith('=')) {
         return parseExpression(node, parent);
     }
@@ -297,6 +311,12 @@ const hydrate = (node, parent = null) => {
                 // Escape sequence: '= at start produces a literal string starting with =
                 if (typeof attrVal === 'string' && attrVal.startsWith("'=")) {
                     value[attrKey] = attrVal.slice(1);
+                    // Escape sequence: '# at start produces a literal string starting with #
+                } else if (typeof attrVal === 'string' && attrVal.startsWith("'#")) {
+                    value[attrKey] = attrVal.slice(1);
+                    // XPath expression: # at start marks for static resolution
+                } else if (typeof attrVal === 'string' && attrVal.startsWith('#')) {
+                    value[attrKey] = { __xpath__: attrVal.slice(1), __static__: true };
                 } else if (typeof attrVal === 'string' && attrVal.startsWith('=')) {
                     if (attrKey.startsWith('on')) {
                         value[attrKey] = makeEventHandler(attrVal);
@@ -313,6 +333,12 @@ const hydrate = (node, parent = null) => {
         // Escape sequence: '= at start produces a literal string starting with =
         if (typeof value === 'string' && value.startsWith("'=")) {
             node[key] = value.slice(1);
+            // Escape sequence: '# at start produces a literal string starting with #
+        } else if (typeof value === 'string' && value.startsWith("'#")) {
+            node[key] = value.slice(1);
+            // XPath expression: # at start marks for static resolution
+        } else if (typeof value === 'string' && value.startsWith('#')) {
+            node[key] = { __xpath__: value.slice(1), __static__: true };
         } else if (typeof value === 'string' && value.startsWith('=')) {
             if (key === 'onmount' || key === 'onunmount' || key.startsWith('on')) {
                 node[key] = makeEventHandler(value);
@@ -328,6 +354,97 @@ const hydrate = (node, parent = null) => {
 
     return node;
 };
+
+/**
+ * Validates that an XPath expression only uses backward-looking axes.
+ * Throws an error if forward-looking axes are detected.
+ * @param {string} xpath - The XPath expression to validate
+ */
+const validateXPath = (xpath) => {
+    // Check for forbidden forward-looking axes
+    const forbiddenAxes = /\b(child|descendant|following|following-sibling)::/;
+    if (forbiddenAxes.test(xpath)) {
+        throw new Error(`XPath: Forward-looking axes not allowed during DOM construction: ${xpath}`);
+    }
+
+    // Also check for shorthand forward references like /div (implies child axis)
+    // But allow / for document root like /html
+    const hasShorthandChild = /\/[a-zA-Z]/.test(xpath) && !xpath.startsWith('/html');
+    if (hasShorthandChild) {
+        throw new Error(`XPath: Shorthand child axis (/) not allowed during DOM construction: ${xpath}`);
+    }
+};
+
+/**
+ * Resolves static XPath expressions marked during hydration.
+ * This is called after the DOM tree is fully constructed.
+ * Walks the tree and resolves all __xpath__ markers.
+ * @param {Node} rootNode - The root DOM node to start walking from
+ */
+const resolveStaticXPath = (rootNode) => {
+    if (!rootNode || !rootNode.nodeType) return;
+
+    const walker = document.createTreeWalker(
+        rootNode,
+        NodeFilter.SHOW_ALL
+    );
+
+    const nodesToProcess = [];
+    let node = walker.nextNode();
+    while (node) {
+        nodesToProcess.push(node);
+        node = walker.nextNode();
+    }
+
+    // Process all nodes
+    for (const node of nodesToProcess) {
+        // Check for XPath markers in attributes
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            const attributes = [...node.attributes];
+            for (const attr of attributes) {
+                if (attr.name.startsWith('data-xpath-')) {
+                    const realAttr = attr.name.replace('data-xpath-', '');
+                    const xpath = attr.value;
+
+                    try {
+                        validateXPath(xpath);
+                        const result = document.evaluate(
+                            xpath,
+                            node,
+                            null,
+                            XPathResult.STRING_TYPE,
+                            null
+                        );
+                        node.setAttribute(realAttr, result.stringValue);
+                        node.removeAttribute(attr.name);
+                    } catch (e) {
+                        globalThis.console?.error(`[Lightview-CDOM] XPath resolution failed for attribute "${realAttr}":`, e.message);
+                    }
+                }
+            }
+        }
+
+        // Check for XPath markers in text nodes
+        if (node.__xpathExpr) {
+            const xpath = node.__xpathExpr;
+            try {
+                validateXPath(xpath);
+                const result = document.evaluate(
+                    xpath,
+                    node,  // Use text node as context, not its parent!
+                    null,
+                    XPathResult.STRING_TYPE,
+                    null
+                );
+                node.textContent = result.stringValue;
+                delete node.__xpathExpr;
+            } catch (e) {
+                globalThis.console?.error(`[Lightview-CDOM] XPath resolution failed for text node:`, e.message);
+            }
+        }
+    }
+};
+
 
 // Prevent tree-shaking of parser functions by creating a side-effect
 // These are used externally by lightview-x.js for .cdomc file loading
@@ -350,6 +467,7 @@ const LightviewCDOM = {
     handleCDOMBind: () => { },
     activate,
     hydrate,
+    resolveStaticXPath,
     version: '1.0.0'
 };
 
@@ -358,5 +476,23 @@ if (typeof window !== 'undefined') {
     globalThis.LightviewCDOM = {};
     Object.assign(globalThis.LightviewCDOM, LightviewCDOM);
 }
+
+
+export {
+    registerHelper,
+    registerOperator,
+    parseExpression,
+    resolvePath,
+    resolvePathAsContext,
+    resolveExpression,
+    parseCDOMC,
+    parseJPRX,
+    unwrapSignal,
+    BindingTarget,
+    getContext,
+    activate,
+    hydrate,
+    resolveStaticXPath
+};
 
 export default LightviewCDOM;

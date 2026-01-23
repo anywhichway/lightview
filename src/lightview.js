@@ -339,6 +339,14 @@ const makeReactiveAttributes = (attributes, domNode) => {
     const reactiveAttrs = {};
 
     for (let [key, value] of Object.entries(attributes)) {
+        // Handle XPath markers from hydration
+        if (value && typeof value === 'object' && value.__xpath__ && value.__static__) {
+            // Mark attribute for later XPath resolution
+            domNode.setAttribute(`data-xpath-${key}`, value.__xpath__);
+            reactiveAttrs[key] = value;
+            continue;
+        }
+
         if (key === 'onmount' || key === 'onunmount') {
             const state = getOrSet(nodeState, domNode, nodeStateFactory);
             state[key] = value;
@@ -483,6 +491,12 @@ const processChildren = (children, targetNode, clearExisting = true) => {
             runner = effect(update);
             trackEffect(startMarker, runner);
             childElements.push(child);
+        } else if (child && typeof child === 'object' && child.__xpath__ && child.__static__) {
+            // XPath marker - create text node with marker for later resolution
+            const textNode = document.createTextNode('');
+            textNode.__xpathExpr = child.__xpath__;
+            targetNode.appendChild(textNode);
+            childElements.push(child);
         } else if (['string', 'number', 'boolean', 'symbol'].includes(type) || (child && type === 'object' && child instanceof String)) {
             // Static text
             targetNode.appendChild(document.createTextNode(child));
@@ -504,6 +518,11 @@ const processChildren = (children, targetNode, clearExisting = true) => {
             targetNode.appendChild(childEl.domEl);
             childElements.push(childEl);
         }
+    }
+
+    // Resolve static XPath expressions after DOM tree is constructed
+    if (typeof globalThis.LightviewCDOM?.resolveStaticXPath === 'function') {
+        globalThis.LightviewCDOM.resolveStaticXPath(targetNode);
     }
 
     return childElements;

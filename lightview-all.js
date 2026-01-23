@@ -587,6 +587,11 @@
   const makeReactiveAttributes = (attributes, domNode) => {
     const reactiveAttrs = {};
     for (let [key, value] of Object.entries(attributes)) {
+      if (value && typeof value === "object" && value.__xpath__ && value.__static__) {
+        domNode.setAttribute(`data-xpath-${key}`, value.__xpath__);
+        reactiveAttrs[key] = value;
+        continue;
+      }
       if (key === "onmount" || key === "onunmount") {
         const state2 = getOrSet(nodeState, domNode, nodeStateFactory);
         state2[key] = value;
@@ -640,6 +645,7 @@
     return reactiveAttrs;
   };
   const processChildren = (children, targetNode, clearExisting = true) => {
+    var _a2;
     if (clearExisting && targetNode.innerHTML !== void 0) {
       targetNode.innerHTML = "";
     }
@@ -688,6 +694,11 @@
         runner = effect(update);
         trackEffect(startMarker, runner);
         childElements.push(child);
+      } else if (child && typeof child === "object" && child.__xpath__ && child.__static__) {
+        const textNode = document.createTextNode("");
+        textNode.__xpathExpr = child.__xpath__;
+        targetNode.appendChild(textNode);
+        childElements.push(child);
       } else if (["string", "number", "boolean", "symbol"].includes(type) || child && type === "object" && child instanceof String) {
         targetNode.appendChild(document.createTextNode(child));
         childElements.push(child);
@@ -706,6 +717,9 @@
         targetNode.appendChild(childEl.domEl);
         childElements.push(childEl);
       }
+    }
+    if (typeof ((_a2 = globalThis.LightviewCDOM) == null ? void 0 : _a2.resolveStaticXPath) === "function") {
+      globalThis.LightviewCDOM.resolveStaticXPath(targetNode);
     }
     return childElements;
   };
@@ -2190,7 +2204,7 @@
     }
     if (options) helperOptions.set(name, options);
   };
-  const registerOperator = (helperName, symbol, position, precedence) => {
+  const registerOperator = (helperName, symbol, position, precedence, options = {}) => {
     var _a2;
     if (!["prefix", "postfix", "infix"].includes(position)) {
       throw new Error(`Invalid operator position: ${position}. Must be 'prefix', 'postfix', or 'infix'.`);
@@ -2199,7 +2213,7 @@
       (_a2 = globalThis.console) == null ? void 0 : _a2.warn(`LightviewCDOM: Operator "${symbol}" registered for helper "${helperName}" which is not yet registered.`);
     }
     const prec = precedence ?? DEFAULT_PRECEDENCE[position];
-    operators[position].set(symbol, { helper: helperName, precedence: prec });
+    operators[position].set(symbol, { helper: helperName, precedence: prec, options });
   };
   const getLV = () => globalThis.Lightview || null;
   const getRegistry = () => {
@@ -2261,12 +2275,13 @@
     if (typeof path !== "string") return path;
     const registry2 = getRegistry();
     if (path === ".") return unwrapSignal(context);
-    if (path.startsWith("=/")) {
-      const [rootName, ...rest] = path.slice(2).split("/");
+    if (path.startsWith("=/") || path.startsWith("/")) {
+      const segments = path.startsWith("=/") ? path.slice(2).split("/") : path.slice(1).split("/");
+      const rootName = segments.shift();
       const LV = getLV();
       const root = LV ? LV.get(rootName, { scope: (context == null ? void 0 : context.__node__) || context }) : registry2 == null ? void 0 : registry2.get(rootName);
       if (!root) return void 0;
-      return traverse(root, rest);
+      return traverse(root, segments);
     }
     if (path.startsWith("./")) {
       return traverse(context, path.slice(2).split("/"));
@@ -2275,6 +2290,10 @@
       return traverse(context == null ? void 0 : context.__parent__, path.slice(3).split("/"));
     }
     if (path.includes("/") || path.includes(".")) {
+      const unwrapped = unwrapSignal(context);
+      if (unwrapped && typeof unwrapped === "object" && path in unwrapped) {
+        return unwrapSignal(unwrapped[path]);
+      }
       return traverse(context, path.split(/[\/.]/));
     }
     const unwrappedContext = unwrapSignal(context);
@@ -2289,8 +2308,8 @@
     if (typeof path !== "string") return path;
     const registry2 = getRegistry();
     if (path === ".") return context;
-    if (path.startsWith("=/")) {
-      const segments = path.slice(2).split(/[/.]/);
+    if (path.startsWith("=/") || path.startsWith("/")) {
+      const segments = path.startsWith("=/") ? path.slice(2).split(/[/.]/) : path.slice(1).split(/[/.]/);
       const rootName = segments.shift();
       const LV = getLV();
       const root = LV ? LV.get(rootName, { scope: (context == null ? void 0 : context.__node__) || context }) : registry2 == null ? void 0 : registry2.get(rootName);
@@ -2304,6 +2323,10 @@
       return traverseAsContext(context == null ? void 0 : context.__parent__, path.slice(3).split(/[\/.]/));
     }
     if (path.includes("/") || path.includes(".")) {
+      const unwrapped = unwrapSignal(context);
+      if (unwrapped && typeof unwrapped === "object" && path in unwrapped) {
+        return new BindingTarget(unwrapped, path);
+      }
       return traverseAsContext(context, path.split(/[\/.]/));
     }
     const unwrappedContext = unwrapSignal(context);
@@ -2489,6 +2512,16 @@
     // $this
     EVENT: "EVENT",
     // $event, $event.target
+    LBRACE: "LBRACE",
+    // {
+    RBRACE: "RBRACE",
+    // }
+    LBRACKET: "LBRACKET",
+    // [
+    RBRACKET: "RBRACKET",
+    // ]
+    COLON: "COLON",
+    // :
     EOF: "EOF"
   };
   const getOperatorSymbols = () => {
@@ -2500,6 +2533,7 @@
     return [...allOps].sort((a, b) => b.length - a.length);
   };
   const tokenize = (expr) => {
+    var _a2, _b2;
     const tokens = [];
     let i = 0;
     const len2 = expr.length;
@@ -2509,16 +2543,21 @@
         i++;
         continue;
       }
-      if (expr[i] === "=" && i + 1 < len2) {
+      if (expr[i] === "=" && i === 0 && i + 1 < len2) {
         const prefixOps = [...operators.prefix.keys()].sort((a, b) => b.length - a.length);
-        let isPrefixOp = false;
+        let matchedPrefix = null;
         for (const op of prefixOps) {
           if (expr.slice(i + 1, i + 1 + op.length) === op) {
-            isPrefixOp = true;
+            matchedPrefix = op;
             break;
           }
         }
-        if (isPrefixOp) {
+        if (matchedPrefix) {
+          i++;
+          continue;
+        }
+        const next = expr[i + 1];
+        if (next === "/" || next === "." || /[a-zA-Z_$]/.test(next)) {
           i++;
           continue;
         }
@@ -2538,20 +2577,52 @@
         i++;
         continue;
       }
+      if (expr[i] === "{") {
+        tokens.push({ type: TokenType.LBRACE, value: "{" });
+        i++;
+        continue;
+      }
+      if (expr[i] === "}") {
+        tokens.push({ type: TokenType.RBRACE, value: "}" });
+        i++;
+        continue;
+      }
+      if (expr[i] === "[") {
+        tokens.push({ type: TokenType.LBRACKET, value: "[" });
+        i++;
+        continue;
+      }
+      if (expr[i] === "]") {
+        tokens.push({ type: TokenType.RBRACKET, value: "]" });
+        i++;
+        continue;
+      }
+      if (expr[i] === ":") {
+        tokens.push({ type: TokenType.COLON, value: ":" });
+        i++;
+        continue;
+      }
       let matchedOp = null;
       for (const op of opSymbols) {
         if (expr.slice(i, i + op.length) === op) {
           const before = i > 0 ? expr[i - 1] : " ";
           const after = i + op.length < len2 ? expr[i + op.length] : " ";
-          const isInfix = operators.infix.has(op);
-          const isPrefix = operators.prefix.has(op);
-          const isPostfix = operators.postfix.has(op);
-          if (isInfix && !isPrefix && !isPostfix) {
-            if (/\s/.test(before) && /\s/.test(after)) {
+          const infixConf = operators.infix.get(op);
+          const prefixConf = operators.prefix.get(op);
+          const postfixConf = operators.postfix.get(op);
+          if ((_a2 = infixConf == null ? void 0 : infixConf.options) == null ? void 0 : _a2.requiresWhitespace) {
+            if (!prefixConf && !postfixConf) {
+              const isWhitespaceMatch = /\s/.test(before) && /\s/.test(after);
+              if (!isWhitespaceMatch) continue;
+            }
+          }
+          if (infixConf) {
+            const lastTok = tokens[tokens.length - 1];
+            const isValueContext = lastTok && (lastTok.type === TokenType.PATH || lastTok.type === TokenType.LITERAL || lastTok.type === TokenType.RPAREN || lastTok.type === TokenType.PLACEHOLDER || lastTok.type === TokenType.THIS || lastTok.type === TokenType.EVENT);
+            if (isValueContext) {
               matchedOp = op;
               break;
             }
-            continue;
           }
           const validBefore = /[\s)]/.test(before) || i === 0 || tokens.length === 0 || tokens[tokens.length - 1].type === TokenType.LPAREN || tokens[tokens.length - 1].type === TokenType.COMMA || tokens[tokens.length - 1].type === TokenType.OPERATOR;
           const validAfter = /[\s(=./'"0-9_]/.test(after) || i + op.length >= len2 || opSymbols.some((o) => expr.slice(i + op.length).startsWith(o));
@@ -2636,16 +2707,18 @@
           let isOp = false;
           for (const op of opSymbols) {
             if (expr.slice(i, i + op.length) === op) {
-              const isInfix = operators.infix.has(op);
-              const isPrefix = operators.prefix.has(op);
-              const isPostfix = operators.postfix.has(op);
-              if (isInfix && !isPrefix && !isPostfix) {
-                const after = i + op.length < len2 ? expr[i + op.length] : " ";
-                if (/\s/.test(expr[i - 1]) && /\s/.test(after)) {
-                  isOp = true;
-                  break;
+              const infixConf = operators.infix.get(op);
+              const prefixConf = operators.prefix.get(op);
+              const postfixConf = operators.postfix.get(op);
+              if ((_b2 = infixConf == null ? void 0 : infixConf.options) == null ? void 0 : _b2.requiresWhitespace) {
+                if (!prefixConf && !postfixConf) {
+                  const after = i + op.length < len2 ? expr[i + op.length] : " ";
+                  if (/\s/.test(expr[i - 1]) && /\s/.test(after)) {
+                    isOp = true;
+                    break;
+                  }
+                  continue;
                 }
-                continue;
               }
               if (path.length > 0 && path[path.length - 1] !== "/") {
                 isOp = true;
@@ -2689,14 +2762,16 @@
   };
   const hasOperatorSyntax = (expr) => {
     if (!expr || typeof expr !== "string") return false;
-    if (expr.includes("(")) return false;
-    if (/^=(\+\+|--|!!)\/?/.test(expr)) {
+    if (/^=?(\+\+|--|!!)\/?/.test(expr)) {
       return true;
     }
     if (/(\+\+|--)$/.test(expr)) {
       return true;
     }
-    if (/\s+([+\-*/]|>|<|>=|<=|!=)\s+/.test(expr)) {
+    if (/\s+([+\-*/%]|>|<|>=|<=|!=|===|==|=)\s+/.test(expr)) {
+      return true;
+    }
+    if (/[^=\s]([+%=]|==|===|!=|!==|<=|>=|<|>)[^=\s]/.test(expr)) {
       return true;
     }
     return false;
@@ -2808,15 +2883,71 @@
           this.consume();
           return { type: "Explosion", path: tok.value };
         }
+        if (nextTok.type === TokenType.LPAREN) {
+          this.consume();
+          const args = [];
+          while (this.peek().type !== TokenType.RPAREN && this.peek().type !== TokenType.EOF) {
+            args.push(this.parseExpression(0));
+            if (this.peek().type === TokenType.COMMA) {
+              this.consume();
+            }
+          }
+          this.expect(TokenType.RPAREN);
+          return { type: "Call", helper: tok.value, args };
+        }
         return { type: "Path", value: tok.value };
+      }
+      if (tok.type === TokenType.LBRACE) {
+        return this.parseObjectLiteral();
+      }
+      if (tok.type === TokenType.LBRACKET) {
+        return this.parseArrayLiteral();
       }
       if (tok.type === TokenType.EOF) {
         return { type: "Literal", value: void 0 };
       }
       throw new Error(`JPRX: Unexpected token ${tok.type}: ${tok.value}`);
     }
+    parseObjectLiteral() {
+      this.consume();
+      const properties = {};
+      while (this.peek().type !== TokenType.RBRACE && this.peek().type !== TokenType.EOF) {
+        const keyTok = this.consume();
+        let key;
+        if (keyTok.type === TokenType.LITERAL) key = String(keyTok.value);
+        else if (keyTok.type === TokenType.PATH) key = keyTok.value;
+        else if (keyTok.type === TokenType.PATH) key = keyTok.value;
+        else throw new Error(`JPRX: Expected property name but got ${keyTok.type}`);
+        this.expect(TokenType.COLON);
+        const value = this.parseExpression(0);
+        properties[key] = value;
+        if (this.peek().type === TokenType.COMMA) {
+          this.consume();
+        } else if (this.peek().type !== TokenType.RBRACE) {
+          break;
+        }
+      }
+      this.expect(TokenType.RBRACE);
+      return { type: "ObjectLiteral", properties };
+    }
+    parseArrayLiteral() {
+      this.consume();
+      const elements = [];
+      while (this.peek().type !== TokenType.RBRACKET && this.peek().type !== TokenType.EOF) {
+        const value = this.parseExpression(0);
+        elements.push(value);
+        if (this.peek().type === TokenType.COMMA) {
+          this.consume();
+        } else if (this.peek().type !== TokenType.RBRACKET) {
+          break;
+        }
+      }
+      this.expect(TokenType.RBRACKET);
+      return { type: "ArrayLiteral", elements };
+    }
   }
   const evaluateAST = (ast, context, forMutation = false) => {
+    var _a2;
     if (!ast) return void 0;
     switch (ast.type) {
       case "Literal":
@@ -2848,54 +2979,126 @@
           return resolvePath(path, event);
         });
       }
-      case "Explosion": {
-        const result = resolveArgument(ast.path + "...", context, false);
-        return result.value;
+      case "ObjectLiteral": {
+        const res = {};
+        let hasLazy = false;
+        for (const key in ast.properties) {
+          const val = evaluateAST(ast.properties[key], context, forMutation);
+          if (val && val.isLazy) hasLazy = true;
+          res[key] = val;
+        }
+        if (hasLazy) {
+          return new LazyValue((ctx) => {
+            const resolved = {};
+            for (const key in res) {
+              resolved[key] = res[key] && res[key].isLazy ? res[key].resolve(ctx) : unwrapSignal(res[key]);
+            }
+            return resolved;
+          });
+        }
+        return res;
+      }
+      case "ArrayLiteral": {
+        const elements = ast.elements.map((el) => evaluateAST(el, context, forMutation));
+        const hasLazy = elements.some((el) => el && el.isLazy);
+        if (hasLazy) {
+          return new LazyValue((ctx) => {
+            return elements.map((el) => el && el.isLazy ? el.resolve(ctx) : unwrapSignal(el));
+          });
+        }
+        return elements.map((el) => unwrapSignal(el));
       }
       case "Prefix": {
         const opInfo = operators.prefix.get(ast.operator);
-        if (!opInfo) {
-          throw new Error(`JPRX: Unknown prefix operator: ${ast.operator}`);
-        }
+        if (!opInfo) throw new Error(`JPRX: Unknown prefix operator: ${ast.operator}`);
         const helper = helpers.get(opInfo.helper);
-        if (!helper) {
-          throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
-        }
+        if (!helper) throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
         const opts = helperOptions.get(opInfo.helper) || {};
         const operand = evaluateAST(ast.operand, context, opts.pathAware);
-        return helper(operand);
+        if (operand && operand.isLazy && !opts.lazyAware) {
+          return new LazyValue((ctx) => {
+            const resolved = operand.resolve(ctx);
+            return helper(opts.pathAware ? resolved : unwrapSignal(resolved));
+          });
+        }
+        return helper(opts.pathAware ? operand : unwrapSignal(operand));
       }
       case "Postfix": {
         const opInfo = operators.postfix.get(ast.operator);
-        if (!opInfo) {
-          throw new Error(`JPRX: Unknown postfix operator: ${ast.operator}`);
-        }
+        if (!opInfo) throw new Error(`JPRX: Unknown postfix operator: ${ast.operator}`);
         const helper = helpers.get(opInfo.helper);
-        if (!helper) {
-          throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
-        }
+        if (!helper) throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
         const opts = helperOptions.get(opInfo.helper) || {};
         const operand = evaluateAST(ast.operand, context, opts.pathAware);
-        return helper(operand);
+        if (operand && operand.isLazy && !opts.lazyAware) {
+          return new LazyValue((ctx) => {
+            const resolved = operand.resolve(ctx);
+            return helper(opts.pathAware ? resolved : unwrapSignal(resolved));
+          });
+        }
+        return helper(opts.pathAware ? operand : unwrapSignal(operand));
       }
       case "Infix": {
         const opInfo = operators.infix.get(ast.operator);
-        if (!opInfo) {
-          throw new Error(`JPRX: Unknown infix operator: ${ast.operator}`);
-        }
+        if (!opInfo) throw new Error(`JPRX: Unknown infix operator: ${ast.operator}`);
         const helper = helpers.get(opInfo.helper);
-        if (!helper) {
-          throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
-        }
+        if (!helper) throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
         const opts = helperOptions.get(opInfo.helper) || {};
         const left = evaluateAST(ast.left, context, opts.pathAware);
         const right = evaluateAST(ast.right, context, false);
+        if ((left && left.isLazy || right && right.isLazy) && !opts.lazyAware) {
+          return new LazyValue((ctx) => {
+            const l = left && left.isLazy ? left.resolve(ctx) : left;
+            const r = right && right.isLazy ? right.resolve(ctx) : right;
+            return helper(opts.pathAware ? l : unwrapSignal(l), unwrapSignal(r));
+          });
+        }
+        return helper(opts.pathAware ? left : unwrapSignal(left), unwrapSignal(right));
+      }
+      case "Call": {
+        const helperName = ast.helper.replace(/^=/, "");
+        const helper = helpers.get(helperName);
+        if (!helper) {
+          (_a2 = globalThis.console) == null ? void 0 : _a2.warn(`JPRX: Helper "${helperName}" not found.`);
+          return void 0;
+        }
+        const opts = helperOptions.get(helperName) || {};
+        const args = ast.args.map((arg, i) => evaluateAST(arg, context, opts.pathAware && i === 0));
+        const hasLazy = args.some((arg) => arg && arg.isLazy);
+        if (hasLazy && !opts.lazyAware) {
+          return new LazyValue((ctx) => {
+            const finalArgs2 = args.map((arg, i) => {
+              const val = arg && arg.isLazy ? arg.resolve(ctx) : arg;
+              if (ast.args[i].type === "Explosion" && Array.isArray(val)) {
+                return val.map((v) => unwrapSignal(v));
+              }
+              return opts.pathAware && i === 0 ? val : unwrapSignal(val);
+            });
+            const flatArgs = [];
+            for (let i = 0; i < finalArgs2.length; i++) {
+              if (ast.args[i].type === "Explosion" && Array.isArray(finalArgs2[i])) {
+                flatArgs.push(...finalArgs2[i]);
+              } else {
+                flatArgs.push(finalArgs2[i]);
+              }
+            }
+            return helper.apply((context == null ? void 0 : context.__node__) || null, flatArgs);
+          });
+        }
         const finalArgs = [];
-        if (Array.isArray(left) && ast.left.type === "Explosion") finalArgs.push(...left);
-        else finalArgs.push(unwrapSignal(left));
-        if (Array.isArray(right) && ast.right.type === "Explosion") finalArgs.push(...right);
-        else finalArgs.push(unwrapSignal(right));
-        return helper(...finalArgs);
+        for (let i = 0; i < args.length; i++) {
+          const arg = args[i];
+          if (ast.args[i].type === "Explosion" && Array.isArray(arg)) {
+            finalArgs.push(...arg.map((v) => unwrapSignal(v)));
+          } else {
+            finalArgs.push(opts.pathAware && i === 0 ? arg : unwrapSignal(arg));
+          }
+        }
+        return helper.apply((context == null ? void 0 : context.__node__) || null, finalArgs);
+      }
+      case "Explosion": {
+        const result = resolveArgument(ast.path + "...", context, false);
+        return result.value;
       }
       default:
         throw new Error(`JPRX: Unknown AST node type: ${ast.type}`);
@@ -3053,10 +3256,12 @@
       let bDepth = 0;
       let brDepth = 0;
       let quote = null;
+      const startChar = input[start];
+      const isExpression = startChar === "=" || startChar === "#";
       while (i < len2) {
         const char = input[i];
         if (quote) {
-          if (char === quote) quote = null;
+          if (char === quote && input[i - 1] !== "\\") quote = null;
           i++;
           continue;
         } else if (char === '"' || char === "'" || char === "`") {
@@ -3101,14 +3306,41 @@
           }
         }
         if (pDepth === 0 && bDepth === 0 && brDepth === 0) {
-          if (/[\s:,{}\[\]"'`()]/.test(char)) {
-            break;
+          if (isExpression) {
+            if (/[{}[\]"'`()]/.test(char)) {
+              break;
+            }
+            if (char === ",") {
+              break;
+            }
+            if (/[\s:]/.test(char)) {
+              let j = i + 1;
+              while (j < len2 && /\s/.test(input[j])) j++;
+              if (j < len2) {
+                const nextChar = input[j];
+                if (nextChar === "}" || nextChar === ",") {
+                  break;
+                }
+                let wordStart = j;
+                while (j < len2 && /[a-zA-Z0-9_$-]/.test(input[j])) j++;
+                if (j > wordStart) {
+                  while (j < len2 && /\s/.test(input[j])) j++;
+                  if (j < len2 && input[j] === ":") {
+                    break;
+                  }
+                }
+              }
+            }
+          } else {
+            if (/[:,{}[\]"'`()\s]/.test(char)) {
+              break;
+            }
           }
         }
         i++;
       }
       const word = input.slice(start, i);
-      if (word.startsWith("=")) {
+      if (word.startsWith("=") || word.startsWith("#")) {
         return word;
       }
       if (word === "true") return true;
@@ -3260,7 +3492,26 @@
             inExprQuote = c;
           } else {
             if (parenDepth === 0 && braceDepth === 0 && bracketDepth === 0) {
-              if (/[\s,}\]:]/.test(c) && expr.length > 1) break;
+              if (/[}[\]:]/.test(c) && expr.length > 1) break;
+              if (c === ",") break;
+              if (/\s/.test(c)) {
+                let j = i + 1;
+                while (j < len2 && /\s/.test(input[j])) j++;
+                if (j < len2) {
+                  const nextChar = input[j];
+                  if (nextChar === "}" || nextChar === "," || nextChar === "]") {
+                    break;
+                  }
+                  let wordStart = j;
+                  while (j < len2 && /[a-zA-Z0-9_$-]/.test(input[j])) j++;
+                  if (j > wordStart) {
+                    while (j < len2 && /\s/.test(input[j])) j++;
+                    if (j < len2 && input[j] === ":") {
+                      break;
+                    }
+                  }
+                }
+              }
             }
             if (c === "(") parenDepth++;
             else if (c === ")") parenDepth--;
@@ -3378,8 +3629,10 @@
   const andHelper = (...args) => args.every(Boolean);
   const orHelper = (...args) => args.some(Boolean);
   const notHelper = (val) => !val;
-  const eqHelper = (a, b) => a === b;
-  const neqHelper = (a, b) => a !== b;
+  const eqHelper = (a, b) => a == b;
+  const strictEqHelper = (a, b) => a === b;
+  const neqHelper = (a, b) => a != b;
+  const strictNeqHelper = (a, b) => a !== b;
   const registerLogicHelpers = (register) => {
     register("if", ifHelper);
     register("and", andHelper);
@@ -3389,9 +3642,13 @@
     register("not", notHelper);
     register("!", notHelper);
     register("eq", eqHelper);
+    register("strictEq", strictEqHelper);
     register("==", eqHelper);
-    register("===", eqHelper);
+    register("===", strictEqHelper);
     register("neq", neqHelper);
+    register("strictNeq", strictNeqHelper);
+    register("!=", neqHelper);
+    register("!==", strictNeqHelper);
   };
   const join$1 = (...args) => {
     const separator = args[args.length - 1];
@@ -5421,6 +5678,45 @@
   const registerCalcHelpers = (register) => {
     register("calc", calc, { pathAware: true });
   };
+  const registerDOMHelpers = (registerHelper2) => {
+    registerHelper2("xpath", function(expression) {
+      const domNode = this;
+      if (!domNode || !(domNode instanceof Element)) {
+        console.warn("[Lightview-CDOM] xpath() called without valid DOM context");
+        return "";
+      }
+      const forbiddenAxes = /\b(child|descendant|following|following-sibling)::/;
+      if (forbiddenAxes.test(expression)) {
+        console.error(`[Lightview-CDOM] xpath(): Forward-looking axes not allowed: ${expression}`);
+        return "";
+      }
+      const hasShorthandChild = /\/[a-zA-Z]/.test(expression) && !expression.startsWith("/html");
+      if (hasShorthandChild) {
+        console.error(`[Lightview-CDOM] xpath(): Shorthand child axis (/) not allowed: ${expression}`);
+        return "";
+      }
+      const LV = globalThis.Lightview;
+      if (!LV || !LV.computed) {
+        console.warn("[Lightview-CDOM] xpath(): Lightview not available");
+        return "";
+      }
+      return LV.computed(() => {
+        try {
+          const result = document.evaluate(
+            expression,
+            domNode,
+            null,
+            XPathResult.STRING_TYPE,
+            null
+          );
+          return result.stringValue;
+        } catch (e) {
+          console.error(`[Lightview-CDOM] xpath() evaluation failed:`, e.message);
+          return "";
+        }
+      });
+    }, { pathAware: false });
+  };
   registerMathHelpers(registerHelper);
   registerLogicHelpers(registerHelper);
   registerStringHelpers(registerHelper);
@@ -5434,6 +5730,7 @@
   registerStateHelpers((name, fn) => registerHelper(name, fn, { pathAware: true }));
   registerNetworkHelpers(registerHelper);
   registerCalcHelpers(registerHelper);
+  registerDOMHelpers(registerHelper);
   registerHelper("move", (selector, location = "beforeend") => {
     return {
       isLazy: true,
@@ -5507,15 +5804,19 @@
   registerOperator("decrement", "--", "prefix", 80);
   registerOperator("decrement", "--", "postfix", 80);
   registerOperator("toggle", "!!", "prefix", 80);
+  registerOperator("set", "=", "infix", 20);
   registerOperator("+", "+", "infix", 50);
-  registerOperator("-", "-", "infix", 50);
-  registerOperator("*", "*", "infix", 60);
-  registerOperator("/", "/", "infix", 60);
+  registerOperator("-", "-", "infix", 50, { requiresWhitespace: true });
+  registerOperator("*", "*", "infix", 60, { requiresWhitespace: true });
+  registerOperator("/", "/", "infix", 60, { requiresWhitespace: true });
   registerOperator("gt", ">", "infix", 40);
   registerOperator("lt", "<", "infix", 40);
   registerOperator("gte", ">=", "infix", 40);
   registerOperator("lte", "<=", "infix", 40);
   registerOperator("neq", "!=", "infix", 40);
+  registerOperator("strictNeq", "!==", "infix", 40);
+  registerOperator("eq", "==", "infix", 40);
+  registerOperator("strictEq", "===", "infix", 40);
   const getContext = (node, event = null) => {
     return new Proxy({}, {
       get(_, prop) {
@@ -5577,6 +5878,12 @@
     if (typeof node === "string" && node.startsWith("'=")) {
       return node.slice(1);
     }
+    if (typeof node === "string" && node.startsWith("'#")) {
+      return node.slice(1);
+    }
+    if (typeof node === "string" && node.startsWith("#")) {
+      return { __xpath__: node.slice(1), __static__: true };
+    }
     if (typeof node === "string" && node.startsWith("=")) {
       return parseExpression(node, parent);
     }
@@ -5620,6 +5927,10 @@
           const attrVal = value[attrKey];
           if (typeof attrVal === "string" && attrVal.startsWith("'=")) {
             value[attrKey] = attrVal.slice(1);
+          } else if (typeof attrVal === "string" && attrVal.startsWith("'#")) {
+            value[attrKey] = attrVal.slice(1);
+          } else if (typeof attrVal === "string" && attrVal.startsWith("#")) {
+            value[attrKey] = { __xpath__: attrVal.slice(1), __static__: true };
           } else if (typeof attrVal === "string" && attrVal.startsWith("=")) {
             if (attrKey.startsWith("on")) {
               value[attrKey] = makeEventHandler(attrVal);
@@ -5634,6 +5945,10 @@
       }
       if (typeof value === "string" && value.startsWith("'=")) {
         node[key] = value.slice(1);
+      } else if (typeof value === "string" && value.startsWith("'#")) {
+        node[key] = value.slice(1);
+      } else if (typeof value === "string" && value.startsWith("#")) {
+        node[key] = { __xpath__: value.slice(1), __static__: true };
       } else if (typeof value === "string" && value.startsWith("=")) {
         if (key === "onmount" || key === "onunmount" || key.startsWith("on")) {
           node[key] = makeEventHandler(value);
@@ -5647,6 +5962,73 @@
       }
     }
     return node;
+  };
+  const validateXPath = (xpath) => {
+    const forbiddenAxes = /\b(child|descendant|following|following-sibling)::/;
+    if (forbiddenAxes.test(xpath)) {
+      throw new Error(`XPath: Forward-looking axes not allowed during DOM construction: ${xpath}`);
+    }
+    const hasShorthandChild = /\/[a-zA-Z]/.test(xpath) && !xpath.startsWith("/html");
+    if (hasShorthandChild) {
+      throw new Error(`XPath: Shorthand child axis (/) not allowed during DOM construction: ${xpath}`);
+    }
+  };
+  const resolveStaticXPath = (rootNode) => {
+    var _a2, _b2;
+    if (!rootNode || !rootNode.nodeType) return;
+    const walker = document.createTreeWalker(
+      rootNode,
+      NodeFilter.SHOW_ALL
+    );
+    const nodesToProcess = [];
+    let node = walker.nextNode();
+    while (node) {
+      nodesToProcess.push(node);
+      node = walker.nextNode();
+    }
+    for (const node2 of nodesToProcess) {
+      if (node2.nodeType === Node.ELEMENT_NODE) {
+        const attributes = [...node2.attributes];
+        for (const attr of attributes) {
+          if (attr.name.startsWith("data-xpath-")) {
+            const realAttr = attr.name.replace("data-xpath-", "");
+            const xpath = attr.value;
+            try {
+              validateXPath(xpath);
+              const result = document.evaluate(
+                xpath,
+                node2,
+                null,
+                XPathResult.STRING_TYPE,
+                null
+              );
+              node2.setAttribute(realAttr, result.stringValue);
+              node2.removeAttribute(attr.name);
+            } catch (e) {
+              (_a2 = globalThis.console) == null ? void 0 : _a2.error(`[Lightview-CDOM] XPath resolution failed for attribute "${realAttr}":`, e.message);
+            }
+          }
+        }
+      }
+      if (node2.__xpathExpr) {
+        const xpath = node2.__xpathExpr;
+        try {
+          validateXPath(xpath);
+          const result = document.evaluate(
+            xpath,
+            node2,
+            // Use text node as context, not its parent!
+            null,
+            XPathResult.STRING_TYPE,
+            null
+          );
+          node2.textContent = result.stringValue;
+          delete node2.__xpathExpr;
+        } catch (e) {
+          (_b2 = globalThis.console) == null ? void 0 : _b2.error(`[Lightview-CDOM] XPath resolution failed for text node:`, e.message);
+        }
+      }
+    }
   };
   if (typeof parseCDOMC !== "function") throw new Error("parseCDOMC not found");
   if (typeof parseJPRX !== "function") throw new Error("parseJPRX not found");
@@ -5667,6 +6049,7 @@
     },
     activate,
     hydrate,
+    resolveStaticXPath,
     version: "1.0.0"
   };
   if (typeof window !== "undefined") {

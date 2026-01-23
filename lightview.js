@@ -586,6 +586,11 @@
   const makeReactiveAttributes = (attributes, domNode) => {
     const reactiveAttrs = {};
     for (let [key, value] of Object.entries(attributes)) {
+      if (value && typeof value === "object" && value.__xpath__ && value.__static__) {
+        domNode.setAttribute(`data-xpath-${key}`, value.__xpath__);
+        reactiveAttrs[key] = value;
+        continue;
+      }
       if (key === "onmount" || key === "onunmount") {
         const state2 = getOrSet(nodeState, domNode, nodeStateFactory);
         state2[key] = value;
@@ -639,6 +644,7 @@
     return reactiveAttrs;
   };
   const processChildren = (children, targetNode, clearExisting = true) => {
+    var _a;
     if (clearExisting && targetNode.innerHTML !== void 0) {
       targetNode.innerHTML = "";
     }
@@ -687,6 +693,11 @@
         runner = effect(update);
         trackEffect(startMarker, runner);
         childElements.push(child);
+      } else if (child && typeof child === "object" && child.__xpath__ && child.__static__) {
+        const textNode = document.createTextNode("");
+        textNode.__xpathExpr = child.__xpath__;
+        targetNode.appendChild(textNode);
+        childElements.push(child);
       } else if (["string", "number", "boolean", "symbol"].includes(type) || child && type === "object" && child instanceof String) {
         targetNode.appendChild(document.createTextNode(child));
         childElements.push(child);
@@ -705,6 +716,9 @@
         targetNode.appendChild(childEl.domEl);
         childElements.push(childEl);
       }
+    }
+    if (typeof ((_a = globalThis.LightviewCDOM) == null ? void 0 : _a.resolveStaticXPath) === "function") {
+      globalThis.LightviewCDOM.resolveStaticXPath(targetNode);
     }
     return childElements;
   };

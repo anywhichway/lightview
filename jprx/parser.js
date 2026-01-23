@@ -40,8 +40,9 @@ export const registerHelper = (name, fn, options = {}) => {
  * @param {string} symbol - The operator symbol (e.g., '++', '+', '-')
  * @param {'prefix'|'postfix'|'infix'} position - Operator position
  * @param {number} [precedence] - Optional precedence (higher = binds tighter)
+ * @param {object} [options] - Optional configuration like { requiresWhitespace: true }
  */
-export const registerOperator = (helperName, symbol, position, precedence) => {
+export const registerOperator = (helperName, symbol, position, precedence, options = {}) => {
     if (!['prefix', 'postfix', 'infix'].includes(position)) {
         throw new Error(`Invalid operator position: ${position}. Must be 'prefix', 'postfix', or 'infix'.`);
     }
@@ -50,7 +51,7 @@ export const registerOperator = (helperName, symbol, position, precedence) => {
         globalThis.console?.warn(`LightviewCDOM: Operator "${symbol}" registered for helper "${helperName}" which is not yet registered.`);
     }
     const prec = precedence ?? DEFAULT_PRECEDENCE[position];
-    operators[position].set(symbol, { helper: helperName, precedence: prec });
+    operators[position].set(symbol, { helper: helperName, precedence: prec, options });
 };
 
 const getLV = () => globalThis.Lightview || null;
@@ -136,13 +137,14 @@ export const resolvePath = (path, context) => {
     // Current context: .
     if (path === '.') return unwrapSignal(context);
 
-    // Global absolute path: =/something
-    if (path.startsWith('=/')) {
-        const [rootName, ...rest] = path.slice(2).split('/');
+    // Global absolute path: =/something or /something
+    if (path.startsWith('=/') || path.startsWith('/')) {
+        const segments = path.startsWith('=/') ? path.slice(2).split('/') : path.slice(1).split('/');
+        const rootName = segments.shift();
         const LV = getLV();
         const root = LV ? LV.get(rootName, { scope: context?.__node__ || context }) : registry?.get(rootName);
         if (!root) return undefined;
-        return traverse(root, rest);
+        return traverse(root, segments);
     }
 
     // Relative path from current context
@@ -157,6 +159,11 @@ export const resolvePath = (path, context) => {
 
     // Path with separators - treat as relative
     if (path.includes('/') || path.includes('.')) {
+        // Optimization: check if full path exists as a key first (handles kebab-case/slashes in keys)
+        const unwrapped = unwrapSignal(context);
+        if (unwrapped && typeof unwrapped === 'object' && path in unwrapped) {
+            return unwrapSignal(unwrapped[path]);
+        }
         return traverse(context, path.split(/[\/.]/));
     }
 
@@ -183,9 +190,9 @@ export const resolvePathAsContext = (path, context) => {
     // Current context: .
     if (path === '.') return context;
 
-    // Global absolute path: =/something
-    if (path.startsWith('=/')) {
-        const segments = path.slice(2).split(/[/.]/);
+    // Global absolute path: =/something or /something
+    if (path.startsWith('=/') || path.startsWith('/')) {
+        const segments = path.startsWith('=/') ? path.slice(2).split(/[/.]/) : path.slice(1).split(/[/.]/);
         const rootName = segments.shift();
         const LV = getLV();
         const root = LV ? LV.get(rootName, { scope: context?.__node__ || context }) : registry?.get(rootName);
@@ -205,6 +212,11 @@ export const resolvePathAsContext = (path, context) => {
 
     // Path with separators
     if (path.includes('/') || path.includes('.')) {
+        // Optimization: check if full path exists as a key first
+        const unwrapped = unwrapSignal(context);
+        if (unwrapped && typeof unwrapped === 'object' && path in unwrapped) {
+            return new BindingTarget(unwrapped, path);
+        }
         return traverseAsContext(context, path.split(/[\/.]/));
     }
 
@@ -437,6 +449,11 @@ const TokenType = {
     PLACEHOLDER: 'PLACEHOLDER', // _, _/path
     THIS: 'THIS',           // $this
     EVENT: 'EVENT',         // $event, $event.target
+    LBRACE: 'LBRACE',       // {
+    RBRACE: 'RBRACE',       // }
+    LBRACKET: 'LBRACKET',   // [
+    RBRACKET: 'RBRACKET',   // ]
+    COLON: 'COLON',         // :
     EOF: 'EOF'
 };
 
@@ -483,18 +500,27 @@ const tokenize = (expr) => {
         // Special: = followed immediately by an operator symbol
         // In expressions like "=++/count", the = is just the JPRX delimiter
         // and ++ is a prefix operator applied to /count
-        if (expr[i] === '=' && i + 1 < len) {
+        if (expr[i] === '=' && i === 0 && i + 1 < len) {
             // Check if next chars are a PREFIX operator (sort by length to match longest first)
             const prefixOps = [...operators.prefix.keys()].sort((a, b) => b.length - a.length);
-            let isPrefixOp = false;
+            let matchedPrefix = null;
             for (const op of prefixOps) {
                 if (expr.slice(i + 1, i + 1 + op.length) === op) {
-                    isPrefixOp = true;
+                    matchedPrefix = op;
                     break;
                 }
             }
-            if (isPrefixOp) {
-                // Skip the =, it's just a delimiter for a prefix operator (e.g., =++/count)
+            if (matchedPrefix) {
+                // Skip the =, it's just a delimiter (e.g., =++/count)
+                i++;
+                continue;
+            }
+
+            // If it's not a prefix op, but it's the leading = of a statement
+            // e.g. =/a + b or =sum(1, 2)
+            // Skip the = so the following path/word can be processed
+            const next = expr[i + 1];
+            if (next === '/' || next === '.' || /[a-zA-Z_$]/.test(next)) {
                 i++;
                 continue;
             }
@@ -519,6 +545,33 @@ const tokenize = (expr) => {
             continue;
         }
 
+        // Object/Array/Colon
+        if (expr[i] === '{') {
+            tokens.push({ type: TokenType.LBRACE, value: '{' });
+            i++;
+            continue;
+        }
+        if (expr[i] === '}') {
+            tokens.push({ type: TokenType.RBRACE, value: '}' });
+            i++;
+            continue;
+        }
+        if (expr[i] === '[') {
+            tokens.push({ type: TokenType.LBRACKET, value: '[' });
+            i++;
+            continue;
+        }
+        if (expr[i] === ']') {
+            tokens.push({ type: TokenType.RBRACKET, value: ']' });
+            i++;
+            continue;
+        }
+        if (expr[i] === ':') {
+            tokens.push({ type: TokenType.COLON, value: ':' });
+            i++;
+            continue;
+        }
+
         // Check for operators (longest match first)
         let matchedOp = null;
         for (const op of opSymbols) {
@@ -528,18 +581,37 @@ const tokenize = (expr) => {
                 const before = i > 0 ? expr[i - 1] : ' ';
                 const after = i + op.length < len ? expr[i + op.length] : ' ';
 
-                const isInfix = operators.infix.has(op);
-                const isPrefix = operators.prefix.has(op);
-                const isPostfix = operators.postfix.has(op);
+                const infixConf = operators.infix.get(op);
+                const prefixConf = operators.prefix.get(op);
+                const postfixConf = operators.postfix.get(op);
 
-                // For infix-only operators (like /, +, -, >, <, >=, <=, !=), we now REQUIRE surrounding whitespace
-                // This prevents collision with path separators (especially for /)
-                if (isInfix && !isPrefix && !isPostfix) {
-                    if (/\s/.test(before) && /\s/.test(after)) {
+                // Check for whitespace requirements
+                // If an operator is configured to REQUIRE whitespace (e.g. / or -), check for it.
+                if (infixConf?.options?.requiresWhitespace) {
+                    if (!prefixConf && !postfixConf) {
+                        const isWhitespaceMatch = /\s/.test(before) && /\s/.test(after);
+                        if (!isWhitespaceMatch) continue;
+                    }
+                }
+
+                // If it's a known INFIX operator (and passed the whitespace check above),
+                // it is valid if it follows a value (Path, Literal, RParen, etc.)
+                // This allows 'a+b' where + is infix
+                if (infixConf) {
+                    const lastTok = tokens[tokens.length - 1];
+                    const isValueContext = lastTok && (
+                        lastTok.type === TokenType.PATH ||
+                        lastTok.type === TokenType.LITERAL ||
+                        lastTok.type === TokenType.RPAREN ||
+                        lastTok.type === TokenType.PLACEHOLDER ||
+                        lastTok.type === TokenType.THIS ||
+                        lastTok.type === TokenType.EVENT
+                    );
+
+                    if (isValueContext) {
                         matchedOp = op;
                         break;
                     }
-                    continue;
                 }
 
                 // Accept prefix/postfix operator if:
@@ -657,18 +729,20 @@ const tokenize = (expr) => {
                 let isOp = false;
                 for (const op of opSymbols) {
                     if (expr.slice(i, i + op.length) === op) {
-                        const isInfix = operators.infix.has(op);
-                        const isPrefix = operators.prefix.has(op);
-                        const isPostfix = operators.postfix.has(op);
+                        const infixConf = operators.infix.get(op);
+                        const prefixConf = operators.prefix.get(op);
+                        const postfixConf = operators.postfix.get(op);
 
                         // Strict infix (like /) MUST have spaces to break the path
-                        if (isInfix && !isPrefix && !isPostfix) {
-                            const after = i + op.length < len ? expr[i + op.length] : ' ';
-                            if (/\s/.test(expr[i - 1]) && /\s/.test(after)) {
-                                isOp = true;
-                                break;
+                        if (infixConf?.options?.requiresWhitespace) {
+                            if (!prefixConf && !postfixConf) {
+                                const after = i + op.length < len ? expr[i + op.length] : ' ';
+                                if (/\s/.test(expr[i - 1]) && /\s/.test(after)) {
+                                    isOp = true;
+                                    break;
+                                }
+                                continue;
                             }
-                            continue;
                         }
 
                         // Prefix/Postfix: if they appear after a path, they are operators
@@ -738,12 +812,10 @@ const tokenize = (expr) => {
 const hasOperatorSyntax = (expr) => {
     if (!expr || typeof expr !== 'string') return false;
 
-    // Skip function calls - they use legacy parser
-    if (expr.includes('(')) return false;
-
-    // Check for prefix operator pattern: =++ or =-- followed by /
-    // This catches: =++/counter, =--/value
-    if (/^=(\+\+|--|!!)\/?/.test(expr)) {
+    // Detect explicit patterns to avoid false positives.
+    // We allow function calls '(' to be part of operator expressions.
+    // This catches: ++/counter, --/value, !!flag
+    if (/^=?(\+\+|--|!!)\/?/.test(expr)) {
         return true;
     }
 
@@ -755,7 +827,17 @@ const hasOperatorSyntax = (expr) => {
 
     // Check for infix with explicit whitespace: =/a + =/b
     // The spaces make it unambiguous that the symbol is an operator, not part of a path
-    if (/\s+([+\-*/]|>|<|>=|<=|!=)\s+/.test(expr)) {
+    if (/\s+([+\-*/%]|>|<|>=|<=|!=|===|==|=)\s+/.test(expr)) {
+        return true;
+    }
+
+    // Check for tight infix operators (no whitespace required)
+    // Matches if the operator is NOT at the start and NOT at the end
+    // Operators: +, =, <, >, <=, >=, ==, ===, !=, !==, %
+    // We strictly exclude -, *, / which require whitespace
+    if (/[^=\s]([+%=]|==|===|!=|!==|<=|>=|<|>)[^=\s]/.test(expr)) {
+        // Exclude cases where it might be part of a path or tag (like <div>)
+        // This is heuristic, but Pratt parser will validate structure later
         return true;
     }
 
@@ -913,7 +995,30 @@ class PrattParser {
                 this.consume();
                 return { type: 'Explosion', path: tok.value };
             }
+            // Function call
+            if (nextTok.type === TokenType.LPAREN) {
+                this.consume(); // (
+                const args = [];
+                while (this.peek().type !== TokenType.RPAREN && this.peek().type !== TokenType.EOF) {
+                    args.push(this.parseExpression(0));
+                    if (this.peek().type === TokenType.COMMA) {
+                        this.consume();
+                    }
+                }
+                this.expect(TokenType.RPAREN);
+                return { type: 'Call', helper: tok.value, args };
+            }
             return { type: 'Path', value: tok.value };
+        }
+
+        // Object Literal
+        if (tok.type === TokenType.LBRACE) {
+            return this.parseObjectLiteral();
+        }
+
+        // Array Literal
+        if (tok.type === TokenType.LBRACKET) {
+            return this.parseArrayLiteral();
         }
 
         // EOF or unknown
@@ -922,6 +1027,48 @@ class PrattParser {
         }
 
         throw new Error(`JPRX: Unexpected token ${tok.type}: ${tok.value}`);
+    }
+
+    parseObjectLiteral() {
+        this.consume(); // {
+        const properties = {};
+        while (this.peek().type !== TokenType.RBRACE && this.peek().type !== TokenType.EOF) {
+            const keyTok = this.consume();
+            let key;
+            if (keyTok.type === TokenType.LITERAL) key = String(keyTok.value);
+            else if (keyTok.type === TokenType.PATH) key = keyTok.value;
+            else if (keyTok.type === TokenType.PATH) key = keyTok.value; // covers identifiers
+            else throw new Error(`JPRX: Expected property name but got ${keyTok.type}`);
+
+            this.expect(TokenType.COLON);
+            const value = this.parseExpression(0);
+            properties[key] = value;
+
+            if (this.peek().type === TokenType.COMMA) {
+                this.consume();
+            } else if (this.peek().type !== TokenType.RBRACE) {
+                break; // Attempt recovery or let it fail at expect
+            }
+        }
+        this.expect(TokenType.RBRACE);
+        return { type: 'ObjectLiteral', properties };
+    }
+
+    parseArrayLiteral() {
+        this.consume(); // [
+        const elements = [];
+        while (this.peek().type !== TokenType.RBRACKET && this.peek().type !== TokenType.EOF) {
+            const value = this.parseExpression(0);
+            elements.push(value);
+
+            if (this.peek().type === TokenType.COMMA) {
+                this.consume();
+            } else if (this.peek().type !== TokenType.RBRACKET) {
+                break;
+            }
+        }
+        this.expect(TokenType.RBRACKET);
+        return { type: 'ArrayLiteral', elements };
     }
 }
 
@@ -973,68 +1120,140 @@ const evaluateAST = (ast, context, forMutation = false) => {
             });
         }
 
-        case 'Explosion': {
-            const result = resolveArgument(ast.path + '...', context, false);
-            return result.value;
+        case 'ObjectLiteral': {
+            const res = {};
+            let hasLazy = false;
+            for (const key in ast.properties) {
+                const val = evaluateAST(ast.properties[key], context, forMutation);
+                if (val && val.isLazy) hasLazy = true;
+                res[key] = val;
+            }
+            if (hasLazy) {
+                return new LazyValue((ctx) => {
+                    const resolved = {};
+                    for (const key in res) {
+                        resolved[key] = (res[key] && res[key].isLazy) ? res[key].resolve(ctx) : unwrapSignal(res[key]);
+                    }
+                    return resolved;
+                });
+            }
+            return res;
+        }
+
+        case 'ArrayLiteral': {
+            const elements = ast.elements.map(el => evaluateAST(el, context, forMutation));
+            const hasLazy = elements.some(el => el && el.isLazy);
+            if (hasLazy) {
+                return new LazyValue((ctx) => {
+                    return elements.map(el => (el && el.isLazy) ? el.resolve(ctx) : unwrapSignal(el));
+                });
+            }
+            return elements.map(el => unwrapSignal(el));
         }
 
         case 'Prefix': {
             const opInfo = operators.prefix.get(ast.operator);
-            if (!opInfo) {
-                throw new Error(`JPRX: Unknown prefix operator: ${ast.operator}`);
-            }
+            if (!opInfo) throw new Error(`JPRX: Unknown prefix operator: ${ast.operator}`);
             const helper = helpers.get(opInfo.helper);
-            if (!helper) {
-                throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
-            }
-
-            // Check if helper needs BindingTarget (pathAware)
+            if (!helper) throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
             const opts = helperOptions.get(opInfo.helper) || {};
             const operand = evaluateAST(ast.operand, context, opts.pathAware);
-            return helper(operand);
+
+            if (operand && operand.isLazy && !opts.lazyAware) {
+                return new LazyValue((ctx) => {
+                    const resolved = operand.resolve(ctx);
+                    return helper(opts.pathAware ? resolved : unwrapSignal(resolved));
+                });
+            }
+            return helper(opts.pathAware ? operand : unwrapSignal(operand));
         }
 
         case 'Postfix': {
             const opInfo = operators.postfix.get(ast.operator);
-            if (!opInfo) {
-                throw new Error(`JPRX: Unknown postfix operator: ${ast.operator}`);
-            }
+            if (!opInfo) throw new Error(`JPRX: Unknown postfix operator: ${ast.operator}`);
             const helper = helpers.get(opInfo.helper);
-            if (!helper) {
-                throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
-            }
-
+            if (!helper) throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
             const opts = helperOptions.get(opInfo.helper) || {};
             const operand = evaluateAST(ast.operand, context, opts.pathAware);
-            return helper(operand);
+
+            if (operand && operand.isLazy && !opts.lazyAware) {
+                return new LazyValue((ctx) => {
+                    const resolved = operand.resolve(ctx);
+                    return helper(opts.pathAware ? resolved : unwrapSignal(resolved));
+                });
+            }
+            return helper(opts.pathAware ? operand : unwrapSignal(operand));
         }
 
         case 'Infix': {
             const opInfo = operators.infix.get(ast.operator);
-            if (!opInfo) {
-                throw new Error(`JPRX: Unknown infix operator: ${ast.operator}`);
-            }
+            if (!opInfo) throw new Error(`JPRX: Unknown infix operator: ${ast.operator}`);
             const helper = helpers.get(opInfo.helper);
-            if (!helper) {
-                throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
-            }
-
+            if (!helper) throw new Error(`JPRX: Helper "${opInfo.helper}" for operator "${ast.operator}" not found.`);
             const opts = helperOptions.get(opInfo.helper) || {};
-            // For infix, typically first arg might be pathAware
+
             const left = evaluateAST(ast.left, context, opts.pathAware);
             const right = evaluateAST(ast.right, context, false);
 
+            if (((left && left.isLazy) || (right && right.isLazy)) && !opts.lazyAware) {
+                return new LazyValue((ctx) => {
+                    const l = (left && left.isLazy) ? left.resolve(ctx) : left;
+                    const r = (right && right.isLazy) ? right.resolve(ctx) : right;
+                    return helper(opts.pathAware ? l : unwrapSignal(l), unwrapSignal(r));
+                });
+            }
+            return helper(opts.pathAware ? left : unwrapSignal(left), unwrapSignal(right));
+        }
+
+        case 'Call': {
+            const helperName = ast.helper.replace(/^=/, '');
+            const helper = helpers.get(helperName);
+            if (!helper) {
+                globalThis.console?.warn(`JPRX: Helper "${helperName}" not found.`);
+                return undefined;
+            }
+            const opts = helperOptions.get(helperName) || {};
+            const args = ast.args.map((arg, i) => evaluateAST(arg, context, opts.pathAware && i === 0));
+
+            const hasLazy = args.some(arg => arg && arg.isLazy);
+            if (hasLazy && !opts.lazyAware) {
+                return new LazyValue((ctx) => {
+                    const finalArgs = args.map((arg, i) => {
+                        const val = (arg && arg.isLazy) ? arg.resolve(ctx) : arg;
+                        if (ast.args[i].type === 'Explosion' && Array.isArray(val)) {
+                            return val.map(v => unwrapSignal(v));
+                        }
+                        return (opts.pathAware && i === 0) ? val : unwrapSignal(val);
+                    });
+                    // Flatten explosions
+                    const flatArgs = [];
+                    for (let i = 0; i < finalArgs.length; i++) {
+                        if (ast.args[i].type === 'Explosion' && Array.isArray(finalArgs[i])) {
+                            flatArgs.push(...finalArgs[i]);
+                        } else {
+                            flatArgs.push(finalArgs[i]);
+                        }
+                    }
+                    return helper.apply(context?.__node__ || null, flatArgs);
+                });
+            }
+
+            // Non-lazy path
             const finalArgs = [];
+            for (let i = 0; i < args.length; i++) {
+                const arg = args[i];
+                if (ast.args[i].type === 'Explosion' && Array.isArray(arg)) {
+                    finalArgs.push(...arg.map(v => unwrapSignal(v)));
+                } else {
+                    finalArgs.push((opts.pathAware && i === 0) ? arg : unwrapSignal(arg));
+                }
+            }
+            return helper.apply(context?.__node__ || null, finalArgs);
+        }
 
-            // Handle potentially exploded arguments (like in sum(/items...p))
-            // Although infix operators usually take exactly 2 args, we treat them consistently
-            if (Array.isArray(left) && ast.left.type === 'Explosion') finalArgs.push(...left);
-            else finalArgs.push(unwrapSignal(left));
-
-            if (Array.isArray(right) && ast.right.type === 'Explosion') finalArgs.push(...right);
-            else finalArgs.push(unwrapSignal(right));
-
-            return helper(...finalArgs);
+        case 'Explosion': {
+            const result = resolveArgument(ast.path + '...', context, false);
+            return result.value;
         }
 
         default:
@@ -1261,12 +1480,14 @@ export const parseCDOMC = (input) => {
         let bDepth = 0;
         let brDepth = 0;
         let quote = null;
+        const startChar = input[start];
+        const isExpression = startChar === '=' || startChar === '#';
 
         while (i < len) {
             const char = input[i];
 
             if (quote) {
-                if (char === quote) quote = null;
+                if (char === quote && input[i - 1] !== '\\') quote = null;
                 i++;
                 continue;
             } else if (char === '"' || char === "'" || char === "`") {
@@ -1286,8 +1507,42 @@ export const parseCDOMC = (input) => {
 
             // Termination at depth 0
             if (pDepth === 0 && bDepth === 0 && brDepth === 0) {
-                if (/[\s:,{}\[\]"'`()]/.test(char)) {
-                    break;
+                // For expressions, we're more permissive - only break on certain chars
+                if (isExpression) {
+                    if (/[{}[\]"'`()]/.test(char)) {
+                        break;
+                    }
+                    // Check for comma at top level (end of property value)
+                    if (char === ',') {
+                        break;
+                    }
+                    // For whitespace or colon, peek ahead to see if next property starts
+                    if (/[\s:]/.test(char)) {
+                        let j = i + 1;
+                        while (j < len && /\s/.test(input[j])) j++;
+                        // Check if what follows looks like a property key
+                        if (j < len) {
+                            const nextChar = input[j];
+                            // If it's a closing brace or comma, we're done
+                            if (nextChar === '}' || nextChar === ',') {
+                                break;
+                            }
+                            // If it's a word followed by ':', it's a new property
+                            let wordStart = j;
+                            while (j < len && /[a-zA-Z0-9_$-]/.test(input[j])) j++;
+                            if (j > wordStart) {
+                                while (j < len && /\s/.test(input[j])) j++;
+                                if (j < len && input[j] === ':') {
+                                    break; // Next property found
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // For non-expressions, break on structural chars or whitespace
+                    if (/[:,{}[\]"'`()\s]/.test(char)) {
+                        break;
+                    }
                 }
             }
 
@@ -1296,8 +1551,8 @@ export const parseCDOMC = (input) => {
 
         const word = input.slice(start, i);
 
-        // If word starts with =, preserve it as a string for cDOM expression parsing
-        if (word.startsWith('=')) {
+        // If word starts with = or #, preserve it as a string for cDOM expression parsing
+        if (word.startsWith('=') || word.startsWith('#')) {
             return word;
         }
 
@@ -1491,7 +1746,31 @@ export const parseJPRX = (input) => {
                 } else {
                     // Check for break BEFORE updating depth
                     if (parenDepth === 0 && braceDepth === 0 && bracketDepth === 0) {
-                        if (/[\s,}\]:]/.test(c) && expr.length > 1) break;
+                        // Break on structural characters at depth 0
+                        if (/[}[\]:]/.test(c) && expr.length > 1) break;
+                        // Check for comma at top level
+                        if (c === ',') break;
+                        // For whitespace, peek ahead to see if next property starts
+                        if (/\s/.test(c)) {
+                            let j = i + 1;
+                            while (j < len && /\s/.test(input[j])) j++;
+                            if (j < len) {
+                                const nextChar = input[j];
+                                // If it's a closing brace or comma, we're done
+                                if (nextChar === '}' || nextChar === ',' || nextChar === ']') {
+                                    break;
+                                }
+                                // If it's a word followed by ':', it's a new property
+                                let wordStart = j;
+                                while (j < len && /[a-zA-Z0-9_$-]/.test(input[j])) j++;
+                                if (j > wordStart) {
+                                    while (j < len && /\s/.test(input[j])) j++;
+                                    if (j < len && input[j] === ':') {
+                                        break; // Next property found
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     if (c === '(') parenDepth++;

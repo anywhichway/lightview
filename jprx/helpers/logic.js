@@ -6,8 +6,10 @@ export const ifHelper = (condition, thenVal, elseVal) => condition ? thenVal : e
 export const andHelper = (...args) => args.every(Boolean);
 export const orHelper = (...args) => args.some(Boolean);
 export const notHelper = (val) => !val;
-export const eqHelper = (a, b) => a === b;
-export const neqHelper = (a, b) => a !== b;
+export const eqHelper = (a, b) => a == b;
+export const strictEqHelper = (a, b) => a === b;
+export const neqHelper = (a, b) => a != b;
+export const strictNeqHelper = (a, b) => a !== b;
 
 export const registerLogicHelpers = (register) => {
     register('if', ifHelper);
@@ -18,7 +20,11 @@ export const registerLogicHelpers = (register) => {
     register('not', notHelper);
     register('!', notHelper);
     register('eq', eqHelper);
+    register('strictEq', strictEqHelper);
     register('==', eqHelper);
-    register('===', eqHelper);
+    register('===', strictEqHelper);
     register('neq', neqHelper);
+    register('strictNeq', strictNeqHelper);
+    register('!=', neqHelper);
+    register('!==', strictNeqHelper);
 };
