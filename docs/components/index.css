@@ -230,6 +230,15 @@
     margin: 0;
 }
 
+#theme-toggle-container select {
+    border-color: var(--gallery-border);
+    transition: all var(--gallery-transition);
+}
+
+#theme-toggle-container select:hover {
+    border-color: var(--gallery-primary);
+}
+
 /* ============= Content Area ============= */
 .gallery-content {
     padding: 2rem;

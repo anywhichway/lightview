@@ -49,8 +49,8 @@
                     </svg>
                 </a>
             </div>
+            <!-- Moved to components gallery per user request -->
             <div class="nav-actions">
-                <div id="theme-toggle-container"></div>
             </div>
         </nav>
 
@@ -198,14 +198,14 @@
             const contentEl = document.getElementById('content');
             const navLinks = document.querySelectorAll('.nav-link');
 
-            // Setup Theme Selector
-            const themeContainer = document.getElementById('theme-toggle-container');
-            if (themeContainer) {
+            // Theme Selector Initializer
+            globalThis.initThemeSelector = (container) => {
+                if (!container) return;
+                if (container.querySelector('select')) return; // Already initialized
+
                 const themes = ['light', 'dark', 'cupcake', 'bumblebee', 'emerald', 'corporate', 'synthwave', 'retro', 'cyberpunk', 'valentine', 'halloween', 'garden', 'forest', 'aqua', 'lofi', 'pastel', 'fantasy', 'wireframe', 'black', 'luxury', 'dracula', 'cmyk', 'autumn', 'business', 'acid', 'lemonade', 'night', 'coffee', 'winter', 'dim', 'nord', 'sunset'];
-                // Get current from document attribute (set by lightview-x auto-loader) or storage
                 const currentTheme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('lightview-theme') || 'light';
 
-                // Simple select styling
                 const select = document.createElement('select');
                 Object.assign(select.style, {
                     padding: '0.25rem',
@@ -229,8 +229,11 @@
                     LightviewX.setTheme(e.target.value);
                 });
 
-                themeContainer.appendChild(select);
-            }
+                container.appendChild(select);
+            };
+
+            // Setup Theme Selector if container exists (e.g. if we add it back to header later)
+            initThemeSelector(document.getElementById('theme-toggle-container'));
 
             // Helper: Update active nav link
             function updateActiveNav(path) {
@@ -285,6 +288,18 @@
                 // On Response - called AFTER auto-render for post-render logic
                 onResponse: (response, path) => {
                     if (globalThis.closeMobileNav) globalThis.closeMobileNav(); // Ensure menu closes on navigation
+
+                    // Inject Theme Selector into Components Gallery if present
+                    const galleryHeader = contentEl.querySelector('.gallery-header');
+                    if (galleryHeader && !galleryHeader.querySelector('#theme-toggle-container')) {
+                        const container = document.createElement('div');
+                        container.id = 'theme-toggle-container';
+                        container.style.marginLeft = 'auto';
+                        galleryHeader.appendChild(container);
+                        if (globalThis.initThemeSelector) {
+                            globalThis.initThemeSelector(container);
+                        }
+                    }
 
                     // Smart Scroll Restoration
                     const restoreId = history.state?.lastClickedId;

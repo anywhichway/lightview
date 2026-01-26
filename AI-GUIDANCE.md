@@ -104,6 +104,30 @@ Lightview X adds powerful **Hypermedia** capabilities to standard HTML elements.
     *   **Targeting**: Use `target="#dest:beforeend"` to direct the content elsewhere.
     *   **Usage**: `<div href="/api/next-page" target="#content:beforeend">Load More</div>`
 
+### Advanced Fetches (`data-method` & `data-body`)
+Customize HTTP requests for `src` and `href` actions.
+
+*   **`data-method`**: Specify the HTTP verb (e.g., `POST`, `PUT`, `DELETE`). Defaults to `GET`.
+*   **`data-body`**: The data to send with the request.
+    *   **CSS Selector (Default)**: Grabs the data from the DOM.
+        *   `form`: Serialized as `FormData`.
+        *   `input`/`select`/`textarea`: Sends the current `value`.
+        *   `checkbox`/`radio`: Sends `value` only if checked.
+        *   Other elements: Sends `innerText`.
+    *   **`javascript:expr`**: Evaluates a Javascript expression (has access to `state` and `signal`).
+    *   **`json:{...}`**: Sends a literal JSON string (sets `Content-Type: application/json`).
+    *   **`text:...`**: Sends raw text (sets `Content-Type: text/plain`).
+*   **GET Requests**: If the method is `GET`, the data from `data-body` is automatically converted into **URL Query Parameters**.
+
+**Usage**:
+```html
+<!-- Post a form -->
+<button href="/api/user/save" data-method="POST" data-body="#user-form">Save</button>
+
+<!-- Fetch with query params from an input -->
+<button href="/api/search" data-body="#search-input" target="#results">Search</button>
+```
+
 *   **Template Literals**: Supported in HTML, vDOM, and oDOM strings (e.g., `class="${ val > 10 ? 'red' : 'blue' }"`) via `lightview-x.js`.
 *   **Gating**: 
     1.  **`Lightview.hooks.validateUrl`**: Intercept/block URLs.
