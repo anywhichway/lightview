@@ -141,7 +141,7 @@ const { div, h1, p, style } = tags;
 // These functions return Lightview elements (access raw DOM via .domEl)
 const App = div({ class: 'hero' },
     h1('Welcome to Lightview'),
-    p('Lightview is a library for building modern web interfaces.')
+    p('Lightview is a library for humans and LLMs to build modern web interfaces.')
 );
 
 // 2. The $ Function for Selections & Content
@@ -477,7 +477,7 @@ $('#app').content(App);`,
 $('#app').content(App);`,
                 concepts: `
                 <h3 style="margin-top: 0; color: var(--site-primary);">Step 4: Hypermedia + Multiple Formats</h3>
-                <p>Lightview's <strong>hypermedia</strong> feature allows your application to load partial content dynamically from various file formats.</p>
+                <p>Lightview's <a href="/docs/hypermedia/">hypermedia</a> feature allows your application to load partial content dynamically from various file formats.</p>
                 
                 <h4>Key Concepts:</h4>
                 <ul style="padding-left: 1.25rem; color: var(--site-text-secondary);">

@@ -32,6 +32,7 @@
             <div class="nav-links">
                 <a href="/docs/" class="nav-link">Home</a>
                 <a href="/docs/getting-started/" class="nav-link">Get Started</a>
+                <a href="/docs/hypermedia/" class="nav-link">Hypermedia</a>
                 <a href="/docs/api/" class="nav-link">API</a>
                 <a href="/docs/styles/" class="nav-link">Styles</a>
                 <a href="/docs/components/" class="nav-link">Components</a>
@@ -39,7 +40,6 @@
                 <a href="/docs/cdom.html" class="nav-link">cDOM</a>
                 <!--a href="/docs/playground/" class="nav-link">Playground</a>-->
 
-                <a href="/docs/about/" class="nav-link">About</a>
                 <a href="https://github.com/anywhichway/lightview" class="nav-link nav-link-external" target="_blank"
                     rel="noopener">
                     GitHub
@@ -74,8 +74,12 @@
                     <div class="footer-column">
                         <h4>Docs</h4>
                         <a href="/docs/getting-started/">Getting Started</a>
+                        <a href="/docs/hypermedia/">Hypermedia</a>
                         <a href="/docs/api/">API Reference</a>
+                        <a href="/docs/styles/">Styles</a>
                         <a href="/docs/components">Components</a>
+                        <a href="/docs/router/">Router</a>
+                        <a href="/docs/cdom.html">cDOM</a>
                     </div>
                     <div class="footer-column">
                         <h4>Resources</h4>
@@ -312,6 +316,8 @@
             appRouter.use('/docs/components/', '/docs/components/index.html');
             appRouter.use('/docs/examples/', '/docs/examples/index.html');
             appRouter.use('/docs/router/', '/docs/router.html');
+            appRouter.use('/docs/hypermedia/', '/docs/hypermedia/index.html');
+            appRouter.use('/docs/hypermedia/index.html');
             appRouter.use('/docs/cdom.html');
 
             // Wildcard Routes - path replacement with automatic fetch

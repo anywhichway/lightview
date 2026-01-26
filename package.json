@@ -1,7 +1,7 @@
 {
   "name": "lightview",
-  "version": "2.3.9",
-  "description": "A lightweight reactive UI library with features of Bau, Juris, and HTMX",
+  "version": "2.4.0",
+  "description": "An reactive UI library with features of Bau, Juris, and HTMX plus safe LLM UI generation",
   "main": "lightview.js",
   "workspaces": [
     "jprx"

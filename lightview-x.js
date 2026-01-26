@@ -1,4 +1,4 @@
-(function() {
+(function () {
   "use strict";
   var _a, _b;
   const _LV = globalThis.__LIGHTVIEW_INTERNALS__ || (globalThis.__LIGHTVIEW_INTERNALS__ = {
@@ -236,7 +236,7 @@
         if (typeof value === "function") {
           const isTracking = trackingMethods.includes(prop);
           const isMutating = mutatingMethods.includes(prop);
-          return function(...args) {
+          return function (...args) {
             if (isTracking) {
               const sig = signals.get(monitor);
               if (sig) void sig.value;
@@ -244,7 +244,7 @@
             const startValue = typeof target[monitor] === "function" ? target[monitor].call(target) : target[monitor];
             if (isArray && ARRAY_ITERATION.includes(prop) && typeof args[0] === "function") {
               const originalCallback = args[0];
-              args[0] = function(element, index, array) {
+              args[0] = function (element, index, array) {
                 const wrappedElement = typeof element === "object" && element !== null ? state(element) : element;
                 if (wrappedElement && typeof wrappedElement === "object") {
                   parents.set(wrappedElement, receiver);
@@ -705,16 +705,81 @@
     executeScripts(target);
   };
   const isPath = (s) => typeof s === "string" && !isDangerousProtocol(s) && /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom|cdomc?))$/i.test(s);
-  const fetchContent = async (src) => {
-    var _a2;
+  const fetchContent = async (el, src) => {
+    var _a2, _b2;
     try {
       const LV = globalThis.Lightview;
       if (((_a2 = LV == null ? void 0 : LV.hooks) == null ? void 0 : _a2.validateUrl) && !LV.hooks.validateUrl(src)) {
         console.warn(`[LightviewX] Fetch blocked by validateUrl hook: ${src}`);
         return null;
       }
-      const url = new URL(src, document.baseURI);
-      const res = await fetch(url);
+
+      const domEl = el.domEl || el;
+      const method = (domEl.getAttribute("data-method") || "GET").toUpperCase();
+      const bodyAttr = domEl.getAttribute("data-body");
+      let body = null;
+      let headers = {};
+
+      if (bodyAttr) {
+        if (bodyAttr.startsWith("javascript:")) {
+          const code = bodyAttr.slice(11);
+          try {
+            body = new Function("state", "signal", `return (${code})`)(LV.state, LV.signal);
+          } catch (e) {
+            console.warn("LightviewX: Failed to evaluate data-body javascript:", e);
+          }
+        } else if (bodyAttr.startsWith("json:")) {
+          body = bodyAttr.slice(5);
+          headers["Content-Type"] = "application/json";
+        } else if (bodyAttr.startsWith("text:")) {
+          body = bodyAttr.slice(5);
+          headers["Content-Type"] = "text/plain";
+        } else {
+          const target = document.querySelector(bodyAttr);
+          if (target) {
+            const tag = target.tagName.toLowerCase();
+            if (tag === "form") {
+              body = new FormData(target);
+            } else if (target.type === "checkbox" || target.type === "radio") {
+              body = target.checked ? target.value : null;
+            } else if ("value" in target) {
+              body = target.value;
+            } else {
+              body = target.innerText || target.textContent;
+            }
+          }
+        }
+      }
+
+      let url = new URL(src, document.baseURI);
+      const options = { method, headers };
+
+      if (body !== null) {
+        if (method === "GET" || method === "HEAD") {
+          if (body instanceof FormData) {
+            for (const [key, val] of body.entries()) {
+              url.searchParams.append(key, val);
+            }
+          } else if (typeof body === "object") {
+            for (const key in body) {
+              url.searchParams.append(key, body[key]);
+            }
+          } else {
+            url.searchParams.append("body", body);
+          }
+        } else {
+          if (body instanceof FormData) {
+            options.body = body;
+          } else if (typeof body === "object") {
+            options.body = JSON.stringify(body);
+            if (!headers["Content-Type"]) headers["Content-Type"] = "application/json";
+          } else {
+            options.body = body;
+          }
+        }
+      }
+
+      const res = await fetch(url, options);
       if (!res.ok) return null;
       const ext = url.pathname.split(".").pop().toLowerCase();
       const isJson = ext === "vdom" || ext === "odom" || ext === "cdom";
@@ -730,6 +795,7 @@
         raw: isJson ? JSON.stringify(content) : content
       };
     } catch (e) {
+      console.error("LightviewX: fetchContent error:", e);
       return null;
     }
   };
@@ -819,7 +885,7 @@
       if (src.includes("#")) {
         [src, targetHash] = src.split("#");
       }
-      const result = await fetchContent(src);
+      const result = await fetchContent(el, src);
       if (result) {
         elements = parseElements(result.content, result.isJson, result.isHtml, el, element, result.isCdom, result.ext);
         raw = result.raw;
@@ -967,7 +1033,7 @@
     }
     return state2;
   };
-  const gateThrottle = function(ms) {
+  const gateThrottle = function (ms) {
     const event = arguments[arguments.length - 1];
     if (event == null ? void 0 : event[RESUME_FLAG]) return true;
     const key = `throttle-${(event == null ? void 0 : event.type) || "all"}-${ms}`;
@@ -979,7 +1045,7 @@
     }
     return false;
   };
-  const gateDebounce = function(ms) {
+  const gateDebounce = function (ms) {
     const event = arguments[arguments.length - 1];
     const key = `debounce-${(event == null ? void 0 : event.type) || "all"}-${ms}`;
     const state2 = getGateState(this, key);
@@ -1495,7 +1561,7 @@
       };
       const currentType = getType(val);
       if (type && type !== currentType) {
-        if (type === "integer" && Number.isInteger(val)) ;
+        if (type === "integer" && Number.isInteger(val));
         else if (!(type === "number" && typeof val === "number")) {
           errors.push({ path, message: `Expected type ${type}, got ${currentType}`, keyword: "type" });
           return false;

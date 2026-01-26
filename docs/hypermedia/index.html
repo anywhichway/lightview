@@ -2,12 +2,12 @@
 <script src="/lightview-router.js?base=/index.html"></script>
 
 <div class="docs-layout">
-    <aside class="docs-sidebar" src="./nav.html" data-preserve-scroll="docs-nav"></aside>
+    <aside class="docs-sidebar" src="/docs/hypermedia/nav.html" data-preserve-scroll="docs-nav"></aside>
 
     <main class="docs-content">
         <h1>Hypermedia</h1>
         <p>
-            HTM-style patterns, built right in. Load HTML fragments, fetch vDOM/Object DOM, clone templates - all with
+            HTMX-style patterns, built right in. Load HTML fragments, fetch vDOM/Object DOM, clone templates - all with
             the
             <code>src</code> and <code>href</code> attributes.
             <em>Requires lightview-x.js</em>
@@ -22,16 +22,13 @@
         <p>
             Point <code>src</code> at an HTML file and Lightview loads it as children:
         </p>
-        <pre><code>const { tags } = Lightview;
-const { div, header, main } = tags;
+        <pre><code>&lt;!-- Load HTML partials into specific elements --&gt;
+&lt;div&gt;
+    &lt;header src="/partials/nav.html"&gt;&lt;/header&gt;
+    &lt;main src="/partials/content.html"&gt;&lt;/main&gt;
+&lt;/div&gt;
 
-// Load HTML partials
-const app = div(
-    header({ src: '/partials/nav.html' }),
-    main({ src: '/partials/content.html' })
-);
-
-// The HTML is fetched, parsed, and made reactive automatically!</code></pre>
+&lt;!-- The HTML is fetched, parsed, and made reactive automatically! --&gt;</code></pre>
 
         <p>
             By default, Lightview enforces a <strong>Same-Domain security policy</strong> for all remote fetches.
@@ -97,15 +94,15 @@ div({ src: '/api/ai-generated.cdom' })
 
         <h3>1. Request Methods</h3>
         <p>Use <code>data-method</code> to specify an HTTP verb. Defaults to <code>GET</code>.</p>
-        <pre><code>// Send a DELETE request
-button({ 
-    href: '/api/items/123', 
-    'data-method': 'DELETE',
-    target: '#status-log' 
-}, 'Delete Item')</code></pre>
+        <pre><code>&lt;!-- Send a DELETE request --&gt;
+&lt;button href="/api/items/123" data-method="DELETE" target="#status-log"&gt;
+    Delete Item
+&lt;/button&gt;</code></pre>
 
         <h3>2. Request Bodies</h3>
-        <p>Use <code>data-body</code> to send data. If no prefix is used, it is treated as a CSS selector.</p>
+        <p>Use <code>data-body</code> to send data. The prefixes <code>css:</code>, <code>json:</code>, and
+            <code>text:</code> can be used to control exactly how the body is constructed. If no prefix is used, it is
+            treated as a CSS selector.</p>
 
         <h4>CSS Selectors (Default)</h4>
         <p>Grabs data from the DOM based on the element type:</p>
@@ -369,7 +366,7 @@ const app = div({ class: 'app' },
     })
 );</code></pre>
 
-        <h3>Using Lightview Syntax</h3>
+        <h3>Using Ligthview Plain HTML</h3>
         <pre><code>&lt;div class="app"&gt;
     &lt;nav class="sidebar"&gt;
         &lt;button href="/pages/dashboard.html" target="#content"&gt;📊 Dashboard&lt;/button&gt;
