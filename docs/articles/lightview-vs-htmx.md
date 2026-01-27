@@ -1,18 +1,18 @@
-# Lightview vs HTMX: A Deep Dive into Modern Hypermedia Frameworks
+# Lightview vs HTMX: Two Modern Hypermedia Frameworks
 
 ## Introduction
 
-The hypermedia renaissance is in full swing. After years of SPA dominance, developers are rediscovering the power of server-driven architectures that leverage HTML as the engine of application state. Two frameworks leading this charge—HTMX and Lightview—take distinctly different approaches to extending HTML's hypermedia capabilities.
-
-While HTMX has become the de facto standard for hypermedia-driven applications, Lightview offers an intriguing alternative that doesn't lock you into hypermedia-only patterns. Unlike HTMX's focused hypermedia approach, Lightview is a multi-paradigm framework that supports functional programming with template tag functions (like BauJS), JSON representation (like JurisJS), and hypermedia patterns—all within the same framework. This article provides a technical comparison of both frameworks' hypermedia capabilities to help you choose the right tool for your project.
+The hypermedia renaissance is in full swing. After years of SPA dominance, developers are rediscovering the power of server-driven architectures that leverage HTML as the engine of application state. The framework leading this charge is HTMX, requires a complete mindset change. An alternative, Lightview offers an alternative that doesn't lock you into hypermedia-only patterns. Unlike HTMX's focused hypermedia approach, Lightview is a multi-paradigm framework that supports functional programming with template tag functions (like BauJS), JSON representation (like JurisJS), and hypermedia patterns—all within the same framework. This article provides a technical comparison of both frameworks' hypermedia capabilities to help you choose the right tool for your project.
 
 ## What is Hypermedia?
 
-Before diving into the comparison, let's establish what we mean by hypermedia. In Roy Fielding's REST architecture, hypermedia refers to content that contains links and controls for navigating to related resources. Traditional HTML uses this through links and forms, but modern hypermedia frameworks extend these capabilities to any element, enabling richer interactions while maintaining the server-driven model.
+Before diving into the comparison, let's establish what we mean by hypermedia. Hypermedia refers to content that contains links and controls for navigating to related resources. Traditional HTML uses this through links and forms, but modern hypermedia frameworks extend these capabilities to any element, enabling richer interactions. Any element can serve as a link and any element can specify the source from whih it desired to obtain its content.
 
-## HTMX: Completing HTML as a Hypertext
+## HTMX and Lightview: Completing HTML as a Hypertext
 
 HTMX, created by Carson Gross as a successor to intercooler.js, aims to "complete HTML as a hypertext." It extends standard HTML attributes to provide AJAX, CSS Transitions, WebSockets, and Server-Sent Events directly in markup.
+
+Lightview, created by this author Simon Blackwell, was designed in collaboration with LLMs, to not only complete HTML as a hypertext, but to also provide a more portable, structured declaritive approach for the server delivery of content, although the hypermedia content can still be HTML like HTMX, it can also be JSON virtual DOMs that represents HTML or native UI components. 
 
 ### Core Philosophy
 
@@ -21,7 +21,7 @@ HTMX embraces the Hypermedia-Driven Application (HDA) architecture, characterize
 1. **Declarative syntax**: Uses HTML-embedded attributes rather than imperative scripting
 2. **Hypermedia responses**: The server responds with HTML, not JSON
 
-This approach keeps the complexity on the server where mature tools and patterns exist, while the client remains simple and declarative.
+This approach keeps the complexity on the server, while the client remains simple and declarative.
 
 ### Key Features
 
@@ -89,7 +89,7 @@ HTMX has a mature ecosystem with extensive documentation, community examples, an
 
 ## Lightview: Multi-Paradigm Framework with Hypermedia Support
 
-Lightview takes a different approach by offering multiple programming paradigms in one framework. While it includes hypermedia capabilities similar to HTMX, it doesn't force you to use them exclusively. You can use declarative hypermedia patterns, functional programming, or data-driven JSON definitions—all within the same application.
+Lightview has zero dependencies unless you choose to use its pre-built UI components, and it takes a different approach by offering multiple programming paradigms in one framework. While it includes hypermedia capabilities similar to HTMX, it doesn't force you to use them exclusively. You can use declarative hypermedia patterns, functional programming, or data-driven JSON definitions—all within the same application. The Lightview <a href="https://lightview.dev">website</a> provides extensive online documentation and interactive REPLs for trying out the framework.
 
 ### Core Philosophy: The Power of Choice
 
@@ -105,8 +105,8 @@ Lightview is flexible by design. It doesn't prescribe hypermedia as the *only* a
 Lightview's hypermedia system is built on standard HTML attributes (`src`, `href`) extended with powerful capabilities.
 
 **Unified Attributes**:
-*   **`src`**: Fetches content to populate an element (e.g., `<div src="/partials/nav.html">`).
-*   **`href`**: triggers navigation or content loading on user interaction (e.g., `<button href="/page.html">`).
+*   **`src`**: Fetches content to populate an element. Can be a URL (for server-side partials) or a CSS selector (for local partials).
+*   **`href`**: Triggers navigation or content loading on user interaction (e.g., `<button href="/page.html">`).
 
 **Targeting & Location**:
 Lightview offers sophisticated control over where content is inserted using the `target` attribute or `location` setting.
@@ -125,6 +125,30 @@ Customize HTTP actions directly in HTML:
 <button href="/api/save" data-method="POST" data-body="#form-id">Save</button>
 ```
 
+**Self-Sourced Partials (CSS Selectors as Source)**:
+Perhaps Lightview’s most powerful hypermedia differentiator is the ability to source content from the current document. While HTMX is designed to fetch hypermedia partials from a server, Lightview allows the `src` attribute to contain a CSS selector.
+
+This enables "Self-Sourced Partials" where content can be pulled from a `<template>`, a hidden `<div>`, or any other element in the DOM. This reduces network overhead and allows developers to bundle "offline" partials directly within the initial page load.
+
+Lightview takes the approach that hypermedia does not have to mean server-side partials, you can have a full hypermedia SPA.
+
+```html
+<!-- Source content from a local template -->
+<div src="#tab-1-content"></div>
+
+<template id="#tab-1-content">
+  <h3>Tab 1</h3>
+  <p>This content was sourced from a local template tag!</p>
+</template>
+```
+
+**Automatic Hash Scrolling**:
+Lightview supports automatic scrolling to a specific element ID when loading content via `src` or navigating via `href`. If the URL includes a hash fragment (e.g., `/docs/api.html#signals`), Lightview will automatically wait for the content to load and then smoothly scroll the target element into view.
+
+*   **Smart Offsets**: The scroll position automatically accounts for a fixed navigation bar if defined (via `--site-nav-height`).
+*   **Shadow DOM Support**: Scrolling also works for content loaded into a Shadow Root.
+*   **Partial Loading**: Works for both full navigation (`href`) and partial content updates (`src`).
+
 **Declarative Event Gating (`lv-before`)**:
 Lightview provides a powerful "Gating" system to intercept events before they trigger actions. This replaces the need for custom event listeners for common patterns.
 
@@ -134,27 +158,21 @@ Lightview provides a powerful "Gating" system to intercept events before they tr
 
 ### 2. Reactivity & State
 
-Unlike HTMX, which handles state primarily in the DOM, Lightview includes a lightweight, fine-grained reactivity system (Signals and State) inspired by SolidJS and others.
+Lightview includes a built-in, fine-grained reactivity system (Signals and State) that allows for instant updates and automatic template resolution. This separates it from HTMX, which primarily relies on server-rendered responses or DOM-based state for changes.
 
-**Automatic Template Resolution**:
-When HTML is fetched via `src` or `href`, Lightview automatically resolves template literals `${...}` against the current state. This allows server-rendered partials to become instantly reactive on the client without hydration scripts.
+This system provides:
+*   **Automatic Template Resolution**: `${...}` tags in HTML are automatically updated when state changes.
+*   **Named Registration**: Signals and states can be registered by name for easy template binding.
+*   **JSON Schema Control**: Enforce data integrity on reactive state using standard JSON Schema.
 
-```html
-<!-- Loaded content automatically updates when 'user' signal changes -->
-<h1>Welcome, ${signal.get('user').name}</h1>
-```
-
-**Reactive Primitives**:
-*   `signal(value)`: For primitive values.
-*   `state(object)`: For deep observation of objects and arrays.
-*   `effect(fn)`: To run side effects when dependencies change.
+For a detailed technical comparison of Lightview's reactive state vs. HTMX's server-driven approach, see the [State Management](#state-management) section.
 
 ### 3. Data-Driven & AI User Interfaces
 
 One of Lightview's most distinct features is its support for **Data-as-UI** (vDOM, oDOM) and **Safe AI-Generation** (cDOM).
 
 **Multiple JSON Formats**:
-Lightview can fetch and render UI defined as JSON, which is often easier for backends to generate than HTML strings.
+Lightview can fetch and render UI defined as JSON, which is often easier for backends to generate and manage than HTML strings.
 *   **vDOM**: Standard Virtual DOM structure.
 *   **oDOM**: "Object DOM" shorthand for concise config-based UIs.
 
@@ -199,7 +217,7 @@ Use cDOM when you want the dynamism of a generated UI without the security night
 - Uses standard HTML attributes (`src`, `href`) where possible
 - Smaller attribute vocabulary
 - More familiar to developers who know HTML
-- JavaScript API for reactive features
+- JavaScript API for reactive features or cDOM/JPRX for safer reactivity
 
 ### Request Handling
 
@@ -225,7 +243,7 @@ Both frameworks support custom HTTP methods and request bodies, but with differe
        hx-trigger="keyup changed delay:500ms">
 ```
 
-**Lightview** relies more on standard DOM events combined with `lv-before` gating:
+**Lightview** has a similar approach using `lv-before` gating:
 ```html
 <input oninput="search(this.value)" 
        lv-before="input debounce(500)">
@@ -252,36 +270,85 @@ Both frameworks provide flexible control over where content is inserted:
 </button>
 
 <!-- Separate location attribute -->
-<div src="/content" target="#results" location="beforeend"></div>
+<div src="/content" location="beforeend"></div>
 ```
 
 **Key difference**: Lightview includes `shadow` as a positioning option for Shadow DOM insertion, while HTMX focuses on standard DOM manipulation. This makes Lightview more suitable for Web Components architecture.
+
+### Content Sourcing (Server vs. Local)
+
+**HTMX**:
+- Designed for server-driven hypermedia (HDA)
+- Sources must be URLs that return hypermedia (HTML) responses
+- Requires a network request for every partial update
+
+**Lightview**:
+- Multi-source flexibility
+- Sources can be URLs OR CSS selectors
+- Enables "Self-Sourced Partials" where content is pulled from local `<template>` tags or other DOM elements
+- Allows bundling common UI fragments to reduce initial network waterfall
 
 ### Transitions and Animations
 
 **HTMX** has first-class animation support with swap phase classes, request state indicators, timing modifiers, and View Transitions API integration—allowing hypermedia apps to achieve SPA-like smoothness.
 
-**Lightview** handles transitions through standard CSS transitions/animations and component lifecycle hooks without built-in swap phase abstractions.
+**Lightview** currently handles transitions through standard CSS transitions/animations and component lifecycle hooks without built-in swap phase abstractions. Future versions may include built-in swap phase abstractions.
 
 ### State Management
 
-This is where the frameworks diverge most significantly:
+This is where the frameworks diverge most significantly in their architectural approach:
 
-**HTMX** is purely hypermedia-focused. Client-side state is minimal, typically handled through:
-- Hidden form fields
-- DOM state (element attributes)
-- Integration with Alpine.js or VanillaJS for complex client logic
+#### HTMX: Server-Side State
+HTMX is purely hypermedia-focused. Client-side state is minimal, typically handled through:
+- **Server Session**: State is maintained in the backend database or session.
+- **Hidden Form Fields**: passing state back and forth in requests.
+- **DOM Attributes**: Storing simple state in `data-*` attributes.
+- **Alpine.js Integration**: For complex client-side logic, HTMX developers often reach for Alpine.js or similar lightweight libraries.
 
-**Lightview** includes built-in reactive state:
+#### Lightview: Client-Side Reactivity
+Lightview includes a complete, fine-grained reactivity system inspired by SolidJS. This makes it a multi-paradigm framework that can handle state independently of the server.
+
+**Automatic Template Resolution**:
+When HTML is fetched via `src` or `href`, Lightview automatically resolves template literals `${...}` against the current state. This allows server-rendered partials to become instantly reactive on the client without hydration scripts.
+
+**Named Registration**:
+Signals and states can be registered by name so they are available for template resolution globally:
+
 ```javascript
-// Lightview signals
-const user = signal({ name: 'Alice', age: 30 }, 'user');
+// Registering a reactive signal by name
+const count = Lightview.signal(0, 'count');
 
-// Auto-updates when user changes
-div(() => `Welcome, ${signal.get('user').value.name}`);
+// Registering a deeply reactive state by name
+const user = Lightview.state({ name: 'Alice', age: 30 }, 'user');
 ```
 
-This makes Lightview more of a complete framework, while HTMX focuses solely on hypermedia enhancement.
+```html
+<!-- Loaded content automatically updates when 'user' state changes -->
+<h1>Welcome, ${state.get('user').name}</h1>
+```
+
+**JSON Schema Validation**:
+Lightview states can be optionally enforced by JSON schemas, providing data integrity for complex objects:
+
+```javascript
+const user = Lightview.state({ name: 'Alice', age: 30 }, 'user', {
+    schema: {
+        type: 'object',
+        properties: {
+            name: { type: 'string' },
+            age: { type: 'number' }
+        },
+        required: ['name', 'age']
+    }
+});
+```
+
+**Reactive Primitives**:
+*   `signal(value)`: For primitive values.
+*   `state(object)`: For deep observation of objects and arrays.
+*   `effect(fn)`: To run side effects when dependencies change.
+
+This architectural difference makes Lightview more of a complete application framework, while HTMX remains a dedicated hypermedia enhancement tool.
 
 ### Real-Time Updates
 
@@ -314,7 +381,7 @@ This makes Lightview more of a complete framework, while HTMX focuses solely on 
     <form action="/submit" method="post">
 ```
 
-**Lightview**'s approach is less focused on progressive enhancement, as many features (like reactive state) require JavaScript.
+**Lightview**'s with the exception it currently lacks built-in support for websockets or server-side-events, Lightview's approach is just as capable of progressive enhancement. Because <code>href</code> and <code>src</code> are supported for every element, there is no need for anything like <code>hx-boost</code>.
 
 ### Component Architecture
 
@@ -325,6 +392,8 @@ This makes Lightview more of a complete framework, while HTMX focuses solely on 
 - Template components
 - Import/export of variables between components
 - Sandboxed remote components
+
+It also provides over <a href="https://lightview.dev/docs/components/">50 built-in components</a> for common UI patterns, e.g. <a href="http://localhost:3000/docs/components/loading">Loading</a>, <a href="https://lightview.dev/docs/components/card">Card</a>, <a href="https://lightview.dev/docs/components/chart">Chart</a>, <a href="https://lightview.dev/docs/components/drawer">Drawer</a>, etc.
 
 ## Use Cases
 
@@ -344,6 +413,7 @@ This makes Lightview more of a complete framework, while HTMX focuses solely on 
 4. **Client-side reactivity**: Applications needing fine-grained reactive updates
 5. **Shadow DOM/Web Components**: Built-in support for encapsulation
 6. **Hybrid approach**: Mix hypermedia patterns with reactive programming
+7. **Self-Sourced Partials**: When you want to use hypermedia patterns but source some content locally from the DOM to reduce network requests or provide offline-ready sections
 
 ## Performance Considerations
 
@@ -504,6 +574,7 @@ Both HTMX and Lightview represent compelling alternatives to heavy JavaScript fr
 - Fine-grained reactivity
 - Shadow DOM/Web Component support
 - Freedom to choose your programming style
+- Self-sourced local partials via CSS selectors
 
 The key difference: HTMX is laser-focused on hypermedia and does it exceptionally well. Lightview gives you hypermedia as *one option* among several paradigms—it doesn't force you to choose hypermedia for everything.
 

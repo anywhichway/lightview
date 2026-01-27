@@ -71,54 +71,41 @@
                     <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                         Bar Chart
                         <a href="/docs/components/chart-bar" class="info-link" aria-label="View Bar Chart Details">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="info-icon"
-                                style="stroke: currentColor; stroke-width: 2;">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                            <span class="info-icon-char"
+                                style="font-size: 1.2rem; font-weight: bold; font-style: normal;">ⓘ</span>
                         </a>
                     </h2>
                     <div class="card bg-base-100 shadow-sm mb-8">
                         <div class="card-body">
                             <div id="bar-chart-container" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                                <table class="charts-css bar show-labels show-data-on-hover show-primary-axis">
-                                    <caption>Front-end Frameworks</caption>
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Framework </th>
-                                            <th scope="col"> Progress </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> React </th>
-                                            <td style="--size: 0.8;"> <span class="data"> 80% </span> <span
-                                                    class="tooltip"> React:
-                                                    80% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Vue </th>
-                                            <td style="--size: 0.6;"> <span class="data"> 60% </span> <span
-                                                    class="tooltip"> Vue:
-                                                    60% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Svelte </th>
-                                            <td style="--size: 0.4;"> <span class="data"> 40% </span> <span
-                                                    class="tooltip"> Svelte:
-                                                    40% </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Lightview </th>
-                                            <td style="--size: 1.0; --color: #7480ff;"> <span class="data"> 100% </span>
-                                                <span class="tooltip"> Lightview: 100% </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="chart-placeholder"
+                                    style="height: 200px; display: flex; align-items: center; justify-content: center; background: var(--gallery-bg-alt); border-radius: 8px; opacity: 0.5;">
+                                    Loading Chart...
+                                </div>
+                                <script>
+                                    (function () {
+                                        const run = () => {
+                                            const code = document.getElementById('code-bar-chart').textContent;
+                                            const script = document.createElement('script');
+                                            script.type = 'module';
+                                            script.textContent = `
+                                                await import('/components/data-display/chart.js');
+                                                const { tags } = Lightview;
+                                                const { Chart, span } = tags; const chart =`
+                                                + code +
+                                                `; document.getElementById('bar-chart-container').replaceChildren(chart.domEl)`;
+                                            document.body.appendChild(script);
+                                        };
+                                        if (document.readyState === 'loading') {
+                                            window.addEventListener('load', run);
+                                        } else {
+                                            run();
+                                        }
+                                    })();
+                                </script>
                             </div>
                             <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'bar', labels: true, dataOnHover: true, primaryAxis: true, heading: 'Front-end Frameworks' },
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="code-bar-chart">Chart({ type: 'bar', labels: true, dataOnHover: true, primaryAxis: true, heading: 'Front-end Frameworks' },
     /* Head is for screen reader use and is not visible */
     Chart.Head({},
         Chart.Row({},
@@ -129,19 +116,19 @@
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'React'),
-            Chart.Data({ value: 0.8, tooltip: 'React: 80%' }, $('span', { class: 'data' }, '80%'))
+            Chart.Data({ value: 0.8, tooltip: 'React: 80%' }, span({ class: 'data' }, '80%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Vue'),
-            Chart.Data({ value: 0.6, tooltip: 'Vue: 60%' }, $('span', { class: 'data' }, '60%'))
+            Chart.Data({ value: 0.6, tooltip: 'Vue: 60%' }, span({ class: 'data' }, '60%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Svelte'),
-            Chart.Data({ value: 0.4, tooltip: 'Svelte: 40%' }, $('span', { class: 'data' }, '40%'))
+            Chart.Data({ value: 0.4, tooltip: 'Svelte: 40%' }, span({ class: 'data' }, '40%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Lightview'),
-            Chart.Data({ value: 1.0, color: '#7480ff', tooltip: 'Lightview: 100%' }, $('span', { class: 'data' }, '100%'))
+            Chart.Data({ value: 1.0, color: '#7480ff', tooltip: 'Lightview: 100%' }, span({ class: 'data' }, '100%'))
         )
     )
 )</code></pre>
@@ -154,51 +141,42 @@
                         Column Chart
                         <a href="/docs/components/chart-column" class="info-link"
                             aria-label="View Column Chart Details">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="info-icon"
-                                style="stroke: currentColor; stroke-width: 2;">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                            <span class="info-icon-char"
+                                style="font-size: 1.2rem; font-weight: bold; font-style: normal;">ⓘ</span>
                         </a>
                     </h2>
                     <div class="card bg-base-100 shadow-sm mb-8">
                         <div class="card-body">
                             <div id="column-chart-container"
                                 style="width: 100%; max-width: 600px; height: 300px; margin: 0 auto;">
-                                <table class="charts-css column show-labels show-primary-axis show-heading">
-                                    <caption>Monthly Revenue</caption>
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Month </th>
-                                            <th scope="col"> Revenue </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Jan </th>
-                                            <td style="--size: 0.2;"> <span class="data"> $20K </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Feb </th>
-                                            <td style="--size: 0.4;"> <span class="data"> $40K </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Mar </th>
-                                            <td style="--size: 0.6;"> <span class="data"> $60K </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Apr </th>
-                                            <td style="--size: 0.8;"> <span class="data"> $80K </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> May </th>
-                                            <td style="--size: 0.5;"> <span class="data"> $50K </span> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="chart-placeholder"
+                                    style="height: 300px; display: flex; align-items: center; justify-content: center; background: var(--gallery-bg-alt); border-radius: 8px; opacity: 0.5;">
+                                    Loading Chart...
+                                </div>
+                                <script>
+                                    (function () {
+                                        const run = () => {
+                                            const code = document.getElementById('code-column-chart').textContent;
+                                            const script = document.createElement('script');
+                                            script.type = 'module';
+                                            script.textContent = `
+                                                await import('/components/data-display/chart.js');
+                                                const { tags } = Lightview;
+                                                const { Chart, span } = tags; const chart =`
+                                                + code +
+                                                `; document.getElementById('column-chart-container').replaceChildren(chart.domEl)`;
+                                            document.body.appendChild(script);
+                                        };
+                                        if (document.readyState === 'loading') {
+                                            window.addEventListener('load', run);
+                                        } else {
+                                            run();
+                                        }
+                                    })();
+                                </script>
                             </div>
                             <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'column', labels: true, primaryAxis: true, heading: 'Monthly Revenue' },
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="code-column-chart">Chart({ type: 'column', labels: true, primaryAxis: true, heading: 'Monthly Revenue' },
     /* Head is for screen reader use and is not visible */
     Chart.Head({},
         Chart.Row({},
@@ -209,23 +187,23 @@
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Jan'),
-            Chart.Data({ value: 0.2 }, $('span', { class: 'data' }, '$20K'))
+            Chart.Data({ value: 0.2 }, span({ class: 'data' }, '$20K'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Feb'),
-            Chart.Data({ value: 0.4 }, $('span', { class: 'data' }, '$40K'))
+            Chart.Data({ value: 0.4 }, span({ class: 'data' }, '$40K'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Mar'),
-            Chart.Data({ value: 0.6 }, $('span', { class: 'data' }, '$60K'))
+            Chart.Data({ value: 0.6 }, span({ class: 'data' }, '$60K'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Apr'),
-            Chart.Data({ value: 0.8 }, $('span', { class: 'data' }, '$80K'))
+            Chart.Data({ value: 0.8 }, span({ class: 'data' }, '$80K'))
         ),
         Chart.Row({},
             Chart.Label({}, 'May'),
-            Chart.Data({ value: 0.5 }, $('span', { class: 'data' }, '$50K'))
+            Chart.Data({ value: 0.5 }, span({ class: 'data' }, '$50K'))
         )
     )
 )</code></pre>
@@ -237,57 +215,42 @@
                     <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                         Line Chart
                         <a href="/docs/components/chart-line" class="info-link" aria-label="View Line Chart Details">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="info-icon"
-                                style="stroke: currentColor; stroke-width: 2;">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                            <span class="info-icon-char"
+                                style="font-size: 1.2rem; font-weight: bold; font-style: normal;">ⓘ</span>
                         </a>
                     </h2>
                     <div class="card bg-base-100 shadow-sm mb-8">
                         <div class="card-body">
                             <div id="line-chart-container"
                                 style="width: 100%; max-width: 600px; height: 300px; margin: 0 auto;">
-                                <table
-                                    class="charts-css line show-heading show-labels show-primary-axis show-4-secondary-axes">
-                                    <caption>Growth Trajectory</caption>
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Year </th>
-                                            <th scope="col"> Value </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> 2018 </th>
-                                            <td style="--start: 0.1; --size: 0.3;"> <span class="data"> 30% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2019 </th>
-                                            <td style="--start: 0.3; --size: 0.5;"> <span class="data"> 50% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2020 </th>
-                                            <td style="--start: 0.5; --size: 0.4;"> <span class="data"> 40% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2021 </th>
-                                            <td style="--start: 0.4; --size: 0.8;"> <span class="data"> 80% </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 2022 </th>
-                                            <td style="--start: 0.8; --size: 0.9;"> <span class="data"> 90% </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="chart-placeholder"
+                                    style="height: 300px; display: flex; align-items: center; justify-content: center; background: var(--gallery-bg-alt); border-radius: 8px; opacity: 0.5;">
+                                    Loading Chart...
+                                </div>
+                                <script>
+                                    (function () {
+                                        const run = () => {
+                                            const code = document.getElementById('code-line-chart').textContent;
+                                            const script = document.createElement('script');
+                                            script.type = 'module';
+                                            script.textContent = `
+                                                await import('/components/data-display/chart.js');
+                                                const { tags } = Lightview;
+                                                const { Chart, span } = tags; const chart =`
+                                                + code +
+                                                `; document.getElementById('line-chart-container').replaceChildren(chart.domEl)`;
+                                            document.body.appendChild(script);
+                                        };
+                                        if (document.readyState === 'loading') {
+                                            window.addEventListener('load', run);
+                                        } else {
+                                            run();
+                                        }
+                                    })();
+                                </script>
                             </div>
                             <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'line', heading: 'Growth Trajectory', labels: true, primaryAxis: true, secondaryAxesCount: 4 },
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="code-line-chart">Chart({ type: 'line', heading: 'Growth Trajectory', labels: true, primaryAxis: true, secondaryAxesCount: 4 },
     /* Head is for screen reader use and is not visible */
     Chart.Head({},
         Chart.Row({},
@@ -298,23 +261,23 @@
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, '2018'),
-            Chart.Data({ start: 0.1, value: 0.3 }, $('span', { class: 'data' }, '30%'))
+            Chart.Data({ start: 0.1, value: 0.3 }, span({ class: 'data' }, '30%'))
         ),
         Chart.Row({},
             Chart.Label({}, '2019'),
-            Chart.Data({ start: 0.3, value: 0.5 }, $('span', { class: 'data' }, '50%'))
+            Chart.Data({ start: 0.3, value: 0.5 }, span({ class: 'data' }, '50%'))
         ),
         Chart.Row({},
             Chart.Label({}, '2020'),
-            Chart.Data({ start: 0.5, value: 0.4 }, $('span', { class: 'data' }, '40%'))
+            Chart.Data({ start: 0.5, value: 0.4 }, span({ class: 'data' }, '40%'))
         ),
         Chart.Row({},
             Chart.Label({}, '2021'),
-            Chart.Data({ start: 0.4, value: 0.8 }, $('span', { class: 'data' }, '80%'))
+            Chart.Data({ start: 0.4, value: 0.8 }, span({ class: 'data' }, '80%'))
         ),
         Chart.Row({},
             Chart.Label({}, '2022'),
-            Chart.Data({ start: 0.8, value: 0.9 }, $('span', { class: 'data' }, '90%'))
+            Chart.Data({ start: 0.8, value: 0.9 }, span({ class: 'data' }, '90%'))
         )
     )
 )</code></pre>
@@ -326,51 +289,42 @@
                     <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                         Area Chart
                         <a href="/docs/components/chart-area" class="info-link" aria-label="View Area Chart Details">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="info-icon"
-                                style="stroke: currentColor; stroke-width: 2;">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                            <span class="info-icon-char"
+                                style="font-size: 1.2rem; font-weight: bold; font-style: normal;">ⓘ</span>
                         </a>
                     </h2>
                     <div class="card bg-base-100 shadow-sm mb-8">
                         <div class="card-body">
                             <div id="area-chart-container"
                                 style="width: 100%; max-width: 600px; height: 300px; margin: 0 auto;">
-                                <table class="charts-css area show-labels show-primary-axis">
-                                    <caption>Server Load</caption>
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Time </th>
-                                            <th scope="col"> Load </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> 00:00 </th>
-                                            <td style="--start: 0.2; --size: 0.4;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 04:00 </th>
-                                            <td style="--start: 0.4; --size: 0.8;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 08:00 </th>
-                                            <td style="--start: 0.8; --size: 0.6;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 12:00 </th>
-                                            <td style="--start: 0.6; --size: 0.9;"></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> 16:00 </th>
-                                            <td style="--start: 0.9; --size: 0.5;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="chart-placeholder"
+                                    style="height: 300px; display: flex; align-items: center; justify-content: center; background: var(--gallery-bg-alt); border-radius: 8px; opacity: 0.5;">
+                                    Loading Chart...
+                                </div>
+                                <script>
+                                    (function () {
+                                        const run = () => {
+                                            const code = document.getElementById('code-area-chart').textContent;
+                                            const script = document.createElement('script');
+                                            script.type = 'module';
+                                            script.textContent = `
+                                                await import('/components/data-display/chart.js');
+                                                const { tags } = Lightview;
+                                                const { Chart, span } = tags; const chart =`
+                                                + code +
+                                                `; document.getElementById('area-chart-container').replaceChildren(chart.domEl)`;
+                                            document.body.appendChild(script);
+                                        };
+                                        if (document.readyState === 'loading') {
+                                            window.addEventListener('load', run);
+                                        } else {
+                                            run();
+                                        }
+                                    })();
+                                </script>
                             </div>
                             <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'area', labels: true, primaryAxis: true, heading: 'Server Load' },
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="code-area-chart">Chart({ type: 'area', labels: true, primaryAxis: true, heading: 'Server Load' },
     /* Head is for screen reader use and is not visible */
     Chart.Head({},
         Chart.Row({},
@@ -409,46 +363,39 @@
                     <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                         Pie Chart
                         <a href="/docs/components/chart-pie" class="info-link" aria-label="View Pie Chart Details">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="info-icon"
-                                style="stroke: currentColor; stroke-width: 2;">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                            <span class="info-icon-char"
+                                style="font-size: 1.2rem; font-weight: bold; font-style: normal;">ⓘ</span>
                         </a>
                     </h2>
                     <div class="card bg-base-100 shadow-sm mb-8">
                         <div class="card-body">
                             <div id="pie-chart-container"
                                 style="width: 100%; max-width: 300px; margin: 0 auto; aspect-ratio: 1 / 1;">
-                                <table class="charts-css pie show-labels show-4-secondary-axes">
-                                    <caption>Browser Market Share</caption>
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Browser </th>
-                                            <th scope="col"> Share </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"> Chrome </th>
-                                            <td style="--start: 0.0; --end: 0.6; --color: #4CAF50;"> <span class="data">
-                                                    60%
-                                                </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Firefox </th>
-                                            <td style="--start: 0.6; --end: 0.85; --color: #F44336;"> <span
-                                                    class="data"> 25%
-                                                </span> </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"> Safari </th>
-                                            <td style="--start: 0.85; --end: 1.0; --color: #2196F3;"> <span
-                                                    class="data"> 15%
-                                                </span> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="chart-placeholder"
+                                    style="height: 300px; display: flex; align-items: center; justify-content: center; background: var(--gallery-bg-alt); border-radius: 8px; opacity: 0.5;">
+                                    Loading Chart...
+                                </div>
+                                <script>
+                                    (function () {
+                                        const run = () => {
+                                            const code = document.getElementById('code-pie-chart').textContent;
+                                            const script = document.createElement('script');
+                                            script.type = 'module';
+                                            script.textContent = `
+                                                await import('/components/data-display/chart.js');
+                                                const { tags } = Lightview;
+                                                const { Chart, span } = tags; const chart =`
+                                                + code +
+                                                `; document.getElementById('pie-chart-container').replaceChildren(chart.domEl)`;
+                                            document.body.appendChild(script);
+                                        };
+                                        if (document.readyState === 'loading') {
+                                            window.addEventListener('load', run);
+                                        } else {
+                                            run();
+                                        }
+                                    })();
+                                </script>
                             </div>
                             <p class="text-sm opacity-70 mt-4">
                                 <strong>Note:</strong> For Pie charts, use <code>--start</code> and <code>--end</code>
@@ -459,19 +406,19 @@
                                 to 1.0).
                             </p>
                             <div class="mt-4">
-                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code>Chart({ type: 'pie', labels: true, heading: 'Browser Market Share', secondaryAxesCount: 4 },
+                                <pre class="bg-base-300 p-4 rounded-lg text-sm overflow-x-auto"><code id="code-pie-chart">Chart({ type: 'pie', labels: true, heading: 'Browser Market Share', secondaryAxesCount: 4 },
     Chart.Body({},
         Chart.Row({},
             Chart.Label({}, 'Chrome'),
-            Chart.Data({ start: 0.0, end: 0.6, color: '#4CAF50' }, $('span', { class: 'data' }, '60%'))
+            Chart.Data({ start: 0.0, end: 0.6, color: '#4CAF50' }, span({ class: 'data' }, '60%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Firefox'),
-            Chart.Data({ start: 0.6, end: 0.85, color: '#F44336' }, $('span', { class: 'data' }, '25%'))
+            Chart.Data({ start: 0.6, end: 0.85, color: '#F44336' }, span({ class: 'data' }, '25%'))
         ),
         Chart.Row({},
             Chart.Label({}, 'Safari'),
-            Chart.Data({ start: 0.85, end: 1.0, color: '#2196F3' }, $('span', { class: 'data' }, '15%'))
+            Chart.Data({ start: 0.85, end: 1.0, color: '#2196F3' }, span({ class: 'data' }, '15%'))
         )
     )
 )</code></pre>

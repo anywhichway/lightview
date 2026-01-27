@@ -307,12 +307,18 @@
     justify-content: center;
     width: 24px;
     height: 24px;
-    color: var(--gallery-text-secondary);
-    transition: color var(--gallery-transition);
+    color: var(--gallery-primary);
+    transition: all var(--gallery-transition);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    opacity: 0.8;
 }
 
 .info-link:hover {
-    color: var(--gallery-primary);
+    color: var(--gallery-primary-hover);
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 .info-icon {

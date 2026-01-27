@@ -39,7 +39,7 @@
                 <div class="gallery-intro">
                     <p>Explore all Lightview components powered by DaisyUI. Use the sidebar (<code>&gt;&gt;</code>) to
                         navigate to individual
-                        component documentation, or browse just a few examples below and click on the (<code>i</code>)
+                        component documentation, or browse just a few examples below and click on the ⓘ icons
                         to see more documentation.</p>
                 </div>
 
@@ -226,10 +226,7 @@ $('#example').content(app);</code></pre>
     document.querySelector('.gallery-layout').classList.add('js-ready');
 
     // Info icon helper (shared via window)
-    globalThis.InfoIcon = () => svg(
-        { xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", class: "info-icon", style: "stroke: currentColor;" },
-        path({ "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" })
-    );
+    globalThis.InfoIcon = () => tags.span({ class: "info-icon-char", style: "font-size: 1.2rem; font-weight: bold; font-style: normal;" }, "ⓘ");
 </script>
 
 
@@ -304,7 +301,8 @@ $('#example').content(app);</code></pre>
 
     const content = div({},
         div({ class: "section-header" },
-            span({ class: "section-badge accent" }, "Inputs")
+            span({ class: "section-badge accent" }, "Inputs"),
+            a({ href: "/docs/components/input", class: "info-link", "aria-label": "View Input Docs" }, InfoIcon())
         ),
         Card({ styleSheets: ['/docs/components/index.css'] },
             Card.Body({},
@@ -531,10 +529,14 @@ $('#example').content(app);</code></pre>
     const content = div({},
         div({ class: "section-header" },
             span({ class: "section-badge" }, "Charts"),
-            a({ href: "/docs/components/chart", class: "info-link" }, InfoIcon())
+            a({ href: "/docs/components/chart", class: "info-link", "aria-label": "View Charts Docs" }, InfoIcon())
         ),
         Card({ styleSheets: ['/docs/components/index.css'] },
             Card.Body({},
+                div({ class: "form-label" },
+                    span({ class: "label-text" }, "Bar Chart"),
+                    a({ href: "/docs/components/chart-bar", class: "info-link", "aria-label": "View Bar Chart Details" }, InfoIcon())
+                ),
                 Chart({
                     type: "bar",
                     showLabels: true,
@@ -578,7 +580,10 @@ $('#example').content(app);</code></pre>
             Card.Body({},
                 div({ class: "component-grid-2" },
                     div({},
-                        div({ class: "component-label" }, "Bars"),
+                        div({ class: "form-label" },
+                            span({ class: "label-text" }, "Bars"),
+                            a({ href: "/docs/components/progress", class: "info-link", "aria-label": "View Progress Docs" }, InfoIcon())
+                        ),
                         div({ class: "progress-stack" },
                             Progress({ value: 0 }),
                             Progress({ value: 40, color: "primary" }),
@@ -587,7 +592,13 @@ $('#example').content(app);</code></pre>
                         )
                     ),
                     div({},
-                        div({ class: "component-label" }, "Radial & Loading"),
+                        div({ class: "form-label" },
+                            span({ class: "label-text" }, "Radial & Loading"),
+                            div({ style: "display: flex; gap: 0.25rem;" },
+                                a({ href: "/docs/components/radial-progress", class: "info-link", title: "Radial Progress", "aria-label": "View Radial Progress Docs" }, InfoIcon()),
+                                a({ href: "/docs/components/loading", class: "info-link", title: "Loading", "aria-label": "View Loading Docs" }, InfoIcon())
+                            )
+                        ),
                         div({ class: "loading-row" },
                             RadialProgress({ value: 70, color: "primary" }, "70%"),
                             Loading({ type: "spinner", color: "primary" }),
