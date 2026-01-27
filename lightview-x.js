@@ -848,8 +848,12 @@
     }
   };
   const updateTargetContent = (el, elements, raw, loc, contentHash, options, targetHash = null) => {
-    var _a2;
-    const { element, setupChildren, saveScrolls, restoreScrolls } = { ...options, ...(_a2 = globalThis.Lightview) == null ? void 0 : _a2.internals };
+    var _a2, _b2;
+    const { element, setupChildren, saveScrolls, restoreScrolls } = {
+      element: (_a2 = globalThis.Lightview) == null ? void 0 : _a2.element,
+      ...(_b2 = globalThis.Lightview) == null ? void 0 : _b2.internals,
+      ...options
+    };
     const markerId = `${loc}-${contentHash.slice(0, 8)}`;
     let track = getOrSet(insertedContentMap, el.domEl, () => ({}));
     if (track[loc]) removeInsertedContent(el.domEl, `${loc}-${track[loc].slice(0, 8)}`);
@@ -1000,7 +1004,8 @@
       if (targetElements.length === 0) return;
       const result = await fetchContent(href, options);
       if (!result) return;
-      const { element, setupChildren } = LV.internals;
+      const { setupChildren } = LV.internals;
+      const element = LV.element;
       targetElements.forEach((targetEl) => {
         let el = domToElement.get(targetEl);
         if (!el) {

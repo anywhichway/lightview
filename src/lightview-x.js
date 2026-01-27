@@ -718,7 +718,11 @@ const elementsFromSelector = (selector, element) => {
 };
 
 const updateTargetContent = (el, elements, raw, loc, contentHash, options, targetHash = null) => {
-    const { element, setupChildren, saveScrolls, restoreScrolls } = { ...options, ...globalThis.Lightview?.internals };
+    const { element, setupChildren, saveScrolls, restoreScrolls } = {
+        element: globalThis.Lightview?.element,
+        ...globalThis.Lightview?.internals,
+        ...options
+    };
     const markerId = `${loc}-${contentHash.slice(0, 8)}`;
     let track = getOrSet(insertedContentMap, el.domEl, () => ({}));
     if (track[loc]) removeInsertedContent(el.domEl, `${loc}-${track[loc].slice(0, 8)}`);
@@ -901,7 +905,8 @@ const handleNonStandardHref = async (e, { domToElement, wrapDomElement }) => {
         const result = await fetchContent(href, options);
         if (!result) return;
 
-        const { element, setupChildren } = LV.internals;
+        const { setupChildren } = LV.internals;
+        const element = LV.element;
 
         targetElements.forEach(targetEl => {
             let el = domToElement.get(targetEl);
