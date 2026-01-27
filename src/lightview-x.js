@@ -1343,12 +1343,7 @@ if (typeof window !== 'undefined' && globalThis.Lightview) {
     LV.hooks.processChild = (child) => {
         if (!child) return child;
 
-        // 1. Skip cDOM XPath markers - they must remain as-is for the core to resolve them
-        if (typeof child === 'object' && child.__xpath__ && child.__static__) {
-            return child;
-        }
-
-        // 2. Convert Object DOM syntax if applicable
+        // 1. Convert Object DOM syntax if applicable
         if (typeof child === 'object' && !Array.isArray(child) && !child.tag && !child.domEl) {
             child = convertObjectDOM(child);
         }
