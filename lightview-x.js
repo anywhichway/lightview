@@ -705,16 +705,92 @@
     executeScripts(target);
   };
   const isPath = (s) => typeof s === "string" && !isDangerousProtocol(s) && /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom|cdomc?))$/i.test(s);
-  const fetchContent = async (src) => {
+  const getRequestInfo = (el) => {
+    const domEl = el.domEl || el;
+    const method = (domEl.getAttribute("data-method") || "GET").toUpperCase();
+    const bodyAttr = domEl.getAttribute("data-body");
+    let body = null;
+    let headers = {};
+    if (bodyAttr) {
+      if (bodyAttr.startsWith("javascript:")) {
+        const expr = bodyAttr.slice(11);
+        const LV = globalThis.Lightview;
+        try {
+          body = new Function("state", "signal", `return ${expr}`)(LV.state || {}, LV.signal || {});
+        } catch (e) {
+          console.warn(`[LightviewX] Failed to evaluate data-body expression: ${expr}`, e);
+        }
+      } else if (bodyAttr.startsWith("json:")) {
+        try {
+          body = JSON.parse(bodyAttr.slice(5));
+          headers["Content-Type"] = "application/json";
+        } catch (e) {
+          console.warn(`[LightviewX] Failed to parse data-body JSON: ${bodyAttr.slice(5)}`, e);
+        }
+      } else if (bodyAttr.startsWith("text:")) {
+        body = bodyAttr.slice(5);
+        headers["Content-Type"] = "text/plain";
+      } else {
+        try {
+          const target = document.querySelector(bodyAttr);
+          if (target) {
+            if (target.tagName === "FORM") {
+              body = new FormData(target);
+            } else if (["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName)) {
+              const name = target.getAttribute("name") || "body";
+              body = { [name]: target.value };
+            } else {
+              body = target.innerText;
+            }
+          }
+        } catch (e) {
+          body = bodyAttr;
+        }
+      }
+    }
+    return { method, body, headers };
+  };
+  const fetchContent = async (src, requestOptions = {}) => {
     var _a2;
+    const { method = "GET", body = null, headers = {} } = requestOptions;
     try {
       const LV = globalThis.Lightview;
       if (((_a2 = LV == null ? void 0 : LV.hooks) == null ? void 0 : _a2.validateUrl) && !LV.hooks.validateUrl(src)) {
         console.warn(`[LightviewX] Fetch blocked by validateUrl hook: ${src}`);
         return null;
       }
-      const url = new URL(src, document.baseURI);
-      const res = await fetch(url);
+      let url = new URL(src, document.baseURI);
+      const fetchOptions = { method, headers: { ...headers } };
+      if (body) {
+        if (method === "GET") {
+          const params = new URLSearchParams(url.search);
+          if (body instanceof FormData) {
+            for (const [key, value] of body.entries()) params.append(key, value);
+          } else if (typeof body === "object" && body !== null) {
+            for (const [key, value] of Object.entries(body)) params.append(key, String(value));
+          } else {
+            params.append("body", String(body));
+          }
+          const queryString = params.toString();
+          if (queryString) {
+            url = new URL(`${url.origin}${url.pathname}?${queryString}${url.hash}`, url.origin);
+          }
+        } else {
+          if (body instanceof FormData) {
+            fetchOptions.body = body;
+          } else if (typeof body === "object" && body !== null) {
+            if (headers["Content-Type"] === "application/json" || !headers["Content-Type"]) {
+              fetchOptions.body = JSON.stringify(body);
+              fetchOptions.headers["Content-Type"] = "application/json";
+            } else {
+              fetchOptions.body = String(body);
+            }
+          } else {
+            fetchOptions.body = String(body);
+          }
+        }
+      }
+      const res = await fetch(url, fetchOptions);
       if (!res.ok) return null;
       const ext = url.pathname.split(".").pop().toLowerCase();
       const isJson = ext === "vdom" || ext === "odom" || ext === "cdom";
@@ -819,7 +895,8 @@
       if (src.includes("#")) {
         [src, targetHash] = src.split("#");
       }
-      const result = await fetchContent(src);
+      const options = getRequestInfo(el);
+      const result = await fetchContent(src, options);
       if (result) {
         elements = parseElements(result.content, result.isJson, result.isHtml, el, element, result.isCdom, result.ext);
         raw = result.raw;
@@ -870,7 +947,7 @@
     }
     return { selector: targetStr, location: null };
   };
-  const handleNonStandardHref = (e, { domToElement, wrapDomElement }) => {
+  const handleNonStandardHref = async (e, { domToElement, wrapDomElement }) => {
     var _a2;
     const clickedEl = e.target.closest("[href]");
     if (!clickedEl) return;
@@ -884,6 +961,7 @@
       return;
     }
     const targetAttr = clickedEl.getAttribute("target");
+    const options = getRequestInfo(clickedEl);
     if (!targetAttr) {
       let el = domToElement.get(clickedEl);
       if (!el) {
@@ -896,6 +974,9 @@
       return;
     }
     if (targetAttr.startsWith("_")) {
+      if (options.method !== "GET") {
+        console.warn("[LightviewX] Cannot use non-GET method for browser navigation (_blank, _top, etc.)");
+      }
       switch (targetAttr) {
         case "_self":
           globalThis.location.href = href;
@@ -916,6 +997,10 @@
     const { selector, location } = parseTargetWithLocation(targetAttr);
     try {
       const targetElements = document.querySelectorAll(selector);
+      if (targetElements.length === 0) return;
+      const result = await fetchContent(href, options);
+      if (!result) return;
+      const { element, setupChildren } = LV.internals;
       targetElements.forEach((targetEl) => {
         let el = domToElement.get(targetEl);
         if (!el) {
@@ -923,14 +1008,14 @@
           for (let attr of targetEl.attributes) attrs[attr.name] = attr.value;
           el = wrapDomElement(targetEl, targetEl.tagName.toLowerCase(), attrs);
         }
-        const newAttrs = { ...el.attributes, src: href };
-        if (location) {
-          newAttrs.location = location;
-        }
-        el.attributes = newAttrs;
+        const elements = parseElements(result.content, result.isJson, result.isHtml, el, element, result.isCdom, result.ext);
+        const loc = (location || targetEl.getAttribute("location") || "innerhtml").toLowerCase();
+        const contentHash = hashContent(result.raw);
+        updateTargetContent(el, elements, result.raw, loc, contentHash, { element, setupChildren });
+        targetEl.setAttribute("src", href);
       });
     } catch (err) {
-      console.warn("Invalid target selector:", selector, err);
+      console.warn("Invalid target selector or fetch error:", selector, err);
     }
   };
   const gateStates = /* @__PURE__ */ new WeakMap();
@@ -1233,6 +1318,9 @@
     CAPTURE_EVENTS.forEach((ev) => window.addEventListener(ev, globalBeforeInterceptor, true));
     LV.hooks.processChild = (child) => {
       if (!child) return child;
+      if (typeof child === "object" && child.__xpath__ && child.__static__) {
+        return child;
+      }
       if (typeof child === "object" && !Array.isArray(child) && !child.tag && !child.domEl) {
         child = convertObjectDOM(child);
       }
@@ -1557,6 +1645,21 @@
     }
     if (globalThis.Lightview) globalThis.Lightview.validate = validateJSONSchema;
   }
+  const request = async (el) => {
+    const domEl = el.domEl || el;
+    const href = domEl.getAttribute("href") || domEl.getAttribute("src");
+    if (!href) return;
+    return handleNonStandardHref({
+      target: domEl,
+      preventDefault: () => {
+      },
+      stopPropagation: () => {
+      }
+    }, {
+      domToElement: globalThis.Lightview.internals.domToElement,
+      wrapDomElement: globalThis.Lightview.internals.wrapDomElement
+    });
+  };
   const LightviewX = {
     state,
     themeSignal,
@@ -1566,6 +1669,28 @@
     // Gate modifiers
     throttle: gateThrottle,
     debounce: gateDebounce,
+    // Hypermedia Actions
+    request,
+    get: (el, url) => {
+      if (url) el.setAttribute("href", url);
+      el.setAttribute("data-method", "GET");
+      return request(el);
+    },
+    post: (el, url) => {
+      if (url) el.setAttribute("href", url);
+      el.setAttribute("data-method", "POST");
+      return request(el);
+    },
+    put: (el, url) => {
+      if (url) el.setAttribute("href", url);
+      el.setAttribute("data-method", "PUT");
+      return request(el);
+    },
+    delete: (el, url) => {
+      if (url) el.setAttribute("href", url);
+      el.setAttribute("data-method", "DELETE");
+      return request(el);
+    },
     // Component initialization
     initComponents,
     componentConfig,
@@ -1580,6 +1705,7 @@
       parseElements
     }
   };
+  if (globalThis.Lightview) globalThis.Lightview.request = request;
   if (typeof module !== "undefined" && module.exports) {
     module.exports = LightviewX;
   }

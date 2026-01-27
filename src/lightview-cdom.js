@@ -432,13 +432,9 @@ const resolveTextNodeXPath = (node) => {
     try {
         validateXPath(xpath);
         const doc = globalThis.document || node.ownerDocument;
-        // Use the parent node (the element) as the context for evaluation
-        // This avoids errors in browsers that don't support Text nodes as context nodes
-        // and keeps evaluation consistent with attributes.
-        const contextNode = node.parentNode || node;
         const result = doc.evaluate(
             xpath,
-            contextNode,
+            node,
             null,
             XPathResult.STRING_TYPE,
             null

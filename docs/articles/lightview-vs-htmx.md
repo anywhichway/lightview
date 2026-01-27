@@ -228,12 +228,20 @@ Both frameworks support custom HTTP methods and request bodies, but with differe
 <form hx-post="/submit" hx-swap="outerHTML">
 ```
 
-**Lightview** uses the `data-method` attribute:
+**Lightview** uses standard `data-` attributes for configuration:
 ```html
 <button href="/api/endpoint" 
         data-method="POST" 
         data-body="#myForm">
+    Save
+</button>
 ```
+
+**Lightview's `data-body` is highly flexible**:
+*   **CSS Selector**: Automatically serializes the target (e.g., `#myForm` as `FormData`, or an input's `value`).
+*   **JSON**: Use `json:{"id": 1}` for literal JSON payloads.
+*   **Javascript**: Use `javascript:state.get('user')` to pull data directly from reactive state.
+*   **Text**: Use `text:Hello` for plain text payloads.
 
 ### Triggering Events
 
@@ -498,34 +506,20 @@ Let's build an active search feature with both frameworks:
 ```html
 <input type="search" 
        id="search-input"
-       oninput="search()"
-       lv-before="input debounce(300)">
-
-<img id="spinner" style="display:none" src="/spinner.gif">
+       name="q"
+       href="/search"
+       oninput="LightviewX.request(this)"
+       lv-before="input debounce(300)"
+       target="#results">
 
 <div id="results"></div>
-
-<script>
-function search() {
-    document.getElementById('spinner').style.display = 'block';
-    // Fetch handled by href/src or manual fetch
-}
-</script>
 ```
 
-Or using Lightview's hypermedia approach:
-
-```html
-<button href="/search" 
-        data-body="#search-input"
-        target="#results"
-        lv-before="click debounce(300)">
-    Search
-</button>
-
-<input id="search-input" type="search">
-<div id="results"></div>
-```
+**How it works**:
+*   `href="/search"`: The endpoint to fetch.
+*   `oninput="LightviewX.request(this)"`: Triggers the Lightview hypermedia engine on every keystroke.
+*   `lv-before="input debounce(300)"`: Declaratively debounces the input by 300ms, replacing the need for complex trigger syntax.
+*   `target="#results"`: Directs the HTML or JSON response into the results div.
 
 ## Integration with Backend Frameworks
 

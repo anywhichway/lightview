@@ -552,15 +552,107 @@ const insert = (elements, parent, location, markerId, { element, setupChildren }
 
 const isPath = (s) => typeof s === 'string' && !isDangerousProtocol(s) && /^(https?:|\.|\/|[\w])|(\.(html|json|[vo]dom|cdomc?))$/i.test(s);
 
-const fetchContent = async (src) => {
+/**
+ * Resolves request information (method, body, headers) from an element's data- attributes.
+ * Supports data-method and data-body.
+ */
+const getRequestInfo = (el) => {
+    const domEl = el.domEl || el;
+    const method = (domEl.getAttribute('data-method') || 'GET').toUpperCase();
+    const bodyAttr = domEl.getAttribute('data-body');
+    let body = null;
+    let headers = {};
+
+    if (bodyAttr) {
+        if (bodyAttr.startsWith('javascript:')) {
+            const expr = bodyAttr.slice(11);
+            const LV = globalThis.Lightview;
+            try {
+                // Use the registry to resolve signals/state mentioned in expressions
+                body = new Function('state', 'signal', `return ${expr}`)(LV.state || {}, LV.signal || {});
+            } catch (e) {
+                console.warn(`[LightviewX] Failed to evaluate data-body expression: ${expr}`, e);
+            }
+        } else if (bodyAttr.startsWith('json:')) {
+            try {
+                body = JSON.parse(bodyAttr.slice(5));
+                headers['Content-Type'] = 'application/json';
+            } catch (e) {
+                console.warn(`[LightviewX] Failed to parse data-body JSON: ${bodyAttr.slice(5)}`, e);
+            }
+        } else if (bodyAttr.startsWith('text:')) {
+            body = bodyAttr.slice(5);
+            headers['Content-Type'] = 'text/plain';
+        } else {
+            // Assume CSS Selector
+            try {
+                const target = document.querySelector(bodyAttr);
+                if (target) {
+                    if (target.tagName === 'FORM') {
+                        body = new FormData(target);
+                    } else if (['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) {
+                        const name = target.getAttribute('name') || 'body';
+                        body = { [name]: target.value };
+                    } else {
+                        body = target.innerText;
+                    }
+                }
+            } catch (e) {
+                // Not a valid selector, use raw string
+                body = bodyAttr;
+            }
+        }
+    }
+
+    return { method, body, headers };
+};
+
+/**
+ * Fetches content from a URL, respecting data-method and data-body settings.
+ */
+const fetchContent = async (src, requestOptions = {}) => {
+    const { method = 'GET', body = null, headers = {} } = requestOptions;
     try {
         const LV = globalThis.Lightview;
         if (LV?.hooks?.validateUrl && !LV.hooks.validateUrl(src)) {
             console.warn(`[LightviewX] Fetch blocked by validateUrl hook: ${src}`);
             return null;
         }
-        const url = new URL(src, document.baseURI);
-        const res = await fetch(url);
+
+        let url = new URL(src, document.baseURI);
+        const fetchOptions = { method, headers: { ...headers } };
+
+        if (body) {
+            if (method === 'GET') {
+                const params = new URLSearchParams(url.search);
+                if (body instanceof FormData) {
+                    for (const [key, value] of body.entries()) params.append(key, value);
+                } else if (typeof body === 'object' && body !== null) {
+                    for (const [key, value] of Object.entries(body)) params.append(key, String(value));
+                } else {
+                    params.append('body', String(body));
+                }
+                const queryString = params.toString();
+                if (queryString) {
+                    url = new URL(`${url.origin}${url.pathname}?${queryString}${url.hash}`, url.origin);
+                }
+            } else {
+                if (body instanceof FormData) {
+                    fetchOptions.body = body;
+                } else if (typeof body === 'object' && body !== null) {
+                    if (headers['Content-Type'] === 'application/json' || !headers['Content-Type']) {
+                        fetchOptions.body = JSON.stringify(body);
+                        fetchOptions.headers['Content-Type'] = 'application/json';
+                    } else {
+                        fetchOptions.body = String(body);
+                    }
+                } else {
+                    fetchOptions.body = String(body);
+                }
+            }
+        }
+
+        const res = await fetch(url, fetchOptions);
         if (!res.ok) return null;
         const ext = url.pathname.split('.').pop().toLowerCase();
         const isJson = (ext === 'vdom' || ext === 'odom' || ext === 'cdom');
@@ -683,7 +775,8 @@ const handleSrcAttribute = async (el, src, tagName, { element, setupChildren }) 
         if (src.includes('#')) {
             [src, targetHash] = src.split('#');
         }
-        const result = await fetchContent(src);
+        const options = getRequestInfo(el);
+        const result = await fetchContent(src, options);
         if (result) {
             elements = parseElements(result.content, result.isJson, result.isHtml, el, element, result.isCdom, result.ext);
             raw = result.raw;
@@ -747,7 +840,7 @@ const parseTargetWithLocation = (targetStr) => {
  * Intercepts clicks on elements with 'href' attributes that are not standard links.
  * Enables HTMX-like SPA navigation by loading the href content into a target element.
  */
-const handleNonStandardHref = (e, { domToElement, wrapDomElement }) => {
+const handleNonStandardHref = async (e, { domToElement, wrapDomElement }) => {
     const clickedEl = e.target.closest('[href]');
     if (!clickedEl) return;
 
@@ -764,6 +857,9 @@ const handleNonStandardHref = (e, { domToElement, wrapDomElement }) => {
     }
     const targetAttr = clickedEl.getAttribute('target');
 
+    // Get request configuration (method, body) from the clicked element
+    const options = getRequestInfo(clickedEl);
+
     // Case 1: No target attribute - existing behavior (load into self)
     if (!targetAttr) {
         let el = domToElement.get(clickedEl);
@@ -772,6 +868,7 @@ const handleNonStandardHref = (e, { domToElement, wrapDomElement }) => {
             for (let attr of clickedEl.attributes) attrs[attr.name] = attr.value;
             el = wrapDomElement(clickedEl, tagName, attrs);
         }
+        // Setting src triggers handleSrcAttribute via property proxy
         const newAttrs = { ...el.attributes, src: href };
         el.attributes = newAttrs;
         return;
@@ -779,21 +876,16 @@ const handleNonStandardHref = (e, { domToElement, wrapDomElement }) => {
 
     // Case 2: Target starts with _ (browser navigation)
     if (targetAttr.startsWith('_')) {
+        if (options.method !== 'GET') {
+            console.warn('[LightviewX] Cannot use non-GET method for browser navigation (_blank, _top, etc.)');
+        }
+
         switch (targetAttr) {
-            case '_self':
-                globalThis.location.href = href;
-                break;
-            case '_parent':
-                globalThis.parent.location.href = href;
-                break;
-            case '_top':
-                globalThis.top.location.href = href;
-                break;
+            case '_self': globalThis.location.href = href; break;
+            case '_parent': globalThis.parent.location.href = href; break;
+            case '_top': globalThis.top.location.href = href; break;
             case '_blank':
-            default:
-                // _blank or any custom _name opens a new window/tab
-                globalThis.open(href, targetAttr);
-                break;
+            default: globalThis.open(href, targetAttr); break;
         }
         return;
     }
@@ -803,6 +895,14 @@ const handleNonStandardHref = (e, { domToElement, wrapDomElement }) => {
 
     try {
         const targetElements = document.querySelectorAll(selector);
+        if (targetElements.length === 0) return;
+
+        // Perform the fetch once for all targets
+        const result = await fetchContent(href, options);
+        if (!result) return;
+
+        const { element, setupChildren } = LV.internals;
+
         targetElements.forEach(targetEl => {
             let el = domToElement.get(targetEl);
             if (!el) {
@@ -811,15 +911,17 @@ const handleNonStandardHref = (e, { domToElement, wrapDomElement }) => {
                 el = wrapDomElement(targetEl, targetEl.tagName.toLowerCase(), attrs);
             }
 
-            // Build new attributes
-            const newAttrs = { ...el.attributes, src: href };
-            if (location) {
-                newAttrs.location = location;
-            }
-            el.attributes = newAttrs;
+            const elements = parseElements(result.content, result.isJson, result.isHtml, el, element, result.isCdom, result.ext);
+            const loc = (location || targetEl.getAttribute('location') || 'innerhtml').toLowerCase();
+            const contentHash = hashContent(result.raw);
+
+            updateTargetContent(el, elements, result.raw, loc, contentHash, { element, setupChildren });
+
+            // Update the src attribute on the target to reflect current content
+            targetEl.setAttribute('src', href);
         });
     } catch (err) {
-        console.warn('Invalid target selector:', selector, err);
+        console.warn('Invalid target selector or fetch error:', selector, err);
     }
 };
 
@@ -1241,7 +1343,12 @@ if (typeof window !== 'undefined' && globalThis.Lightview) {
     LV.hooks.processChild = (child) => {
         if (!child) return child;
 
-        // 1. Convert Object DOM syntax if applicable
+        // 1. Skip cDOM XPath markers - they must remain as-is for the core to resolve them
+        if (typeof child === 'object' && child.__xpath__ && child.__static__) {
+            return child;
+        }
+
+        // 2. Convert Object DOM syntax if applicable
         if (typeof child === 'object' && !Array.isArray(child) && !child.tag && !child.domEl) {
             child = convertObjectDOM(child);
         }
@@ -1696,6 +1803,20 @@ if (lvInternals) {
 }
 
 // Export for module usage
+const request = async (el) => {
+    const domEl = el.domEl || el;
+    const href = domEl.getAttribute('href') || domEl.getAttribute('src');
+    if (!href) return;
+    return handleNonStandardHref({
+        target: domEl,
+        preventDefault: () => { },
+        stopPropagation: () => { }
+    }, {
+        domToElement: globalThis.Lightview.internals.domToElement,
+        wrapDomElement: globalThis.Lightview.internals.wrapDomElement
+    });
+};
+
 const LightviewX = {
     state,
     themeSignal,
@@ -1705,6 +1826,12 @@ const LightviewX = {
     // Gate modifiers
     throttle: gateThrottle,
     debounce: gateDebounce,
+    // Hypermedia Actions
+    request,
+    get: (el, url) => { if (url) el.setAttribute('href', url); el.setAttribute('data-method', 'GET'); return request(el); },
+    post: (el, url) => { if (url) el.setAttribute('href', url); el.setAttribute('data-method', 'POST'); return request(el); },
+    put: (el, url) => { if (url) el.setAttribute('href', url); el.setAttribute('data-method', 'PUT'); return request(el); },
+    delete: (el, url) => { if (url) el.setAttribute('href', url); el.setAttribute('data-method', 'DELETE'); return request(el); },
     // Component initialization
     initComponents,
     componentConfig,
@@ -1719,6 +1846,7 @@ const LightviewX = {
         parseElements
     }
 };
+if (globalThis.Lightview) globalThis.Lightview.request = request;
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = LightviewX;

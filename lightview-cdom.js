@@ -3857,10 +3857,9 @@ var LightviewCDOM = function(exports) {
     try {
       validateXPath(xpath);
       const doc = globalThis.document || node.ownerDocument;
-      const contextNode = node.parentNode || node;
       const result = doc.evaluate(
         xpath,
-        contextNode,
+        node,
         null,
         XPathResult.STRING_TYPE,
         null
