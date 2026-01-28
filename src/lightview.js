@@ -1,5 +1,4 @@
 import { signal, effect, computed, getRegistry, internals } from './reactivity/signal.js';
-import { state, getState } from './reactivity/state.js';
 
 const core = {
     get currentEffect() {
@@ -670,8 +669,6 @@ const tags = new Proxy({}, {
 });
 
 const Lightview = {
-    state,
-    getState,
     registerSchema: (name, definition) => internals.schemas.set(name, definition),
     signal,
     get: signal.get,

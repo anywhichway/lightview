@@ -1,18 +1,20 @@
-# Lightview vs HTMX: Two Modern Hypermedia Frameworks
+# Building with Hypermedia: HTMX's Purity vs Lightview's Flexibility.
 
 ## Introduction
 
-The hypermedia renaissance is in full swing. After years of SPA dominance, developers are rediscovering the power of server-driven architectures that leverage HTML as the engine of application state. The framework leading this charge is HTMX, requires a complete mindset change. An alternative, Lightview offers an alternative that doesn't lock you into hypermedia-only patterns. Unlike HTMX's focused hypermedia approach, Lightview is a multi-paradigm framework that supports functional programming with template tag functions (like BauJS), JSON representation (like JurisJS), and hypermedia patterns—all within the same framework. This article provides a technical comparison of both frameworks' hypermedia capabilities to help you choose the right tool for your project.
+The hypermedia renaissance is in full swing. After years of SPA dominance, developers are rediscovering the power of server-driven architectures that leverage HTML as the engine of application state. The framework leading this charge, HTMX, focuses exclusively of hypermedia. An alternative, Lightview, doesn't lock you into hypermedia-only patterns. Unlike HTMX's focused hypermedia approach, Lightview is a multi-paradigm framework that supports and hypermedia patterns, functional programming with template tag functions like BauJS [https://github.com/grucloud/bau], and JSON representation (like JurisJS [https://jurisjs.com]),  - all within the same framework. This article provides a technical comparison of HTMX and Lightview hypermedia capabilities to help you choose the right tool for your project. It also inlcudes some tangential Ligthview features that may incline you to choosing an approach that is not strictly client-server hypermedia.
+
+You might say at this point, "Wait a second, HTMX is supposed to simplify development, why would I want the comlexity of multiple coding paradigms?" You probably don't, the point of Lightview is to give you choice, you could build your entire application with hypermedia, or you could build your entire application with functional programming, or you could build your entire application with JSON representation, or you could build your entire application with a mix of all three. It all depends on what you need. Perhaps your app starts out hypermedia, but as you grow, you find that you need to use functional programming to build complex business logic in an offline first mode, or you find that you need to use JSON representation for cross-platform portability, or you you need to add dynamic AI generated aspects that are computational but browser safe. Lightview is designed to grow with you.
 
 ## What is Hypermedia?
 
-Before diving into the comparison, let's establish what we mean by hypermedia. Hypermedia refers to content that contains links and controls for navigating to related resources. Traditional HTML uses this through links and forms, but modern hypermedia frameworks extend these capabilities to any element, enabling richer interactions. Any element can serve as a link and any element can specify the source from whih it desired to obtain its content.
+Before diving into the comparison, let's establish what we mean by hypermedia. Hypermedia refers to content that contains links and controls for navigating to related resources. Traditional HTML provides this through links and forms, but modern hypermedia frameworks extend these capabilities to any element, enabling richer interactions. Any element can serve as a link and any element can specify the source from which it desires to obtain its content. The samllest of these is perhaps [htmz](https://leanrada.com/htmz/).
 
 ## HTMX and Lightview: Completing HTML as a Hypertext
 
 HTMX, created by Carson Gross as a successor to intercooler.js, aims to "complete HTML as a hypertext." It extends standard HTML attributes to provide AJAX, CSS Transitions, WebSockets, and Server-Sent Events directly in markup.
 
-Lightview, created by this author Simon Blackwell, was designed in collaboration with LLMs, to not only complete HTML as a hypertext, but to also provide a more portable, structured declaritive approach for the server delivery of content, although the hypermedia content can still be HTML like HTMX, it can also be JSON virtual DOMs that represents HTML or native UI components. 
+Lightview, created by this author, Simon Blackwell, was designed in collaboration with LLMs, to not only complete HTML as a hypertext, but to also provide a more portable, declaritive approach for the server delivery of content, although the hypermedia content can still be HTML like HTMX, it can also be JSON virtual DOMs that represents HTML or native UI components. 
 
 ### Core Philosophy
 
@@ -89,7 +91,7 @@ HTMX has a mature ecosystem with extensive documentation, community examples, an
 
 ## Lightview: Multi-Paradigm Framework with Hypermedia Support
 
-Lightview has zero dependencies unless you choose to use its pre-built UI components, and it takes a different approach by offering multiple programming paradigms in one framework. While it includes hypermedia capabilities similar to HTMX, it doesn't force you to use them exclusively. You can use declarative hypermedia patterns, functional programming, or data-driven JSON definitions—all within the same application. The Lightview <a href="https://lightview.dev">website</a> provides extensive online documentation and interactive REPLs for trying out the framework.
+Lightview also has zero dependencies unless you choose to use its pre-built UI components, and it takes a different approach by offering multiple programming paradigms in one framework. While it includes hypermedia capabilities similar to HTMX, it doesn't force you to use them exclusively. You can use declarative hypermedia patterns, functional programming, or data-driven JSON definitions—all within the same application. The Lightview <a href="https://lightview.dev">website</a> provides extensive online documentation and interactive REPLs for trying out the framework.
 
 ### Core Philosophy: The Power of Choice
 
@@ -98,7 +100,7 @@ Lightview is flexible by design. It doesn't prescribe hypermedia as the *only* a
 1.  **Hypermedia (HTMX-style)**: Use `src` and `href` for server-driven content and page navigation.
 2.  **Functional (BauJS-style)**: Use Javascript template tag functions for complex, imperative logic.
 3.  **Data-Driven (JurisJS-style)**: Define UIs as pure JSON (vDOM/oDOM) for config-driven interfaces.
-4.  **AI-Safe (cDOM)**: Use sandboxed JSON structures for safe, AI-generated user interfaces.
+4.  **AI-Safe (cDOM)**: Use sandboxed JSON structures with an executable expression language (JPRX) for safe, AI-generated user interfaces.
 
 ### 1. Hypermedia & Interaction
 
@@ -126,7 +128,7 @@ Customize HTTP actions directly in HTML:
 ```
 
 **Self-Sourced Partials (CSS Selectors as Source)**:
-Perhaps Lightview’s most powerful hypermedia differentiator is the ability to source content from the current document. While HTMX is designed to fetch hypermedia partials from a server, Lightview allows the `src` attribute to contain a CSS selector.
+Another powerful Lightview differentiator is the ability to source content from the current document. While HTMX is designed to fetch hypermedia partials from a server, Lightview allows the `src` attribute to contain a CSS selector.
 
 This enables "Self-Sourced Partials" where content can be pulled from a `<template>`, a hidden `<div>`, or any other element in the DOM. This reduces network overhead and allows developers to bundle "offline" partials directly within the initial page load.
 
@@ -143,13 +145,13 @@ Lightview takes the approach that hypermedia does not have to mean server-side p
 ```
 
 **Automatic Hash Scrolling**:
-Lightview supports automatic scrolling to a specific element ID when loading content via `src` or navigating via `href`. If the URL includes a hash fragment (e.g., `/docs/api.html#signals`), Lightview will automatically wait for the content to load and then smoothly scroll the target element into view.
+Lightview supports automatic scrolling to a specific element ID when loading content via `src` or navigating via `href`. If the URL includes a hash fragment (e.g., `/docs/api.html#signals`), Lightview will automatically wait for the content to load and then scroll the target element into view.
 
 *   **Smart Offsets**: The scroll position automatically accounts for a fixed navigation bar if defined (via `--site-nav-height`).
 *   **Shadow DOM Support**: Scrolling also works for content loaded into a Shadow Root.
 *   **Partial Loading**: Works for both full navigation (`href`) and partial content updates (`src`).
 
-**Declarative Event Gating (`lv-before`)**:
+**Declarative Event Gating (`lv-before`) and Triggers**:
 Lightview provides a powerful "Gating" system to intercept events before they trigger actions. This replaces the need for custom event listeners for common patterns.
 
 *   **Modifiers**: Built-in support for `throttle(ms)` and `debounce(ms)`.
@@ -195,10 +197,10 @@ Lightview can fetch and render UI defined as JSON, which is often easier for bac
 ```
 
 **Safe AI Generation with cDOM**:
-Letting AI write raw Javascript is a security risk. Lightview's **cDOM (Clean/Computed DOM)** is a sandboxed JSON format where AI can define structure and logic (via JPRX expressions) *without* executing arbitrary code.
+Letting AI write raw Javascript is a security risk. Lightview's **cDOM (Clean/Computed DOM)** is a sandboxed JSON format where AI can define structure and logic *without* executing arbitrary code. In this architecture, **JPRX (JSON Path Reactive eXpressions)** serves as the secure logic and expression language embedded within the cDOM structure, providing the power of reactivity and logic without the security vulnerabilities of `eval`.
 
 *   **Security**: No `eval` or arbitrary script execution.
-*   **Logic**: Supports logic like "if", "loop", and math via a safe expression language.
+*   **Logic**: Supports logic like "if", "loop", and math and over 100 other functions via a safe expression language (JPRX). Think of JPRX as Excel for the DOM.
 *   **Use Case**: Ideal for "GenUI" applications where an LLM generates the interface on the fly.
 
 Use cDOM when you want the dynamism of a generated UI without the security nightmare of generated Javascript.
@@ -482,6 +484,32 @@ Both frameworks are performant, but optimize different things:
 - Less third-party integration
 - Newer to the scene
 
+## Size
+
+### HTMX
+
+HTMX minified and gzipped is 29KB
+
+### Lightview
+
+Lightview can be loaded as three separate files:
+
+```
+// Core: 6KB minimized and gzipped
+// Supports: tagged functions, signals, vDOM format
+<script src="lightview.js"></script>
+
+// X: 14KB minimized and gzipped
+// Adds: hypermedia, html template literal support, oDOM support
+<script src="lightview-x.js"></script>
+
+// CDOM: 25KB minimized and gzipped
+// Adds: cDOM, JPRX (not required for hypermedia)
+<script src="lightview-cdom.js"></script>
+```
+
+The combined size required to emulate much of HTMX's functionality is 20KB, and this gets you lots of other power as well.
+
 ## Code Comparison: Building the Same Feature
 
 Let's build an active search feature with both frameworks:
@@ -517,22 +545,15 @@ Let's build an active search feature with both frameworks:
 
 **How it works**:
 *   `href="/search"`: The endpoint to fetch.
-*   `oninput="LightviewX.request(this)"`: Triggers the Lightview hypermedia engine on every keystroke.
+*   `oninput="LightviewX.request(this)"`: Triggers the Lightview hypermedia engine on every keystroke. Only required for input type elements. Click processing is automatic on non-input elements.
 *   `lv-before="input debounce(300)"`: Declaratively debounces the input by 300ms, replacing the need for complex trigger syntax.
 *   `target="#results"`: Directs the HTML or JSON response into the results div.
 
 ## Integration with Backend Frameworks
 
-Both frameworks work with any server-side technology that can generate HTML.
+**HTMX** works with any server-side technology that can generate HTML.
 
-**HTMX** has specific helper libraries for:
-- Python (Django, Flask, FastAPI)
-- Ruby (Rails)
-- Java (Spring)
-- .NET (ASP.NET)
-- Go, Rust, Elixir, and more
-
-**Lightview** works with any HTML-generating backend—it doesn't dictate server-side architecture.
+**Lightview** works with any JSON or HTML-generating backend—it doesn't dictate server-side architecture.
 
 ## Migration Path
 
@@ -540,19 +561,21 @@ Both frameworks work with any server-side technology that can generate HTML.
 
 HTMX offers a gradual migration path:
 1. Start with `hx-boost` on existing forms and links
-2. Incrementally add more sophisticated interactions
+2. Incrementally add more sophisticated hypermedia interactions
 3. Replace SPA routes with hypermedia endpoints
 
 ### From SPA to Lightview
 
-Lightview's component model may feel more familiar to React/Vue developers:
-1. Convert components to Lightview components
-2. Replace state management with signals
-3. Leverage hypermedia for server interactions
+Lightview also offers a gradual path:
+1. Start by turning just a few elments into hypermedia
+2. Incrementally add more sophisticated hypermedia interactions
+3. Evolve functional components to tagged functions
+5. Incorporate names signals and state
+4. Add dynamic AI generation with cDOM/JPRX
 
 ## Conclusion
 
-Both HTMX and Lightview represent compelling alternatives to heavy JavaScript frameworks, but serve different needs:
+Both HTMX and Lightview represent compelling alternatives but serve different needs:
 
 **Choose HTMX if you want**:
 - Pure hypermedia-driven architecture
@@ -570,11 +593,9 @@ Both HTMX and Lightview represent compelling alternatives to heavy JavaScript fr
 - Freedom to choose your programming style
 - Self-sourced local partials via CSS selectors
 
-The key difference: HTMX is laser-focused on hypermedia and does it exceptionally well. Lightview gives you hypermedia as *one option* among several paradigms—it doesn't force you to choose hypermedia for everything.
+The key difference: HTMX is laser-focused on hypermedia and does it exceptionally well. Lightview gives you hypermedia as *one option* among several paradigms - it doesn't force you to choose hypermedia for everything.
 
-Neither framework is "better"—they optimize for different priorities. HTMX stays true to the hypermedia vision with laser focus, while Lightview embraces flexibility, letting you use functional programming (like BauJS), JSON representation (like JurisJS), or hypermedia patterns as your use case demands.
-
-The good news? Both frameworks are small enough to experiment with quickly. Try building the same feature in both and see which approach resonates with your team and use case.
+Neither framework is "better" - they optimize for different priorities. HTMX stays true to the hypermedia vision with laser focus, while Lightview embraces flexibility, letting you use functional programming (like BauJS), JSON representation (like JurisJS), or hypermedia patterns as your use case demands.
 
 ## Resources
 
@@ -587,6 +608,3 @@ The good news? Both frameworks are small enough to experiment with quickly. Try 
 - Official site: [lightview.dev](https://lightview.dev)
 - Article on safe AI UI generation: [How to Build an AI Generated Calculator Without Custom JavaScript](https://hackernoon.com/how-to-build-an-ai-generated-calculator-without-custom-javascript)
 
----
-
-*The hypermedia renaissance offers developers a refreshing alternative to JavaScript-heavy SPAs. Whether you choose HTMX's focused simplicity or Lightview's multi-paradigm flexibility, you're embracing a more sustainable way to build for the web.*

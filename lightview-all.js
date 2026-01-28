@@ -820,8 +820,6 @@
     }
   });
   const Lightview = {
-    state: state$1,
-    getState,
     registerSchema: (name, definition) => internals.schemas.set(name, definition),
     signal: signal$1,
     get: signal$1.get,
@@ -1865,6 +1863,8 @@
   };
   if (typeof window !== "undefined" && globalThis.Lightview) {
     const LV = globalThis.Lightview;
+    LV.state = state$1;
+    LV.getState = getState;
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", () => setupSrcObserver(LV));
     } else {
@@ -2222,7 +2222,7 @@
   }
   const request = async (el) => {
     const domEl = el.domEl || el;
-    const href = domEl.getAttribute("href") || domEl.getAttribute("src");
+    const href = domEl.getAttribute("href");
     if (!href) return;
     return handleNonStandardHref({
       target: domEl,
@@ -2237,6 +2237,7 @@
   };
   const LightviewX = {
     state: state$1,
+    getState,
     themeSignal,
     setTheme,
     registerStyleSheet,

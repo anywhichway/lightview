@@ -1,5 +1,5 @@
 ﻿import { signal, effect, getRegistry } from './reactivity/signal.js';
-import { state, getOrSet } from './reactivity/state.js';
+import { state, getState, getOrSet } from './reactivity/state.js';
 
 
 /**
@@ -1297,6 +1297,8 @@ const setupSrcObserver = (LV) => {
 // Auto-register with Lightview if available
 if (typeof window !== 'undefined' && globalThis.Lightview) {
     const LV = globalThis.Lightview;
+    LV.state = state;
+    LV.getState = getState;
 
     // Extend Lightview with simple named signal getter/setter if needed (already in Core now)
     // But for template literals we use processTemplateChild which needs access to registries
@@ -1805,7 +1807,7 @@ if (lvInternals) {
 // Export for module usage
 const request = async (el) => {
     const domEl = el.domEl || el;
-    const href = domEl.getAttribute('href') || domEl.getAttribute('src');
+    const href = domEl.getAttribute('href');
     if (!href) return;
     return handleNonStandardHref({
         target: domEl,
@@ -1819,6 +1821,7 @@ const request = async (el) => {
 
 const LightviewX = {
     state,
+    getState,
     themeSignal,
     setTheme,
     registerStyleSheet,

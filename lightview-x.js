@@ -1292,6 +1292,8 @@
   };
   if (typeof window !== "undefined" && globalThis.Lightview) {
     const LV = globalThis.Lightview;
+    LV.state = state;
+    LV.getState = getState;
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", () => setupSrcObserver(LV));
     } else {
@@ -1649,7 +1651,7 @@
   }
   const request = async (el) => {
     const domEl = el.domEl || el;
-    const href = domEl.getAttribute("href") || domEl.getAttribute("src");
+    const href = domEl.getAttribute("href");
     if (!href) return;
     return handleNonStandardHref({
       target: domEl,
@@ -1664,6 +1666,7 @@
   };
   const LightviewX = {
     state,
+    getState,
     themeSignal,
     setTheme,
     registerStyleSheet,
