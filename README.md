@@ -4,6 +4,8 @@ A lightweight reactive UI library with signal-based reactivity and a clean API. 
 
 Access the full documentation and interactive examples at [lightview.dev](https://lightview.dev).
 
+LLMs should read [AI-GUIDANCE.md](AI-GUIDANCE.md) for instructions on how to use Lightview.
+
 ## Modular Architecture
 
 **Core Library**: ~7.75KB | **Extended (Hypermedia + Components)**: ~20KB | **Router**: ~3KB

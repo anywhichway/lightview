@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Update Performance Benchmark | Lightview</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --site-primary: #8338ec;
+            --site-secondary: #3a86ff;
+            --site-accent: #ff006e;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn-benchmark {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-benchmark:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .result-card.active {
+            border-color: var(--site-primary);
+            box-shadow: 0 4px 6px -1px rgba(131, 56, 236, 0.1);
+        }
+
+        #benchmark-target {
+            max-height: 400px;
+            overflow: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            background: white;
+        }
+
+        .progress-bar-custom {
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--site-primary);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Benchmark Target Styles */
+        .benchmark-container {
+            padding: 1rem;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .item-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--site-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .item-description {
+            font-size: 0.8rem;
+            color: #64748b;
+            line-height: 1.2;
+        }
+
+        .item-footer {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-12 text-center">
+            <h1
+                class="text-4xl md:text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
+                DOM Update Benchmark
+            </h1>
+            <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+                Comparing different strategies for updating DOM fragments.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Controls -->
+            <div class="lg:col-span-1 space-y-4">
+                <div class="card bg-white shadow-sm border border-slate-200">
+                    <div class="card-body">
+                        <h2 class="card-title text-slate-800">Configuration</h2>
+                        <div class="form-control w-full">
+                            <label class="label">
+                                <span class="label-text text-xs font-bold uppercase text-slate-500">Number of
+                                    Rows</span>
+                            </label>
+                            <input type="number" id="row-count" value="1000" class="input input-bordered w-full h-10" />
+                        </div>
+                        <div class="form-control w-full mt-2">
+                            <label class="label">
+                                <span class="label-text text-xs font-bold uppercase text-slate-500">Number of
+                                    Cycles</span>
+                            </label>
+                            <input type="number" id="cycle-count" value="10" class="input input-bordered w-full h-10" />
+                        </div>
+                        <div class="mt-6 flex flex-col gap-3">
+                            <button onclick="runBenchmark('innerHTML')"
+                                class="btn btn-outline btn-benchmark border-slate-300">Run innerHTML</button>
+                            <button onclick="runBenchmark('DOMParser')"
+                                class="btn btn-outline btn-benchmark border-slate-300">Run DOMParser</button>
+                            <button onclick="runBenchmark('RawVDOM')"
+                                class="btn btn-outline btn-benchmark border-slate-300">Run Raw vDOM</button>
+                            <button onclick="runBenchmark('RawoDOM')"
+                                class="btn btn-outline btn-benchmark border-slate-300">Run Raw oDOM</button>
+                            <button onclick="runBenchmark('vDOM')"
+                                class="btn btn-outline btn-benchmark border-slate-300">Run Lightview vDOM</button>
+                            <button onclick="runBenchmark('TaggedScript')"
+                                class="btn btn-outline btn-benchmark border-slate-300">Run Lightview Tagged
+                                Script</button>
+                            <div class="divider"></div>
+                            <button onclick="runAll()" class="btn btn-primary text-white">Run All Benchmarks</button>
+                            <button onclick="clearTarget()" class="btn btn-ghost">Clear Target</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="lg:col-span-2 space-y-4">
+                <div id="results-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Template for result cards -->
+                    <div class="result-card" id="res-innerHTML">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest">innerHTML</h3>
+                            <div class="flex flex-col items-end gap-1">
+                                <div class="badge badge-outline badge-xs opacity-50"><span class="size">--</span> KB
+                                </div>
+                                <div class="badge badge-accent badge-xs text-white opacity-70"><span
+                                        class="gzip-size">--</span> KB gzip</div>
+                                <div class="badge badge-ghost badge-sm opacity-50">ms</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-black text-slate-800 mb-4"><span class="time">--</span></div>
+
+                        <div class="grid grid-cols-4 gap-2 text-[10px] uppercase font-bold text-slate-400 mb-3">
+                            <div>Min <span class="min block text-slate-600">--</span></div>
+                            <div>Avg <span class="avg block text-slate-600">--</span></div>
+                            <div>Max <span class="max block text-slate-600">--</span></div>
+                            <div class="text-right">±SD <span class="std block text-slate-600">--</span></div>
+                        </div>
+
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" id="fill-innerHTML"></div>
+                        </div>
+                    </div>
+
+                    <div class="result-card" id="res-DOMParser">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest">DOMParser</h3>
+                            <div class="flex flex-col items-end gap-1">
+                                <div class="badge badge-outline badge-xs opacity-50"><span class="size">--</span> KB
+                                </div>
+                                <div class="badge badge-accent badge-xs text-white opacity-70"><span
+                                        class="gzip-size">--</span> KB gzip</div>
+                                <div class="badge badge-ghost badge-sm opacity-50">ms</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-black text-slate-800 mb-4"><span class="time">--</span></div>
+
+                        <div class="grid grid-cols-4 gap-2 text-[10px] uppercase font-bold text-slate-400 mb-3">
+                            <div>Min <span class="min block text-slate-600">--</span></div>
+                            <div>Avg <span class="avg block text-slate-600">--</span></div>
+                            <div>Max <span class="max block text-slate-600">--</span></div>
+                            <div class="text-right">±SD <span class="std block text-slate-600">--</span></div>
+                        </div>
+
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" id="fill-DOMParser"></div>
+                        </div>
+                    </div>
+
+                    <div class="result-card" id="res-RawVDOM">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest">Raw vDOM (No Lib)
+                            </h3>
+                            <div class="flex flex-col items-end gap-1">
+                                <div class="badge badge-outline badge-xs opacity-50"><span class="size">--</span> KB
+                                </div>
+                                <div class="badge badge-accent badge-xs text-white opacity-70"><span
+                                        class="gzip-size">--</span> KB gzip</div>
+                                <div class="badge badge-ghost badge-sm opacity-50">ms</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-black text-slate-800 mb-4"><span class="time">--</span></div>
+
+                        <div class="grid grid-cols-4 gap-2 text-[10px] uppercase font-bold text-slate-400 mb-3">
+                            <div>Min <span class="min block text-slate-600">--</span></div>
+                            <div>Avg <span class="avg block text-slate-600">--</span></div>
+                            <div>Max <span class="max block text-slate-600">--</span></div>
+                            <div class="text-right">±SD <span class="std block text-slate-600">--</span></div>
+                        </div>
+
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" id="fill-RawVDOM"></div>
+                        </div>
+                    </div>
+
+                    <div class="result-card" id="res-RawoDOM">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest">Raw oDOM (No Lib)
+                            </h3>
+                            <div class="flex flex-col items-end gap-1">
+                                <div class="badge badge-outline badge-xs opacity-50"><span class="size">--</span> KB
+                                </div>
+                                <div class="badge badge-accent badge-xs text-white opacity-70"><span
+                                        class="gzip-size">--</span> KB gzip</div>
+                                <div class="badge badge-ghost badge-sm opacity-50">ms</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-black text-slate-800 mb-4"><span class="time">--</span></div>
+
+                        <div class="grid grid-cols-4 gap-2 text-[10px] uppercase font-bold text-slate-400 mb-3">
+                            <div>Min <span class="min block text-slate-600">--</span></div>
+                            <div>Avg <span class="avg block text-slate-600">--</span></div>
+                            <div>Max <span class="max block text-slate-600">--</span></div>
+                            <div class="text-right">±SD <span class="std block text-slate-600">--</span></div>
+                        </div>
+
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" id="fill-RawoDOM"></div>
+                        </div>
+                    </div>
+
+                    <div class="result-card" id="res-vDOM">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest">Lightview vDOM</h3>
+                            <div class="flex flex-col items-end gap-1">
+                                <div class="badge badge-outline badge-xs opacity-50"><span class="size">--</span> KB
+                                </div>
+                                <div class="badge badge-accent badge-xs text-white opacity-70"><span
+                                        class="gzip-size">--</span> KB gzip</div>
+                                <div class="badge badge-ghost badge-sm opacity-50">ms</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-black text-slate-800 mb-4"><span class="time">--</span></div>
+
+                        <div class="grid grid-cols-4 gap-2 text-[10px] uppercase font-bold text-slate-400 mb-3">
+                            <div>Min <span class="min block text-slate-600">--</span></div>
+                            <div>Avg <span class="avg block text-slate-600">--</span></div>
+                            <div>Max <span class="max block text-slate-600">--</span></div>
+                            <div class="text-right">±SD <span class="std block text-slate-600">--</span></div>
+                        </div>
+
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" id="fill-vDOM"></div>
+                        </div>
+                    </div>
+
+                    <div class="result-card" id="res-TaggedScript">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest">Lightview Tagged
+                                Script</h3>
+                            <div class="flex flex-col items-end gap-1">
+                                <div class="badge badge-outline badge-xs opacity-50"><span class="size">--</span> KB
+                                </div>
+                                <div class="badge badge-accent badge-xs text-white opacity-70"><span
+                                        class="gzip-size">--</span> KB gzip</div>
+                                <div class="badge badge-ghost badge-sm opacity-50">ms</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-black text-slate-800 mb-4"><span class="time">--</span></div>
+
+                        <div class="grid grid-cols-4 gap-2 text-[10px] uppercase font-bold text-slate-400 mb-3">
+                            <div>Min <span class="min block text-slate-600">--</span></div>
+                            <div>Avg <span class="avg block text-slate-600">--</span></div>
+                            <div>Max <span class="max block text-slate-600">--</span></div>
+                            <div class="text-right">±SD <span class="std block text-slate-600">--</span></div>
+                        </div>
+
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" id="fill-TaggedScript"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-white shadow-sm border border-slate-200">
+                    <div class="card-body">
+                        <h2 class="card-title text-slate-800">Benchmark Target</h2>
+                        <p class="text-sm text-slate-500 mb-2">Live DOM update area:</p>
+                        <div id="benchmark-target">
+                            <div class="p-8 text-center text-slate-400 italic">Target is empty. Run a benchmark to
+                                populate.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Libraries -->
+    <script src="/lightview.js"></script>
+    <script src="/lightview-x.js"></script>
+
+    <script>
+        function generateHTML(count) {
+            let html = '<section class="benchmark-container"><header><h2>Benchmark Results</h2></header><div class="items-grid">';
+            for (let i = 0; i < count; i++) {
+                html += `<article class="item-card"><header><h3 class="item-title">Item ${i}</h3></header><div class="item-content"><p class="item-description">Detailed description for item ${i} in the benchmark list.</p></div><footer class="item-footer"><span>Metadata for item ${i}</span></footer></article>`;
+            }
+            html += '</div></section>';
+            return html;
+        }
+
+        function generateVDOM(count) {
+            const items = [];
+            for (let i = 0; i < count; i++) {
+                items.push({
+                    tag: 'article',
+                    attributes: { class: 'item-card' },
+                    children: [
+                        { tag: 'header', children: [{ tag: 'h3', attributes: { class: 'item-title' }, children: [`Item ${i}`] }] },
+                        { tag: 'div', attributes: { class: 'item-content' }, children: [{ tag: 'p', attributes: { class: 'item-description' }, children: [`Detailed description for item ${i} in the benchmark list.`] }] },
+                        { tag: 'footer', attributes: { class: 'item-footer' }, children: [{ tag: 'span', children: [`Metadata for item ${i}`] }] }
+                    ]
+                });
+            }
+            return {
+                tag: 'section',
+                attributes: { class: 'benchmark-container' },
+                children: [
+                    { tag: 'header', children: [{ tag: 'h2', children: ['Benchmark Results'] }] },
+                    { tag: 'div', attributes: { class: 'items-grid' }, children: items }
+                ]
+            };
+        }
+
+        // Dedicated helper to convert vDOM to DOM without Lightview
+        function vdomToDOM(vnode) {
+            if (typeof vnode !== 'object' || vnode === null) {
+                return document.createTextNode(vnode);
+            }
+
+            const el = document.createElement(vnode.tag);
+
+            const attrs = vnode.attributes;
+            if (attrs) {
+                for (const key in attrs) {
+                    if (key === 'class') el.className = attrs[key];
+                    else el.setAttribute(key, attrs[key]);
+                }
+            }
+
+            const children = vnode.children;
+            if (children) {
+                el.append(...children.map(vdomToDOM));
+            }
+
+            return el;
+        }
+
+        function generateODOM(count) {
+            const items = [];
+            for (let i = 0; i < count; i++) {
+                items.push({
+                    article: {
+                        class: 'item-card',
+                        children: [
+                            { header: { h3: { class: 'item-title', children: [`Item ${i}`] } } },
+                            { div: { class: 'item-content', p: { class: 'item-description', children: [`Detailed description for item ${i} in the benchmark list.`] } } },
+                            { footer: { class: 'item-footer', span: `Metadata for item ${i}` } }
+                        ]
+                    }
+                });
+            }
+            return {
+                section: {
+                    class: 'benchmark-container',
+                    children: [
+                        { header: { h2: 'Benchmark Results' } },
+                        { div: { class: 'items-grid', children: items } }
+                    ]
+                }
+            };
+        }
+
+        function odomToDOM(onode) {
+            if (typeof onode !== 'object' || onode === null) {
+                return document.createTextNode(onode);
+            }
+
+            const tag = Object.keys(onode)[0];
+            const el = document.createElement(tag);
+            const content = onode[tag];
+
+            if (typeof content === 'object' && content !== null && !Array.isArray(content)) {
+                for (const key in content) {
+                    if (key === 'children') {
+                        el.append(...content.children.map(odomToDOM));
+                    } else if (key === 'class') {
+                        el.className = content[key];
+                    } else if (typeof content[key] === 'object' && !Array.isArray(content[key])) {
+                        // Nested shorthand tag
+                        const child = {};
+                        child[key] = content[key];
+                        el.append(odomToDOM(child));
+                    } else if (Array.isArray(content[key])) {
+                        // Property with array value (e.g., children shorthand)
+                        el.append(...content[key].map(odomToDOM));
+                    } else {
+                        el.setAttribute(key, content[key]);
+                    }
+                }
+            } else {
+                if (Array.isArray(content)) {
+                    el.append(...content.map(odomToDOM));
+                } else {
+                    el.append(odomToDOM(content));
+                }
+            }
+
+            return el;
+        }
+
+        async function getGzipSize(str) {
+            try {
+                const stream = new Blob([str]).stream();
+                const compressedStream = stream.pipeThrough(new CompressionStream('gzip'));
+                const chunks = [];
+                for await (const chunk of compressedStream) {
+                    chunks.push(chunk);
+                }
+                const blob = new Blob(chunks);
+                return blob.size;
+            } catch (e) {
+                console.error("CompressionStream not supported", e);
+                return 0;
+            }
+        }
+
+        const target = document.getElementById('benchmark-target');
+
+        function calculateStats(times) {
+            const min = Math.min(...times);
+            const max = Math.max(...times);
+            const avg = times.reduce((a, b) => a + b, 0) / times.length;
+            const std = Math.sqrt(times.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / times.length);
+            return { min, max, avg, std };
+        }
+
+        function updateUIResult(id, stats, size, gzipSize) {
+            const card = document.getElementById(`res-${id}`);
+            card.querySelector('.time').innerText = stats.avg.toFixed(2);
+            card.querySelector('.min').innerText = stats.min.toFixed(2);
+            card.querySelector('.avg').innerText = stats.avg.toFixed(2);
+            card.querySelector('.max').innerText = stats.max.toFixed(2);
+            card.querySelector('.std').innerText = stats.std.toFixed(2);
+            if (size !== undefined) {
+                card.querySelector('.size').innerText = (size / 1024).toFixed(2);
+            }
+            if (gzipSize !== undefined) {
+                card.querySelector('.gzip-size').innerText = (gzipSize / 1024).toFixed(2);
+            }
+
+            card.classList.add('active');
+
+            const fill = document.getElementById(`fill-${id}`);
+            const percentage = Math.min(100, (stats.avg / 200) * 100);
+            fill.style.width = `${percentage}%`;
+        }
+
+        function clearTarget() {
+            target.replaceChildren();
+            target.innerHTML = '<div class="p-8 text-center text-slate-400 italic">Target is empty.</div>';
+            ['innerHTML', 'DOMParser', 'vDOM', 'RawVDOM', 'RawoDOM', 'TaggedScript'].forEach(id => {
+                const card = document.getElementById(`res-${id}`);
+                card.classList.remove('active');
+                card.querySelector('.time').innerText = '--';
+                card.querySelector('.min').innerText = '--';
+                card.querySelector('.avg').innerText = '--';
+                card.querySelector('.max').innerText = '--';
+                card.querySelector('.std').innerText = '--';
+                card.querySelector('.size').innerText = '--';
+                card.querySelector('.gzip-size').innerText = '--';
+                const fillEl = document.getElementById(`fill-${id}`);
+                if (fillEl) fillEl.style.width = '0%';
+            });
+        }
+
+        async function runCycle(type, data, count) {
+            // 2. Settle phase (allow GC to run and memory pressure to stabilize)
+            if (window.gc) window.gc();
+            // Give 100ms for browser housekeeping between cycles
+            await new Promise(r => setTimeout(r, 100));
+
+            let time = 0;
+            if (type === 'innerHTML') {
+                const start = performance.now();
+                target.innerHTML = data;
+                time = performance.now() - start;
+            } else if (type === 'DOMParser') {
+                const parser = new DOMParser();
+                const start = performance.now();
+                const doc = parser.parseFromString(data, 'text/html');
+                target.replaceChildren(...doc.body.childNodes);
+                time = performance.now() - start;
+            } else if (type === 'vDOM') {
+                const start = performance.now();
+                const json = JSON.parse(data);
+                const { domEl } = Lightview.element(json.tag, json.attributes, json.children);
+                target.replaceChildren(domEl);
+                time = performance.now() - start;
+            } else if (type === 'RawVDOM') {
+                const start = performance.now();
+                const json = JSON.parse(data);
+                const domEl = vdomToDOM(json);
+                target.replaceChildren(domEl);
+                time = performance.now() - start;
+            } else if (type === 'RawoDOM') {
+                const start = performance.now();
+                const json = JSON.parse(data);
+                const domEl = odomToDOM(json);
+                target.replaceChildren(domEl);
+                time = performance.now() - start;
+            } else if (type === 'TaggedScript') {
+                const existing = document.getElementById('tagged-script-tag');
+                if (existing) existing.remove();
+
+                await new Promise(resolve => {
+                    window.__resolveTaggedBenchmark = resolve;
+                    const script = document.createElement('script');
+                    script.id = 'tagged-script-tag';
+                    script.src = `./benchmarks/tagged-fragment.js?count=${count}&t=${Date.now()}`;
+                    document.body.appendChild(script);
+                });
+                time = window.__taggedBenchmarkTime;
+            }
+            return time;
+        }
+
+        async function runBenchmark(type, preGeneratedData = null) {
+            const count = parseInt(document.getElementById('row-count').value);
+            const cycles = parseInt(document.getElementById('cycle-count').value) || 1;
+            const times = [];
+
+            let data = preGeneratedData;
+
+            // 1. Preparation phase (outside of timing)
+            if (!data && type !== 'TaggedScript') {
+                if (type === 'innerHTML' || type === 'DOMParser') data = generateHTML(count);
+                if (type === 'vDOM' || type === 'RawVDOM') data = generateVDOM(count);
+                if (type === 'RawoDOM') data = generateODOM(count);
+            }
+
+            console.log(`Starting ${cycles} cycles for ${type}...`);
+            const stringData = type === 'TaggedScript' ? '' : (typeof data === 'string' ? data : JSON.stringify(data));
+            const size = stringData.length;
+            const gzipSize = size > 0 ? await getGzipSize(stringData) : 0;
+
+            for (let i = 0; i < cycles; i++) {
+                const time = await runCycle(type, stringData, count);
+                times.push(time);
+            }
+
+            const stats = calculateStats(times);
+            updateUIResult(type, stats, size, gzipSize);
+            return stats;
+        }
+
+        async function runAll() {
+            clearTarget();
+            const count = parseInt(document.getElementById('row-count').value);
+
+            console.log("Pre-generating data for Run All...");
+            const htmlData = generateHTML(count);
+            const vdomData = generateVDOM(count);
+            const odomData = generateODOM(count);
+
+            const configs = [
+                { id: 'innerHTML', data: htmlData },
+                { id: 'DOMParser', data: htmlData },
+                { id: 'RawVDOM', data: vdomData },
+                { id: 'RawoDOM', data: odomData },
+                { id: 'vDOM', data: vdomData },
+                { id: 'TaggedScript', data: null }
+            ];
+
+            for (const config of configs) {
+                await runBenchmark(config.id, config.data);
+                // Pause between benchmarks to ensure clean state
+                await new Promise(r => setTimeout(r, 500));
+            }
+            console.log("Run All completed.");
+        }
+    </script>
+</body>
+
+</html>

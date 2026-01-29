@@ -163,11 +163,21 @@ const wrapDomElement = (domNode, tag, attributes = {}, children = []) => {
         tag,
         attributes,
         children,
+        isProxy: true,
         get domEl() { return domNode; }
     };
     const proxy = makeReactive(el);
     domToElement.set(domNode, proxy);
     return proxy;
+};
+
+/**
+ * Recursively checks if any item in a nested array matches a predicate.
+ * Replaces expensive .flat(Infinity).some() calls.
+ */
+const someRecursive = (item, predicate) => {
+    if (Array.isArray(item)) return item.some(i => someRecursive(i, predicate));
+    return predicate(item);
 };
 
 /**
@@ -198,12 +208,17 @@ const element = (tag, attributes = {}, children = []) => {
         };
 
         const update = () => {
-            const flat = (Array.isArray(el.children) ? el.children : [el.children]).flat(Infinity);
-            const bits = flat.map(c => {
+            const bits = [];
+            const walk = (c) => {
+                if (Array.isArray(c)) {
+                    for (let i = 0; i < c.length; i++) walk(c[i]);
+                    return;
+                }
                 const val = typeof c === 'function' ? c() : c;
-                if (val && typeof val === 'object' && val.domEl) return val.domEl.textContent;
-                return (val === null || val === undefined) ? '' : String(val);
-            });
+                if (val && typeof val === 'object' && val.domEl) bits.push(val.domEl.textContent);
+                else bits.push((val === null || val === undefined) ? '' : String(val));
+            };
+            walk(el.children);
             domNode.textContent = bits.join(' ');
         };
 
@@ -215,7 +230,7 @@ const element = (tag, attributes = {}, children = []) => {
             }
         });
 
-        const hasReactive = children.flat(Infinity).some(c => typeof c === 'function');
+        const hasReactive = someRecursive(children, c => typeof c === 'function');
         if (hasReactive) {
             const runner = effect(update);
             trackEffect(domNode, runner);
@@ -232,12 +247,29 @@ const element = (tag, attributes = {}, children = []) => {
         ? document.createElementNS('http://www.w3.org/2000/svg', tag)
         : document.createElement(tag);
 
-    const proxy = wrapDomElement(domNode, tag, attributes, children);
-    proxy.attributes = attributes;
-    proxy.children = children;
+    // Optimization: Skip Proxy allocation for static nodes
+    const hasReactiveAttr = Object.values(attributes).some(v => typeof v === 'function');
+    const hasReactiveChild = someRecursive(children, c => typeof c === 'function' || (c && c.isProxy));
+
+    if (hasReactiveAttr || hasReactiveChild) {
+        const proxy = wrapDomElement(domNode, tag, attributes, children);
+        proxy.attributes = attributes;
+        proxy.children = children;
+        if (isSVG) inSVG = wasInSVG;
+        return proxy;
+    }
+
+    // Static path: Direct application to the DOM node
+    makeReactiveAttributes(attributes, domNode);
+    setupChildren(children, domNode);
 
     if (isSVG) inSVG = wasInSVG;
-    return proxy;
+    return {
+        tag,
+        attributes,
+        children,
+        domEl: domNode
+    };
 };
 
 // Process component function return value (HTML string, DOM node, vDOM, or Object DOM)
@@ -253,7 +285,7 @@ const processComponentResult = (result) => {
 
     const type = typeof result;
     // DOM node - wrap it
-    if (type === 'object' && result instanceof HTMLElement) {
+    if (type === 'object' && result && result.nodeType === 1) {
         return wrapDomElement(result, result.tagName.toLowerCase(), {}, []);
     }
 
@@ -270,7 +302,7 @@ const processComponentResult = (result) => {
         template.innerHTML = result.trim();
         const content = template.content;
         // If single element, return it; otherwise wrap in a fragment-like span
-        if (content.childNodes.length === 1 && content.firstChild instanceof HTMLElement) {
+        if (content.childNodes.length === 1 && content.firstChild && content.firstChild.nodeType === 1) {
             const el = content.firstChild;
             return wrapDomElement(el, el.tagName.toLowerCase(), {}, []);
         } else {
@@ -334,12 +366,14 @@ const setAttributeValue = (domNode, key, value) => {
 /**
  * Processes attributes, handling event listeners, reactive bindings, and special 'onmount' hooks.
  */
-const makeReactiveAttributes = (attributes, domNode) => {
+const makeReactiveAttributes = (attributes = {}, domNode) => {
     const reactiveAttrs = {};
 
-    for (let [key, value] of Object.entries(attributes)) {
+    for (const key in attributes) {
+        const value = attributes[key];
+        const type = typeof value;
         // Handle XPath markers from hydration
-        if (value && typeof value === 'object' && value.__xpath__ && value.__static__) {
+        if (value && type === 'object' && value.__xpath__ && value.__static__) {
             // Mark attribute for later XPath resolution
             domNode.setAttribute(`data-xpath-${key}`, value.__xpath__);
             reactiveAttrs[key] = value;
@@ -355,11 +389,10 @@ const makeReactiveAttributes = (attributes, domNode) => {
             }
         } else if (key.startsWith('on')) {
             // Event handler
-            if (typeof value === 'function') {
+            if (type === 'function') {
                 // Function handler - use addEventListener
-                const eventName = key.slice(2).toLowerCase();
-                domNode.addEventListener(eventName, value);
-            } else if (typeof value === 'string') {
+                domNode.addEventListener(key.slice(2).toLowerCase(), value);
+            } else if (type === 'string') {
                 // String handler (from parsed HTML) - use setAttribute
                 // Browser will compile the string into a handler function
                 domNode.setAttribute(key, value);
@@ -371,20 +404,21 @@ const makeReactiveAttributes = (attributes, domNode) => {
                 reactiveAttrs[key] = processed;
             } else if (key === 'style') {
                 // Style object support (merged from below)
-                Object.entries(value).forEach(([styleKey, styleValue]) => {
+                for (const styleKey in entries) {
+                    const styleValue = entries[styleKey];
                     if (typeof styleValue === 'function') {
                         const runner = effect(() => { domNode.style[styleKey] = styleValue(); });
                         trackEffect(domNode, runner);
                     } else {
                         domNode.style[styleKey] = styleValue;
                     }
-                });
+                }
                 reactiveAttrs[key] = value;
             } else {
                 setAttributeValue(domNode, key, value);
                 reactiveAttrs[key] = value;
             }
-        } else if (typeof value === 'function') {
+        } else if (type === 'function') {
             // Reactive binding
             const runner = effect(() => {
                 const result = value();
@@ -428,29 +462,33 @@ const processChildren = (children, targetNode, clearExisting = true) => {
     const isSpecialElement = targetNode.tagName &&
         (targetNode.tagName.toLowerCase() === 'script' || targetNode.tagName.toLowerCase() === 'style');
 
-    const flatChildren = children.flat(Infinity);
+    const walk = (child) => {
+        if (Array.isArray(child)) {
+            for (let i = 0; i < child.length; i++) walk(child[i]);
+            return;
+        }
 
-    for (let child of flatChildren) {
+        if (child === null || child === undefined) return;
+
         // Allow extensions to transform children (e.g., template literals)
         // BUT skip for script/style elements which need raw content
         if (Lightview.hooks.processChild && !isSpecialElement) {
             child = Lightview.hooks.processChild(child) ?? child;
         }
 
-        // Handle shadowDOM markers - attach shadow to parent and process shadow children
-        if (isShadowDOMMarker(child)) {
-            // targetNode is the parent element that should get the shadow root
-            // For ShadowRoot targets, we can't attach another shadow, so warn
-            if (targetNode instanceof ShadowRoot) {
-                console.warn('Lightview: Cannot nest shadowDOM inside another shadowDOM');
-                continue;
-            }
-            processShadowDOM(child, targetNode);
-            continue;
-        }
-
         const type = typeof child;
-        if (type === 'function') {
+
+        if (child && type === 'object' && child.tag) {
+            // 1. Child element (already wrapped or plain object) - tag can be string or function (structural)
+            const childEl = child.domEl ? child : element(child.tag, child.attributes || {}, child.children || []);
+            targetNode.appendChild(childEl.domEl);
+            childElements.push(childEl);
+        } else if (['string', 'number', 'boolean', 'symbol'].includes(type) || (child && type === 'object' && child instanceof String)) {
+            // 2. Static text (common leaf)
+            targetNode.appendChild(document.createTextNode(child));
+            childElements.push(child);
+        } else if (type === 'function') {
+            // 3. Reactive function
             const startMarker = document.createComment('lv:s');
             const endMarker = document.createComment('lv:e');
             targetNode.appendChild(startMarker);
@@ -461,7 +499,6 @@ const processChildren = (children, targetNode, clearExisting = true) => {
                 // 1. Cleanup: Remove everything between markers
                 while (startMarker.nextSibling && startMarker.nextSibling !== endMarker) {
                     startMarker.nextSibling.remove();
-                    // Note: MutationObserver handles cleanupNode(removedNode)
                 }
 
                 // 2. Execution: Get new value and process it
@@ -490,20 +527,10 @@ const processChildren = (children, targetNode, clearExisting = true) => {
             runner = effect(update);
             trackEffect(startMarker, runner);
             childElements.push(child);
-        } else if (child && typeof child === 'object' && child.__xpath__ && child.__static__) {
-            // XPath marker - create text node with marker for later resolution
-            const textNode = document.createTextNode('');
-            textNode.__xpathExpr = child.__xpath__;
-            targetNode.appendChild(textNode);
-            childElements.push(child);
-        } else if (['string', 'number', 'boolean', 'symbol'].includes(type) || (child && type === 'object' && child instanceof String)) {
-            // Static text
-            targetNode.appendChild(document.createTextNode(child));
-            childElements.push(child);
         } else if (child instanceof Node) {
-            // Raw DOM node
+            // 4. Raw DOM node
             const node = child.domEl || child;
-            if (node instanceof HTMLElement || node instanceof SVGElement) {
+            if (node.nodeType === 1) { // ELEMENT_NODE
                 const wrapped = wrapDomElement(node, node.tagName.toLowerCase());
                 targetNode.appendChild(node);
                 childElements.push(wrapped);
@@ -511,13 +538,23 @@ const processChildren = (children, targetNode, clearExisting = true) => {
                 targetNode.appendChild(node);
                 childElements.push(child);
             }
-        } else if (child && type === 'object' && child.tag) {
-            // Child element (already wrapped or plain object) - tag can be string or function
-            const childEl = child.domEl ? child : element(child.tag, child.attributes || {}, child.children || []);
-            targetNode.appendChild(childEl.domEl);
-            childElements.push(childEl);
+        } else if (isShadowDOMMarker(child)) {
+            // 5. Shadow DOM marker
+            if (targetNode instanceof ShadowRoot) {
+                console.warn('Lightview: Cannot nest shadowDOM inside another shadowDOM');
+                return;
+            }
+            processShadowDOM(child, targetNode);
+        } else if (child && typeof child === 'object' && child.__xpath__ && child.__static__) {
+            // 6. XPath marker
+            const textNode = document.createTextNode('');
+            textNode.__xpathExpr = child.__xpath__;
+            targetNode.appendChild(textNode);
+            childElements.push(child);
         }
-    }
+    };
+
+    walk(children);
 
 
 
@@ -550,7 +587,7 @@ const enhance = (selectorOrNode, options = {}) => {
 
     // If it's already a Lightview element, use its domEl
     const node = domNode.domEl || domNode;
-    if (!(node instanceof HTMLElement)) return null;
+    if (!node || node.nodeType !== 1) return null;
 
     const tagName = node.tagName.toLowerCase();
     let el = domToElement.get(node);

@@ -240,6 +240,7 @@
       tag,
       attributes,
       children,
+      isProxy: true,
       get domEl() {
         return domNode;
       }
@@ -247,6 +248,10 @@
     const proxy = makeReactive(el);
     domToElement.set(domNode, proxy);
     return proxy;
+  };
+  const someRecursive = (item, predicate) => {
+    if (Array.isArray(item)) return item.some((i) => someRecursive(i, predicate));
+    return predicate(item);
   };
   const element = (tag, attributes = {}, children = []) => {
     if (customTags[tag]) tag = customTags[tag];
@@ -268,38 +273,56 @@
         }
       };
       const update = () => {
-        const flat = (Array.isArray(el.children) ? el.children : [el.children]).flat(Infinity);
-        const bits = flat.map((c) => {
+        const bits = [];
+        const walk = (c) => {
+          if (Array.isArray(c)) {
+            for (let i = 0; i < c.length; i++) walk(c[i]);
+            return;
+          }
           const val = typeof c === "function" ? c() : c;
-          if (val && typeof val === "object" && val.domEl) return val.domEl.textContent;
-          return val === null || val === void 0 ? "" : String(val);
-        });
+          if (val && typeof val === "object" && val.domEl) bits.push(val.domEl.textContent);
+          else bits.push(val === null || val === void 0 ? "" : String(val));
+        };
+        walk(el.children);
         domNode2.textContent = bits.join(" ");
       };
-      const proxy2 = new Proxy(el, {
+      const proxy = new Proxy(el, {
         set(target, prop, value) {
           target[prop] = value;
           if (prop === "children") update();
           return true;
         }
       });
-      const hasReactive = children.flat(Infinity).some((c) => typeof c === "function");
+      const hasReactive = someRecursive(children, (c) => typeof c === "function");
       if (hasReactive) {
         const runner = effect(update);
         trackEffect(domNode2, runner);
       }
       update();
-      return proxy2;
+      return proxy;
     }
     const isSVG = tag.toLowerCase() === "svg";
     const wasInSVG = inSVG;
     if (isSVG) inSVG = true;
     const domNode = inSVG ? document.createElementNS("http://www.w3.org/2000/svg", tag) : document.createElement(tag);
-    const proxy = wrapDomElement(domNode, tag, attributes, children);
-    proxy.attributes = attributes;
-    proxy.children = children;
+    const hasReactiveAttr = Object.values(attributes).some((v) => typeof v === "function");
+    const hasReactiveChild = someRecursive(children, (c) => typeof c === "function" || c && c.isProxy);
+    if (hasReactiveAttr || hasReactiveChild) {
+      const proxy = wrapDomElement(domNode, tag, attributes, children);
+      proxy.attributes = attributes;
+      proxy.children = children;
+      if (isSVG) inSVG = wasInSVG;
+      return proxy;
+    }
+    makeReactiveAttributes(attributes, domNode);
+    setupChildren(children, domNode);
     if (isSVG) inSVG = wasInSVG;
-    return proxy;
+    return {
+      tag,
+      attributes,
+      children,
+      domEl: domNode
+    };
   };
   const processComponentResult = (result) => {
     if (!result) return null;
@@ -308,7 +331,7 @@
     }
     if (result.domEl) return result;
     const type = typeof result;
-    if (type === "object" && result instanceof HTMLElement) {
+    if (type === "object" && result && result.nodeType === 1) {
       return wrapDomElement(result, result.tagName.toLowerCase(), {}, []);
     }
     if (type === "object" && result instanceof String) {
@@ -320,7 +343,7 @@
       const template = document.createElement("template");
       template.innerHTML = result.trim();
       const content = template.content;
-      if (content.childNodes.length === 1 && content.firstChild instanceof HTMLElement) {
+      if (content.childNodes.length === 1 && content.firstChild && content.firstChild.nodeType === 1) {
         const el = content.firstChild;
         return wrapDomElement(el, el.tagName.toLowerCase(), {}, []);
       } else {
@@ -365,10 +388,12 @@
       domNode.setAttribute(key, value);
     }
   };
-  const makeReactiveAttributes = (attributes, domNode) => {
+  const makeReactiveAttributes = (attributes = {}, domNode) => {
     const reactiveAttrs = {};
-    for (let [key, value] of Object.entries(attributes)) {
-      if (value && typeof value === "object" && value.__xpath__ && value.__static__) {
+    for (const key in attributes) {
+      const value = attributes[key];
+      const type = typeof value;
+      if (value && type === "object" && value.__xpath__ && value.__static__) {
         domNode.setAttribute(`data-xpath-${key}`, value.__xpath__);
         reactiveAttrs[key] = value;
         continue;
@@ -380,10 +405,9 @@
           value(domNode);
         }
       } else if (key.startsWith("on")) {
-        if (typeof value === "function") {
-          const eventName = key.slice(2).toLowerCase();
-          domNode.addEventListener(eventName, value);
-        } else if (typeof value === "string") {
+        if (type === "function") {
+          domNode.addEventListener(key.slice(2).toLowerCase(), value);
+        } else if (type === "string") {
           domNode.setAttribute(key, value);
         }
         reactiveAttrs[key] = value;
@@ -392,7 +416,8 @@
         if (processed !== void 0) {
           reactiveAttrs[key] = processed;
         } else if (key === "style") {
-          Object.entries(value).forEach(([styleKey, styleValue]) => {
+          for (const styleKey in entries) {
+            const styleValue = entries[styleKey];
             if (typeof styleValue === "function") {
               const runner = effect(() => {
                 domNode.style[styleKey] = styleValue();
@@ -401,13 +426,13 @@
             } else {
               domNode.style[styleKey] = styleValue;
             }
-          });
+          }
           reactiveAttrs[key] = value;
         } else {
           setAttributeValue(domNode, key, value);
           reactiveAttrs[key] = value;
         }
-      } else if (typeof value === "function") {
+      } else if (type === "function") {
         const runner = effect(() => {
           const result = value();
           if (key === "style" && typeof result === "object") {
@@ -431,21 +456,24 @@
     }
     const childElements = [];
     const isSpecialElement = targetNode.tagName && (targetNode.tagName.toLowerCase() === "script" || targetNode.tagName.toLowerCase() === "style");
-    const flatChildren = children.flat(Infinity);
-    for (let child of flatChildren) {
+    const walk = (child) => {
+      if (Array.isArray(child)) {
+        for (let i = 0; i < child.length; i++) walk(child[i]);
+        return;
+      }
+      if (child === null || child === void 0) return;
       if (Lightview.hooks.processChild && !isSpecialElement) {
         child = Lightview.hooks.processChild(child) ?? child;
       }
-      if (isShadowDOMMarker(child)) {
-        if (targetNode instanceof ShadowRoot) {
-          console.warn("Lightview: Cannot nest shadowDOM inside another shadowDOM");
-          continue;
-        }
-        processShadowDOM(child, targetNode);
-        continue;
-      }
       const type = typeof child;
-      if (type === "function") {
+      if (child && type === "object" && child.tag) {
+        const childEl = child.domEl ? child : element(child.tag, child.attributes || {}, child.children || []);
+        targetNode.appendChild(childEl.domEl);
+        childElements.push(childEl);
+      } else if (["string", "number", "boolean", "symbol"].includes(type) || child && type === "object" && child instanceof String) {
+        targetNode.appendChild(document.createTextNode(child));
+        childElements.push(child);
+      } else if (type === "function") {
         const startMarker = document.createComment("lv:s");
         const endMarker = document.createComment("lv:e");
         targetNode.appendChild(startMarker);
@@ -474,17 +502,9 @@
         runner = effect(update);
         trackEffect(startMarker, runner);
         childElements.push(child);
-      } else if (child && typeof child === "object" && child.__xpath__ && child.__static__) {
-        const textNode = document.createTextNode("");
-        textNode.__xpathExpr = child.__xpath__;
-        targetNode.appendChild(textNode);
-        childElements.push(child);
-      } else if (["string", "number", "boolean", "symbol"].includes(type) || child && type === "object" && child instanceof String) {
-        targetNode.appendChild(document.createTextNode(child));
-        childElements.push(child);
       } else if (child instanceof Node) {
         const node = child.domEl || child;
-        if (node instanceof HTMLElement || node instanceof SVGElement) {
+        if (node.nodeType === 1) {
           const wrapped = wrapDomElement(node, node.tagName.toLowerCase());
           targetNode.appendChild(node);
           childElements.push(wrapped);
@@ -492,12 +512,20 @@
           targetNode.appendChild(node);
           childElements.push(child);
         }
-      } else if (child && type === "object" && child.tag) {
-        const childEl = child.domEl ? child : element(child.tag, child.attributes || {}, child.children || []);
-        targetNode.appendChild(childEl.domEl);
-        childElements.push(childEl);
+      } else if (isShadowDOMMarker(child)) {
+        if (targetNode instanceof ShadowRoot) {
+          console.warn("Lightview: Cannot nest shadowDOM inside another shadowDOM");
+          return;
+        }
+        processShadowDOM(child, targetNode);
+      } else if (child && typeof child === "object" && child.__xpath__ && child.__static__) {
+        const textNode = document.createTextNode("");
+        textNode.__xpathExpr = child.__xpath__;
+        targetNode.appendChild(textNode);
+        childElements.push(child);
       }
-    }
+    };
+    walk(children);
     return childElements;
   };
   const setupChildrenInTarget = (children, targetNode) => {
@@ -509,7 +537,7 @@
   const enhance = (selectorOrNode, options = {}) => {
     const domNode = typeof selectorOrNode === "string" ? document.querySelector(selectorOrNode) : selectorOrNode;
     const node = domNode.domEl || domNode;
-    if (!(node instanceof HTMLElement)) return null;
+    if (!node || node.nodeType !== 1) return null;
     const tagName = node.tagName.toLowerCase();
     let el = domToElement.get(node);
     if (!el) {
