@@ -1,6 +1,6 @@
 {
   "name": "lightview",
-  "version": "2.4.6",
+  "version": "2.4.7",
   "description": "A reactive UI library with features of Bau, Juris, and HTMX plus safe LLM UI generation",
   "main": "lightview.js",
   "workspaces": [

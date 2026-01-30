@@ -132,14 +132,14 @@ const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
 const { $ } = Lightview;
 
 const cdom = `{
-    div: {
-        id: "Counter",
-        onmount: =state({ count: 0 }, { name: 'local', schema: 'auto', scope: $this }),
-        children: [
-            { h2: #../../@id }, // XPath shorthand: text node -> h2 -> div
-            { p: ["Count: ", =/local/count] },
-            { button: { onclick: =++/local/count, children: ["+"] } },
-            { button: { onclick: =--/local/count, children: ["-"] } }
+    "div": {
+        "id": "Counter",
+        "onmount": "=state({ count: 0 }, { name: 'local', schema: 'auto', scope: $this })",
+        "children": [
+            { "h2": "#../../@id" }, // XPath shorthand: text node -> h2 -> div
+            { "p": ["Count: ", "=/local/count"] },
+            { "button": { "onclick": "=++/local/count", "children": ["+"] } },
+            { "button": { "onclick": "=--/local/count", "children": ["-"] } }
         ]
     }
 }`;
@@ -215,10 +215,13 @@ const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
 const { $ } = Lightview;
 
 const cdom = `{
+    // The cdom below uses a compressed syntax. It does not require quotes 
+    // around properties or JPRX/XPath values and supports comments. 
+    // It is JSON-like, but not JSON.
     div: {
         id: "profile-container",
         class: "card",
-        "data-theme": "dark",
+        data-theme: "dark",
         children: [
             { h3: "User Profile" },
             { button: { 

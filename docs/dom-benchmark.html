@@ -161,8 +161,13 @@
                                 class="btn btn-outline btn-benchmark border-slate-300">Run Raw oDOM</button>
                             <button onclick="runBenchmark('vDOM')"
                                 class="btn btn-outline btn-benchmark border-slate-300">Run Lightview vDOM</button>
+                            <button onclick="runBenchmark('JurisODOM')"
+                                class="btn btn-outline btn-benchmark border-slate-300">Run JurisJS oDOM</button>
                             <button onclick="runBenchmark('TaggedScript')"
                                 class="btn btn-outline btn-benchmark border-slate-300">Run Lightview Tagged
+                                Script</button>
+                            <button onclick="runBenchmark('BauTaggedScript')"
+                                class="btn btn-outline btn-benchmark border-slate-300">Run Bau Tagged
                                 Script</button>
                             <div class="divider"></div>
                             <button onclick="runAll()" class="btn btn-primary text-white">Run All Benchmarks</button>
@@ -303,6 +308,31 @@
                         </div>
                     </div>
 
+                    <div class="result-card" id="res-JurisODOM">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest">JurisJS oDOM</h3>
+                            <div class="flex flex-col items-end gap-1">
+                                <div class="badge badge-outline badge-xs opacity-50"><span class="size">--</span> KB
+                                </div>
+                                <div class="badge badge-accent badge-xs text-white opacity-70"><span
+                                        class="gzip-size">--</span> KB gzip</div>
+                                <div class="badge badge-ghost badge-sm opacity-50">ms</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-black text-slate-800 mb-4"><span class="time">--</span></div>
+
+                        <div class="grid grid-cols-4 gap-2 text-[10px] uppercase font-bold text-slate-400 mb-3">
+                            <div>Min <span class="min block text-slate-600">--</span></div>
+                            <div>Avg <span class="avg block text-slate-600">--</span></div>
+                            <div>Max <span class="max block text-slate-600">--</span></div>
+                            <div class="text-right">±SD <span class="std block text-slate-600">--</span></div>
+                        </div>
+
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" id="fill-JurisODOM"></div>
+                        </div>
+                    </div>
+
                     <div class="result-card" id="res-TaggedScript">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest">Lightview Tagged
@@ -328,6 +358,32 @@
                             <div class="progress-fill" id="fill-TaggedScript"></div>
                         </div>
                     </div>
+
+                    <div class="result-card" id="res-BauTaggedScript">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest">Bau Tagged
+                                Script</h3>
+                            <div class="flex flex-col items-end gap-1">
+                                <div class="badge badge-outline badge-xs opacity-50"><span class="size">--</span> KB
+                                </div>
+                                <div class="badge badge-accent badge-xs text-white opacity-70"><span
+                                        class="gzip-size">--</span> KB gzip</div>
+                                <div class="badge badge-ghost badge-sm opacity-50">ms</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-black text-slate-800 mb-4"><span class="time">--</span></div>
+
+                        <div class="grid grid-cols-4 gap-2 text-[10px] uppercase font-bold text-slate-400 mb-3">
+                            <div>Min <span class="min block text-slate-600">--</span></div>
+                            <div>Avg <span class="avg block text-slate-600">--</span></div>
+                            <div>Max <span class="max block text-slate-600">--</span></div>
+                            <div class="text-right">±SD <span class="std block text-slate-600">--</span></div>
+                        </div>
+
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" id="fill-BauTaggedScript"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card bg-white shadow-sm border border-slate-200">
@@ -347,6 +403,7 @@
     <!-- Core Libraries -->
     <script src="/lightview.js"></script>
     <script src="/lightview-x.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/juris@0.9.0/juris.min.js"></script>
 
     <script>
         function generateHTML(count) {
@@ -468,6 +525,55 @@
             return el;
         }
 
+        function odomToDOM_Juris(onode) {
+            if (typeof onode !== 'object' || onode === null) {
+                return document.createTextNode(onode);
+            }
+
+            // Create a temporary container for Juris to render into
+            const tempContainer = document.createElement('div');
+
+            // Temporarily disable all console methods to prevent Juris logging from affecting benchmark
+            const originalConsole = {
+                log: console.log,
+                dir: console.dir,
+                warn: console.warn,
+                error: console.error,
+                info: console.info,
+                debug: console.debug
+            };
+            const noop = () => { };
+            console.log = noop;
+            console.dir = noop;
+            console.warn = noop;
+            console.error = noop;
+            console.info = noop;
+            console.debug = noop;
+
+            try {
+                // Create a Juris instance with the oDOM structure as the layout
+                const jurisInstance = new Juris({
+                    debug: false,  // Disable logging for performance
+                    layout: onode
+                });
+
+                // Render to the temporary container
+                jurisInstance.render(tempContainer);
+            } finally {
+                // Restore original console methods
+                console.log = originalConsole.log;
+                console.dir = originalConsole.dir;
+                console.warn = originalConsole.warn;
+                console.error = originalConsole.error;
+                console.info = originalConsole.info;
+                console.debug = originalConsole.debug;
+            }
+
+            // Return the first child (the actual rendered content)
+            return tempContainer.firstChild || tempContainer;
+        }
+
+
         async function getGzipSize(str) {
             try {
                 const stream = new Blob([str]).stream();
@@ -518,7 +624,7 @@
         function clearTarget() {
             target.replaceChildren();
             target.innerHTML = '<div class="p-8 text-center text-slate-400 italic">Target is empty.</div>';
-            ['innerHTML', 'DOMParser', 'vDOM', 'RawVDOM', 'RawoDOM', 'TaggedScript'].forEach(id => {
+            ['innerHTML', 'DOMParser', 'vDOM', 'RawVDOM', 'RawoDOM', 'JurisODOM', 'TaggedScript', 'BauTaggedScript'].forEach(id => {
                 const card = document.getElementById(`res-${id}`);
                 card.classList.remove('active');
                 card.querySelector('.time').innerText = '--';
@@ -568,6 +674,12 @@
                 const domEl = odomToDOM(json);
                 target.replaceChildren(domEl);
                 time = performance.now() - start;
+            } else if (type === 'JurisODOM') {
+                const start = performance.now();
+                const json = JSON.parse(data);
+                const domEl = odomToDOM_Juris(json);
+                target.replaceChildren(domEl);
+                time = performance.now() - start;
             } else if (type === 'TaggedScript') {
                 const existing = document.getElementById('tagged-script-tag');
                 if (existing) existing.remove();
@@ -580,6 +692,19 @@
                     document.body.appendChild(script);
                 });
                 time = window.__taggedBenchmarkTime;
+            } else if (type === 'BauTaggedScript') {
+                const existing = document.getElementById('bau-tagged-script-tag');
+                if (existing) existing.remove();
+
+                await new Promise(resolve => {
+                    window.__resolveBauTaggedBenchmark = resolve;
+                    const script = document.createElement('script');
+                    script.type = 'module';
+                    script.id = 'bau-tagged-script-tag';
+                    script.src = `./benchmarks/bau-tagged-fragment.js?count=${count}&t=${Date.now()}`;
+                    document.body.appendChild(script);
+                });
+                time = window.__bauTaggedBenchmarkTime;
             }
             return time;
         }
@@ -592,10 +717,10 @@
             let data = preGeneratedData;
 
             // 1. Preparation phase (outside of timing)
-            if (!data && type !== 'TaggedScript') {
+            if (!data && type !== 'TaggedScript' && type !== 'BauTaggedScript') {
                 if (type === 'innerHTML' || type === 'DOMParser') data = generateHTML(count);
                 if (type === 'vDOM' || type === 'RawVDOM') data = generateVDOM(count);
-                if (type === 'RawoDOM') data = generateODOM(count);
+                if (type === 'RawoDOM' || type === 'JurisODOM') data = generateODOM(count);
             }
 
             console.log(`Starting ${cycles} cycles for ${type}...`);
@@ -628,7 +753,9 @@
                 { id: 'RawVDOM', data: vdomData },
                 { id: 'RawoDOM', data: odomData },
                 { id: 'vDOM', data: vdomData },
-                { id: 'TaggedScript', data: null }
+                { id: 'JurisODOM', data: odomData },
+                { id: 'TaggedScript', data: null },
+                { id: 'BauTaggedScript', data: null }
             ];
 
             for (const config of configs) {
