@@ -53,7 +53,7 @@
 
 <script>
     globalThis.switchCDOMTab = (tabId) => {
-        const tabs = ['jprx', 'jprxc', 'operators', 'embedded'];
+        const tabs = ['jprx', 'cdomc', 'operators'];
         tabs.forEach(t => {
             const btn = document.getElementById(`tab-btn-${t}`);
             const pane = document.getElementById(`pane-${t}`);
@@ -664,17 +664,15 @@ $('#example').content(hydrated);
         <!-- ===== INTERACTIVE EXAMPLE ===== -->
         <h2 id="interactive-example">Interactive Example</h2>
         <p>
-            Choose a syntax to see how the same reactive counter can be defined using standard JSON, concise JPRXC, or
+            Choose a syntax to see how the same reactive counter can be defined using standard JSON, concise cDOMC, or
             operator syntax.
         </p>
 
         <div role="tablist" class="syntax-tabs">
             <button id="tab-btn-jprx" class="syntax-tab syntax-tab-active" onclick="switchCDOMTab('jprx')">JPRX
                 (Standard)</button>
-            <button id="tab-btn-jprxc" class="syntax-tab" onclick="switchCDOMTab('jprxc')">JPRXC (Concise)</button>
+            <button id="tab-btn-cdomc" class="syntax-tab" onclick="switchCDOMTab('cdomc')">cDOMC</button>
             <button id="tab-btn-operators" class="syntax-tab" onclick="switchCDOMTab('operators')">Operators</button>
-            <button id="tab-btn-embedded" class="syntax-tab" onclick="switchCDOMTab('embedded')">Embedded
-                Signals</button>
         </div>
 
         <!-- JPRX Pane -->
@@ -690,12 +688,11 @@ $('#example').content(hydrated);
             </script><code contenteditable="true">// JPRX: Standard JSON format (strict)
 await import('/lightview-cdom.js');
 const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
-const { signal, $ } = Lightview;
-
-const count = signal(0, 'count');
+const { $ } = Lightview;
 
 const cdomString = `{
     "div": {
+        onmount: "=signal(0, 'count')",
         "children": [
             { "h3": ["Standard JPRX Counter"] },
             { "p": { "children": ["Count: ", "=/count"] }},
@@ -709,12 +706,11 @@ const cdomString = `{
 
 const hydrated = hydrate(parseJPRX(cdomString));
 $('#example').content(hydrated);
-globalThis.LightviewCDOM.activate(hydrated.domEl);
 </code></pre>
         </div>
 
-        <!-- JPRXC Pane -->
-        <div id="pane-jprxc" style="display: none;">
+        <!-- cDOMC Pane -->
+        <div id="pane-cdomc" style="display: none;">
             <pre><script>
                 examplify(document.currentScript.nextElementSibling, {
                     at: document.currentScript.parentElement,
@@ -722,17 +718,17 @@ globalThis.LightviewCDOM.activate(hydrated.domEl);
                     type: 'module',
                     height: '250px'
                 });
-            </script><code contenteditable="true">// JPRXC: Concise format (unquoted keys, comments)
+            </script><code contenteditable="true">// cDOMC: Compressed format (unquoted keys, comments)
 await import('/lightview-cdom.js');
 const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
-const { signal, $ } = Lightview;
+const { $ } = ightview;
 
-const count = signal(0, 'count');
 
 const cdomString = `{
     div: {
+        onmount: =signal(0, 'count'),
         children: [
-            { h3: ["Concise Counter"] },
+            { h3: ["Compressed Counter"] },
             { p: { children: ["Count: ", =/count] }},
             { div: { children: [
                 { button: { onclick: =decrement(/count), children: ["-"] } },
@@ -760,12 +756,11 @@ globalThis.LightviewCDOM.activate(hydrated.domEl);
             </script><code contenteditable="true">// Operators: Using =++/path and =--/path
 await import('/lightview-cdom.js');
 const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
-const { signal, $ } = Lightview;
-
-const count = signal(0, 'count');
+const { $ } = Lightview;
 
 const cdomString = `{
     div: {
+        onmount: =signal(0, 'count'),
         children: [
             { h3: ["Operator Counter"] },
             { p: { children: ["Count: ", =/count] }},
@@ -784,39 +779,6 @@ globalThis.LightviewCDOM.activate(hydrated.domEl);
 </code></pre>
         </div>
 
-        <!-- Embedded Pane -->
-        <div id="pane-embedded" style="display: none;">
-            <pre><script>
-                examplify(document.currentScript.nextElementSibling, {
-                    at: document.currentScript.parentElement,
-                    scripts: ['/lightview.js', '/lightview-x.js', '/lightview-cdom.js'],
-                    type: 'module',
-                    height: '250px'
-                });
-            </script><code contenteditable="true">// Embedded Signals: Using onmount to initialize local state
-await import('/lightview-cdom.js');
-const { parseJPRX, hydrate } = globalThis.LightviewCDOM;
-const { $ } = Lightview;
-
-const cdomString = `{
-    div: {
-        // Initialize a named signal explicitly scoped to '$this' element.
-        onmount: =signal(0, { name: 'count', scope: $this }),
-        children: [
-            { h3: ["Embedded Counter"] },
-            { p: ["Count: ", =/count] },
-            { div: { children: [
-                { button: { onclick: =--/count, children: ["-"] } },
-                { button: { onclick: =++/count, children: ["+"] } }
-            ]}}
-        ]
-    }
-}`;
-
-const hydrated = hydrate(parseJPRX(cdomString));
-$('#example').content(hydrated);
-</code></pre>
-        </div>
 
         <!-- ===== OPERATOR SYNTAX EXAMPLE ===== -->
         <h2 id="operator-syntax">Operator Syntax</h2>
@@ -938,7 +900,7 @@ LightviewCDOM.activate(document.getElementById('myApp'));</code></pre>
 
         <h3 id="api-hydrate">hydrate(object)</h3>
         <p>
-            Converts <code>$</code>-prefixed strings into reactive computed signals.
+            Converts <code>=/</code> prefixed strings into reactive computed signals.
         </p>
         <div class="code-block">
             <pre><code>const config = { title: "Dashboard", total: "=/cart/items...price" };
