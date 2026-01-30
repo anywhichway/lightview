@@ -133,9 +133,10 @@ const { $ } = Lightview;
 
 const cdom = `{
     div: {
+        id: "Counter",
         onmount: =state({ count: 0 }, { name: 'local', schema: 'auto', scope: $this }),
         children: [
-            { h2: "Counter" },
+            { h2: #../../@id }, // XPath shorthand: text node -> h2 -> div
             { p: ["Count: ", =/local/count] },
             { button: { onclick: =++/local/count, children: ["+"] } },
             { button: { onclick: =--/local/count, children: ["-"] } }
@@ -150,13 +151,43 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
         </p>
         <ul>
             <li><code>onmount</code> — A Lightview lifecycle hook where we initialize state.</li>
+            <li><code>#../../@id</code> — An XPath expression that extracts the <code>id</code> from the grandparent
+                element.</li>
             <li><code>=state(...)</code> — An initializer that creates local reactive state.</li>
             <li><code>scope: $this</code> — Explicitly attaches the state to the current element.</li>
             <li><code>=/local/count</code> — A path that reactively displays the count value.</li>
         </ul>
-        <p>
-            The UI automatically updates whenever <code>count</code> changes — no manual DOM manipulation required.
+        <p style="font-size: 0.95rem; font-style: italic; color: var(--site-text-secondary);">
+            <strong>Note:</strong> In cDOM, <code>#</code> is the prefix for <strong>XPath</strong> expressions that
+            navigate and extract data from the DOM, while <code>=</code> is the prefix for <strong>JPRX</strong>
+            expressions that navigate or apply functions to
+            reactive state.
         </p>
+        <p>
+            The UI automatically updates whenever <code>count</code> changes — no manual DOM manipulation required. It
+            also uses XPath to navigate the DOM structure during construction.
+        </p>
+
+        <!-- ===== ADVANTAGES ===== -->
+        <h2 id="advantages">Advantages</h2>
+        <div class="feature-grid" style="margin: 2rem 0;">
+            <div class="feature-card">
+                <h3 class="feature-title">🛡️ Enhanced Security</h3>
+                <p>
+                    cDOM strictly avoids <code>eval()</code> and direct HTML injection. By using a custom
+                    high-performance parser and a registry of pre-defined helper functions, it provides a safe sandbox
+                    for dynamic content, making it highly resistant to XSS attacks.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h3 class="feature-title">🤖 LLM Friendly</h3>
+                <p>
+                    Large Language Models excel at generating structured data and formulaic expressions. cDOM's
+                    declarative nature and concise syntax make it far easier for AI to generate correct,
+                    bug-free UI components compared to traditional JavaScript-heavy frameworks.
+                </p>
+            </div>
+        </div>
 
         <!-- ===== XPATH NAVIGATION ===== -->
         <h2 id="xpath-navigation">Using XPath</h2>
@@ -209,27 +240,6 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
         <p>
             For more details, see the <a href="/docs/cdom-xpath.html">Full XPath Documentation</a>.
         </p>
-
-        <!-- ===== ADVANTAGES ===== -->
-        <h2 id="advantages">Advantages</h2>
-        <div class="feature-grid" style="margin: 2rem 0;">
-            <div class="feature-card">
-                <h3 class="feature-title">🛡️ Enhanced Security</h3>
-                <p>
-                    cDOM strictly avoids <code>eval()</code> and direct HTML injection. By using a custom
-                    high-performance parser and a registry of pre-defined helper functions, it provides a safe sandbox
-                    for dynamic content, making it highly resistant to XSS attacks.
-                </p>
-            </div>
-            <div class="feature-card">
-                <h3 class="feature-title">🤖 LLM Friendly</h3>
-                <p>
-                    Large Language Models excel at generating structured data and formulaic expressions. cDOM's
-                    declarative nature and concise syntax make it far easier for AI to generate correct,
-                    bug-free UI components compared to traditional JavaScript-heavy frameworks.
-                </p>
-            </div>
-        </div>
 
         <!-- ===== JPRX INTRODUCTION ===== -->
         <h2 id="JPRX">JPRX (JSON Pointer Reactive eXpressions)</h2>
@@ -368,6 +378,44 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
                 </tr>
             </tbody>
         </table>
+
+        <h3 id="JPRX-explosion">Explosion & Mapping (<code>...</code>)</h3>
+        <p>
+            The <code>...</code> operator is a powerful JPRX extension used for mapping properties from arrays and
+            spreading array elements as function arguments.
+        </p>
+
+        <h4>Mapping & Auto-Explosion: <code>path...property</code></h4>
+        <p>
+            When used between a path to an array and a property name, it acts as a shorthand for mapping. It extracts
+            the specified property from every object in the array. <strong>Inside a function call, it automatically
+                spreads (explodes) the resulting values as individual arguments.</strong>
+        </p>
+        <div class="code-block" style="margin-bottom: 1.5rem;">
+            <pre><code>// Correct: Maps 'price' and automatically spreads results as arguments to sum()
+=sum(/cart/items...price)
+
+// Mapping also works for direct display (returns an array)
+{ p: ["Prices: ", =/cart/items...price] }</code></pre>
+        </div>
+
+        <h4>Argument Spreading: <code>path...</code></h4>
+        <p>
+            When an array path is followed by a trailing <code>...</code> at the end of the path expression (and no
+            property name follows), the array elements are spread as individual arguments. Use this when you have a
+            direct reference to an array.
+        </p>
+        <div class="code-block">
+            <pre><code>// Passes each number in the array as a separate argument
+=sum(/listOfNumbers...)</code></pre>
+        </div>
+
+        <div class="warning-notice"
+            style="margin-top: 1.5rem; padding: 1rem; background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; border-radius: 4px;">
+            <strong>Warning:</strong> Do not combine infix mapping with trailing dots. <code>/items...price...</code> is
+            invalid because the trailing dots are interpreted as part of the property name (looking for a property
+            literally named "price...").
+        </div>
 
         <!-- ===== COMPARISON TO EXCEL ===== -->
         <h2 id="comparison">Comparison to Excel</h2>
@@ -536,8 +584,37 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
         <h3 id="lifecycle-state">Lifecycle State</h3>
         <p>
             In Lightview, you initialize state within the <code>onmount</code> hook. The <code>=state</code> and
-            <code>=signal</code> helpers accept an options object where you can specify a <code>scope</code>,
-            as well as <code>schema</code> requirements.
+            <code>=signal</code> helpers allow you to create reactive data that is tied to the DOM structure.
+        </p>
+
+        <h4 id="scope-resolution">Scope & Name Resolution</h4>
+        <p>
+            When JPRX encounters a name (e.g., <code>=/profile/name</code>), it doesn't just look in a global registry.
+            Instead, it performs an <strong>up-tree search</strong>:
+        </p>
+        <ol>
+            <li>It starts at the element where the expression is defined.</li>
+            <li>It looks for a registered signal or state with that name.</li>
+            <li>If not found, it moves to the parent element and repeats the search.</li>
+            <li>This continues all the way to the <code>document</code> root, finally checking the global registry if
+                needed.</li>
+        </ol>
+
+        <h4>The <code>$this</code> Placeholder</h4>
+        <p>
+            The <code>$this</code> keyword is a special placeholder that represents the <strong>current
+                element</strong>. When used in the <code>scope</code> option of <code>=state</code> or
+            <code>=signal</code>, it instructs Lightview to register the name specifically at that element's level in
+            the DOM.
+        </p>
+        <div class="code-block" style="margin-bottom: 1.5rem;">
+            <pre><code>// Scoping state to the current element creates a local namespace
+{ "onmount": "=state({ count: 0 }, { name: 'local', scope: $this })" }</code></pre>
+        </div>
+        <p>
+            This mechanism is what allows you to create <strong>reusable components</strong>. Each instance of a
+            component can have its own "local" state because the search for <code>local</code> will stop at the first
+            element it finds that has it registered—typically the root of the component instance.
         </p>
 
         <h4>Using a Registered Schema</h4>
@@ -578,10 +655,7 @@ Lightview.registerSchema('User', { name: 'string', age: 'number' });
     }
 }</code></pre>
         </div>
-        <p>
-            By scoping the state to the element, you can create multiple independent instances of components.
-            Lightview uses a high-performance <strong>up-tree search</strong> to resolve these names.
-        </p>
+
 
         <h3 id="bind-helper">Two-Way Binding ($bind)</h3>
         <p>

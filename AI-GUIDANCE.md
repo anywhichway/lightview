@@ -151,8 +151,23 @@ Lightview X allows embedded `${}` expressions in attributes for simple reactivit
 
 **cDOM (Computed DOM)** and **JPRX (JSON Reactive Expressions)** allow you to build fully reactive UIs using **only JSON**.
 
-### JPRX Helper Reference
-JPRX supports a wide range of helpers. AI agents should use these instead of trying to write JS when builing streaming UIs at runtime.
+### Syntax Prefixes
+*   **`=` (JPRX)**: Navigates **reactive state** (Signals/States). Starts with `=/` for absolute paths.
+*   **`#` (cDOM XPath)**: Navigates the **DOM tree** during construction. Use `#../../@id` to skip the text node parent and reach an ancestor's attribute.
+
+### Name Resolution & Scoping
+JPRX uses an **up-tree search** to find signals or states:
+1.  **Search starts** at the element where the expression is defined.
+2.  **Bubbles up** through parent elements looking for a registered name.
+3.  **Falls back** to the global registry.
+
+**The `$this` Placeholder**:
+Use `{ scope: $this }` in `=state` or `=signal` to register data specifically at the current element's level. This is essential for creating multiple independent instances of a component.
+
+### The `...` (Explosion) Operator
+*   **Infix Mapping (`/path...property`)**: Extracts `property` from every object in the `/path` array. **Inside a function call, it automatically explodes** the results into separate arguments.
+*   **Trailing Spread (`/path...`)**: Spreads a direct array reference into individual arguments.
+*   **Warning**: Never write `/path...property...`. The trailing dots will be incorrectly included in the property name lookup.
 
 | Category | Helpers |
 | :--- | :--- |
@@ -163,7 +178,7 @@ JPRX supports a wide range of helpers. AI agents should use these instead of try
 | **Stats** | `sum`, `avg`, `min`, `max`, `median`, `stdev`, `variance` |
 | **Data** | `lookup(val, searchArr, resultArr)` (VLOOKUP-style) |
 | **State** | `state(val, opts)`, `set(path, val)`, `bind(path)`, `increment`, `decrement`, `toggle` |
-| **DOM** | `xpath(expr)` (Backward-looking only), `move(target, loc)` |
+| **DOM** | `#path` (XPath Navigation), `move(target, loc)` |
 | **Net** | `fetchHelper(url, opts)`, `mount(url, opts)` |
 
 ### The "Decentralized Layout" Pattern (AI Strategy)
@@ -247,13 +262,13 @@ router.use(
 <a name="deep-links"></a>
 ## 8. Deep Links & Resources
 
-*   **Documentation Home**: [/docs/index.html](file:///c:/Users/Owner/AntigravityProjects/lightview/docs/index.html)
-*   **Core Logic**: [/lightview.js](file:///c:/Users/Owner/AntigravityProjects/lightview/lightview.js)
-*   **Extension (Hypermedia)**: [/lightview-x.js](file:///c:/Users/Owner/AntigravityProjects/lightview/lightview-x.js)
-*   **Router**: [/lightview-router.js](file:///c:/Users/Owner/AntigravityProjects/lightview/lightview-router.js)
-*   **CDOM/JPRX Parser**: [/lightview-cdom.js](file:///c:/Users/Owner/AntigravityProjects/lightview/lightview-cdom.js)
-*   **Component Index**: [/components/index.js](file:///c:/Users/Owner/AntigravityProjects/lightview/components/index.js)
-*   **JPRX Helpers**: [/jprx/helpers/](file:///c:/Users/Owner/AntigravityProjects/lightview/jprx/helpers/)
+*   **Documentation Home**: [docs/index.html](docs/index.html)
+*   **Core Logic**: [lightview.js](lightview.js) and [docs/api/index.html](docs/api/index.html)
+*   **Extension (Hypermedia)**: [lightview-x.js](lightview-x.js) and [docs/api/hypermedia.html](docs/api/hypermedia.html)
+*   **Router**: [lightview-router.js](lightview-router.js) and [docs/router.html](docs/router.html)
+*   **CDOM/JPRX Parser**: [lightview-cdom.js](lightview-cdom.js) and [docs/cdom.html](docs/cdom.html)
+*   **Component Index**: [components/index.js](components/index.js) and [docs/components/index.html](docs/components/index.html)
+*   **JPRX Helpers**: [jprx/helpers/](jprx/helpers/) and [docs/cdom#helpers](docs/cdom.html#helpers)
 
 ---
 © 2026 AnyWhichWay LLC.
