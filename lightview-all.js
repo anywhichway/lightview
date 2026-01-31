@@ -3633,6 +3633,35 @@
         i++;
         continue;
       }
+      if ((char === "=" || char === "#") && input[i + 1] === "(") {
+        const prefix = char;
+        let expr = prefix;
+        i++;
+        let parenDepth = 0;
+        let inExprQuote = null;
+        while (i < len2) {
+          const c = input[i];
+          if (inExprQuote) {
+            if (c === inExprQuote && input[i - 1] !== "\\") inExprQuote = null;
+          } else if (c === '"' || c === "'") {
+            inExprQuote = c;
+          } else {
+            if (c === "(") parenDepth++;
+            else if (c === ")") {
+              parenDepth--;
+              if (parenDepth === 0) {
+                expr += c;
+                i++;
+                break;
+              }
+            }
+          }
+          expr += c;
+          i++;
+        }
+        result += JSON.stringify(expr);
+        continue;
+      }
       if (char === "=") {
         let expr = "";
         let parenDepth = 0;
@@ -3672,6 +3701,42 @@
             else if (c === ")") parenDepth--;
             else if (c === "{") braceDepth++;
             else if (c === "}") braceDepth--;
+            else if (c === "[") bracketDepth++;
+            else if (c === "]") bracketDepth--;
+          }
+          expr += c;
+          i++;
+        }
+        result += JSON.stringify(expr);
+        continue;
+      }
+      if (char === "#") {
+        let expr = "";
+        let parenDepth = 0;
+        let bracketDepth = 0;
+        let inExprQuote = null;
+        while (i < len2) {
+          const c = input[i];
+          if (inExprQuote) {
+            if (c === inExprQuote && input[i - 1] !== "\\") inExprQuote = null;
+          } else if (c === '"' || c === "'") {
+            inExprQuote = c;
+          } else {
+            if (parenDepth === 0 && bracketDepth === 0) {
+              if (/[}[\],:]/.test(c) && expr.length > 1) break;
+              if (/\s/.test(c)) {
+                let j = i + 1;
+                while (j < len2 && /\s/.test(input[j])) j++;
+                if (j < len2) {
+                  const nextChar = input[j];
+                  if (nextChar === "}" || nextChar === "," || nextChar === "]") {
+                    break;
+                  }
+                }
+              }
+            }
+            if (c === "(") parenDepth++;
+            else if (c === ")") parenDepth--;
             else if (c === "[") bracketDepth++;
             else if (c === "]") bracketDepth--;
           }
@@ -6030,17 +6095,21 @@
   const hydrate = (node, parent = null) => {
     var _a2, _b2, _c;
     if (!node) return node;
-    if (typeof node === "string" && node.startsWith("'=")) {
-      return node.slice(1);
-    }
-    if (typeof node === "string" && node.startsWith("'#")) {
-      return node.slice(1);
-    }
-    if (typeof node === "string" && node.startsWith("#")) {
-      return { __xpath__: node.slice(1), __static__: true };
-    }
-    if (typeof node === "string" && node.startsWith("=")) {
-      return parseExpression(node, parent);
+    if (typeof node === "string") {
+      const xpathMatch = node.match(/^#\((.*)\)$/);
+      if (xpathMatch) {
+        return { __xpath__: xpathMatch[1], __static__: true };
+      }
+      const jprxMatch = node.match(/^=\((.*)\)$/);
+      if (jprxMatch) {
+        return parseExpression("=" + jprxMatch[1], parent);
+      }
+      if (node.startsWith("#")) {
+        return { __xpath__: node.slice(1), __static__: true };
+      }
+      if (node.startsWith("=")) {
+        return parseExpression(node, parent);
+      }
     }
     if (typeof node !== "object") return node;
     if (Array.isArray(node)) {
@@ -6080,17 +6149,32 @@
       if (key === "attributes" && typeof value === "object" && value !== null) {
         for (const attrKey in value) {
           const attrVal = value[attrKey];
-          if (typeof attrVal === "string" && attrVal.startsWith("'=")) {
-            value[attrKey] = attrVal.slice(1);
-          } else if (typeof attrVal === "string" && attrVal.startsWith("'#")) {
-            value[attrKey] = attrVal.slice(1);
-          } else if (typeof attrVal === "string" && attrVal.startsWith("#")) {
-            value[attrKey] = { __xpath__: attrVal.slice(1), __static__: true };
-          } else if (typeof attrVal === "string" && attrVal.startsWith("=")) {
-            if (attrKey.startsWith("on")) {
-              value[attrKey] = makeEventHandler(attrVal);
-            } else {
-              value[attrKey] = parseExpression(attrVal, node);
+          if (typeof attrVal === "string") {
+            const xpathMatch = attrVal.match(/^#\((.*)\)$/);
+            if (xpathMatch) {
+              value[attrKey] = { __xpath__: xpathMatch[1], __static__: true };
+              continue;
+            }
+            const jprxMatch = attrVal.match(/^=\((.*)\)$/);
+            if (jprxMatch) {
+              const expr = "=" + jprxMatch[1];
+              if (attrKey.startsWith("on")) {
+                value[attrKey] = makeEventHandler(expr);
+              } else {
+                value[attrKey] = parseExpression(expr, node);
+              }
+              continue;
+            }
+            if (attrVal.startsWith("#")) {
+              value[attrKey] = { __xpath__: attrVal.slice(1), __static__: true };
+            } else if (attrVal.startsWith("=")) {
+              if (attrKey.startsWith("on")) {
+                value[attrKey] = makeEventHandler(attrVal);
+              } else {
+                value[attrKey] = parseExpression(attrVal, node);
+              }
+            } else if (typeof attrVal === "object" && attrVal !== null) {
+              value[attrKey] = hydrate(attrVal, node);
             }
           } else if (typeof attrVal === "object" && attrVal !== null) {
             value[attrKey] = hydrate(attrVal, node);
@@ -6098,19 +6182,32 @@
         }
         continue;
       }
-      if (typeof value === "string" && value.startsWith("'=")) {
-        node[key] = value.slice(1);
-      } else if (typeof value === "string" && value.startsWith("'#")) {
-        node[key] = value.slice(1);
-      } else if (typeof value === "string" && value.startsWith("#")) {
-        node[key] = { __xpath__: value.slice(1), __static__: true };
-      } else if (typeof value === "string" && value.startsWith("=")) {
-        if (key === "onmount" || key === "onunmount" || key.startsWith("on")) {
-          node[key] = makeEventHandler(value);
-        } else if (key === "children") {
-          node[key] = [parseExpression(value, node)];
+      if (typeof value === "string") {
+        const xpathMatch = value.match(/^#\((.*)\)$/);
+        if (xpathMatch) {
+          node[key] = { __xpath__: xpathMatch[1], __static__: true };
+        } else if (value.match(/^=\((.*)\)$/)) {
+          const jprxMatch = value.match(/^=\((.*)\)$/);
+          const expr = "=" + jprxMatch[1];
+          if (key === "onmount" || key === "onunmount" || key.startsWith("on")) {
+            node[key] = makeEventHandler(expr);
+          } else if (key === "children") {
+            node[key] = [parseExpression(expr, node)];
+          } else {
+            node[key] = parseExpression(expr, node);
+          }
+        } else if (value.startsWith("#")) {
+          node[key] = { __xpath__: value.slice(1), __static__: true };
+        } else if (value.startsWith("=")) {
+          if (key === "onmount" || key === "onunmount" || key.startsWith("on")) {
+            node[key] = makeEventHandler(value);
+          } else if (key === "children") {
+            node[key] = [parseExpression(value, node)];
+          } else {
+            node[key] = parseExpression(value, node);
+          }
         } else {
-          node[key] = parseExpression(value, node);
+          node[key] = hydrate(value, node);
         }
       } else {
         node[key] = hydrate(value, node);

@@ -533,42 +533,14 @@
             // Create a temporary container for Juris to render into
             const tempContainer = document.createElement('div');
 
-            // Temporarily disable all console methods to prevent Juris logging from affecting benchmark
-            const originalConsole = {
-                log: console.log,
-                dir: console.dir,
-                warn: console.warn,
-                error: console.error,
-                info: console.info,
-                debug: console.debug
-            };
-            const noop = () => { };
-            console.log = noop;
-            console.dir = noop;
-            console.warn = noop;
-            console.error = noop;
-            console.info = noop;
-            console.debug = noop;
+            // Create a Juris instance with the oDOM structure as the layout
+            const jurisInstance = new Juris({
+                debug: false,  // Disable logging for performance
+                layout: onode
+            });
 
-            try {
-                // Create a Juris instance with the oDOM structure as the layout
-                const jurisInstance = new Juris({
-                    debug: false,  // Disable logging for performance
-                    layout: onode
-                });
-
-                // Render to the temporary container
-                jurisInstance.render(tempContainer);
-            } finally {
-                // Restore original console methods
-                console.log = originalConsole.log;
-                console.dir = originalConsole.dir;
-                console.warn = originalConsole.warn;
-                console.error = originalConsole.error;
-                console.info = originalConsole.info;
-                console.debug = originalConsole.debug;
-            }
-
+            // Render to the temporary container
+            jurisInstance.render(tempContainer);
             // Return the first child (the actual rendered content)
             return tempContainer.firstChild || tempContainer;
         }

@@ -239,21 +239,29 @@ const makeEventHandler = (expr) => (eventOrNode) => {
 const hydrate = (node, parent = null) => {
     if (!node) return node;
 
-    // 1. Handle Escape and Expressions
-    // Escape sequence: '= at start produces a literal string starting with =
-    if (typeof node === 'string' && node.startsWith("'=")) {
-        return node.slice(1); // Strip the ' and return as literal
-    }
-    // Escape sequence: '# at start produces a literal string starting with #
-    if (typeof node === 'string' && node.startsWith("'#")) {
-        return node.slice(1); // Strip the ' and return as literal
-    }
-    // XPath expression: # at start marks for static resolution
-    if (typeof node === 'string' && node.startsWith('#')) {
-        return { __xpath__: node.slice(1), __static__: true };
-    }
-    if (typeof node === 'string' && node.startsWith('=')) {
-        return parseExpression(node, parent);
+    // 1. Handle Expressions with new wrapper syntax
+    if (typeof node === 'string') {
+        // New wrapper syntax: #(xpath) for XPath expressions
+        const xpathMatch = node.match(/^#\((.*)\)$/);
+        if (xpathMatch) {
+            return { __xpath__: xpathMatch[1], __static__: true };
+        }
+
+        // New wrapper syntax: =(expr) for JPRX expressions
+        const jprxMatch = node.match(/^=\((.*)\)$/);
+        if (jprxMatch) {
+            return parseExpression('=' + jprxMatch[1], parent);
+        }
+
+        // Legacy syntax: # at start (backward compatibility)
+        if (node.startsWith('#')) {
+            return { __xpath__: node.slice(1), __static__: true };
+        }
+
+        // Legacy syntax: = at start (backward compatibility)
+        if (node.startsWith('=')) {
+            return parseExpression(node, parent);
+        }
     }
 
     if (typeof node !== 'object') return node;
@@ -308,20 +316,37 @@ const hydrate = (node, parent = null) => {
         if (key === 'attributes' && typeof value === 'object' && value !== null) {
             for (const attrKey in value) {
                 const attrVal = value[attrKey];
-                // Escape sequence: '= at start produces a literal string starting with =
-                if (typeof attrVal === 'string' && attrVal.startsWith("'=")) {
-                    value[attrKey] = attrVal.slice(1);
-                    // Escape sequence: '# at start produces a literal string starting with #
-                } else if (typeof attrVal === 'string' && attrVal.startsWith("'#")) {
-                    value[attrKey] = attrVal.slice(1);
-                    // XPath expression: # at start marks for static resolution
-                } else if (typeof attrVal === 'string' && attrVal.startsWith('#')) {
-                    value[attrKey] = { __xpath__: attrVal.slice(1), __static__: true };
-                } else if (typeof attrVal === 'string' && attrVal.startsWith('=')) {
-                    if (attrKey.startsWith('on')) {
-                        value[attrKey] = makeEventHandler(attrVal);
-                    } else {
-                        value[attrKey] = parseExpression(attrVal, node);
+                if (typeof attrVal === 'string') {
+                    // New wrapper syntax: #(xpath)
+                    const xpathMatch = attrVal.match(/^#\((.*)\)$/);
+                    if (xpathMatch) {
+                        value[attrKey] = { __xpath__: xpathMatch[1], __static__: true };
+                        continue;
+                    }
+
+                    // New wrapper syntax: =(expr)
+                    const jprxMatch = attrVal.match(/^=\((.*)\)$/);
+                    if (jprxMatch) {
+                        const expr = '=' + jprxMatch[1];
+                        if (attrKey.startsWith('on')) {
+                            value[attrKey] = makeEventHandler(expr);
+                        } else {
+                            value[attrKey] = parseExpression(expr, node);
+                        }
+                        continue;
+                    }
+
+                    // Legacy syntax: # at start
+                    if (attrVal.startsWith('#')) {
+                        value[attrKey] = { __xpath__: attrVal.slice(1), __static__: true };
+                    } else if (attrVal.startsWith('=')) {
+                        if (attrKey.startsWith('on')) {
+                            value[attrKey] = makeEventHandler(attrVal);
+                        } else {
+                            value[attrKey] = parseExpression(attrVal, node);
+                        }
+                    } else if (typeof attrVal === 'object' && attrVal !== null) {
+                        value[attrKey] = hydrate(attrVal, node);
                     }
                 } else if (typeof attrVal === 'object' && attrVal !== null) {
                     value[attrKey] = hydrate(attrVal, node);
@@ -330,22 +355,39 @@ const hydrate = (node, parent = null) => {
             continue;
         }
 
-        // Escape sequence: '= at start produces a literal string starting with =
-        if (typeof value === 'string' && value.startsWith("'=")) {
-            node[key] = value.slice(1);
-            // Escape sequence: '# at start produces a literal string starting with #
-        } else if (typeof value === 'string' && value.startsWith("'#")) {
-            node[key] = value.slice(1);
-            // XPath expression: # at start marks for static resolution
-        } else if (typeof value === 'string' && value.startsWith('#')) {
-            node[key] = { __xpath__: value.slice(1), __static__: true };
-        } else if (typeof value === 'string' && value.startsWith('=')) {
-            if (key === 'onmount' || key === 'onunmount' || key.startsWith('on')) {
-                node[key] = makeEventHandler(value);
-            } else if (key === 'children') {
-                node[key] = [parseExpression(value, node)];
+        if (typeof value === 'string') {
+            // New wrapper syntax: #(xpath)
+            const xpathMatch = value.match(/^#\((.*)\)$/);
+            if (xpathMatch) {
+                node[key] = { __xpath__: xpathMatch[1], __static__: true };
+            }
+            // New wrapper syntax: =(expr)
+            else if (value.match(/^=\((.*)\)$/)) {
+                const jprxMatch = value.match(/^=\((.*)\)$/);
+                const expr = '=' + jprxMatch[1];
+                if (key === 'onmount' || key === 'onunmount' || key.startsWith('on')) {
+                    node[key] = makeEventHandler(expr);
+                } else if (key === 'children') {
+                    node[key] = [parseExpression(expr, node)];
+                } else {
+                    node[key] = parseExpression(expr, node);
+                }
+            }
+            // Legacy syntax: # at start
+            else if (value.startsWith('#')) {
+                node[key] = { __xpath__: value.slice(1), __static__: true };
+            }
+            // Legacy syntax: = at start
+            else if (value.startsWith('=')) {
+                if (key === 'onmount' || key === 'onunmount' || key.startsWith('on')) {
+                    node[key] = makeEventHandler(value);
+                } else if (key === 'children') {
+                    node[key] = [parseExpression(value, node)];
+                } else {
+                    node[key] = parseExpression(value, node);
+                }
             } else {
-                node[key] = parseExpression(value, node);
+                node[key] = hydrate(value, node);
             }
         } else {
             node[key] = hydrate(value, node);

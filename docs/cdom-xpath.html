@@ -69,9 +69,9 @@ const cdom = `{
             { h3: "User Profile" },
             { button: { 
                 id: "7", 
-                // XPath #@id gets "7" from this button's id
-                // XPath #../@id gets "profile-container" from the parent div
-                children: ["Button ", #@id, " in section ", #../@id] 
+                // XPath #(@id) gets "7" from this button's id
+                // XPath #(../@id) gets "profile-container" from the parent div
+                children: ["Button ", #(@id), " in section ", #(../@id)] 
             }}
         ]
     }
@@ -116,17 +116,35 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
             <strong>Forbidden:</strong> <code>child::</code>, <code>descendant::</code>, and <code>following::</code>
             axes are disabled as they could create infinite loops or reference nodes that do not exist yet.
         </p>
+        <div
+            style="margin-top: 1rem; padding: 1rem; background: var(--site-bg-secondary); border-left: 4px solid var(--site-primary); border-radius: var(--site-radius);">
+            <p style="margin: 0; font-size: 0.95rem;">
+                <strong>💡 Need Forward-Looking XPath?</strong> For advanced use cases requiring <code>child::</code>,
+                <code>descendant::</code>, or <code>following::</code> axes, use the reactive <code>=xpath()</code>
+                helper
+                in JPRX instead of static <code>#()</code> in cDOM. The reactive helper evaluates XPath expressions
+                after the DOM is fully constructed and can access any part of the tree. See the
+                <a href="#reactive-xpath">Reactive XPath section</a> below for details.
+            </p>
+        </div>
 
         <h2 id="reactive-xpath">Reactive XPath (<code>=xpath()</code>)</h2>
         <p>
-            If you need an XPath expression to update reactively if attributes elsewhere in the DOM change,
-            use the <code>=xpath()</code> helper within a JPRX expression.
+            If you need an XPath expression to update reactively when attributes elsewhere in the DOM change,
+            or if you need to use <strong>forward-looking axes</strong> (like <code>child::</code>,
+            <code>descendant::</code>,
+            or <code>following::</code>), use the <code>=xpath()</code> helper within a JPRX expression.
+        </p>
+        <p>
+            Unlike static <code>#()</code> expressions which are evaluated once during construction,
+            <code>=xpath()</code> creates a reactive computed signal that re-evaluates whenever its dependencies change,
+            and it has <strong>no axis restrictions</strong> since the DOM is already fully constructed.
         </p>
         <div class="code-block">
             <pre><code>{
     div: {
-        title: "=xpath('../@data-section')",
-        class: "=concat('item ', xpath('../@theme'))"
+        title: "=(xpath('../@data-section'))",
+        class: "=(concat('item ', xpath('../@theme')))"
     }
 }</code></pre>
         </div>
@@ -142,12 +160,12 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
 { 
     button: { 
         id: "7", 
-        children: [#../@id] 
+        children: [#(../@id)] 
     } 
 }
 
 // Support for complex paths with predicates
-{ span: [#ancestor::div[@data-role='container']/@title] }</code></pre>
+{ span: [#(ancestor::div[@data-role='container']/@title)] }</code></pre>
         </div>
 
         <h2 id="safety">Security & Safety</h2>

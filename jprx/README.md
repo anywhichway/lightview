@@ -2,6 +2,8 @@
 
 **JPRX** is a declarative, reactive expression syntax designed for JSON-based data structures. It extends [JSON Pointer (RFC 6901)](https://www.rfc-editor.org/rfc/rfc6901) with reactivity, relative paths, operator syntax, and a rich library of helper functions.
 
+> **v1.4.0 Syntax Update**: JPRX now uses a wrapper syntax `=(expr)` for unambiguous expression parsing. Legacy prefix-only syntax (e.g., `=/path`) is still supported but will be deprecated after March 31, 2026.
+
 ## Overview
 
 JPRX is a **syntax** and an **expression engine**. While this repository provides the parser and core helper functions, JPRX is intended to be integrated into UI libraries or state management systems that can "hydrate" these expressions into active reactive bindings.
@@ -26,17 +28,17 @@ JPRX extends the base JSON Pointer syntax with:
 
 | Feature | Syntax | Description |
 |---------|--------|-------------|
-| **Global Path** | `=/user/name` | Access global state via an absolute path. |
-| **Relative Path** | `./count` | Access properties relative to the current context. |
-| **Parent Path** | `../id` | Traverse up the state hierarchy (UP-tree search). |
-| **Functions** | `=sum(/items...price)` | Call registered core helpers. |
-| **Explosion** | `/items...name` | Extract a property from every object in an array (spread). |
-| **Operators** | `=++/count`, `=/a + =/b` | Familiar JS-style prefix, postfix, and infix operators. |
+| **Global Path** | `=(/user/name)` | Access global state via an absolute path. |
+| **Relative Path** | `=(./count)` | Access properties relative to the current context. |
+| **Parent Path** | `=(../id)` | Traverse up the state hierarchy (UP-tree search). |
+| **Functions** | `=(sum(/items...price))` | Call registered core helpers. |
+| **Explosion** | `=(/items...name)` | Extract a property from every object in an array (spread). |
+| **Operators** | `=(++/count)`, `=(/a + /b)` | Familiar JS-style prefix, postfix, and infix operators. |
 | **Placeholders** | `_` (item), `$this`, `$event` | Context-aware placeholders for iteration and interaction. |
-| **Two-Way Binding**| `=bind(/user/name)`| Create a managed, two-way reactive link for inputs. |
-| **DOM Patches**    | `=move(target, loc)`| Decentralized layout: Move/replace host element into a target. |
+| **Two-Way Binding**| `=(bind(/user/name))`| Create a managed, two-way reactive link for inputs. |
+| **DOM Patches**    | `=(move(target, loc))`| Decentralized layout: Move/replace host element into a target. |
 
-Once inside a JPRX expression, the `=` prefix is only needed at the start of the expression for paths or function names.
+**Note**: For initialization functions like `state()` and `signal()`, use `=function(...)` without the outer wrapper, as they execute once on mount rather than being reactive expressions.
 
 
 ## State Management
@@ -104,7 +106,7 @@ To ensure unambiguous data flow, `=bind` only accepts direct paths. It cannot be
 
 ### Handling Transformations
 If you need to transform data during a two-way binding, there are two primary approaches:
-1. **Event-Based**: Use a manual `oninput` handler to apply the transformation, e.g., `=set(/name, upper($event/target/value))`.
+1. **Event-Based**: Use a manual `oninput` handler to apply the transformation, e.g., `=(set(/name, upper($event/target/value)))`.
 2. **Schema-Based**: Define a `transform` or `pattern` in the schema for the path. The `=bind` helper will respect the schema rules during the write-back phase.
 
 ---
@@ -159,9 +161,9 @@ A modern, lifecycle-based reactive counter:
     "onmount": "=state({ count: 0 }, { name: 'counter', schema: 'auto', scope: $this })",
     "children": [
       { "h2": "Modern JPRX Counter" },
-      { "p": ["Current Count: ", "=/counter/count"] },
-      { "button": { "onclick": "=++/counter/count", "children": ["+"] } },
-      { "button": { "onclick": "=--/counter/count", "children": ["-"] } }
+      { "p": ["Current Count: ", "=(/counter/count)"] },
+      { "button": { "onclick": "=(++/counter/count)", "children": ["+"] } },
+      { "button": { "onclick": "=(--/counter/count)", "children": ["-"] } }
     ]
   }
 }

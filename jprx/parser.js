@@ -1730,7 +1730,44 @@ export const parseJPRX = (input) => {
             continue;
         }
 
-        // Handle JPRX expressions starting with = (MUST come before word handler!)
+        // Handle JPRX expressions starting with = or #
+        // New wrapper syntax: =(expr) or #(xpath)
+        if ((char === '=' || char === '#') && input[i + 1] === '(') {
+            const prefix = char;
+            let expr = prefix;
+            i++; // skip = or #
+            let parenDepth = 0;
+            let inExprQuote = null;
+
+            while (i < len) {
+                const c = input[i];
+
+                if (inExprQuote) {
+                    if (c === inExprQuote && input[i - 1] !== '\\') inExprQuote = null;
+                } else if (c === '"' || c === "'") {
+                    inExprQuote = c;
+                } else {
+                    if (c === '(') parenDepth++;
+                    else if (c === ')') {
+                        parenDepth--;
+                        if (parenDepth === 0) {
+                            expr += c;
+                            i++;
+                            break;
+                        }
+                    }
+                }
+
+                expr += c;
+                i++;
+            }
+
+            // Use JSON.stringify to safely quote and escape the expression
+            result += JSON.stringify(expr);
+            continue;
+        }
+
+        // Handle legacy JPRX expressions starting with = (without parentheses)
         if (char === '=') {
             let expr = '';
             let parenDepth = 0;
@@ -1779,6 +1816,53 @@ export const parseJPRX = (input) => {
                     else if (c === ')') parenDepth--;
                     else if (c === '{') braceDepth++;
                     else if (c === '}') braceDepth--;
+                    else if (c === '[') bracketDepth++;
+                    else if (c === ']') bracketDepth--;
+                }
+
+                expr += c;
+                i++;
+            }
+
+            // Use JSON.stringify to safely quote and escape the expression
+            result += JSON.stringify(expr);
+            continue;
+        }
+
+        // Handle XPath expressions starting with # (legacy syntax)
+        if (char === '#') {
+            let expr = '';
+            let parenDepth = 0;
+            let bracketDepth = 0;
+            let inExprQuote = null;
+
+            while (i < len) {
+                const c = input[i];
+
+                if (inExprQuote) {
+                    if (c === inExprQuote && input[i - 1] !== '\\') inExprQuote = null;
+                } else if (c === '"' || c === "'") {
+                    inExprQuote = c;
+                } else {
+                    // Check for break BEFORE updating depth
+                    if (parenDepth === 0 && bracketDepth === 0) {
+                        // Break on structural characters at depth 0
+                        if (/[}[\],:]/.test(c) && expr.length > 1) break;
+                        // For whitespace, peek ahead
+                        if (/\s/.test(c)) {
+                            let j = i + 1;
+                            while (j < len && /\s/.test(input[j])) j++;
+                            if (j < len) {
+                                const nextChar = input[j];
+                                if (nextChar === '}' || nextChar === ',' || nextChar === ']') {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (c === '(') parenDepth++;
+                    else if (c === ')') parenDepth--;
                     else if (c === '[') bracketDepth++;
                     else if (c === ']') bracketDepth--;
                 }

@@ -89,6 +89,20 @@
                         helper functions, and integration patterns are subject to change as we continue to evolve the
                         library. Use with caution in production environments.
                     </p>
+                    <p
+                        style="margin: 0.75rem 0 0 0; padding-top: 0.75rem; border-top: 1px solid var(--site-border); font-size: 0.95rem; opacity: 0.9;">
+                        <strong>v2.5.0 Syntax Update:</strong> Starting with Lightview v2.5.0 and JPRX v1.4.0,
+                        expressions use a new wrapper syntax:
+                        <code
+                            style="background: var(--site-bg-secondary); padding: 0.125rem 0.375rem; border-radius: 3px;">=(expr)</code>
+                        for JPRX and
+                        <code
+                            style="background: var(--site-bg-secondary); padding: 0.125rem 0.375rem; border-radius: 3px;">#(xpath)</code>
+                        for XPath.
+                        The legacy prefix-only syntax (e.g., <code
+                            style="background: var(--site-bg-secondary); padding: 0.125rem 0.375rem; border-radius: 3px;">=path</code>)
+                        will be <strong>fully deprecated after March 31, 2026</strong>.
+                    </p>
                 </div>
             </div>
         </div>
@@ -136,10 +150,10 @@ const cdom = `{
         "id": "Counter",
         "onmount": "=state({ count: 0 }, { name: 'local', schema: 'auto', scope: $this })",
         "children": [
-            { "h2": "#../../@id" }, // XPath shorthand: text node -> h2 -> div
-            { "p": ["Count: ", "=/local/count"] },
-            { "button": { "onclick": "=++/local/count", "children": ["+"] } },
-            { "button": { "onclick": "=--/local/count", "children": ["-"] } }
+            { "h2": "#(../../@id)" }, // XPath: text node -> h2 -> div
+            { "p": ["Count: ", "=(/local/count)"] },
+            { "button": { "onclick": "=(++/local/count)", "children": ["+"] } },
+            { "button": { "onclick": "=(--/local/count)", "children": ["-"] } }
         ]
     }
 }`;
@@ -158,10 +172,11 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
             <li><code>=/local/count</code> — A path that reactively displays the count value.</li>
         </ul>
         <p style="font-size: 0.95rem; font-style: italic; color: var(--site-text-secondary);">
-            <strong>Note:</strong> In cDOM, <code>#</code> is the prefix for <strong>XPath</strong> expressions that
-            navigate and extract data from the DOM, while <code>=</code> is the prefix for <strong>JPRX</strong>
-            expressions that navigate or apply functions to
-            reactive state.
+            <strong>Note:</strong> In cDOM, expressions use a wrapper syntax for clarity: <code>#(xpath)</code> for
+            <strong>XPath</strong> expressions that
+            navigate and extract data from the DOM, and <code>=(expr)</code> for <strong>JPRX</strong>
+            expressions that navigate or apply functions to reactive state. Legacy syntax without parentheses is still
+            supported.
         </p>
         <p>
             The UI automatically updates whenever <code>count</code> changes — no manual DOM manipulation required. It
@@ -226,9 +241,9 @@ const cdom = `{
             { h3: "User Profile" },
             { button: { 
                 id: "7", 
-                // XPath #../@id gets the "7" from this button's id
-                // XPath #../../@id gets "profile-container" from the g-parent div
-                children: ["Button ", #../@id, " in section ", #../../@id] 
+                // XPath #(../@id) gets the "7" from this button's id
+                // XPath #(../../@id) gets "profile-container" from the g-parent div
+                children: ["Button ", #(../@id), " in section ", #(../../@id)] 
             }}
         ]
     }
@@ -238,7 +253,7 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
         </div>
         <p>
             In the example above, the button's text is derived entirely from its own <code>id</code> and its
-            parent's <code>id</code> using <code>#../@id</code> and <code>#../../@id</code>.
+            parent's <code>id</code> using <code>#(../@id)</code> and <code>#(../../@id)</code>.
         </p>
         <p>
             For more details, see the <a href="/docs/cdom-xpath.html">Full XPath Documentation</a>.
@@ -252,54 +267,61 @@ $('#example').content(hydrate(parseJPRX(cdom)));</code></pre>
             with reactivity, relative paths, and helper functions.
         </p>
 
-        <h3 id="JPRX-delimiters">Delimiters</h3>
+        <h3 id="JPRX-delimiters">Expression Syntax</h3>
         <p>
-            JPRX expressions begin with a <code>=</code> delimiter:
+            JPRX expressions use a <strong>wrapper syntax</strong> for unambiguous parsing. The recommended syntax is
+            <code>=(expression)</code>:
         </p>
         <table class="api-table">
             <thead>
                 <tr>
-                    <th>Delimiter</th>
+                    <th>Syntax</th>
                     <th>Purpose</th>
                     <th>Example</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><code>=/</code></td>
+                    <td><code>=(/path)</code></td>
                     <td>Access a path in the global registry</td>
-                    <td><code>=/users/0/name</code></td>
+                    <td><code>=(/users/0/name)</code></td>
                 </tr>
                 <tr>
-                    <td><code>=function(</code></td>
+                    <td><code>=(function(...))</code></td>
                     <td>Call a helper function</td>
-                    <td><code>=sum(/items...price)</code></td>
+                    <td><code>=(sum(/items...price))</code></td>
+                </tr>
+                <tr>
+                    <td><code>#(xpath)</code></td>
+                    <td>XPath expression for DOM navigation</td>
+                    <td><code>#(../../@id)</code></td>
                 </tr>
             </tbody>
         </table>
         <p>
-            Once inside a JPRX expression, paths follow <strong>JSON Pointer</strong> syntax. The <code>=</code>
-            is only needed at the start of the expression for paths or function names.
+            The wrapper syntax <code>=()</code> and <code>#()</code> makes expressions unambiguous and eliminates
+            conflicts with literal strings.
+            Legacy syntax without parentheses (e.g., <code>=/path</code>) is still supported for backward compatibility.
         </p>
 
-        <h3 id="JPRX-escaping">Escaping the <code>=</code> Delimiter</h3>
+        <h3 id="JPRX-literal-strings">Literal Strings</h3>
         <p>
-            When using <strong>oDOM</strong> or <strong>vDOM</strong> (Object DOM), any string value starting with
-            <code>=</code> is interpreted as a JPRX expression. If you need a literal string that begins with
-            an equals sign (e.g., a mathematical equation or status message), you can escape it by prefixing
-            with a single quote:
+            With the new wrapper syntax, you no longer need escape sequences. Any string that doesn't match the wrapper
+            pattern
+            is treated as a literal:
         </p>
         <div class="code-block" style="margin-bottom: 1rem;">
-            <pre><code>// Interpreted as JPRX expression:
-{ "p": "=/user/name" }  // Resolves the path /user/name
+            <pre><code>// JPRX expression (wrapped):
+{ "p": "=(/user/name)" }  // Resolves the path /user/name
 
-// Escaped to produce a literal string:
-{ "p": "'=E=mc²" }      // Renders as "=E=mc²"
-{ "p": "'=42" }         // Renders as "=42"</code></pre>
+// Literal strings (no wrapper):
+{ "p": "=E=mc²" }         // Renders as "=E=mc²"
+{ "p": "=42" }            // Renders as "=42"
+{ "p": "#ff0000" }        // Renders as "#ff0000" (hex color)</code></pre>
         </div>
         <p>
-            The single-quote escape (<code>'=</code>) at the start of a string tells the parser to treat
-            the rest of the string (including the <code>=</code>) as literal content.
+            The wrapper syntax eliminates ambiguity: <code>=(expr)</code> is always an expression, while strings without
+            the wrapper pattern are always literals.
         </p>
 
         <h3 id="JPRX-anatomy">Anatomy of a Path</h3>
@@ -723,11 +745,11 @@ const cdomString = `{
         children: [
             { h3: "Shopping Cart" },
             { ul: { 
-                children: =map(/store/cart/items, { li: { children: [_/name, " - ", currency(_/price)] } })
+                children: =(map(/store/cart/items, { li: { children: [_/name, " - ", currency(_/price)] } }))
             }},
             { p: { 
                 style: "font-weight: bold; margin-top: 1rem;",
-                children: ["Total: ", =currency(sum(/store/cart/items...price))]
+                children: ["Total: ", =(currency(sum(/store/cart/items...price)))]
             }}
         ]
     }
@@ -772,10 +794,10 @@ const cdomString = `{
         onmount: "=signal(0, 'count')",
         "children": [
             { "h3": ["Standard JPRX Counter"] },
-            { "p": { "children": ["Count: ", "=/count"] }},
+            { "p": { "children": ["Count: ", "=(/count)"] }},
             { "div": { "children": [
-                { "button": { "onclick": "=decrement(/count)", "children": ["-"] } },
-                { "button": { "onclick": "=increment(/count)", "children": ["+"] } }
+                { "button": { "onclick": "=(decrement(/count))", "children": ["-"] } },
+                { "button": { "onclick": "=(increment(/count))", "children": ["+"] } }
             ]}}
         ]
     }
@@ -806,10 +828,10 @@ const cdomString = `{
         onmount: =signal(0, 'count'),
         children: [
             { h3: ["Compressed Counter"] },
-            { p: { children: ["Count: ", =/count] }},
+            { p: { children: ["Count: ", =(/count)] }},
             { div: { children: [
-                { button: { onclick: =decrement(/count), children: ["-"] } },
-                { button: { onclick: =increment(/count), children: ["+"] } }
+                { button: { onclick: =(decrement(/count)), children: ["-"] } },
+                { button: { onclick: =(increment(/count)), children: ["+"] } }
             ]}}
         ]
     }
@@ -840,11 +862,11 @@ const cdomString = `{
         onmount: =signal(0, 'count'),
         children: [
             { h3: ["Operator Counter"] },
-            { p: { children: ["Count: ", =/count] }},
+            { p: { children: ["Count: ", =(/count)] }},
             { div: { children: [
-                // Prefix operators: =-- and =++
-                { button: { onclick: =--/count, children: ["-"] } },
-                { button: { onclick: =++/count, children: ["+"] } }
+                // Prefix operators: =(--/count) and =(++/count)
+                { button: { onclick: =(--/count), children: ["-"] } },
+                { button: { onclick: =(++/count), children: ["+"] } }
             ]}}
         ]
     }

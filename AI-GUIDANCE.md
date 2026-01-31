@@ -151,9 +151,11 @@ Lightview X allows embedded `${}` expressions in attributes for simple reactivit
 
 **cDOM (Computed DOM)** and **JPRX (JSON Reactive Expressions)** allow you to build fully reactive UIs using **only JSON**.
 
-### Syntax Prefixes
-*   **`=` (JPRX)**: Navigates **reactive state** (Signals/States). Starts with `=/` for absolute paths.
-*   **`#` (cDOM XPath)**: Navigates the **DOM tree** during construction. Use `#../../@id` to skip the text node parent and reach an ancestor's attribute.
+### Expression Syntax
+*   **`=(expr)` (JPRX)**: Wraps reactive expressions that navigate **reactive state** (Signals/States). Use `=(/path)` for paths, `=(function(...))` for helpers.
+*   **`#(xpath)` (cDOM XPath)**: Wraps XPath expressions that navigate the **DOM tree** during construction. Use `#(../../@id)` to navigate ancestors and access attributes.
+
+**Note**: For initialization functions like `state()` and `signal()`, use `=function(...)` without the outer wrapper, as they execute once on mount rather than being reactive expressions.
 
 ### Name Resolution & Scoping
 JPRX uses an **up-tree search** to find signals or states:
@@ -178,7 +180,7 @@ Use `{ scope: $this }` in `=state` or `=signal` to register data specifically at
 | **Stats** | `sum`, `avg`, `min`, `max`, `median`, `stdev`, `variance` |
 | **Data** | `lookup(val, searchArr, resultArr)` (VLOOKUP-style) |
 | **State** | `state(val, opts)`, `set(path, val)`, `bind(path)`, `increment`, `decrement`, `toggle` |
-| **DOM** | `#path` (XPath Navigation), `move(target, loc)` |
+| **DOM** | `#(path)` (XPath Navigation), `move(target, loc)` |
 | **Net** | `fetchHelper(url, opts)`, `mount(url, opts)` |
 
 ### The "Decentralized Layout" Pattern (AI Strategy)
@@ -192,7 +194,7 @@ Use `{ scope: $this }` in `=state` or `=signal` to register data specifically at
   div: {
     id: "widget-1",
     onmount: ["=state({val:0}, {name:'w1', scope:$this})", "=move('#sidebar')"],
-    children: [ { p: "Val: =/w1/val" } ]
+    children: [ { p: ["Val: ", =(/w1/val)] } ]
   }
 }
 ```

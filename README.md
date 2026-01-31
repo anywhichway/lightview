@@ -43,17 +43,17 @@ Traditional UI development requires AI agents to generate imperative JavaScript 
 
 ```json
 {
-  "state": { "count": 0 },
   "div": {
+    "onmount": "=state({ count: 0 }, 'counter')",
     "children": [
-      { "p": "{$count}" },
-      { "button": { "onclick": "{set('count', add(count, 1))}", "children": ["Increment"] } }
+      { "p": ["Count: ", "=(/counter/count)"] },
+      { "button": { "onclick": "=(++/counter/count)", "children": ["Increment"] } }
     ]
   }
 }
 ```
 
-This JSON is **the entire application**. The `{...}` expressions are JPRX—a sandboxed, spreadsheet-like formula language (inspired by **XPath** and **JSON Pointers**) that resolves paths, calls registered helpers, and triggers reactivity automatically.
+This JSON is **the entire application**. The `=()` expressions are JPRX—a sandboxed, spreadsheet-like formula language (inspired by **XPath** and **JSON Pointers**) that resolves paths, calls registered helpers, and triggers reactivity automatically.
 
 ### Learn More
 
