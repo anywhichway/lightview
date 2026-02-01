@@ -1,79 +1,62 @@
 <html>
-<script>
-    const oDOM = (odom, options, script = document.currentScript) => {
-        const type = typeof odom;
-        if (type === 'string') {
-            odom = JSON.parse(odom);
-        }
-        const dom = odomToDOM(odom, { ...(options || {}), wasString: type === 'string' });
-        if (options) {
-            let { target = script, location = 'outerHTML' } = options;
-            location = location.toLowerCase();
-            if (location === 'outerhtml') target.replaceWith(dom);
-            else if (location === 'innerhtml') { target.replaceChildren(dom) }
-            else if (location === 'beforebegin') { target.insertAdjacentElement('beforebegin', dom) }
-            else if (location === 'afterbegin') { target.insertAdjacentElement('afterbegin', dom) }
-            else if (location === 'beforeend') { target.insertAdjacentElement('beforeend', dom) }
-            else if (location === 'afterend') { target.insertAdjacentElement('afterend', dom) }
-        }
-        return dom;
-    }
-    function odomToDOM(onode, { wasString, unsafe }) {
-        if (typeof onode !== 'object' || onode === null) {
-            return document.createTextNode(onode);
-        }
-
-        const tag = Object.keys(onode)[0];
-        const el = document.createElement(tag);
-        const content = onode[tag];
-
-        if (typeof content === 'object' && content !== null && !Array.isArray(content)) {
-            for (const key in content) {
-                const value = content[key];
-                if (key === 'children') {
-                    el.append(...value.map(odomToDOM));
-                } else if (key === 'class') {
-                    el.className = value;
-                } else if (typeof value === 'object' && !Array.isArray(value)) {
-                    // Nested shorthand tag
-                    const child = {};
-                    child[key] = content[key];
-                    el.append(odomToDOM(child));
-                } else if (Array.isArray(content[key])) {
-                    // Property with array value (e.g., children shorthand)
-                    el.append(...content[key].map(odomToDOM));
-                } else if (key.startsWith('on')) {
-                    if (typeof value === "string"(!wasString || unsafe)) {
-                        try {
-                            value = new Function("event", value);
-                        } catch (e) {
-
-                        }
-                    }
-                    el[key] = value;
-                } else {
-                    el.setAttribute(key, value);
-                }
-            }
-        } else {
-            if (Array.isArray(content)) {
-                el.append(...content.map(odomToDOM));
-            } else {
-                el.append(odomToDOM(content));
-            }
-        }
-
-        return el;
-    }
-</script>
+<script src="https://unpkg.com/expr-eval@2.0.2/dist/bundle.min.js"></script>
+<script src="src/cdom.js"></script>
 
 <body>
     <script>
-        oDOM({
+        cDOM.helper('increment', (ref) => {
+            if (ref && typeof ref === 'object' && 'value' in ref) ref.value++;
+            else if (ref && typeof ref === 'object' && ref.count !== undefined) ref.count++;
+            return ref;
+        });
+
+        cDOM.helper('log', (...args) => {
+            console.log(...args);
+            return args[0];
+        });
+
+        // Set global fallback using cDOM.state
+        cDOM.state('Scratch App', { name: 'appName' });
+
+        cDOM({
             div: {
-                onclick: () => alert('Hello World'),
+                oncreate: function () {
+                    cDOM.state({ count: 10 }, { name: 'localCounter', scope: this });
+                    console.log('App created! State initialized.', this);
+                },
+                onmount: function () {
+                    console.log('App mounted to DOM!', this);
+                },
                 children: [
-                    "Hello World"
+                    "App Name: ", "=(/appName)", { br: {} },
+                    "Local Counter (Scoped): ", "=(/localCounter/count)",
+                    {
+                        button: {
+                            onclick: "=(log(increment(/localCounter), 'Clicked on:', $this, 'Event:', $event.type))",
+                            children: ["Increment Local & Log"]
+                        }
+                    },
+                    {
+                        div: {
+                            children: [
+                                { br: {} },
+                                "This div can also see the local counter: ", "=(/localCounter/count)",
+                                { br: {} },
+                                { br: {} },
+                                "Math expression (count * 2 + 5): ", "=(/localCounter/count * 2 + 5)",
+                                { br: {} },
+                                {
+                                    div: {
+                                        style: "margin-top: 10px; color: #666; font-size: 0.9em;",
+                                        children: [
+                                            "XPath (Active Button Count): ", "#(count(//button))", { br: {} },
+                                            "XPath (Button Label): ", "#(//button/text())"
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
                 ]
             }
         }, {})

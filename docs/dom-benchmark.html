@@ -159,6 +159,8 @@
                                 class="btn btn-outline btn-benchmark border-slate-300">Run Raw vDOM</button>
                             <button onclick="runBenchmark('RawoDOM')"
                                 class="btn btn-outline btn-benchmark border-slate-300">Run Raw oDOM</button>
+                            <button onclick="runBenchmark('cDOM')"
+                                class="btn btn-outline btn-benchmark border-slate-300">Run cDOM (src)</button>
                             <button onclick="runBenchmark('vDOM')"
                                 class="btn btn-outline btn-benchmark border-slate-300">Run Lightview vDOM</button>
                             <button onclick="runBenchmark('JurisODOM')"
@@ -167,8 +169,7 @@
                                 class="btn btn-outline btn-benchmark border-slate-300">Run Lightview Tagged
                                 Script</button>
                             <button onclick="runBenchmark('BauTaggedScript')"
-                                class="btn btn-outline btn-benchmark border-slate-300">Run Bau Tagged
-                                Script</button>
+                                class="btn btn-outline btn-benchmark border-slate-300">Run Bau Tagged Script</button>
                             <div class="divider"></div>
                             <button onclick="runAll()" class="btn btn-primary text-white">Run All Benchmarks</button>
                             <button onclick="clearTarget()" class="btn btn-ghost">Clear Target</button>
@@ -280,6 +281,31 @@
 
                         <div class="progress-bar-custom">
                             <div class="progress-fill" id="fill-RawoDOM"></div>
+                        </div>
+                    </div>
+
+                    <div class="result-card" id="res-cDOM">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-slate-500 uppercase text-xs tracking-widest">cDOM (src)</h3>
+                            <div class="flex flex-col items-end gap-1">
+                                <div class="badge badge-outline badge-xs opacity-50"><span class="size">--</span> KB
+                                </div>
+                                <div class="badge badge-accent badge-xs text-white opacity-70"><span
+                                        class="gzip-size">--</span> KB gzip</div>
+                                <div class="badge badge-ghost badge-sm opacity-50">ms</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-black text-slate-800 mb-4"><span class="time">--</span></div>
+
+                        <div class="grid grid-cols-4 gap-2 text-[10px] uppercase font-bold text-slate-400 mb-3">
+                            <div>Min <span class="min block text-slate-600">--</span></div>
+                            <div>Avg <span class="avg block text-slate-600">--</span></div>
+                            <div>Max <span class="max block text-slate-600">--</span></div>
+                            <div class="text-right">±SD <span class="std block text-slate-600">--</span></div>
+                        </div>
+
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" id="fill-cDOM"></div>
                         </div>
                     </div>
 
@@ -404,6 +430,7 @@
     <script src="/lightview.js"></script>
     <script src="/lightview-x.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/juris@0.9.0/juris.min.js"></script>
+    <script src="/src/cdom.js"></script>
 
     <script>
         function generateHTML(count) {
@@ -469,9 +496,9 @@
                     article: {
                         class: 'item-card',
                         children: [
-                            { header: { h3: { class: 'item-title', children: [`Item ${i}`] } } },
-                            { div: { class: 'item-content', p: { class: 'item-description', children: [`Detailed description for item ${i} in the benchmark list.`] } } },
-                            { footer: { class: 'item-footer', span: `Metadata for item ${i}` } }
+                            { header: { children: [{ h3: { class: 'item-title', children: [`Item ${i}`] } }] } },
+                            { div: { class: 'item-content', children: [{ p: { class: 'item-description', children: [`Detailed description for item ${i} in the benchmark list.`] } }] } },
+                            { footer: { class: 'item-footer', children: [{ span: { children: [`Metadata for item ${i}`] } }] } }
                         ]
                     }
                 });
@@ -480,7 +507,7 @@
                 section: {
                     class: 'benchmark-container',
                     children: [
-                        { header: { h2: 'Benchmark Results' } },
+                        { header: { children: [{ h2: { children: ['Benchmark Results'] } }] } },
                         { div: { class: 'items-grid', children: items } }
                     ]
                 }
@@ -502,14 +529,6 @@
                         el.append(...content.children.map(odomToDOM));
                     } else if (key === 'class') {
                         el.className = content[key];
-                    } else if (typeof content[key] === 'object' && !Array.isArray(content[key])) {
-                        // Nested shorthand tag
-                        const child = {};
-                        child[key] = content[key];
-                        el.append(odomToDOM(child));
-                    } else if (Array.isArray(content[key])) {
-                        // Property with array value (e.g., children shorthand)
-                        el.append(...content[key].map(odomToDOM));
                     } else {
                         el.setAttribute(key, content[key]);
                     }
@@ -530,19 +549,31 @@
                 return document.createTextNode(onode);
             }
 
-            // Create a temporary container for Juris to render into
             const tempContainer = document.createElement('div');
 
-            // Create a Juris instance with the oDOM structure as the layout
-            const jurisInstance = new Juris({
-                debug: false,  // Disable logging for performance
-                layout: onode
-            });
+            // Optimization for Benchmark: JurisJS layout engine is recursive, 
+            // so for 1000 items we render the container and then fill the grid items iteratively.
+            const layout = { ...onode };
+            const gridTag = Object.keys(onode.section.children[1])[0];
+            const items = onode.section.children[1][gridTag].children;
 
-            // Render to the temporary container
-            jurisInstance.render(tempContainer);
-            // Return the first child (the actual rendered content)
-            return tempContainer.firstChild || tempContainer;
+            // Render the shell (Section + Header + Empty Grid)
+            onode.section.children[1][gridTag].children = [];
+            const shell = new Juris({ debug: false, layout: onode });
+            shell.render(tempContainer);
+
+            const gridEl = tempContainer.querySelector(`.${onode.section.children[1][gridTag].class}`);
+            if (gridEl) {
+                for (let i = 0; i < items.length; i++) {
+                    const itemContainer = document.createElement('div');
+                    itemContainer.style.display = 'contents';
+                    const itemJuris = new Juris({ debug: false, layout: items[i] });
+                    itemJuris.render(itemContainer);
+                    gridEl.appendChild(itemContainer.firstElementChild || itemContainer);
+                }
+            }
+
+            return tempContainer.firstElementChild || tempContainer;
         }
 
 
@@ -596,7 +627,7 @@
         function clearTarget() {
             target.replaceChildren();
             target.innerHTML = '<div class="p-8 text-center text-slate-400 italic">Target is empty.</div>';
-            ['innerHTML', 'DOMParser', 'vDOM', 'RawVDOM', 'RawoDOM', 'JurisODOM', 'TaggedScript', 'BauTaggedScript'].forEach(id => {
+            ['innerHTML', 'DOMParser', 'vDOM', 'RawVDOM', 'RawoDOM', 'cDOM', 'JurisODOM', 'TaggedScript', 'BauTaggedScript'].forEach(id => {
                 const card = document.getElementById(`res-${id}`);
                 card.classList.remove('active');
                 card.querySelector('.time').innerText = '--';
@@ -646,6 +677,11 @@
                 const domEl = odomToDOM(json);
                 target.replaceChildren(domEl);
                 time = performance.now() - start;
+            } else if (type === 'cDOM') {
+                const start = performance.now();
+                const json = JSON.parse(data);
+                cDOM(json, { target, location: 'innerHTML' });
+                time = performance.now() - start;
             } else if (type === 'JurisODOM') {
                 const start = performance.now();
                 const json = JSON.parse(data);
@@ -692,7 +728,7 @@
             if (!data && type !== 'TaggedScript' && type !== 'BauTaggedScript') {
                 if (type === 'innerHTML' || type === 'DOMParser') data = generateHTML(count);
                 if (type === 'vDOM' || type === 'RawVDOM') data = generateVDOM(count);
-                if (type === 'RawoDOM' || type === 'JurisODOM') data = generateODOM(count);
+                if (type === 'RawoDOM' || type === 'cDOM' || type === 'JurisODOM') data = generateODOM(count);
             }
 
             console.log(`Starting ${cycles} cycles for ${type}...`);
@@ -724,6 +760,7 @@
                 { id: 'DOMParser', data: htmlData },
                 { id: 'RawVDOM', data: vdomData },
                 { id: 'RawoDOM', data: odomData },
+                { id: 'cDOM', data: odomData },
                 { id: 'vDOM', data: vdomData },
                 { id: 'JurisODOM', data: odomData },
                 { id: 'TaggedScript', data: null },
